@@ -67,18 +67,17 @@ public class AlnQuery {
         }
         try {
 
-            if(poolDataSource == null) {
+            if(false && poolDataSource == null) {
                 poolDataSource = PoolDataSourceFactory.getPoolDataSource();
-                poolDataSource.setConnectionFactoryClassName(auth.getDBDriver());
+                poolDataSource.setConnectionFactoryClassName("com.mysql.cj.jdbc.MysqlDataSource");
                 poolDataSource.setURL(auth.getDBConnection() + "://"+ auth.getDBHost() +":"+ auth.getDBPort() +"/"+ auth.getDBName());
                 poolDataSource.setUser(auth.getDBUser());
                 poolDataSource.setPassword(auth.getPassword());
                 poolDataSource.setInitialPoolSize(1);
                 poolDataSource.setMinPoolSize(1);
                 poolDataSource.setMaxPoolSize(1000);
+                connection = poolDataSource.getConnection();
             }
-
-            connection = poolDataSource.getConnection();
 
             if(connection == null || connection.isClosed()) {
                 Class.forName("com.mysql.cj.jdbc.Driver");

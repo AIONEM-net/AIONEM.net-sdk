@@ -81,24 +81,24 @@ public class AlnJsonUtils {
         return !jsonArray.isJsonNull() ? jsonArray : new JsonArray();
     }
 
-    public static HashMap<String, Object> toHashMap(final JsonObject data) {
+    public static HashMap<String, Object> toHashMap(final JsonObject jsonObject) {
         final HashMap<String, Object> values = new HashMap<>();
-        if(data != null) {
-            for(String key : data.keySet()) {
-                values.put(key, getValue(data, key));
+        if(jsonObject != null) {
+            for(String key : jsonObject.keySet()) {
+                values.put(key, getValue(jsonObject, key));
             }
         }
         return values;
     }
     public static JsonObject fromHashMap(final HashMap<String, Object> values) {
-        final JsonObject data = new JsonObject();
+        final JsonObject jsonObject = new JsonObject();
         if(values != null) {
             for(final String key : values.keySet()) {
                 final Object value = values.get(key);
-                add(data, key, value);
+                add(jsonObject, key, value);
             }
         }
-        return data;
+        return jsonObject;
     }
 
     public static JsonObject add(final JsonObject data, final String key, final Object value) {
