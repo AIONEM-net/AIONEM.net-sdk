@@ -53,7 +53,7 @@ public class AlnData {
                         value = AlnDataUtils.convert(value, field.getType());
                     }
                     put(key, value);
-                } catch (Exception e) {
+                }catch(Exception e) {
                     log.error("\nERROR: AlnData - fromData " + e +"\n");
                 }
             }
@@ -107,41 +107,43 @@ public class AlnData {
         return fromData(AlnJsonUtils.toHashMap(data));
     }
 
-    public <T> T fromData(final T db, final JsonObject data) {
+    public AlnData fromData(final Object data) {
+        return fromData(AlnJsonUtils.toJsonObject(data));
+    }
+
+    public <T> T fromData(final T dbInstance, final JsonObject data) {
         fromData(AlnJsonUtils.toHashMap(data));
         try {
-            return AlnDataUtils.adaptTo(db, data);
+            return AlnDataUtils.adaptTo(dbInstance, data);
         }catch(Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK : AlnData - fromData " + e +"\n");
         }
-        return db;
+        return dbInstance;
     }
 
     public AlnData fromData(final String key, final AlnData data) {
         final Object value = data.get(key);
-        return put(null, key, value);
+        return put(this, key, value);
     }
 
     public AlnData put(final String key, final Object value) {
-        return put(null, key, value);
+        return put(this, key, value);
     }
-    public AlnData put(final Object db, final String key, final Object value) {
+    public <T> T put(final T dbInstance, final String key, final Object value) {
         this.values.put(key, value);
         try {
-            if(db != null) {
-                final Field field = db.getClass().getField(key);
-                final int modifiers = field.getModifiers();
-                final boolean isStatic = Modifier.isStatic(modifiers);
-                final boolean isPrivate = Modifier.isPrivate(modifiers);
-                if(!isStatic && !isPrivate) {
-                    field.setAccessible(true);
-                    field.set(db, value);
-                }
+            final Field field = dbInstance.getClass().getDeclaredField(key);
+            final int modifiers = field.getModifiers();
+            final boolean isStatic = Modifier.isStatic(modifiers);
+            final boolean isPrivate = Modifier.isPrivate(modifiers);
+            if(!isStatic && !isPrivate) {
+                field.setAccessible(true);
+                field.set(dbInstance, value);
             }
         }catch(Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK : " + e +"\n");
         }
-        return this;
+        return dbInstance;
     }
 
     public String get(final String key) {
@@ -183,12 +185,16 @@ public class AlnData {
         return this.values.containsKey(key);
     }
 
-    public boolean isEmpty(String key) {
+    public boolean isEmpty(final String key) {
         return AlnTextUtils.isEmpty(get(key));
     }
 
     public int size() {
         return this.values.size();
+    }
+
+    public boolean isEmpty() {
+        return size() == 0;
     }
 
     public Set<String> keySet() {
@@ -252,7 +258,7 @@ public class AlnData {
     public <T> T adaptTo(Class<T> type) {
         try {
             return AlnDataUtils.adaptTo(type, getData());
-        } catch (Exception e) {
+        }catch(Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK : AlnData - adaptTo(Class<T> type) " + e +"\n");
             return null;
         }
@@ -260,7 +266,7 @@ public class AlnData {
     public <T> T adaptTo(T t) {
         try {
             return AlnDataUtils.adaptTo(t, getData());
-        } catch (Exception e) {
+        }catch(Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK : AlnData - adaptTo(T t) " + e +"\n");
             return null;
         }

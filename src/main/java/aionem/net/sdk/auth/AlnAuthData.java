@@ -44,6 +44,7 @@ public @Data class AlnAuthData extends AlnData {
         this.request = request;
         this.response = response;
         this.session = request.getSession(true);
+        this.resourceResolver = response;
 
     }
 
@@ -74,9 +75,21 @@ public @Data class AlnAuthData extends AlnData {
     public static final String ENV_LOCAL = "LOCAL";
 
     public String getEnv() {
+        String env;
         final int port = getRequest().getLocalPort();
-        final String localName = getRequest().getLocalAddr();
-        return localName.equals("66.29.143.32") ? (port == 2027 ? ENV_PROD : ENV_STAGE) : ENV_DEV;
+        final String localAddress = getRequest().getLocalAddr();
+        if(localAddress.equals("66.29.143.32")) {
+            if(port == 443) {
+                env = ENV_PROD;
+            }else if(port == 80) {
+                env = ENV_STAGE;
+            }else {
+                env = ENV_DEV;
+            }
+        }else {
+            env = ENV_LOCAL;
+        }
+        return env;
     }
 
     public boolean isEnvProd() {
@@ -99,19 +112,109 @@ public @Data class AlnAuthData extends AlnData {
         return "jdbc:mysql";
     }
     public String getDBHost() {
-        return "66.29.143.32";
+        String dbHost;
+        switch(getEnv()) {
+            case ENV_LOCAL:
+                dbHost = "localhost";
+                break;
+            case ENV_DEV:
+                dbHost = "66.29.143.32";
+                break;
+            case ENV_STAGE:
+                dbHost = "66.29.143.32";
+                break;
+            case ENV_PROD:
+                dbHost = "66.29.143.32";
+                break;
+            default:
+                dbHost = "localhost";
+                break;
+        }
+        return dbHost;
     }
     public String getDBPort() {
-        return "3306";
+        String dbPort;
+        switch(getEnv()) {
+            case ENV_LOCAL:
+                dbPort = "3307";
+                break;
+            case ENV_DEV:
+                dbPort = "3306";
+                break;
+            case ENV_STAGE:
+                dbPort = "3306";
+                break;
+            case ENV_PROD:
+                dbPort = "3306";
+                break;
+            default:
+                dbPort = "3306";
+                break;
+        }
+        return dbPort;
     }
     public String getDBName() {
-        return isEnvProd() ? "aionem_net" : "aionem_net_1";
+        String dbName;
+        switch(getEnv()) {
+            case ENV_LOCAL:
+                dbName = "aionem_net_local";
+                break;
+            case ENV_DEV:
+                dbName = "aionem_net_1";
+                break;
+            case ENV_STAGE:
+                dbName = "aionem_net_1";
+                break;
+            case ENV_PROD:
+                dbName = "aionem_net";
+                break;
+            default:
+                dbName = "aionem_net_1";
+                break;
+        }
+        return dbName;
     }
     public String getDBUser() {
-        return "aionem_net";
+        String dbUser;
+        switch(getEnv()) {
+            case ENV_LOCAL:
+                dbUser = "root";
+                break;
+            case ENV_DEV:
+                dbUser = "aionem_net";
+                break;
+            case ENV_STAGE:
+                dbUser = "aionem_net";
+                break;
+            case ENV_PROD:
+                dbUser = "aionem_net";
+                break;
+            default:
+                dbUser = "aionem_net";
+                break;
+        }
+        return dbUser;
     }
     public String getDBPassword() {
-        return "aionem_net";
+        String dbPassword;
+        switch(getEnv()) {
+            case ENV_LOCAL:
+                dbPassword = "";
+                break;
+            case ENV_DEV:
+                dbPassword = "aionem_net";
+                break;
+            case ENV_STAGE:
+                dbPassword = "aionem_net";
+                break;
+            case ENV_PROD:
+                dbPassword = "aionem_net";
+                break;
+            default:
+                dbPassword = "aionem_net";
+                break;
+        }
+        return dbPassword;
     }
 
 }

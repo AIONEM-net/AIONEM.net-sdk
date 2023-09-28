@@ -94,7 +94,7 @@ public @Data class AlnNetwork {
 
                 final URL url = new URL(link);
                 final HttpURLConnection httpURLConnection;
-                if ("https".equalsIgnoreCase(url.getProtocol())) {
+                if("https".equalsIgnoreCase(url.getProtocol())) {
                     httpURLConnection = (HttpsURLConnection) url.openConnection();
                 } else {
                     httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -102,9 +102,9 @@ public @Data class AlnNetwork {
 
                 String protocol = url.getProtocol();
 
-                if ("http".equalsIgnoreCase(protocol)) {
+                if("http".equalsIgnoreCase(protocol)) {
                     System.out.println("The URL is using HTTP.");
-                } else if ("https".equalsIgnoreCase(protocol)) {
+                } else if("https".equalsIgnoreCase(protocol)) {
                     System.out.println("The URL is using HTTPS.");
                 } else {
                     System.out.println("The URL is using an unsupported protocol.");
@@ -112,7 +112,7 @@ public @Data class AlnNetwork {
 
                 httpURLConnection.setRequestMethod("GET");
 
-                if (dataHeaders != null) {
+                if(dataHeaders != null) {
                     for (final String key : dataHeaders.keySet()) {
                         final String value = dataHeaders.get(key);
                         httpURLConnection.setRequestProperty(key, value);
@@ -127,7 +127,7 @@ public @Data class AlnNetwork {
 
                 httpURLConnection.disconnect();
 
-            } catch (Exception e) {
+            }catch(Exception e) {
                 resGet.setException(e);
             }
 
@@ -170,20 +170,20 @@ public @Data class AlnNetwork {
 
             try {
 
-                if (dataParams != null) {
+                if(dataParams != null) {
                     link = AlnNetworkUtils.addParameter(link, dataParams.getValuesString());
                 }
 
                 final URL url = new URL(link);
                 final HttpURLConnection httpURLConnection;
-                if ("https".equalsIgnoreCase(url.getProtocol())) {
+                if("https".equalsIgnoreCase(url.getProtocol())) {
                     httpURLConnection = (HttpsURLConnection) url.openConnection();
                 } else {
                     httpURLConnection = (HttpURLConnection) url.openConnection();
                 }
                 httpURLConnection.setRequestMethod("POST");
 
-                if (dataHeaders != null) {
+                if(dataHeaders != null) {
                     for (final String key : dataHeaders.keySet()) {
                         final String value = dataHeaders.get(key);
                         httpURLConnection.setRequestProperty(key, value);
@@ -192,12 +192,12 @@ public @Data class AlnNetwork {
 
                 httpURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
 
-                if (dataBody != null) {
+                if(dataBody != null) {
                     httpURLConnection.setDoInput(true);
                     httpURLConnection.setDoOutput(true);
                     final OutputStream outputStream = httpURLConnection.getOutputStream();
                     final byte[] input;
-                    if (dataBody.equalsIgnoreCase("application/json", "Content-Type")) {
+                    if(dataBody.equalsIgnoreCase("application/json", "Content-Type")) {
                         input = dataBody.getJsonBytes();
                     } else {
                         input = dataBody.getQueryBytes();
@@ -211,7 +211,7 @@ public @Data class AlnNetwork {
 
                 httpURLConnection.disconnect();
 
-            } catch (Exception e) {
+            }catch(Exception e) {
                 resPost.setException(e);
             }
 

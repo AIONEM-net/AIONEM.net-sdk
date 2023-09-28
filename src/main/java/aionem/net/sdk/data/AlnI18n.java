@@ -11,24 +11,26 @@ import java.util.ResourceBundle;
 @Log4j
 public class AlnI18n {
 
-    public AlnData data;
+    private AlnData data;
 
+    private String baseName;
     private ResourceBundle resourceBundle;
+    private Locale locale;
 
     public AlnI18n() {
 
     }
     public AlnI18n(final String baseName) {
-        this(baseName, getLocal(), new AlnData());
+        this(baseName, null, new AlnData());
     }
     public AlnI18n(final String baseName, final Locale locale) {
         this(baseName, locale, new AlnData());
     }
     public AlnI18n(final String baseName, final AlnData data) {
-        this(baseName, getLocal(), data);
+        this(baseName, null, data);
     }
     public AlnI18n(final String baseName, final AlnJspProperties properties) {
-        this(baseName, getLocal(), properties.getData());
+        this(baseName, null, properties.getData());
     }
     public AlnI18n(final String baseName, final Locale locale, final AlnJspProperties properties) {
         this(baseName, locale, properties.getData());
@@ -37,10 +39,6 @@ public class AlnI18n {
         init(baseName, locale, data);
     }
 
-
-    public AlnI18n init(final String baseName) {
-        return init(baseName, getLocal(), new AlnData());
-    }
     public AlnI18n init(final String baseName, final Locale locale) {
         return init(baseName, locale, new AlnData());
     }
@@ -53,13 +51,16 @@ public class AlnI18n {
     public AlnI18n init(final String baseName, final Locale locale, final AlnJspProperties properties) {
         return init(baseName, locale, properties.getData());
     }
-    public AlnI18n init(final String baseName, final Locale locale, final AlnData data) {
-        this.data = data;
+    public AlnI18n init(String baseName, final Locale locale, final AlnData data) {
         try {
-            if (locale != null) {
-                this.resourceBundle = ResourceBundle.getBundle(baseName, locale);
-            } else {
-                this.resourceBundle = ResourceBundle.getBundle(baseName);
+            this.data = data;
+            if(!baseName.startsWith("i18n/")) {
+                baseName = "i18n/" + baseName;
+            }
+            if(this.locale != locale || !this.baseName.equals(baseName)) {
+                this.baseName = baseName;
+                this.locale = locale != null ? locale : getLocal();
+                this.resourceBundle = ResourceBundle.getBundle(this.baseName, this.locale);
             }
         }catch(Exception e) {
             log.error("\nERROR: - init ::" + e +"\n");
@@ -68,25 +69,41 @@ public class AlnI18n {
     }
 
     public String get(final String key) {
+        return get(key, key);
+    }
+
+    public String get(final String key, final String defaultValue) {
+        if(AlnTextUtils.isEmpty(key)) return "";
         String value = "";
         if(data != null) {
             value = data.get(key);
         }
-        if(resourceBundle != null && AlnTextUtils.isEmpty(value)) {
-            value = resourceBundle.getString(key);
+        try {
+            if(resourceBundle != null && AlnTextUtils.isEmpty(value)) {
+                value = resourceBundle.getString(key);
+            }
+        }catch(Exception e) {
+            log.error("\nERROR: - get ::" + e +"\n");
         }
         if(AlnTextUtils.isEmpty(value)) {
-            value = key;
+            value = defaultValue;
         }
         return value;
     }
 
-    private static Locale getLocal() {
-        return null;
+    public String get(final String key1, final String key2, final int size) {
+        if(size == 1) {
+            return get(key1);
+        }else {
+            return get(key2);
+        }
     }
 
-    public static void saveLocale(final Locale locale) {
-
+    private Locale getLocal() {
+        if(locale == null) {
+            locale = Locale.getDefault();
+        }
+        return locale;
     }
 
 }

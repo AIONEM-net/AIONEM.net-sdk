@@ -150,7 +150,7 @@ public class AlnQueryInsert extends AlnQuery {
 
             prepareStatement.close();
 
-        } catch (Exception e) {
+        }catch(Exception e) {
             setException(e);
         }
         return key;

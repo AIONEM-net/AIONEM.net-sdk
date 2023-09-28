@@ -54,7 +54,7 @@ public class AlnDBUtils {
                 final DateFormat simpleDateFormat = new SimpleDateFormat(format, locale);
                 formatDate = simpleDateFormat.format(date.getTime());
             }
-        } catch (Exception e) {
+        }catch(Exception e) {
             log.error("\nAIONEM.NET-AEM: ERROR WHILE PARSING DATE " + e +"\n");
         }
         return formatDate;

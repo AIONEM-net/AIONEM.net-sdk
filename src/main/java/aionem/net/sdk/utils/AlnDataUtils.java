@@ -60,12 +60,12 @@ public class AlnDataUtils {
     }
 
     public static <T> T convert(final Object object, final T defaultValue) {
-        if (defaultValue == null) return null;
+        if(defaultValue == null) return null;
         T value = (T) convert(object, defaultValue.getClass());
         return value != null ? value : defaultValue;
     }
     public static <T> T convert(final Object object, final Class<T> type) {
-        if (object == null || type == null) return null;
+        if(object == null || type == null) return null;
         if(type.isAssignableFrom(object.getClass())) {
             return (T) object;
         }else if(type.isArray()) {

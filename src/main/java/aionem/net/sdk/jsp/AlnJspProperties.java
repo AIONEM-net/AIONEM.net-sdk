@@ -35,6 +35,9 @@ public @Getter class AlnJspProperties {
     public String get(final String key) {
         return data.get(key);
     }
+    public boolean getBoolean(final String key) {
+        return data.get(key, false);
+    }
     public Object getObject(final String key) {
         return data.get(key);
     }
@@ -45,6 +48,10 @@ public @Getter class AlnJspProperties {
         return this.data.get(key, type);
     }
 
+    public boolean has(final String key) {
+        return data.has(key);
+    }
+
     public <T> T adapt(final Class<T> type) {
         try {
             if(type.getSuperclass().isAssignableFrom(AlnData.class) || type.isAssignableFrom(AlnData.class)) {
@@ -52,7 +59,7 @@ public @Getter class AlnJspProperties {
             }else {
                 return type.getConstructor().newInstance();
             }
-        }catch (Exception e) {
+        }catch(Exception e) {
             log.error("\nERROR: DB JspProperties - Adapt ::" + e +"\n");
         }
         return null;

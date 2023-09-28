@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -82,7 +83,7 @@ public class AlnTextUtils {
                     value = toString(((HttpURLConnection) object).getInputStream());
                 } else if(object instanceof InputStream) {
                     final StringBuilder response = new StringBuilder();
-                    final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader((InputStream) object));
+                        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader((InputStream) object, StandardCharsets.UTF_8));
                     String line;
                     while((line = bufferedReader.readLine()) != null) {
                         response.append(line);
@@ -105,7 +106,7 @@ public class AlnTextUtils {
                 }
 
             }
-        } catch (Exception ignore) {
+        }catch(Exception ignore) {
         }
         return value;
     }
@@ -156,6 +157,10 @@ public class AlnTextUtils {
         if(text1 == null) return -1;
         if(text2 == null) return 1;
         return text1.compareToIgnoreCase(text2);
+    }
+
+    public static String capitalizeFirstLetter(final String text) {
+        return !isEmpty(text) ? Character.toUpperCase(text.charAt(0)) + text.substring(1) : text;
     }
 
 }

@@ -39,7 +39,7 @@ public class AlnApiUtils {
             while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
                 stringBuilder.append(charBuffer, 0, bytesRead);
             }
-        } catch (Exception e) {
+        }catch(Exception e) {
             log.info("\nERROR: API - POST-BODY ::" + e +"\n");
         }
         return stringBuilder.toString();

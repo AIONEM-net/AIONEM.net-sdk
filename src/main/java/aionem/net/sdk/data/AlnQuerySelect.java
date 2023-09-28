@@ -506,7 +506,7 @@ public class AlnQuerySelect extends AlnQueryCondition {
     public <T> T executeData(Class<T> type) {
         try {
             return AlnDataUtils.adaptTo(type, executeJson());
-        } catch (Exception e) {
+        }catch(Exception e) {
             setException(e);
             return null;
         }
@@ -534,7 +534,7 @@ public class AlnQuerySelect extends AlnQueryCondition {
         for(final AlnData data : executeListData()) {
             try {
                 listData.add(AlnDataUtils.adaptTo(type, data.getData()));
-            } catch (Exception e) {
+            }catch(Exception e) {
                 setException(e);
             }
         }
@@ -606,7 +606,7 @@ public class AlnQuerySelect extends AlnQueryCondition {
             resultSet.close();
             statement.close();
 
-        } catch (Exception e) {
+        }catch(Exception e) {
             setException(e);
         }
         return listData;
@@ -637,7 +637,7 @@ public class AlnQuerySelect extends AlnQueryCondition {
             result.close();
             statement.close();
 
-        } catch (Exception e) {
+        }catch(Exception e) {
             setException(e);
         }
         return count;
@@ -670,7 +670,7 @@ public class AlnQuerySelect extends AlnQueryCondition {
             result.close();
             statement.close();
 
-        } catch (Exception e) {
+        }catch(Exception e) {
             setException(e);
         }
         return sum;

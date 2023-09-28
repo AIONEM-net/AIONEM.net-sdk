@@ -145,7 +145,7 @@ public class AlnJsonUtils {
         return getValue(json, path, String.class);
     }
     public static <T> T getValue(final JsonElement json, final String path, final T defaultValue) {
-        if (defaultValue == null) return null;
+        if(defaultValue == null) return null;
         return (T) getValue(json, path, defaultValue.getClass());
     }
     public static <T> T getValue(final JsonElement json, final String path, final Class<T> type) {
@@ -188,7 +188,7 @@ public class AlnJsonUtils {
                     return null;
                 }
             }
-        } catch (Exception ignore) {
+        }catch(Exception ignore) {
         }
         return value;
     }
@@ -240,7 +240,7 @@ public class AlnJsonUtils {
 
             }
 
-        } catch (Exception ignore) {
+        }catch(Exception ignore) {
         }
 
         return listMap;

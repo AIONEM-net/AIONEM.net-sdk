@@ -384,7 +384,7 @@ public class AlnQueryUpdate extends AlnQueryCondition {
             final Statement statement = getConnection(auth).createStatement();
             count = statement.executeUpdate(getQuery());
             statement.close();
-        } catch (Exception e) {
+        }catch(Exception e) {
             setException(e);
         }
         return count;
