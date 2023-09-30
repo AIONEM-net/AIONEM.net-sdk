@@ -77,7 +77,7 @@ public class AlnParseUtils {
             final DateFormat simpleDateFormat = new SimpleDateFormat(format, locale);
             return simpleDateFormat.parse(date);
         }catch(Exception e) {
-            log.error("\nAIONEM.NET-AEM: ERROR WHILE PARSING DATE "+ e);
+            log.error("\nAIONEM.NET-SDK: ERROR WHILE PARSING DATE "+ e);
             return null;
         }
     }

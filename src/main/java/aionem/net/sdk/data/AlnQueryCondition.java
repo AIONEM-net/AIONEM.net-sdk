@@ -222,7 +222,7 @@ public class AlnQueryCondition extends AlnQuery {
             final String column = columns[i];
             if(i == 0) {
                 andLike(column, value, condition);
-            } else {
+            }else {
                 orLike(column, value, condition);
             }
         }
@@ -373,7 +373,7 @@ public class AlnQueryCondition extends AlnQuery {
     private String getLimitOffset() {
         if(this.offset <= 0 && this.limit < 0) {
             this.limitOffset = "";
-        } else {
+        }else {
             this.limitOffset = " LIMIT " + (this.offset >= 0 ? this.offset : 0) + (this.limit >= 0 ? ", " + this.limit : "");
         }
         return limitOffset;

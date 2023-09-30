@@ -15,15 +15,13 @@ import java.util.Locale;
 @Log4j
 public @Getter class AlnJsp {
 
-    public static final String PROPERTIES = "properties";
-
     protected HttpServletRequest request;
     protected HttpServletResponse response;
     protected HttpSession session;
     public String propertiesKey;
 
     public AlnJsp() {
-        this.propertiesKey = PROPERTIES;
+        this.propertiesKey = AlnJspProperties.PROPERTIES;
     }
     public AlnJsp(final HttpServletRequest request, final HttpServletResponse response) {
         init(request, response);
@@ -33,7 +31,7 @@ public @Getter class AlnJsp {
     }
 
     public AlnJsp init(final HttpServletRequest request, final HttpServletResponse response) {
-        return init(request, response, PROPERTIES);
+        return init(request, response, AlnJspProperties.PROPERTIES);
     }
     public AlnJsp init(final HttpServletRequest request, final HttpServletResponse response, final Class<?> type) {
         return init(request, response, name(type));
@@ -47,7 +45,7 @@ public @Getter class AlnJsp {
     }
 
     public void setAttribute(final Object value) {
-        setAttribute(PROPERTIES, value);
+        setAttribute(AlnJspProperties.PROPERTIES, value);
     }
     public void setAttribute(final AlnData data) {
         setAttribute(name(data.getClass()), data.toString());
@@ -56,20 +54,20 @@ public @Getter class AlnJsp {
         request.setAttribute(name, value);
     }
 
-    public Object getAttribute(final String name) {
-        return request.getAttribute(name);
-    }
     public <T> T getAttribute(final Object object) {
         return (T) getAttribute(object.getClass());
     }
     public <T> T getAttribute(final Class<T> type) {
-        return (T) request.getAttribute(name(type));
+        return (T) getAttribute(name(type));
+    }
+    public Object getAttribute(final String name) {
+        return request.getAttribute(name);
     }
 
-    public String name(final AlnCmp alnCmp) {
+    public static String name(final AlnCmp alnCmp) {
         return name(alnCmp.getClass());
     }
-    public String name(final Class<?> type) {
+    public static String name(final Class<?> type) {
         return type.getPackageName() +"."+ type.getName();
     }
     public String value(final AlnCmp alnCmp) {
@@ -91,12 +89,28 @@ public @Getter class AlnJsp {
         return value(data, name(type));
     }
     public String value(final Object data, final String name) {
-        request.setAttribute(name, data);
+        if(!AlnJspProperties.PROPERTIES.equals(name)) {
+            request.setAttribute(name, data);
+        }
+        request.setAttribute(AlnJspProperties.PROPERTIES, data);
         return data.toString();
     }
 
     public ServletContext getServletContext() {
         return request.getServletContext();
+    }
+
+    public String getRealPathCurrent() {
+        return getRealPathCurrent("");
+    }
+    public String getRealPathCurrent(final String path) {
+        return getRealPathRRoot(getServletPath()) + (!AlnTextUtils.isEmpty(path) ? "/" + path : "");
+    }
+    public String getRealPathRRoot() {
+        return getRealPathRRoot("");
+    }
+    public String getRealPathRRoot(final String path) {
+        return getServletContext().getRealPath(path);
     }
 
     public String getServletPath() {

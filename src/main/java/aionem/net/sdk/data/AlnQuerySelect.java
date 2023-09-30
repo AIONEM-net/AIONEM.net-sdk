@@ -549,7 +549,7 @@ public class AlnQuerySelect extends AlnQueryCondition {
             final ResultSet resultSet = statement.executeQuery(getQuery());
 
             long index = offset + 1;
-            while (resultSet.next()) {
+            while(resultSet.next()) {
 
                 final AlnData data = new AlnData();
 

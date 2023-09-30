@@ -36,7 +36,7 @@ public class AlnApiUtils {
             final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(request.getInputStream()));
             final char[] charBuffer = new char[1024];
             int bytesRead;
-            while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
+            while((bytesRead = bufferedReader.read(charBuffer)) > 0) {
                 stringBuilder.append(charBuffer, 0, bytesRead);
             }
         }catch(Exception e) {

@@ -371,7 +371,7 @@ public class AlnQueryUpdate extends AlnQueryCondition {
         final boolean isUpdated = executeUpdateSuccess();
         if(isUpdated) {
             resUpdate.setSuccess(true);
-        } else {
+        }else {
             resUpdate.setError(getError());
             resUpdate.setException(getException());
         }

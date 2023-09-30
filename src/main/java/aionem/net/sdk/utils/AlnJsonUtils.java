@@ -128,7 +128,7 @@ public class AlnJsonUtils {
                 final double valueNumber = AlnParseUtils.toNumber(valueString, 0);
                 if(valueString.contains(".")) {
                     data.addProperty(key, valueNumber);
-                } else {
+                }else {
                     data.addProperty(key, (long) valueNumber);
                 }
             }else if(AlnParseUtils.isBoolean(valueString)) {
@@ -181,10 +181,10 @@ public class AlnJsonUtils {
             for(final String key : keys) {
                 if(value instanceof JsonObject) {
                     value = ((JsonObject) value).get(key);
-                } else if(value instanceof JsonArray) {
+                }else if(value instanceof JsonArray) {
                     final int index = Integer.parseInt(key);
                     value = ((JsonArray) value).get(index);
-                } else {
+                }else {
                     return null;
                 }
             }

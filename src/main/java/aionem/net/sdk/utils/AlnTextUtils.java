@@ -7,9 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
@@ -66,24 +64,33 @@ public class AlnTextUtils {
 
                 if(object instanceof JsonElement) {
                     value = ((JsonElement) object).getAsString();
-                } else if(object instanceof AlnDaoRes) {
+                }else if(object instanceof AlnDaoRes) {
                     value = ((AlnDaoRes) object).getData().toString();
-                } else if(object instanceof AlnData) {
+                }else if(object instanceof AlnData) {
                     value = ((AlnData) object).getData().toString();
                 }  else if(object instanceof AlnDatas) {
                     value = ((AlnDatas) object).getDatas().toString();
-                } else if(object instanceof ArrayList) {
+                }else if(object instanceof ArrayList) {
                     JsonArray jsonArray = AlnJsonUtils.jsonArray();
                     for(Object item : ((ArrayList) object)) {
                         String itemValue = toString(item);
                         jsonArray.add(itemValue);
                     }
                     value = jsonArray.toString();
-                } else if(object instanceof HttpURLConnection) {
+                }else if(object instanceof HttpURLConnection) {
                     value = toString(((HttpURLConnection) object).getInputStream());
-                } else if(object instanceof InputStream) {
+                }else if(object instanceof InputStream) {
                     final StringBuilder response = new StringBuilder();
-                        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader((InputStream) object, StandardCharsets.UTF_8));
+                    final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader((InputStream) object, StandardCharsets.UTF_8));
+                    String line;
+                    while((line = bufferedReader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    value = response.toString();
+                    bufferedReader.close();
+                }else if(object instanceof File) {
+                    final StringBuilder response = new StringBuilder();
+                    BufferedReader bufferedReader = new BufferedReader(new FileReader((File) object, StandardCharsets.UTF_8));
                     String line;
                     while((line = bufferedReader.readLine()) != null) {
                         response.append(line);

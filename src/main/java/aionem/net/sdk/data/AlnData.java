@@ -153,6 +153,10 @@ public class AlnData {
         final String value = get(key1);
         return !AlnTextUtils.isEmpty(value) ? value : get(key2);
     }
+    public String getOr(final String key1, final String key2, final String defaultValue) {
+        final String value = get(key1);
+        return !AlnTextUtils.isEmpty(value) ? value : get(key2, defaultValue);
+    }
     public String getNullable(final String key) {
         return has(key) ? get(key) : null;
     }

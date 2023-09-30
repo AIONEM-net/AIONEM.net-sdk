@@ -126,7 +126,7 @@ public class AlnQueryInsert extends AlnQuery {
         if(dataId > 0) {
             resInsert.setSuccess(true);
             resInsert.setId(dataId);
-        } else {
+        }else {
             resInsert.setError(getError());
             resInsert.setException(getException());
         }
@@ -168,7 +168,7 @@ public class AlnQueryInsert extends AlnQuery {
 
         if(isBackground) {
             new Thread(runnable).start();
-        } else {
+        }else {
             runnable.run();
         }
 

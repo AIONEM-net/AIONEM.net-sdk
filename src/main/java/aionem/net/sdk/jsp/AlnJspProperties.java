@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.PageContext;
 
 
 @Log4j
@@ -13,27 +12,40 @@ public @Getter class AlnJspProperties {
 
     private AlnData data;
 
+    public static final String PROPERTIES = "$_properties";
+    public static final String PROPERTIES_JSON = "properties.json";
+
     public AlnJspProperties() {
         data = new AlnData();
     }
+    public AlnJspProperties(final AlnData data) {
+        this.data = data != null ? data : new AlnData();
+    }
     public AlnJspProperties(final HttpServletRequest request, final Class<?> type) {
-        this(request, type.getPackageName() +"."+ type.getName());
+        this(request, AlnJsp.name(type));
     }
     public AlnJspProperties(final HttpServletRequest request, final String propertiesKey) {
         init(request, propertiesKey);
     }
 
     public AlnJspProperties init(final HttpServletRequest request, final Class<?> type) {
-        return init(request, type.getPackageName() +"."+ type.getName());
+        return init(request, AlnJsp.name(type));
     }
     public AlnJspProperties init(final HttpServletRequest request, final String propertiesKey) {
         final Object properties = request.getAttribute(propertiesKey);
         data = new AlnData(properties);
+        request.removeAttribute(propertiesKey);
         return this;
     }
 
     public String get(final String key) {
         return data.get(key);
+    }
+    public String getOr(final String key1, final String key2) {
+        return data.getOr(key1, key2);
+    }
+    public String getOr(final String key1, final String key2, final String defaultValue) {
+        return data.getOr(key1, key2, defaultValue);
     }
     public boolean getBoolean(final String key) {
         return data.get(key, false);
@@ -50,6 +62,13 @@ public @Getter class AlnJspProperties {
 
     public boolean has(final String key) {
         return data.has(key);
+    }
+
+    public int size() {
+        return data.size();
+    }
+    public boolean isEmpty() {
+        return data.isEmpty();
     }
 
     public <T> T adapt(final Class<T> type) {

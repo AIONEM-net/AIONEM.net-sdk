@@ -105,6 +105,10 @@ public @Data class AlnAuthData extends AlnData {
         return ENV_LOCAL.equalsIgnoreCase(getEnv());
     }
 
+    public boolean isPublishMode() {
+        return true;
+    }
+
     public String getDBDriver() {
         return "com.mysql.cj.jdbc.Driver";
     }
