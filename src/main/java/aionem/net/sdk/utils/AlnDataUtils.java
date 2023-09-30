@@ -3,7 +3,7 @@ package aionem.net.sdk.utils;
 import aionem.net.sdk.data.AlnDBCol;
 import aionem.net.sdk.data.AlnData;
 import com.google.gson.JsonObject;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -13,7 +13,7 @@ import java.time.Clock;
 import java.util.*;
 
 
-@Log4j
+@Log4j2
 public class AlnDataUtils {
 
 

@@ -3,20 +3,23 @@ package aionem.net.sdk.jsp;
 import aionem.net.sdk.data.AlnData;
 import aionem.net.sdk.utils.AlnTextUtils;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.PageContext;
+import java.io.InputStream;
 import java.util.Locale;
 
 
-@Log4j
+@Log4j2
 public @Getter class AlnJsp {
 
     protected HttpServletRequest request;
     protected HttpServletResponse response;
+    protected PageContext pageContext;
     protected HttpSession session;
     public String propertiesKey;
 
@@ -26,19 +29,17 @@ public @Getter class AlnJsp {
     public AlnJsp(final HttpServletRequest request, final HttpServletResponse response) {
         init(request, response);
     }
-    public AlnJsp(final HttpServletRequest request, final HttpServletResponse response, final Class<?> type) {
-        init(request, response, type);
-    }
 
     public AlnJsp init(final HttpServletRequest request, final HttpServletResponse response) {
-        return init(request, response, AlnJspProperties.PROPERTIES);
+        return init(request, response, null, AlnJspProperties.PROPERTIES);
     }
-    public AlnJsp init(final HttpServletRequest request, final HttpServletResponse response, final Class<?> type) {
-        return init(request, response, name(type));
+    public AlnJsp init(final HttpServletRequest request, final HttpServletResponse response, final PageContext pageContext) {
+        return init(request, response, pageContext, AlnJspProperties.PROPERTIES);
     }
-    public AlnJsp init(final HttpServletRequest request, final HttpServletResponse response, final String propertiesKey) {
+    public AlnJsp init(final HttpServletRequest request, final HttpServletResponse response, final PageContext pageContext, final String propertiesKey) {
         this.request = request;
         this.response = response;
+        this.pageContext = pageContext;
         this.session = request.getSession(true);
         this.propertiesKey = propertiesKey;
         return this;
@@ -104,13 +105,15 @@ public @Getter class AlnJsp {
         return getRealPathCurrent("");
     }
     public String getRealPathCurrent(final String path) {
-        return getRealPathRRoot(getServletPath()) + (!AlnTextUtils.isEmpty(path) ? "/" + path : "");
+        return getRealPathRoot(getServletPath()) + (!AlnTextUtils.isEmpty(path) ? "/" + path : "");
     }
-    public String getRealPathRRoot() {
-        return getRealPathRRoot("");
+    public String getRealPathRoot() {
+        return getRealPathRoot("");
     }
-    public String getRealPathRRoot(final String path) {
-        return getServletContext().getRealPath(path);
+    public String getRealPathRoot(final String path) {
+        String realPath = getServletContext().getRealPath(path);
+        realPath = realPath.replace("//", "/");
+        return realPath;
     }
 
     public String getServletPath() {
@@ -136,6 +139,13 @@ public @Getter class AlnJsp {
         return requestURI.substring(contextPath.length());
     }
 
+    public ClassLoader getClassLoader() {
+        return response.getClass().getClassLoader();
+    }
+    public InputStream getResourceAsStream(final String name) {
+        return getClassLoader().getResourceAsStream(name);
+    }
+
     public void noCache() {
         response.setHeader("Dispatcher", "no-cache");
         response.setHeader("Pragma", "no-cache");
@@ -148,6 +158,14 @@ public @Getter class AlnJsp {
 
     public Locale getLocale() {
         return new Locale(getLanguage());
+    }
+
+    public boolean isEdit() {
+        return false;
+    }
+
+    public boolean isDisabled() {
+        return true;
     }
 
 }

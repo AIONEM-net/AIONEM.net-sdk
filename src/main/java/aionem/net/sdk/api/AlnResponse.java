@@ -10,7 +10,7 @@ import aionem.net.sdk.utils.AlnJsonUtils;
 import aionem.net.sdk.utils.AlnTextUtils;
 import com.google.gson.*;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 
-@Log4j
+@Log4j2
 @Getter
 public class AlnResponse {
 

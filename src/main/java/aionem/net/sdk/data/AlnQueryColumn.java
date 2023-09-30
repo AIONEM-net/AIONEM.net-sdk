@@ -1,12 +1,12 @@
 package aionem.net.sdk.data;
 
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.Objects;
 
 
-@Log4j
+@Log4j2
 @Getter
 public class AlnQueryColumn {
 

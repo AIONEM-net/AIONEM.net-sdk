@@ -8,14 +8,14 @@ import aionem.net.sdk.utils.AlnParseUtils;
 import aionem.net.sdk.utils.AlnTextUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 
-@Log4j
+@Log4j2
 public class AlnQuerySelect extends AlnQueryCondition {
 
 
@@ -446,11 +446,11 @@ public class AlnQuerySelect extends AlnQueryCondition {
         final int page = data.get(AlnDBUtils.PAR_PAGE, length > 0 ? (start / length) + 1 : 1);
 
         final String orderColumn = data.get("order[0][column]");
-        final String orderName = data.getOr("columns[" + orderColumn + "][name]", "orderBy");
+        final String orderName = data.get("columns[" + orderColumn + "][name]", "orderBy");
         final String[] orderBy = orderName.split("\\.");
         final String orderByColumn = orderBy.length > 1 ? orderBy[1] : orderName;
         final int orderByTableNo = (int) AlnParseUtils.toNumber(orderBy.length > 1 ? orderBy[0] : 0, 0);
-        final String orderDir = data.getOr("order[0][dir]", "orderDir");
+        final String orderDir = data.get("order[0][dir]", "orderDir");
 
         this.order(orderByTableNo, orderByColumn, orderDir);
         this.pageMax(page, max);

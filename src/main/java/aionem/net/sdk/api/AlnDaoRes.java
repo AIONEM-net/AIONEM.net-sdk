@@ -6,10 +6,10 @@ import aionem.net.sdk.data.AlnDatas;
 import aionem.net.sdk.utils.AlnTextUtils;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 
-@Log4j
+@Log4j2
 @EqualsAndHashCode(callSuper = true)
 public @Data class AlnDaoRes extends AlnData {
 

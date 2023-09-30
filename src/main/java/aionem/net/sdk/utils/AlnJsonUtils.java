@@ -3,14 +3,14 @@ package aionem.net.sdk.utils;
 import aionem.net.sdk.data.AlnData;
 import aionem.net.sdk.data.AlnDatas;
 import com.google.gson.*;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 
-@Log4j
+@Log4j2
 public class AlnJsonUtils {
 
 

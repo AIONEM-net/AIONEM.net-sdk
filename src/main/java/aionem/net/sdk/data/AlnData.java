@@ -6,7 +6,7 @@ import aionem.net.sdk.utils.AlnNetworkUtils;
 import aionem.net.sdk.utils.AlnTextUtils;
 import com.google.gson.JsonObject;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 
-@Log4j
+@Log4j2
 @Getter
 public class AlnData {
 
@@ -146,16 +146,28 @@ public class AlnData {
         return dbInstance;
     }
 
-    public String get(final String key) {
-        return get(key, "");
+    public String get(final String key1, final String key2) {
+        return getOrLast(new String[] {key1, key2}, false);
     }
-    public String getOr(final String key1, final String key2) {
-        final String value = get(key1);
-        return !AlnTextUtils.isEmpty(value) ? value : get(key2);
+    public String get(final String... keys) {
+        return getOrLast(keys, false);
     }
-    public String getOr(final String key1, final String key2, final String defaultValue) {
-        final String value = get(key1);
-        return !AlnTextUtils.isEmpty(value) ? value : get(key2, defaultValue);
+    public String getOr(final String... keys) {
+        return getOrLast(keys, true);
+    }
+    public String getOrLast(final String[] keys, final boolean isOrLast) {
+        for(int i = 0; i < keys.length; i++) {
+            final String key = keys[i];
+            if(i > 0 && i == keys.length - 1) {
+                return AlnTextUtils.notEmpty(get(key, String.class), isOrLast ? key : "");
+            }else {
+                final String value = get(key, String.class);
+                if(!AlnTextUtils.isEmpty(value)) {
+                    return value;
+                }
+            }
+        }
+        return "";
     }
     public String getNullable(final String key) {
         return has(key) ? get(key) : null;
@@ -250,6 +262,21 @@ public class AlnData {
     @Override
     public int hashCode() {
         return Objects.hash(values);
+    }
+
+    public boolean equals2(final String key, final Object... values) {
+        for(final Object value : values) {
+            final boolean isEqual = Objects.equals(getObject(key), value);
+            if(isEqual) return true;
+        }
+        return false;
+    }
+    public boolean equalsIgnoreCase2(final String key, final Object... values) {
+        for(final Object value : values) {
+            final boolean isEqual = equals2(key, value) || AlnTextUtils.equalsIgnoreCase(get(key), AlnTextUtils.toString(value));
+            if(isEqual) return true;
+        }
+        return false;
     }
 
     public boolean equals(final Object value, final String key) {

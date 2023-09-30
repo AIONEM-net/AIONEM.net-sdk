@@ -170,4 +170,20 @@ public class AlnTextUtils {
         return !isEmpty(text) ? Character.toUpperCase(text.charAt(0)) + text.substring(1) : text;
     }
 
+    public static String join(final String... texts) {
+        return joinWith(texts, "");
+    }
+    public static String joinWith(final String[] texts, final String separator) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        for(int i = 0; i < texts.length; i++) {
+            final String text = texts[i];
+            if(i > 0 && i < texts.length - 1) {
+                stringBuilder.append(text).append(separator);
+            }else {
+                stringBuilder.append(text);
+            }
+        }
+        return stringBuilder.toString();
+    }
+
 }

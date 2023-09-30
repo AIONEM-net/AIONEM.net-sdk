@@ -1,6 +1,6 @@
 package aionem.net.sdk.utils;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.Locale;
 
 
-@Log4j
+@Log4j2
 public class AlnParseUtils {
 
 

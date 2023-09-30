@@ -4,7 +4,7 @@ import aionem.net.sdk.data.AlnData;
 import aionem.net.sdk.utils.AlnNetworkUtils;
 import aionem.net.sdk.utils.AlnTextUtils;
 import lombok.Data;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-@Log4j
+@Log4j2
 public @Data class AlnNetwork {
 
     protected String link;

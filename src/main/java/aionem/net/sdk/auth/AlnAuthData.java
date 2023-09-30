@@ -1,18 +1,19 @@
 package aionem.net.sdk.auth;
 
 import aionem.net.sdk.data.AlnData;
+import aionem.net.sdk.jsp.AlnJsp;
 import aionem.net.sdk.utils.AlnTextUtils;
 import com.google.gson.JsonObject;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 
-@Log4j
+@Log4j2
 @EqualsAndHashCode(callSuper=false)
 public @Data class AlnAuthData extends AlnData {
 
@@ -29,7 +30,7 @@ public @Data class AlnAuthData extends AlnData {
     protected HttpSession session;
     protected HttpServletRequest request;
     protected HttpServletResponse response;
-    protected Object resourceResolver;
+    protected AlnJsp alnJsp;
 
 
     protected void init(final HttpServletRequest request, final HttpServletResponse response, final String uid, final String email, final String phone, final String password, final String uidToken, final String code) {
@@ -44,7 +45,7 @@ public @Data class AlnAuthData extends AlnData {
         this.request = request;
         this.response = response;
         this.session = request.getSession(true);
-        this.resourceResolver = response;
+        this.alnJsp = new AlnJsp(request, response);
 
     }
 

@@ -4,7 +4,7 @@ import aionem.net.sdk.auth.AlnAuthData;
 import aionem.net.sdk.config.AlnConfig;
 import aionem.net.sdk.utils.AlnTextUtils;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import oracle.ucp.jdbc.PoolDataSource;
 import oracle.ucp.jdbc.PoolDataSourceFactory;
 
@@ -13,7 +13,7 @@ import java.sql.DriverManager;
 import java.util.ArrayList;
 
 
-@Log4j
+@Log4j2
 @Getter
 public class AlnQuery {
 

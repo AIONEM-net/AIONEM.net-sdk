@@ -1,14 +1,17 @@
 package aionem.net.sdk.data;
 
+import aionem.net.sdk.jsp.AlnJsp;
 import aionem.net.sdk.jsp.AlnJspProperties;
 import aionem.net.sdk.utils.AlnTextUtils;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.PageContext;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 
-@Log4j
+@Log4j2
 public class AlnI18n {
 
     private AlnData data;
@@ -16,6 +19,9 @@ public class AlnI18n {
     private String baseName;
     private ResourceBundle resourceBundle;
     private Locale locale;
+    private PageContext pageContext;
+
+    public static final String folder = "i18n";
 
     public AlnI18n() {
 
@@ -31,6 +37,9 @@ public class AlnI18n {
     }
     public AlnI18n(final String baseName, final AlnJspProperties properties) {
         this(baseName, null, properties.getData());
+    }
+    public AlnI18n(final String baseName, final AlnI18n i18n) {
+        init(baseName, i18n);
     }
     public AlnI18n(final String baseName, final Locale locale, final AlnJspProperties properties) {
         this(baseName, locale, properties.getData());
@@ -48,14 +57,24 @@ public class AlnI18n {
     public AlnI18n init(final String baseName, final AlnJspProperties properties) {
         return init(baseName, getLocal(), properties.getData());
     }
+    public AlnI18n init(final String baseName, final AlnI18n i18n) {
+        return init(baseName, i18n.getLocal(), new AlnData());
+    }
+    public AlnI18n init(final String baseName, final AlnI18n i18n, final PageContext pageContext) {
+        this.pageContext = pageContext;
+        return init(baseName, i18n);
+    }
+    public AlnI18n init(final String baseName, final AlnJsp alnJsp, final AlnJspProperties properties) {
+        return init(baseName, alnJsp.getLocale(), properties.getData());
+    }
     public AlnI18n init(final String baseName, final Locale locale, final AlnJspProperties properties) {
         return init(baseName, locale, properties.getData());
     }
     public AlnI18n init(String baseName, final Locale locale, final AlnData data) {
         try {
             this.data = data;
-            if(!baseName.startsWith("i18n/")) {
-                baseName = "i18n/" + baseName;
+            if(!baseName.startsWith("/"+folder+"/") && !baseName.startsWith(folder+"/")) {
+                baseName = "/"+folder+"/" + baseName;
             }
             if(this.locale != locale || !this.baseName.equals(baseName)) {
                 this.baseName = baseName;
@@ -71,8 +90,13 @@ public class AlnI18n {
     public String get(final String key) {
         return get(key, key);
     }
-
     public String get(final String key, final String defaultValue) {
+        return get(key, defaultValue, true);
+    }
+    public String get(final String key, final boolean isI18n) {
+        return get(key, key, isI18n);
+    }
+    public String get(final String key, final String defaultValue, final boolean isI18n) {
         if(AlnTextUtils.isEmpty(key)) return "";
         String value = "";
         if(data != null) {
@@ -84,6 +108,16 @@ public class AlnI18n {
             }
         }catch(Exception e) {
             log.error("\nERROR: - get ::" + e +"\n");
+        }
+        if(AlnTextUtils.isEmpty(value)) {
+            if(isI18n) {
+                if(pageContext != null) {
+                    final Object i18n = pageContext.getAttribute("i18n", PageContext.APPLICATION_SCOPE);
+                    if(i18n != null) {
+                        value = ((AlnI18n) i18n).get(key, false);
+                    }
+                }
+            }
         }
         if(AlnTextUtils.isEmpty(value)) {
             value = defaultValue;
