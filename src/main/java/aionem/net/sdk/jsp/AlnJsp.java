@@ -21,27 +21,22 @@ public @Getter class AlnJsp {
     protected HttpServletResponse response;
     protected PageContext pageContext;
     protected HttpSession session;
-    public String propertiesKey;
 
     public AlnJsp() {
-        this.propertiesKey = AlnJspProperties.PROPERTIES;
+
     }
     public AlnJsp(final HttpServletRequest request, final HttpServletResponse response) {
         init(request, response);
     }
 
     public AlnJsp init(final HttpServletRequest request, final HttpServletResponse response) {
-        return init(request, response, null, AlnJspProperties.PROPERTIES);
+        return init(request, response, null);
     }
     public AlnJsp init(final HttpServletRequest request, final HttpServletResponse response, final PageContext pageContext) {
-        return init(request, response, pageContext, AlnJspProperties.PROPERTIES);
-    }
-    public AlnJsp init(final HttpServletRequest request, final HttpServletResponse response, final PageContext pageContext, final String propertiesKey) {
         this.request = request;
         this.response = response;
         this.pageContext = pageContext;
         this.session = request.getSession(true);
-        this.propertiesKey = propertiesKey;
         return this;
     }
 

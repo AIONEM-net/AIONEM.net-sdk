@@ -45,11 +45,11 @@ public class AlnJsonUtils {
 
     public static JsonElement toJson(final Object object) {
         final JsonArray jsonArray = toJsonArray(object);
-        if(jsonArray.size() > 0) {
+        if(!jsonArray.isEmpty()) {
             return jsonArray;
         }else {
             final JsonObject jsonObject = toJsonObject(object);
-            if(jsonObject.size() > 0) {
+            if(!jsonObject.isEmpty()) {
                 return jsonObject;
             }
         }
@@ -75,7 +75,13 @@ public class AlnJsonUtils {
     public static JsonArray toJsonArray(final Object object) {
         JsonArray jsonArray = new JsonArray();
         try {
-            jsonArray = new Gson().toJsonTree(object).getAsJsonArray();
+            if(object instanceof JsonElement) {
+                jsonArray = (JsonArray) object;
+            }else if(object instanceof String) {
+                jsonArray = new Gson().fromJson((String) object, JsonArray.class);
+            }else {
+                jsonArray = new Gson().toJsonTree(object).getAsJsonArray();
+            }
         }catch(Exception ignore) {
         }
         return !jsonArray.isJsonNull() ? jsonArray : new JsonArray();

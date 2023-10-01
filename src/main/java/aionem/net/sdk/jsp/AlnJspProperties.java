@@ -1,6 +1,7 @@
 package aionem.net.sdk.jsp;
 
 import aionem.net.sdk.data.AlnData;
+import aionem.net.sdk.data.AlnDatas;
 import aionem.net.sdk.utils.AlnTextUtils;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -68,6 +69,15 @@ public @Getter class AlnJspProperties {
     }
     public <T> T get(final String key, final Class<T> type) {
         return this.data.get(key, type);
+    }
+    public AlnData getChild(final String key) {
+        return data.getChild(key);
+    }
+    public AlnDatas getChildren() {
+        return data.getChildren();
+    }
+    public AlnDatas getChildren(final String key) {
+        return data.getChildren(key);
     }
 
     public boolean has(final String key) {

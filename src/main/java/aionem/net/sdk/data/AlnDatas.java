@@ -97,6 +97,9 @@ public class AlnDatas implements Iterable<AlnData> {
         }
         return jsonArray;
     }
+    public ArrayList<AlnData> getListDatas() {
+        return listDatas;
+    }
 
     @Override
     public String toString() {

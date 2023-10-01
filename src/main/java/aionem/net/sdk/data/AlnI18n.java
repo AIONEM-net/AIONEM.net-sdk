@@ -106,18 +106,18 @@ public class AlnI18n {
             if(resourceBundle != null && AlnTextUtils.isEmpty(value)) {
                 value = resourceBundle.getString(key);
             }
-        }catch(Exception e) {
-            log.error("\nERROR: - get ::" + e +"\n");
-        }
-        if(AlnTextUtils.isEmpty(value)) {
-            if(isI18n) {
-                if(pageContext != null) {
-                    final Object i18n = pageContext.getAttribute("i18n", PageContext.APPLICATION_SCOPE);
-                    if(i18n != null) {
-                        value = ((AlnI18n) i18n).get(key, false);
+            if(AlnTextUtils.isEmpty(value)) {
+                if(isI18n) {
+                    if(pageContext != null) {
+                        final Object i18n = pageContext.getAttribute("i18n", PageContext.APPLICATION_SCOPE);
+                        if(i18n != null) {
+                            value = ((AlnI18n) i18n).get(key, false);
+                        }
                     }
                 }
             }
+        }catch(Exception e) {
+            log.error("\nERROR: - get ::" + e +"\n");
         }
         if(AlnTextUtils.isEmpty(value)) {
             value = defaultValue;

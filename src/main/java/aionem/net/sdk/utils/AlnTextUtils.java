@@ -126,7 +126,7 @@ public class AlnTextUtils {
         return text1 != null && text1.equals(text2);
     }
     public static boolean equalsIgnoreCase(final String text1, final String text2) {
-        return text1 != null && text1.equals(text2);
+        return text1 != null && text1.equalsIgnoreCase(text2);
     }
 
     public static boolean contains(final String text, final String keyword) {
