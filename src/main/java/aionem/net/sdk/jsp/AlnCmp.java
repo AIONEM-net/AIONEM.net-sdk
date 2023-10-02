@@ -31,6 +31,7 @@ public @Getter abstract class AlnCmp extends AlnJsp {
         init(this, request, response, properties);
     }
 
+
     public AlnCmp init(final HttpServletRequest request, final HttpServletResponse response) {
         return init(request, response, new AlnJspProperties());
     }

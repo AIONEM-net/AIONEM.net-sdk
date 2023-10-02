@@ -15,7 +15,7 @@ public class AlnDataConfig {
     public AlnJsp alnJsp;
     private AlnData data = new AlnData();
 
-    public static String folder = "/ui.config";
+    public static String folder = "ui.config";
     private static final String extension = ".json";
     private static final String separator = "_";
 
@@ -45,7 +45,10 @@ public class AlnDataConfig {
         this.alnJsp = alnJsp;
         this.config = config;
         if(!config.endsWith(extension)) config += extension;
-        this.data = getData(alnJsp, folder +"/"+ config);
+        if(!config.startsWith("/"+folder+"/") && !config.startsWith(folder+"/")) {
+            config = "/"+folder+"/" + config;
+        }
+        this.data = getData(alnJsp, config);
     }
 
     public AlnDataConfig getBaseConfig(String config) {

@@ -76,9 +76,12 @@ public @Data class AlnAuthData extends AlnData {
     public static final String ENV_LOCAL = "LOCAL";
 
     public String getEnv() {
+        return getEnv(getRequest());
+    }
+    public static String getEnv(final HttpServletRequest request) {
         String env;
-        final int port = getRequest().getLocalPort();
-        final String localAddress = getRequest().getLocalAddr();
+        final int port = request.getLocalPort();
+        final String localAddress = request.getLocalAddr();
         if(localAddress.equals("66.29.143.32")) {
             if(port == 443) {
                 env = ENV_PROD;
