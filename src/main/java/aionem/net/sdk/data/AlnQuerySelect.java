@@ -18,6 +18,7 @@ import java.util.List;
 @Log4j2
 public class AlnQuerySelect extends AlnQueryCondition {
 
+    private boolean isDistinct = false;
 
     public AlnQuerySelect(final AlnAuthData auth, final String table) {
         super(auth, table);
@@ -33,6 +34,15 @@ public class AlnQuerySelect extends AlnQueryCondition {
         if(only) {
             columns2.add(new AlnQueryColumn("" + table + "." + "*", ""));
         }
+        return this;
+    }
+
+    public AlnQuerySelect distinct() {
+        this.isDistinct = true;
+        return this;
+    }
+    public AlnQuerySelect distinct(final boolean isDistinct) {
+        this.isDistinct = isDistinct;
         return this;
     }
 
@@ -460,6 +470,9 @@ public class AlnQuerySelect extends AlnQueryCondition {
 
     public String getQuery() {
         query = " SELECT";
+        if(isDistinct) {
+            query += " DISTINCT";
+        }
         for(int i = 0; i < columns2.size(); i++) {
             final AlnQueryColumn columnValue = columns2.get(i);
             final String column = columnValue.getColumn();
@@ -529,7 +542,7 @@ public class AlnQuerySelect extends AlnQueryCondition {
         return arrayData;
     }
 
-    public <T> ArrayList<T> executeList(Class<T> type) {
+    public <T> ArrayList<T> executeList(final Class<T> type) {
         final ArrayList<T> listData = new ArrayList<>();
         for(final AlnData data : executeListData()) {
             try {

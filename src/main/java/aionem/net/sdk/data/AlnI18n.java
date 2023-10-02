@@ -60,9 +60,16 @@ public class AlnI18n {
     public AlnI18n init(final String baseName, final AlnI18n i18n) {
         return init(baseName, i18n.getLocal(), new AlnData());
     }
+    public AlnI18n init(final String baseName, final AlnI18n i18n, final AlnJspProperties properties) {
+        return init(baseName, i18n.getLocal(), properties);
+    }
     public AlnI18n init(final String baseName, final AlnI18n i18n, final PageContext pageContext) {
         this.pageContext = pageContext;
         return init(baseName, i18n);
+    }
+    public AlnI18n init(final String baseName, final AlnI18n i18n, final AlnJspProperties properties, final PageContext pageContext) {
+        this.pageContext = pageContext;
+        return init(baseName, i18n, properties);
     }
     public AlnI18n init(final String baseName, final AlnJsp alnJsp, final AlnJspProperties properties) {
         return init(baseName, alnJsp.getLocale(), properties.getData());
@@ -97,21 +104,25 @@ public class AlnI18n {
         return get(key, key, isI18n);
     }
     public String get(final String key, final String defaultValue, final boolean isI18n) {
-        if(AlnTextUtils.isEmpty(key)) return "";
+        if(AlnTextUtils.isEmpty(key)) return AlnTextUtils.notEmpty(defaultValue, "");
         String value = "";
-        if(data != null) {
-            value = data.get(key);
-        }
         try {
+            if(data != null && data.has(key)) {
+                value = data.get(key);
+            }
             if(resourceBundle != null && AlnTextUtils.isEmpty(value)) {
-                value = resourceBundle.getString(key);
+                if(resourceBundle.containsKey(key)) {
+                    value = resourceBundle.getString(key);
+                }else if(resourceBundle.containsKey(key.toLowerCase())) {
+                    value = resourceBundle.getString(key.toLowerCase());
+                }
             }
             if(AlnTextUtils.isEmpty(value)) {
                 if(isI18n) {
                     if(pageContext != null) {
                         final Object i18n = pageContext.getAttribute("i18n", PageContext.APPLICATION_SCOPE);
                         if(i18n != null) {
-                            value = ((AlnI18n) i18n).get(key, false);
+                            value = ((AlnI18n) i18n).get(key, defaultValue, false);
                         }
                     }
                 }

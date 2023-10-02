@@ -2,7 +2,6 @@ package aionem.net.sdk.jsp;
 
 import aionem.net.sdk.data.AlnData;
 import aionem.net.sdk.data.AlnDatas;
-import aionem.net.sdk.utils.AlnDataUtils;
 import aionem.net.sdk.utils.AlnTextUtils;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -20,7 +19,6 @@ import java.lang.reflect.Modifier;
 @Log4j2
 public @Getter abstract class AlnCmp extends AlnJsp {
 
-    protected Resource currentResource = new Resource();
     protected AlnJspProperties properties;
 
     public AlnCmp() {
@@ -52,34 +50,45 @@ public @Getter abstract class AlnCmp extends AlnJsp {
             final AlnData data = new AlnData(file);
             properties.init(data);
         }
-        this.properties = properties;
 
-        for(Field field : t.getClass().getDeclaredFields()) {
-            final int modifiers = field.getModifiers();
-            final boolean isStatic = Modifier.isStatic(modifiers);
-            final boolean isFinal = Modifier.isFinal(modifiers);
-            if(!isStatic && !isFinal) {
-                field.setAccessible(true);
-                final Inject anInject = field.isAnnotationPresent(Inject.class) ? field.getDeclaredAnnotation(Inject.class) : null;
-                if(anInject != null) {
-                    final Named anNamed = field.isAnnotationPresent(Named.class) ? field.getDeclaredAnnotation(Named.class) : null;
-                    final String fieldName = field.getName();
-                    final String key = anNamed != null ? AlnTextUtils.notEmpty(anNamed.value(), fieldName) : fieldName;
-                    try {
-                        Object value = field.get(t);
-                        if(properties.has(key)) {
-                            value = properties.get(key, value);
+        if(!properties.isEmpty() && !properties.equals(this.properties)) {
+
+            System.out.println(properties.size() +" == "+ this.properties.size() +" : "+ t);
+
+            for (final Field field : t.getClass().getDeclaredFields()) {
+                final int modifiers = field.getModifiers();
+                final boolean isStatic = Modifier.isStatic(modifiers);
+                final boolean isFinal = Modifier.isFinal(modifiers);
+                if (!isStatic && !isFinal) {
+                    field.setAccessible(true);
+                    final Inject anInject = field.isAnnotationPresent(Inject.class) ? field.getDeclaredAnnotation(Inject.class) : null;
+                    if (anInject != null) {
+                        final Named anNamed = field.isAnnotationPresent(Named.class) ? field.getDeclaredAnnotation(Named.class) : null;
+                        final String fieldName = field.getName();
+                        final String key = anNamed != null ? AlnTextUtils.notEmpty(anNamed.value(), fieldName) : fieldName;
+                        try {
+                            Object value = field.get(t);
+                            if(properties.has(key)) {
+                                value = properties.get(key, value);
+                            }
+                            if(value == null) {
+                                value = properties.get(key);
+                            }
+                            field.set(t, value);
+                        } catch (Exception e) {
+                            log.error("\nERROR: AlnCmp - init " + e + "\n");
                         }
-                        System.out.println(fieldName +" = "+ value);
-                        field.set(t, value);
-                    } catch (Exception e) {
-                        log.error("\nERROR: AlnCmp - init " + e + "\n");
                     }
                 }
             }
+
+            init();
+
+        }else if(this.properties.isEmpty()) {
+            init();
         }
 
-        init();
+        this.properties = properties;
         return t;
     }
 

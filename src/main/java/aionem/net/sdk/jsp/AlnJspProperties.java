@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 
 @Log4j2
@@ -116,6 +117,19 @@ public @Getter class AlnJspProperties {
     public static <T> T adapt(final HttpServletRequest request, final Class<T> type) {
         final AlnJspProperties alnJspProperties = new AlnJspProperties(request, type);
         return alnJspProperties.adapt(type);
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        final AlnJspProperties that = (AlnJspProperties) object;
+        return Objects.equals(data, that.data);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(data);
     }
 
 }

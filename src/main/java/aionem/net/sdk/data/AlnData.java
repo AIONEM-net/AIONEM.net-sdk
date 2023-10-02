@@ -141,6 +141,7 @@ public class AlnData {
                 field.setAccessible(true);
                 field.set(dbInstance, value);
             }
+        }catch(NoSuchFieldException ignore) {
         }catch(Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK put : " + e +"\n");
         }
@@ -160,11 +161,11 @@ public class AlnData {
         for(int i = 0; i < keys.length; i++) {
             final String key = keys[i];
             if(!AlnTextUtils.isEmpty(key)) {
+                final String value = get(key, String.class);
                 if(i > 0 && i == keys.length - 1) {
-                    return AlnTextUtils.notEmpty(get(key, String.class), isOrLast ? key : "");
+                    return AlnTextUtils.notEmpty(value, isOrLast ? key : "");
                 }else {
-                    final String value = get(key, String.class);
-                    if(!AlnTextUtils.isEmpty(value)) {
+                    if(has(key)) {
                         return value;
                     }
                 }
@@ -273,16 +274,16 @@ public class AlnData {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
-        final AlnData alnData = (AlnData) o;
-        return Objects.equals(values, alnData.values);
+    public boolean equals(Object object) {
+        if(this == object) return true;
+        if(object == null || getClass() != object.getClass()) return false;
+        final AlnData data = (AlnData) object;
+        return size() == data.size() && Objects.equals(values.toString(), data.values.toString());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(values);
+        return Objects.hash(toString());
     }
 
     public boolean equals2(final String key, final Object... values) {

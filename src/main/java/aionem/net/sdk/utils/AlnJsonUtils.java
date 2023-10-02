@@ -69,7 +69,7 @@ public class AlnJsonUtils {
             }
         }catch(Exception ignore) {
         }
-        return !jsonObject.isJsonNull() ? jsonObject : new JsonObject();
+        return jsonObject != null && !jsonObject.isJsonNull() ? jsonObject : new JsonObject();
     }
 
     public static JsonArray toJsonArray(final Object object) {
@@ -84,7 +84,7 @@ public class AlnJsonUtils {
             }
         }catch(Exception ignore) {
         }
-        return !jsonArray.isJsonNull() ? jsonArray : new JsonArray();
+        return jsonArray != null && !jsonArray.isJsonNull() ? jsonArray : new JsonArray();
     }
 
     public static HashMap<String, Object> toHashMap(final JsonObject jsonObject) {
