@@ -82,6 +82,11 @@
             <version>4.0.4</version>
         </dependency>
         <dependency>
+            <groupId>org.opendaylight.controller.thirdparty</groupId>
+            <artifactId>org.apache.catalina.filters.CorsFilter</artifactId>
+            <version>7.0.42</version>
+        </dependency>
+        <dependency>
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
             <version>1</version>
