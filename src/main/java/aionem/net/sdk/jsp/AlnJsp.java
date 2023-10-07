@@ -144,7 +144,7 @@ public @Getter class AlnJsp {
     public void cache(final boolean enabled) {
         if (enabled) {
             final long twoDaysInSeconds = 2*24*60*60;
-            long expiresTimeInSeconds = twoDaysInSeconds + (System.currentTimeMillis() / 1000);
+            final long expiresTimeInSeconds = twoDaysInSeconds + (System.currentTimeMillis() / 1000);
             response.setHeader("Cache-Control", "max-age=" + twoDaysInSeconds);
             response.setDateHeader("Expires", expiresTimeInSeconds * 1000);
         } else {
