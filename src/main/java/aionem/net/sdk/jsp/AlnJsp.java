@@ -141,11 +141,19 @@ public @Getter class AlnJsp {
         return getClassLoader().getResourceAsStream(name);
     }
 
-    public void noCache() {
-        response.setHeader("Dispatcher", "no-cache");
-        response.setHeader("Pragma", "no-cache");
-        response.setHeader("Cache-Control", "no-cache");
+    public void cache(final boolean enabled) {
+        if (enabled) {
+            final long twoDaysInSeconds = 2*24*60*60;
+            long expiresTimeInSeconds = twoDaysInSeconds + (System.currentTimeMillis() / 1000);
+            response.setHeader("Cache-Control", "max-age=" + twoDaysInSeconds);
+            response.setDateHeader("Expires", expiresTimeInSeconds * 1000);
+        } else {
+            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            response.setHeader("Pragma", "no-cache");
+            response.setDateHeader("Expires", 0);
+        }
     }
+
 
     public String getLanguage() {
         return AlnTextUtils.notEmpty(session.getAttribute("language"), "en");
