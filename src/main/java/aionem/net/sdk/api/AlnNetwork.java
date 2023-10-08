@@ -30,12 +30,12 @@ public @Data class AlnNetwork {
     }
 
     public AlnNetwork setDataParams(final AlnData dataParams) {
-        this.dataParams = dataParams;
+        this.dataParams = dataParams != null ? dataParams : new AlnData();
         return this;
     }
 
     public AlnNetwork setDataHeaders(final AlnData dataHeaders) {
-        this.dataHeaders = dataHeaders;
+        this.dataHeaders = dataHeaders != null ? dataHeaders : new AlnData();
         return this;
     }
 
@@ -98,16 +98,6 @@ public @Data class AlnNetwork {
                     httpURLConnection = (HttpsURLConnection) url.openConnection();
                 }else {
                     httpURLConnection = (HttpURLConnection) url.openConnection();
-                }
-
-                String protocol = url.getProtocol();
-
-                if("http".equalsIgnoreCase(protocol)) {
-                    System.out.println("The URL is using HTTP.");
-                }else if("https".equalsIgnoreCase(protocol)) {
-                    System.out.println("The URL is using HTTPS.");
-                }else {
-                    System.out.println("The URL is using an unsupported protocol.");
                 }
 
                 httpURLConnection.setRequestMethod("GET");

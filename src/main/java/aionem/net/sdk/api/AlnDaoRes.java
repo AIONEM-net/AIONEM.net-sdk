@@ -22,6 +22,13 @@ public @Data class AlnDaoRes extends AlnData {
     private Exception exception;
 
 
+    public boolean hasResponse() {
+        return !AlnTextUtils.isEmpty(response);
+    }
+    public boolean hasData() {
+        return !datas.isEmpty();
+    }
+
     public void setSuccess(boolean success) {
         this.success = success;
         this.status = this.status == -1 ? 200 : this.status;

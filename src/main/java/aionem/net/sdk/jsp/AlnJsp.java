@@ -1,18 +1,23 @@
 package aionem.net.sdk.jsp;
 
+import aionem.net.sdk.api.AlnDaoRes;
+import aionem.net.sdk.api.AlnNetwork;
 import aionem.net.sdk.data.AlnData;
-import aionem.net.sdk.utils.AlnNetworkUtils;
 import aionem.net.sdk.utils.AlnTextUtils;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Locale;
 
 
@@ -26,6 +31,9 @@ public @Getter class AlnJsp {
 
     public AlnJsp() {
 
+    }
+    public AlnJsp(final ServletRequest request, final ServletResponse response) {
+        init((HttpServletRequest) request, (HttpServletResponse) response);
     }
     public AlnJsp(final HttpServletRequest request, final HttpServletResponse response) {
         init(request, response);
@@ -130,9 +138,13 @@ public @Getter class AlnJsp {
     public String getRequestURI() {
         return request.getRequestURI();
     }
+    public String getURI() {
+        final String domain = !isLocal() ? getRemoteHost() : "127.0.0.1";
+        return (request.isSecure() ? "https" : "http") +"://"+ "127.0.0.1" +":"+ getServerPort() + getRequestURI();
+    }
     public String getRequestUrl() {
-        String contextPath = getContextPath();
-        String requestURI = getRequestURI();
+        final String contextPath = getContextPath();
+        final String requestURI = getRequestURI();
         return requestURI.substring(contextPath.length());
     }
     public String getRequestQuery() {
@@ -142,6 +154,24 @@ public @Getter class AlnJsp {
         final String query = getRequestQuery();
         return getRequestUrl() + AlnTextUtils.notEmptyUse(query, "?"+ query);
     }
+    public String getProtocol() {
+        return request.getProtocol();
+    }
+    public String getRemoteHost() {
+        return request.getRemoteHost();
+    }
+    public String getRemoteAddr() {
+        return request.getRemoteAddr();
+    }
+    public int getRemotePort() {
+        return request.getRemotePort();
+    }
+    public int getLocalPort() {
+        return request.getLocalPort();
+    }
+    public int getServerPort() {
+        return request.getServerPort();
+    }
 
     public ClassLoader getClassLoader() {
         return response.getClass().getClassLoader();
@@ -150,19 +180,9 @@ public @Getter class AlnJsp {
         return getClassLoader().getResourceAsStream(name);
     }
 
-    public void cache(final boolean enabled) {
-        if (enabled) {
-            final long twoDaysInSeconds = 2*24*60*60;
-            final long expiresTimeInSeconds = twoDaysInSeconds + (System.currentTimeMillis() / 1000);
-            response.setHeader("Cache-Control", "max-age=" + twoDaysInSeconds);
-            response.setDateHeader("Expires", expiresTimeInSeconds * 1000);
-        } else {
-            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-            response.setHeader("Pragma", "no-cache");
-            response.setDateHeader("Expires", 0);
-        }
+    public String getHeader(final String name) {
+        return request.getHeader(name);
     }
-
 
     public String getLanguage() {
         return AlnTextUtils.notEmpty(session.getAttribute("language"), "en");
@@ -184,4 +204,46 @@ public @Getter class AlnJsp {
         response.sendRedirect(location);
     }
 
+    public boolean isLocal() {
+        final String remoteHost = request.getRemoteHost();
+        return "0:0:0:0:0:0:0:1".equalsIgnoreCase(remoteHost) || "127.0.0.1".equalsIgnoreCase(remoteHost) || "localhost".equalsIgnoreCase(remoteHost);
+    }
+
+
+    public void cache(final boolean enabled) {
+        if(enabled) {
+            final long twoDaysInSeconds = 2*24*60*60;
+            final long expiresTimeInSeconds = twoDaysInSeconds + (System.currentTimeMillis() / 1000);
+            response.setHeader("Cache-Control", "max-age=" + twoDaysInSeconds);
+            response.setDateHeader("Expires", expiresTimeInSeconds * 1000);
+
+            checkToCache();
+
+        } else {
+            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            response.setHeader("Pragma", "no-cache");
+            response.setDateHeader("Expires", 0);
+        }
+    }
+
+    public void checkToCache() {
+
+        final boolean isCaching = "true".equalsIgnoreCase(getHeader("A-Caching"));
+
+        if(!isCaching) {
+
+            final AlnDaoRes resCache = new AlnNetwork.Get(getURI())
+                    .setDataHeaders(new AlnData().put("A-Caching", "true"))
+                    .get();
+
+            if(resCache.isSuccess() && resCache.hasResponse()) {
+                try(FileWriter writer = new FileWriter(getRealPathCurrent("index.html"), Charset.defaultCharset())) {
+                    writer.write(resCache.getResponse());
+                } catch (Exception e) {
+                    log.error("checkToCache: "+ e);
+                }
+            }
+        }
+    }
+    
 }
