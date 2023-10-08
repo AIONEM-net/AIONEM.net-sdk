@@ -66,6 +66,9 @@ public class AlnData {
     public JsonObject getData() {
         return AlnJsonUtils.fromHashMap(values);
     }
+    public JsonObject getDataAll() {
+        return AlnJsonUtils.fromHashMap(values);
+    }
     public <T> JsonObject getData(final T db) {
         final JsonObject data = AlnJsonUtils.jsonObject();
         try {

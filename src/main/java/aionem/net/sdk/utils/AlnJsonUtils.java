@@ -90,7 +90,7 @@ public class AlnJsonUtils {
     public static HashMap<String, Object> toHashMap(final JsonObject jsonObject) {
         final HashMap<String, Object> values = new HashMap<>();
         if(jsonObject != null) {
-            for(String key : jsonObject.keySet()) {
+            for(final String key : jsonObject.keySet()) {
                 values.put(key, getValue(jsonObject, key));
             }
         }

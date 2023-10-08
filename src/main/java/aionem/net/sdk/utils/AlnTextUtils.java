@@ -3,7 +3,6 @@ package aionem.net.sdk.utils;
 import aionem.net.sdk.data.AlnData;
 import aionem.net.sdk.api.AlnDaoRes;
 import aionem.net.sdk.data.AlnDatas;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
@@ -52,7 +51,6 @@ public class AlnTextUtils {
         return value;
     }
 
-    private static ObjectMapper objectMapper;
     public static String toString(final Object object) {
         if(object == null) return null;
 
@@ -108,8 +106,7 @@ public class AlnTextUtils {
                 }else if(object instanceof Date) {
                     value = AlnDataUtils.Converter.DateUtils.dateToString((Date) object);
                 }else {
-                    if(objectMapper == null) objectMapper = new ObjectMapper();
-                    value = objectMapper.writeValueAsString(object);
+                    value = object.toString();
                 }
 
             }

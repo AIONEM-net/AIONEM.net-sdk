@@ -39,7 +39,7 @@ public class AlnDataUtils {
 
     public static <T> T adaptTo(final T t, final JsonObject data) throws Exception {
         if(data == null) return null;
-        for(Field field : t.getClass().getDeclaredFields()) {
+        for(final Field field : t.getClass().getDeclaredFields()) {
             final int modifiers = field.getModifiers();
             final boolean isStatic = Modifier.isStatic(modifiers);
             final boolean isFinal = Modifier.isFinal(modifiers);
