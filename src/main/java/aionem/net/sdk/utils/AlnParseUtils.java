@@ -28,7 +28,7 @@ public class AlnParseUtils {
     public static double toNumber(final Object value, final double defaultValue) {
         if(value == null) return defaultValue;
         double number = defaultValue;
-        final String valueString = AlnTextUtils.toString(value, String.valueOf(defaultValue));
+        final String valueString = AlnTextUtils.toString(value, Double.toString(defaultValue));
         if(!AlnTextUtils.isEmpty(valueString)) {
             try {
                 number = Double.parseDouble(valueString);
@@ -52,7 +52,7 @@ public class AlnParseUtils {
     public static boolean toBoolean(final Object value, final boolean defaultValue) {
         if(value == null) return defaultValue;
         boolean bool = defaultValue;
-        final String valueString = AlnTextUtils.toString(value, String.valueOf(defaultValue));
+        final String valueString = AlnTextUtils.toString(value, Boolean.toString(defaultValue));
         if(!AlnTextUtils.isEmpty(valueString)) {
             try {
                 bool = Boolean.parseBoolean(valueString);

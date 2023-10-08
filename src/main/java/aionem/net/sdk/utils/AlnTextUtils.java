@@ -44,7 +44,7 @@ public class AlnTextUtils {
     public static String toString(final Object object, final String default1, final String default2) {
         final String defaultValue = !isEmpty(default1) ? default1 : default2;
         if(object == null) return defaultValue;
-        String value = String.valueOf(object);
+        String value = AlnTextUtils.toString(object);
         if(isEmpty(value) || value.equalsIgnoreCase("null")) {
             value = defaultValue;
         }
@@ -53,7 +53,6 @@ public class AlnTextUtils {
 
     public static String toString(final Object object) {
         if(object == null) return null;
-
         String value = String.valueOf(object);
         try {
 
