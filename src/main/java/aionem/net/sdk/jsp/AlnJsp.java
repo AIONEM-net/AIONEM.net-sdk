@@ -1,6 +1,7 @@
 package aionem.net.sdk.jsp;
 
 import aionem.net.sdk.data.AlnData;
+import aionem.net.sdk.utils.AlnNetworkUtils;
 import aionem.net.sdk.utils.AlnTextUtils;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 
@@ -133,6 +135,13 @@ public @Getter class AlnJsp {
         String requestURI = getRequestURI();
         return requestURI.substring(contextPath.length());
     }
+    public String getRequestQuery() {
+        return request.getQueryString();
+    }
+    public String getRequestUrlQuery() {
+        final String query = getRequestQuery();
+        return getRequestUrl() + AlnTextUtils.notEmptyUse(query, "?"+ query);
+    }
 
     public ClassLoader getClassLoader() {
         return response.getClass().getClassLoader();
@@ -169,6 +178,10 @@ public @Getter class AlnJsp {
 
     public boolean isDisabled() {
         return true;
+    }
+
+    public void sendRedirect(final String location) throws IOException {
+        response.sendRedirect(location);
     }
 
 }
