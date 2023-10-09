@@ -103,7 +103,7 @@ public @Data class AlnNetwork {
                 httpURLConnection.setRequestMethod("GET");
 
                 if(dataHeaders != null) {
-                    for (final String key : dataHeaders.keySet()) {
+                    for(final String key : dataHeaders.keySet()) {
                         final String value = dataHeaders.get(key);
                         httpURLConnection.setRequestProperty(key, value);
                     }
@@ -174,7 +174,7 @@ public @Data class AlnNetwork {
                 httpURLConnection.setRequestMethod("POST");
 
                 if(dataHeaders != null) {
-                    for (final String key : dataHeaders.keySet()) {
+                    for(final String key : dataHeaders.keySet()) {
                         final String value = dataHeaders.get(key);
                         httpURLConnection.setRequestProperty(key, value);
                     }

@@ -74,20 +74,13 @@ public class AlnTextUtils {
                         jsonArray.add(itemValue);
                     }
                     value = jsonArray.toString();
-                }else if(object instanceof HttpURLConnection) {
-                    value = toString(((HttpURLConnection) object).getInputStream());
-                }else if(object instanceof InputStream) {
-                    final StringBuilder response = new StringBuilder();
-                    final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader((InputStream) object, StandardCharsets.UTF_8));
-                    String line;
-                    while((line = bufferedReader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    value = response.toString();
-                    bufferedReader.close();
                 }else if(object instanceof File) {
+                    value = toString(new BufferedReader(new FileReader((File) object, StandardCharsets.UTF_8)));
+                }else if(object instanceof HttpURLConnection) {
+                    value = toString(new BufferedReader(new InputStreamReader(((HttpURLConnection) object).getInputStream(), StandardCharsets.UTF_8)));
+                }else if(object instanceof BufferedReader) {
                     final StringBuilder response = new StringBuilder();
-                    BufferedReader bufferedReader = new BufferedReader(new FileReader((File) object, StandardCharsets.UTF_8));
+                    final BufferedReader bufferedReader = (BufferedReader) object;
                     String line;
                     while((line = bufferedReader.readLine()) != null) {
                         response.append(line);

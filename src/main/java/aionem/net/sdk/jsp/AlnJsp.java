@@ -14,10 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -135,12 +136,21 @@ public @Getter class AlnJsp {
     public String getContextServletPath() {
         return getContextPath() + getServletPath();
     }
+    public String getRelativePath(String path) {
+        final String realPathRoot = getRealPathRoot();
+        if(!path.startsWith("/")) path = "/" + path;
+        if(path.startsWith(realPathRoot)) {
+            path = path.substring(realPathRoot.length());
+        }
+        return path;
+    }
+
     public String getRequestURI() {
         return request.getRequestURI();
     }
     public String getURI() {
         final String domain = !isLocal() ? getRemoteHost() : "127.0.0.1";
-        return (request.isSecure() ? "https" : "http") +"://"+ "127.0.0.1" +":"+ getServerPort() + getRequestURI();
+        return (request.isSecure() ? "https" : "http") +"://"+ domain +":"+ getServerPort() + getRequestURI();
     }
     public String getRequestUrl() {
         final String contextPath = getContextPath();
@@ -178,6 +188,9 @@ public @Getter class AlnJsp {
     }
     public InputStream getResourceAsStream(final String name) {
         return getClassLoader().getResourceAsStream(name);
+    }
+    public PrintWriter getWriter() throws IOException {
+        return response.getWriter();
     }
 
     public String getHeader(final String name) {
@@ -219,7 +232,7 @@ public @Getter class AlnJsp {
 
             checkToCache();
 
-        } else {
+        }else {
             response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
             response.setHeader("Pragma", "no-cache");
             response.setDateHeader("Expires", 0);
@@ -227,9 +240,7 @@ public @Getter class AlnJsp {
     }
 
     public void checkToCache() {
-
         final boolean isCaching = "true".equalsIgnoreCase(getHeader("A-Caching"));
-
         if(!isCaching) {
 
             final AlnDaoRes resCache = new AlnNetwork.Get(getURI())
@@ -237,7 +248,7 @@ public @Getter class AlnJsp {
                     .get();
 
             if(resCache.isSuccess() && resCache.hasResponse()) {
-                try(FileWriter writer = new FileWriter(getRealPathCurrent("index.html"), Charset.defaultCharset())) {
+                try(final FileWriter writer = new FileWriter(getRealPathCurrent("index.html"), Charset.defaultCharset())) {
                     writer.write(resCache.getResponse());
                 } catch (Exception e) {
                     log.error("checkToCache: "+ e);
@@ -245,5 +256,89 @@ public @Getter class AlnJsp {
             }
         }
     }
-    
+
+    public ArrayList<String> invalidateCache() {
+        final ArrayList<String> listPathPaths = new ArrayList<>();
+        final List<File> listFilePages = getListFilePagesAll();
+        final String rootPagePath = getRealPathRoot();
+        for(final File filePage : listFilePages) {
+            final File filePageHtml = new File(filePage, "index.html");
+            if(filePageHtml.exists()) {
+                final boolean deleted = filePageHtml.delete();
+                if(deleted) {
+                    final String pagePath = filePage.getAbsolutePath().substring(rootPagePath.length()-1);
+                    listPathPaths.add(pagePath);
+                }
+            }
+        }
+        return listPathPaths;
+    }
+
+    public ArrayList<AlnPageItem> getListPagesRoot() {
+        final AlnPageItem pageItem = new AlnPageItem(this, "");
+        return getListPages(pageItem);
+    }
+    public ArrayList<AlnPageItem> getListPages(final AlnPageItem page) {
+        final ArrayList<AlnPageItem> listPages = new ArrayList<>();
+        final String rootPagePath = getRealPathRoot();
+        final File filePage = new File(getRealPathRoot(page.getPath()));
+        for(final File filePageItem : getListFilePages(filePage)) {
+            final String pagePath = filePageItem.getAbsolutePath().substring(rootPagePath.length()-1);
+            final AlnPageItem pageItem = new AlnPageItem(this, pagePath, new AlnJspProperties(new File(filePageItem, "properties.json")));
+            if(!page.equals(pageItem)) {
+                listPages.add(pageItem);
+            }
+        }
+        return listPages;
+    }
+
+    public ArrayList<File> getListFilePagesRoot() {
+        return getListFilePages(1);
+    }
+    public ArrayList<File> getListFilePagesAll() {
+        return getListFilePages(-1);
+    }
+    public ArrayList<File> getListFilePages(final int level) {
+        final String realPathRoot = getRealPathRoot();
+        final ArrayList<File> listFilePages = new ArrayList<>();
+        final File fileRoot = new File(realPathRoot);
+        if(fileRoot.isDirectory()) {
+            getListFilePages(fileRoot, listFilePages, level);
+        }
+        return listFilePages;
+    }
+    private ArrayList<File> getListFilePages(final File filePage) {
+        return getListFilePages(filePage, new ArrayList<>(), 1);
+    }
+    public static final List<String> SYSTEM_PATH = List.of("ui.config", "ui.apps", "ui.dam", "ui.content", "ui.frontend", "META-INF", "WEB-INF");
+    private ArrayList<File> getListFilePages(final File filePage, final ArrayList<File> listFilePages, final int level) {
+        final File[] files = filePage.listFiles();
+        if(!SYSTEM_PATH.contains(filePage.getName())) {
+            if (files != null) {
+                boolean hasHtml = false;
+                boolean hasJsp = false;
+                for (final File file : files) {
+                    if (file.isDirectory()) {
+                        if (level < 0) {
+                            getListFilePages(file, listFilePages, level);
+                        } else if (level == 1) {
+                            getListFilePages(file, listFilePages, 0);
+                        }
+                    } else {
+                        final String fileName = file.getName();
+                        if (fileName.equalsIgnoreCase("index.html")) {
+                            hasHtml = true;
+                        } else if (fileName.equalsIgnoreCase("index.jsp")) {
+                            hasJsp = true;
+                        }
+                    }
+                }
+                if (hasHtml || hasJsp) {
+                    listFilePages.add(filePage);
+                }
+            }
+        }
+        return listFilePages;
+    }
+
 }

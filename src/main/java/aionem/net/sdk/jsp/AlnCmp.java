@@ -56,14 +56,14 @@ public @Getter abstract class AlnCmp extends AlnJsp {
 
             System.out.println(properties.size() +" == "+ this.properties.size() +" : "+ t);
 
-            for (final Field field : t.getClass().getDeclaredFields()) {
+            for(final Field field : t.getClass().getDeclaredFields()) {
                 final int modifiers = field.getModifiers();
                 final boolean isStatic = Modifier.isStatic(modifiers);
                 final boolean isFinal = Modifier.isFinal(modifiers);
-                if (!isStatic && !isFinal) {
+                if(!isStatic && !isFinal) {
                     field.setAccessible(true);
                     final Inject anInject = field.isAnnotationPresent(Inject.class) ? field.getDeclaredAnnotation(Inject.class) : null;
-                    if (anInject != null) {
+                    if(anInject != null) {
                         final Named anNamed = field.isAnnotationPresent(Named.class) ? field.getDeclaredAnnotation(Named.class) : null;
                         final String fieldName = field.getName();
                         final String key = anNamed != null ? AlnTextUtils.notEmpty(anNamed.value(), fieldName) : fieldName;

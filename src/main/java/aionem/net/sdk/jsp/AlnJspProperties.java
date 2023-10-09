@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.Objects;
 
 
@@ -23,6 +24,9 @@ public @Getter class AlnJspProperties {
     }
     public AlnJspProperties(final AlnData data) {
         init(data);
+    }
+    public AlnJspProperties(final File fileProperties) {
+        init(new AlnData(fileProperties));
     }
     public AlnJspProperties(final HttpServletRequest request, final Class<?> type) {
         this(request, AlnJsp.name(type));
@@ -120,9 +124,14 @@ public @Getter class AlnJspProperties {
     }
 
     @Override
+    public String toString() {
+        return data.toString();
+    }
+
+    @Override
     public boolean equals(final Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
+        if(this == object) return true;
+        if(object == null || getClass() != object.getClass()) return false;
         final AlnJspProperties that = (AlnJspProperties) object;
         return Objects.equals(data, that.data);
     }
