@@ -252,8 +252,6 @@ public @Getter class AlnJsp {
                     .setDataHeaders(new AlnData().put("A-Caching", "true"))
                     .get();
 
-            System.out.println(resCache.getResponse());
-
             if(resCache.isSuccess() && resCache.hasResponse()) {
                 try(final FileWriter fileWriter = new FileWriter(getRealPathCurrent("index.html"), StandardCharsets.UTF_8)) {
                     fileWriter.write(resCache.getResponse());
