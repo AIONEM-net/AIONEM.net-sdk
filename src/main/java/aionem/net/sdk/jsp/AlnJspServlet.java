@@ -34,18 +34,6 @@ public class AlnJspServlet extends HttpServlet {
             printWriter.println("<br>"+ (i+1) +". "+ pagePath);
         }
 
-        printWriter.println("<br>--------------------------------");
-
-        final ArrayList<AlnPageItem> listPagesRoot = alnJsp.getListPagesRoot();
-        for(int i = 0; i < listPagesRoot.size(); i++) {
-            final AlnPageItem page = listPagesRoot.get(i);
-            printWriter.println("<br>"+ (i+1) +". "+ page.getPath());
-
-            for(final AlnPageItem pageItem : page.listChildren(alnJsp)) {
-                printWriter.println("<br>  - " + pageItem.getProperties().get("template"));
-            }
-        }
-
     }
 
 }

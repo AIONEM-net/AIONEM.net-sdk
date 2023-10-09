@@ -77,7 +77,7 @@ public class AlnTextUtils {
                 }else if(object instanceof File) {
                     value = toString(new BufferedReader(new FileReader((File) object, StandardCharsets.UTF_8)));
                 }else if(object instanceof HttpURLConnection) {
-                    value = toString(new BufferedReader(new InputStreamReader(((HttpURLConnection) object).getInputStream(), StandardCharsets.UTF_8)));
+                        value = toString(new BufferedReader(new InputStreamReader(((HttpURLConnection) object).getInputStream(), StandardCharsets.UTF_8)));
                 }else if(object instanceof BufferedReader) {
                     final StringBuilder response = new StringBuilder();
                     final BufferedReader bufferedReader = (BufferedReader) object;

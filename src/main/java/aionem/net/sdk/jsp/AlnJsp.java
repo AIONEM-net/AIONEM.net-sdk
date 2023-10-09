@@ -2,6 +2,7 @@ package aionem.net.sdk.jsp;
 
 import aionem.net.sdk.api.AlnDaoRes;
 import aionem.net.sdk.api.AlnNetwork;
+import aionem.net.sdk.config.AlnConfig;
 import aionem.net.sdk.data.AlnData;
 import aionem.net.sdk.utils.AlnTextUtils;
 import lombok.Getter;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -148,9 +150,12 @@ public @Getter class AlnJsp {
     public String getRequestURI() {
         return request.getRequestURI();
     }
+    public String getDomain() {
+        final String domain = isLocal() ? "127.0.0.1" : AlnConfig.DOMAIN_NAME;
+        return (request.isSecure() ? "https" : "http") +"://"+ domain +":"+ getServerPort();
+    }
     public String getURI() {
-        final String domain = !isLocal() ? getRemoteHost() : "127.0.0.1";
-        return (request.isSecure() ? "https" : "http") +"://"+ domain +":"+ getServerPort() + getRequestURI();
+        return getDomain() + getRequestURI();
     }
     public String getRequestUrl() {
         final String contextPath = getContextPath();
@@ -247,9 +252,11 @@ public @Getter class AlnJsp {
                     .setDataHeaders(new AlnData().put("A-Caching", "true"))
                     .get();
 
+            System.out.println(resCache.getResponse());
+
             if(resCache.isSuccess() && resCache.hasResponse()) {
-                try(final FileWriter writer = new FileWriter(getRealPathCurrent("index.html"), Charset.defaultCharset())) {
-                    writer.write(resCache.getResponse());
+                try(final FileWriter fileWriter = new FileWriter(getRealPathCurrent("index.html"), StandardCharsets.UTF_8)) {
+                    fileWriter.write(resCache.getResponse());
                 } catch (Exception e) {
                     log.error("checkToCache: "+ e);
                 }

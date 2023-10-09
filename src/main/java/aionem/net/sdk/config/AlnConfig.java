@@ -6,4 +6,6 @@ public class AlnConfig {
     public static final boolean IS_DEBUG = true;
     public static final boolean IS_DEBUG_EXCEPTION = true;
 
+    public static final String DOMAIN_NAME = "aionem.net";
+
 }
