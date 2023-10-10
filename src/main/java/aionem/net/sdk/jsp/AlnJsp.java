@@ -244,7 +244,7 @@ public @Getter class AlnJsp {
 
     public void checkToCache() {
         final boolean isCaching = "true".equalsIgnoreCase(getHeader("A-Caching"));
-        if(!isCaching) {
+        if(!isCaching && !isLocal()) {
 
             final AlnDaoRes resCache = new AlnNetwork.Get(getURI())
                     .setDataHeaders(new AlnData().put("A-Caching", "true"))
