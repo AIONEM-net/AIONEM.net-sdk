@@ -4,6 +4,7 @@ import aionem.net.sdk.api.AlnDaoRes;
 import aionem.net.sdk.api.AlnNetwork;
 import aionem.net.sdk.config.AlnConfig;
 import aionem.net.sdk.data.AlnData;
+import aionem.net.sdk.utils.AlnJspUtils;
 import aionem.net.sdk.utils.AlnTextUtils;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -195,6 +196,9 @@ public @Getter class AlnJsp {
     public PrintWriter getWriter() throws IOException {
         return response.getWriter();
     }
+    public String readFile(final String fileName) {
+        return AlnJspUtils.readResourceFile(this, fileName);
+    }
 
     public String getHeader(final String name) {
         return request.getHeader(name);
@@ -277,6 +281,10 @@ public @Getter class AlnJsp {
         return listPathPaths;
     }
 
+    public AlnPageItem getPage() {
+        final File filePage = new File(getRealPathCurrent());
+        return new AlnPageItem(this, getServletPath(), new AlnJspProperties(new File(filePage, "properties.json")));
+    }
     public ArrayList<AlnPageItem> getListPagesRoot() {
         final AlnPageItem pageItem = new AlnPageItem(this, "");
         return getListPages(pageItem);

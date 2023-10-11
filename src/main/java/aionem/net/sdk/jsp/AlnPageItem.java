@@ -83,6 +83,7 @@ public @Data class AlnPageItem {
     public void init(final AlnJsp alnJsp) {
         setPathUrl(alnJsp);
         init(alnJsp, this.path);
+        from(alnJsp.getPage());
     }
     public void init(final AlnJsp alnJsp, final String path) {
         setPathUrl(alnJsp, path);
@@ -112,6 +113,13 @@ public @Data class AlnPageItem {
             this.path = pageItem.getPath();
             this.url = pageItem.getUrl();
             this.icon = pageItem.getIcon();
+            this.properties = pageItem.getProperties();
+        }
+    }
+
+    public void from(final AlnJspProperties properties) {
+        if(isRoot || AlnTextUtils.isEmpty(this.title)) {
+
         }
     }
 

@@ -69,7 +69,7 @@ public class AlnDataConfig {
     private static AlnData getData(final AlnJsp alnJsp, final String config) {
         AlnData data = new AlnData();
         if(!mapData.containsKey(config) || mapData.get(config) == null) {
-            final String json = AlnJspUtils.readFile(alnJsp, config);
+            final String json = AlnJspUtils.readResourceFile(alnJsp, config);
             if(!AlnTextUtils.isEmpty(json)) {
                 data = new AlnData();
                 data.fromData(json);
