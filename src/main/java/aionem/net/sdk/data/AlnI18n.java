@@ -5,7 +5,6 @@ import aionem.net.sdk.jsp.AlnJspProperties;
 import aionem.net.sdk.utils.AlnUtilsText;
 import lombok.extern.log4j.Log4j2;
 
-import javax.servlet.jsp.PageContext;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -17,7 +16,7 @@ public class AlnI18n {
     private String baseName;
     private ResourceBundle resourceBundle;
     private Locale locale;
-    private PageContext pageContext;
+    private AlnJsp alnJsp;
 
     public static final String folder = "i18n";
 
@@ -61,12 +60,12 @@ public class AlnI18n {
     public AlnI18n init(final String baseName, final AlnI18n i18n, final AlnJspProperties properties) {
         return init(baseName, i18n.getLocal(), properties);
     }
-    public AlnI18n init(final String baseName, final AlnI18n i18n, final PageContext pageContext) {
-        this.pageContext = pageContext;
+    public AlnI18n init(final String baseName, final AlnI18n i18n, final AlnJsp alnJsp) {
+        this.alnJsp = alnJsp;
         return init(baseName, i18n);
     }
-    public AlnI18n init(final String baseName, final AlnI18n i18n, final AlnJspProperties properties, final PageContext pageContext) {
-        this.pageContext = pageContext;
+    public AlnI18n init(final String baseName, final AlnI18n i18n, final AlnJspProperties properties, final AlnJsp alnJsp) {
+        this.alnJsp = alnJsp;
         return init(baseName, i18n, properties);
     }
     public AlnI18n init(final String baseName, final AlnJsp alnJsp, final AlnJspProperties properties) {
@@ -117,8 +116,8 @@ public class AlnI18n {
             }
             if(AlnUtilsText.isEmpty(value)) {
                 if(isI18n) {
-                    if(pageContext != null) {
-                        final Object i18n = pageContext.getAttribute("i18n", PageContext.APPLICATION_SCOPE);
+                    if(alnJsp != null) {
+                        final Object i18n = alnJsp.getApplicationAttribute("i18n");
                         if(i18n != null) {
                             value = ((AlnI18n) i18n).get(key, defaultValue, false);
                         }

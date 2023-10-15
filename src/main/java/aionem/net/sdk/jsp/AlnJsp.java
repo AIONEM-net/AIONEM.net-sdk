@@ -4,6 +4,7 @@ import aionem.net.sdk.api.AlnDaoRes;
 import aionem.net.sdk.api.AlnNetwork;
 import aionem.net.sdk.config.AlnConfig;
 import aionem.net.sdk.data.AlnData;
+import aionem.net.sdk.utils.AlnUtilsData;
 import aionem.net.sdk.utils.AlnUtilsJsp;
 import aionem.net.sdk.utils.AlnUtilsText;
 import lombok.Getter;
@@ -58,12 +59,15 @@ public @Getter class AlnJsp {
     public AlnJspConfig getConfig() {
         if(config == null) {
             config = new AlnJspConfig(this, "config");
+            initConfig();
         }
         return config;
     }
     public void initConfig() {
-        AlnConfig.IS_DEBUG = getConfig().get("debug", AlnConfig.IS_DEBUG);
-        AlnConfig.IS_DEBUG_EXCEPTION = getConfig().get("debug_exception", AlnConfig.IS_DEBUG_EXCEPTION);
+        if(config == null) {
+            AlnConfig.IS_DEBUG = getConfig().get("debug", AlnConfig.IS_DEBUG);
+            AlnConfig.IS_DEBUG_EXCEPTION = getConfig().get("debug_exception", AlnConfig.IS_DEBUG_EXCEPTION);
+        }
     }
 
     public String getConfigEnv() {
@@ -120,14 +124,44 @@ public @Getter class AlnJsp {
         request.setAttribute(name, value);
     }
 
-    public <T> T getAttribute(final Object object) {
-        return (T) getAttribute(object.getClass());
+    public <T> T getAttribute(final String name, final Object defaultValue) {
+        return (T) AlnUtilsData.convert(getPageAttribute(name), defaultValue);
     }
-    public <T> T getAttribute(final Class<T> type) {
-        return (T) getAttribute(name(type));
+    public <T> T getAttribute(final String name, final Class<T> type) {
+        return AlnUtilsData.convert(getPageAttribute(name), type);
     }
     public Object getAttribute(final String name) {
-        return request.getAttribute(name);
+        return getRequest().getAttribute(name);
+    }
+
+    public <T> T getPageAttribute(final String name, final Object defaultValue) {
+        return (T) AlnUtilsData.convert(getPageAttribute(name), defaultValue);
+    }
+    public <T> T getPageAttribute(final String name, final Class<T> type) {
+        return AlnUtilsData.convert(getPageAttribute(name), type);
+    }
+    public Object getPageAttribute(final String name) {
+        return getPageContext().getAttribute(name, PageContext.PAGE_SCOPE);
+    }
+
+    public <T> T getApplicationAttribute(final String name, final Object defaultValue) {
+        return (T) AlnUtilsData.convert(getApplicationAttribute(name), defaultValue);
+    }
+    public <T> T getApplicationAttribute(final String name, final Class<T> type) {
+        return AlnUtilsData.convert(getApplicationAttribute(name), type);
+    }
+    public Object getApplicationAttribute(final String name) {
+        return getPageContext().getAttribute(name, PageContext.APPLICATION_SCOPE);
+    }
+
+    public <T> T getSessionAttribute(final String name, final Object defaultValue) {
+        return (T) AlnUtilsData.convert(getSessionAttribute(name), defaultValue);
+    }
+    public <T> T getSessionAttribute(final String name, final Class<T> type) {
+        return AlnUtilsData.convert(getSessionAttribute(name), type);
+    }
+    public Object getSessionAttribute(final String name) {
+        return getSession().getAttribute(name);
     }
 
     public static String name(final AlnJspCmp alnCmp) {
@@ -156,14 +190,17 @@ public @Getter class AlnJsp {
     }
     public String value(final Object data, final String name) {
         if(!AlnJspProperties.PROPERTIES.equals(name)) {
-            request.setAttribute(name, data);
+            getRequest().setAttribute(name, data);
         }
-        request.setAttribute(AlnJspProperties.PROPERTIES, data);
+        getRequest().setAttribute(AlnJspProperties.PROPERTIES, data);
         return data.toString();
     }
 
     public ServletContext getServletContext() {
-        return request.getServletContext();
+        return getRequest().getServletContext();
+    }
+    public String getParameter(final String name) {
+        return getRequest().getParameter(name);
     }
     public String getInitParameter(final String name) {
         return getServletContext().getInitParameter(name);
@@ -185,10 +222,10 @@ public @Getter class AlnJsp {
     }
 
     public String getServletPath() {
-        return request.getServletPath().replace("/index.jsp", "");
+        return getRequest().getServletPath().replace("/index.jsp", "");
     }
     public String getContextPath() {
-        return request.getContextPath();
+        return getRequest().getContextPath();
     }
     public String getContextPath(final String path) {
         String contextPath = getContextPath() +"/"+ path;
@@ -208,11 +245,11 @@ public @Getter class AlnJsp {
     }
 
     public String getRequestURI() {
-        return request.getRequestURI();
+        return getRequest().getRequestURI();
     }
     public String getDomain() {
         final String domain = isLocal() ? "127.0.0.1" : getConfigDomain();
-        return (request.isSecure() ? "https" : "http") +"://"+ domain +":"+ getServerPort();
+        return (getRequest().isSecure() ? "https" : "http") +"://"+ domain +":"+ getServerPort();
     }
     public String getURI() {
         return getDomain() + getRequestURI();
@@ -223,50 +260,50 @@ public @Getter class AlnJsp {
         return requestURI.substring(contextPath.length());
     }
     public String getRequestQuery() {
-        return request.getQueryString();
+        return getRequest().getQueryString();
     }
     public String getRequestUrlQuery() {
         final String query = getRequestQuery();
         return getRequestUrl() + AlnUtilsText.notEmptyUse(query, "?"+ query);
     }
     public String getProtocol() {
-        return request.getProtocol();
+        return getRequest().getProtocol();
     }
     public String getRemoteHost() {
-        return request.getRemoteHost();
+        return getRequest().getRemoteHost();
     }
     public String getRemoteAddr() {
-        return request.getRemoteAddr();
+        return getRequest().getRemoteAddr();
     }
     public int getRemotePort() {
-        return request.getRemotePort();
+        return getRequest().getRemotePort();
     }
     public int getLocalPort() {
-        return request.getLocalPort();
+        return getRequest().getLocalPort();
     }
     public int getServerPort() {
-        return request.getServerPort();
+        return getRequest().getServerPort();
     }
 
     public ClassLoader getClassLoader() {
-        return response.getClass().getClassLoader();
+        return getResponse().getClass().getClassLoader();
     }
     public InputStream getResourceAsStream(final String name) {
         return getClassLoader().getResourceAsStream(name);
     }
     public PrintWriter getWriter() throws IOException {
-        return response.getWriter();
+        return getResponse().getWriter();
     }
     public String readFile(final String fileName) {
         return AlnUtilsJsp.readResourceFile(this, fileName);
     }
 
     public String getHeader(final String name) {
-        return request.getHeader(name);
+        return getRequest().getHeader(name);
     }
 
     public String getLanguage() {
-        return AlnUtilsText.notEmpty(session.getAttribute("language"), "en");
+        return AlnUtilsText.notEmpty(getSessionAttribute("language"), "en");
     }
 
     public Locale getLocale() {
@@ -282,11 +319,11 @@ public @Getter class AlnJsp {
     }
 
     public void sendRedirect(final String location) throws IOException {
-        response.sendRedirect(location);
+        getResponse().sendRedirect(location);
     }
 
     public boolean isLocal() {
-        final String remoteHost = request.getRemoteHost();
+        final String remoteHost = getRequest().getRemoteHost();
         return "0:0:0:0:0:0:0:1".equalsIgnoreCase(remoteHost) || "127.0.0.1".equalsIgnoreCase(remoteHost) || "localhost".equalsIgnoreCase(remoteHost);
     }
 
@@ -295,15 +332,15 @@ public @Getter class AlnJsp {
         if(enabled) {
             final long twoDaysInSeconds = 2*24*60*60;
             final long expiresTimeInSeconds = twoDaysInSeconds + (System.currentTimeMillis() / 1000);
-            response.setHeader("Cache-Control", "max-age=" + twoDaysInSeconds);
-            response.setDateHeader("Expires", expiresTimeInSeconds * 1000);
+            getResponse().setHeader("Cache-Control", "max-age=" + twoDaysInSeconds);
+            getResponse().setDateHeader("Expires", expiresTimeInSeconds * 1000);
 
             checkToCache();
 
         }else {
-            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-            response.setHeader("Pragma", "no-cache");
-            response.setDateHeader("Expires", 0);
+            getResponse().setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            getResponse().setHeader("Pragma", "no-cache");
+            getResponse().setDateHeader("Expires", 0);
         }
     }
 

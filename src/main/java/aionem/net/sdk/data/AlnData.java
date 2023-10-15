@@ -174,7 +174,7 @@ public class AlnData {
                 }
             }
         }
-        return "";
+        return isOrLast && keys.length > 0 ? keys[keys.length-1] : "";
     }
     public String getNullable(final String key) {
         return has(key) ? get(key) : null;

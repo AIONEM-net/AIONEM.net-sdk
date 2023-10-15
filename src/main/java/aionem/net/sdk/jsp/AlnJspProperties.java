@@ -56,10 +56,9 @@ public @Getter class AlnJspProperties {
         return data.get(keys);
     }
     public String getOr(final String... keys) {
-        return data.getOr(keys);
+        return getOrLast(keys, true);
     }
     public String getOrLast(final String[] keys, final boolean isOrLast) {
-
         return data.getOrLast(keys, isOrLast);
     }
     public boolean getBoolean(final String key) {
@@ -132,7 +131,7 @@ public @Getter class AlnJspProperties {
         if(this == object) return true;
         if(object == null || getClass() != object.getClass()) return false;
         final AlnJspProperties that = (AlnJspProperties) object;
-        return Objects.equals(data, that.data);
+        return data.equals(that.data);
     }
 
     @Override

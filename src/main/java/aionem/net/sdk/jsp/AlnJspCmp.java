@@ -8,53 +8,43 @@ import lombok.extern.log4j.Log4j2;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 
 @Log4j2
-public @Getter abstract class AlnJspCmp extends AlnJsp {
+public @Getter abstract class AlnJspCmp {
 
+    private AlnJsp alnJsp;
     protected AlnJspProperties properties;
 
     public AlnJspCmp() {
         properties = new AlnJspProperties();
     }
-    public AlnJspCmp(final HttpServletRequest request, final HttpServletResponse response) {
-        init(this, request, response, new AlnJspProperties());
+    public AlnJspCmp(final AlnJsp alnJsp) {
+        init(this, alnJsp, new AlnJspProperties());
     }
-    public AlnJspCmp(final HttpServletRequest request, final HttpServletResponse response, final AlnJspProperties properties) {
-        init(this, request, response, properties);
+    public AlnJspCmp(final AlnJsp alnJsp, final AlnJspProperties properties) {
+        init(this, alnJsp, properties);
     }
 
+    public <T> T init(T t, final AlnJsp alnJsp, AlnJspProperties properties) {
+        this.alnJsp = alnJsp;
+        boolean isNew = false;
 
-    public AlnJspCmp init(final HttpServletRequest request, final HttpServletResponse response) {
-        return init(request, response, new AlnJspProperties());
-    }
-    public AlnJspCmp init(final HttpServletRequest request, final HttpServletResponse response, final AlnJspProperties properties) {
-        return init(this, request, response, null, properties);
-    }
-    public <T> T init(final T t, final HttpServletRequest request, final HttpServletResponse response, final AlnJspProperties properties) {
-        return init(t, request, response, null, properties);
-    }
-    public <T> T init(final T t, final HttpServletRequest request, final HttpServletResponse response, final PageContext pageContext, AlnJspProperties properties) {
-        super.init(request, response, pageContext);
         if(properties == null) {
             properties = new AlnJspProperties();
         }
         if(properties.isEmpty()) {
-            final File file = new File(getRealPathCurrent(AlnJspProperties.PROPERTIES_JSON));
+            final File file = new File(alnJsp.getRealPathCurrent(AlnJspProperties.PROPERTIES_JSON));
             final AlnData data = new AlnData(file);
             properties.init(data);
         }
 
-        if(!properties.isEmpty() && !properties.equals(this.properties)) {
+        System.out.println(properties.size() +" == "+ this.properties.size() +" : "+ t);
 
-            System.out.println(properties.size() +" == "+ this.properties.size() +" : "+ t);
+        if(!properties.isEmpty() && !properties.equals(this.properties)) {
 
             for(final Field field : t.getClass().getDeclaredFields()) {
                 final int modifiers = field.getModifiers();
@@ -83,13 +73,17 @@ public @Getter abstract class AlnJspCmp extends AlnJsp {
                 }
             }
 
-            init();
+            isNew = true;
 
         }else if(this.properties.isEmpty()) {
-            init();
+            isNew = true;
         }
 
         this.properties = properties;
+        if(isNew) {
+            init();
+        }
+
         return t;
     }
 
@@ -98,21 +92,27 @@ public @Getter abstract class AlnJspCmp extends AlnJsp {
     public String get(final String key) {
         return properties.get(key);
     }
+
     public <T> T get(final String key, final T defaultValue) {
         return this.properties.get(key, defaultValue);
     }
+
     public <T> T get(final String key, final Class<T> type) {
         return this.properties.get(key, type);
     }
+
     public Object getObject(final String key) {
         return properties.get(key);
     }
+
     public AlnData getChild(final String key) {
         return properties.getChild(key);
     }
+
     public AlnDatas getChildren() {
         return properties.getChildren();
     }
+
     public AlnDatas getChildren(final String key) {
         return properties.getChildren(key);
     }
