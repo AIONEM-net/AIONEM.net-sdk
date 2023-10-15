@@ -51,13 +51,34 @@ public @Getter class AlnJsp {
         this.response = response;
         this.pageContext = pageContext;
         this.session = request.getSession(true);
+        initConfig();
         return this;
     }
 
-    public String getEnv() {
-        return getEnv(getInitParameter("env"));
+    public AlnJspConfig getConfig() {
+        if(config == null) {
+            config = new AlnJspConfig(this, "config");
+        }
+        return config;
     }
-    public String getEnv(String env) {
+    public void initConfig() {
+        AlnConfig.IS_DEBUG = getConfig().get("debug", AlnConfig.IS_DEBUG);
+        AlnConfig.IS_DEBUG_EXCEPTION = getConfig().get("debug_exception", AlnConfig.IS_DEBUG_EXCEPTION);
+    }
+
+    public String getConfigEnv() {
+        return getConfigEnv(getInitParameter("env"));
+    }
+    public String getConfigDomain() {
+        return getConfigEnv(getInitParameter("domain"));
+    }
+    public String getConfigUrl() {
+        return getConfigEnv(getInitParameter("url"));
+    }
+    public String getConfigHost() {
+        return getConfigEnv(getInitParameter("host"));
+    }
+    public String getConfigEnv(String env) {
         if(AlnConfig.ENV_LOCAL.equalsIgnoreCase(env)) {
             env = AlnConfig.ENV_LOCAL;
         }else if(AlnConfig.ENV_DEV.equalsIgnoreCase(env)) {
@@ -72,24 +93,17 @@ public @Getter class AlnJsp {
         return env;
     }
 
-    public AlnJspConfig getConfig() {
-        if(config == null) {
-            config = new AlnJspConfig(this, "config");
-        }
-        return config;
-    }
-
     public boolean isEnvProd() {
-        return AlnConfig.ENV_PROD.equalsIgnoreCase(getEnv());
+        return AlnConfig.ENV_PROD.equalsIgnoreCase(getConfigEnv());
     }
     public boolean isEnvStage() {
-        return AlnConfig.ENV_STAGE.equalsIgnoreCase(getEnv());
+        return AlnConfig.ENV_STAGE.equalsIgnoreCase(getConfigEnv());
     }
     public boolean isEnvDev() {
-        return AlnConfig.ENV_DEV.equalsIgnoreCase(getEnv());
+        return AlnConfig.ENV_DEV.equalsIgnoreCase(getConfigEnv());
     }
     public boolean isEnvLocal() {
-        return AlnConfig.ENV_LOCAL.equalsIgnoreCase(getEnv());
+        return AlnConfig.ENV_LOCAL.equalsIgnoreCase(getConfigEnv());
     }
 
     public boolean isPublishMode() {
@@ -197,7 +211,7 @@ public @Getter class AlnJsp {
         return request.getRequestURI();
     }
     public String getDomain() {
-        final String domain = isLocal() ? "127.0.0.1" : AlnConfig.DOMAIN_NAME;
+        final String domain = isLocal() ? "127.0.0.1" : getConfigDomain();
         return (request.isSecure() ? "https" : "http") +"://"+ domain +":"+ getServerPort();
     }
     public String getURI() {

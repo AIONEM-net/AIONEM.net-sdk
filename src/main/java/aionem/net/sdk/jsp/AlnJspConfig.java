@@ -46,7 +46,7 @@ public class AlnJspConfig {
     public void init(final AlnJsp alnJsp, String config) {
         this.alnJsp = alnJsp;
         this.config = config;
-        config = config + separator + alnJsp.getEnv().toLowerCase();
+        config = config + separator + alnJsp.getConfigEnv().toLowerCase();
 
         if(!config.endsWith(extension)) config += extension;
         if(!config.startsWith("/"+folder+"/") && !config.startsWith(folder+"/")) {

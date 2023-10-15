@@ -16,7 +16,7 @@ public class AlnJspUrlRewriteFilter extends UrlRewriteFilter {
         final AlnJsp alnJsp = new AlnJsp(request, response);
         if(!"66.29.143.32".equalsIgnoreCase(alnJsp.getRemoteHost()) && !alnJsp.isLocal()) {
             final String urlQuery = alnJsp.getRequestUrlQuery();
-            alnJsp.sendRedirect("https://aionem.net" + urlQuery);
+            alnJsp.sendRedirect(alnJsp.getConfigUrl() + urlQuery);
         }else {
             super.doFilter(request, response, chain);
         }

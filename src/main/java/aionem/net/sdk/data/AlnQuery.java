@@ -80,7 +80,7 @@ public class AlnQuery {
             }
 
             if(connection == null || connection.isClosed()) {
-                Class.forName("com.mysql.cj.jdbc.Driver");
+                Class.forName(auth.getDBDriver());
                 connection = DriverManager.getConnection(auth.getDBConnection() + "://"+ auth.getDBHost() +":"+ auth.getDBPort() +"/"+ auth.getDBName(), auth.getDBUser(), auth.getDBPassword());
             }
 

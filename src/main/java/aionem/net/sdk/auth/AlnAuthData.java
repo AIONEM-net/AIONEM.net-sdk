@@ -76,7 +76,7 @@ public @Data class AlnAuthData extends AlnData {
     public static final String ENV_LOCAL = "LOCAL";
 
     public String getEnv() {
-        return alnJsp.getEnv();
+        return alnJsp.getConfigEnv();
     }
 
     public String getDBDriver() {
