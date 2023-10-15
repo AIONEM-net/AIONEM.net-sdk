@@ -3,11 +3,11 @@ package aionem.net.sdk.api;
 import aionem.net.sdk.auth.AlnAuthData;
 import aionem.net.sdk.config.AlnConfig;
 import aionem.net.sdk.data.AlnDatas;
-import aionem.net.sdk.utils.AlnDBUtils;
+import aionem.net.sdk.utils.AlnUtilsDB;
 import aionem.net.sdk.data.AlnData;
-import aionem.net.sdk.utils.AlnDataUtils;
-import aionem.net.sdk.utils.AlnJsonUtils;
-import aionem.net.sdk.utils.AlnTextUtils;
+import aionem.net.sdk.utils.AlnUtilsData;
+import aionem.net.sdk.utils.AlnUtilsJson;
+import aionem.net.sdk.utils.AlnUtilsText;
 import com.google.gson.*;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -34,7 +34,7 @@ public class AlnResponse {
     private long pages = -1;
     private long draw = -1;
     private String token = "";
-    private JsonObject jsonData = AlnJsonUtils.jsonObject();
+    private JsonObject jsonData = AlnUtilsJson.jsonObject();
     private Object data;
 
 
@@ -60,13 +60,13 @@ public class AlnResponse {
     }
 
     public static AlnResponse withSuccess(final int status, final String message) {
-        return new AlnResponse(status, true, message, "", -1, AlnJsonUtils.jsonObject());
+        return new AlnResponse(status, true, message, "", -1, AlnUtilsJson.jsonObject());
     }
     public static AlnResponse withError(final int status, final String error) {
-        return new AlnResponse(status, false, "", error, -1, AlnJsonUtils.jsonObject());
+        return new AlnResponse(status, false, "", error, -1, AlnUtilsJson.jsonObject());
     }
     public static AlnResponse noAction(final String action) {
-        if(!AlnTextUtils.isEmpty(action)) {
+        if(!AlnUtilsText.isEmpty(action)) {
             return AlnResponse.withError(400, "wrong action");
         }else {
             return AlnResponse.withError(400, "action required");
@@ -80,7 +80,7 @@ public class AlnResponse {
         this.success = true;
         this.status = status;
         this.message = message;
-        this.message = message + (!AlnTextUtils.isEmpty(message1) ? ": "+ message1 : "");
+        this.message = message + (!AlnUtilsText.isEmpty(message1) ? ": "+ message1 : "");
     }
     public void onFailure(final int status, final String error) {
         onFailure(status, error, "", null);
@@ -111,12 +111,12 @@ public class AlnResponse {
         this.error = error;
     }
     public void setError(final String error, String error1) {
-        this.error = error + (AlnConfig.IS_DEBUG_EXCEPTION && !AlnTextUtils.isEmpty(error1) ? ": "+ error1 : "");
+        this.error = error + (AlnConfig.IS_DEBUG_EXCEPTION && !AlnUtilsText.isEmpty(error1) ? ": "+ error1 : "");
     }
     public void setException(final Exception e) {
         this.exception = e;
-        if(AlnConfig.IS_DEBUG_EXCEPTION && e != null && AlnTextUtils.isEmpty(error)) {
-            this.error = AlnTextUtils.notEmpty(e.getMessage(), error);
+        if(AlnConfig.IS_DEBUG_EXCEPTION && e != null && AlnUtilsText.isEmpty(error)) {
+            this.error = AlnUtilsText.notEmpty(e.getMessage(), error);
         }
     }
     public void setException(final String message) {
@@ -148,7 +148,7 @@ public class AlnResponse {
     }
     public void setData(final Object data) {
         this.data = data;
-        this.jsonData = AlnJsonUtils.toJsonObject(data);
+        this.jsonData = AlnUtilsJson.toJsonObject(data);
     }
 
     @Override
@@ -157,32 +157,32 @@ public class AlnResponse {
     }
 
     public JsonObject toJsonResponse() {
-        final JsonObject jsonResponse = AlnJsonUtils.jsonObject();
+        final JsonObject jsonResponse = AlnUtilsJson.jsonObject();
         try {
-            AlnJsonUtils.add(jsonResponse, "status", status);
-            AlnJsonUtils.add(jsonResponse, "success", success);
+            AlnUtilsJson.add(jsonResponse, "status", status);
+            AlnUtilsJson.add(jsonResponse, "success", success);
             if(success) {
                 if(counts > -1) {
-                    AlnJsonUtils.add(jsonResponse, "counts", counts);
-                    AlnJsonUtils.add(jsonResponse, "iTotalRecords", counts);
-                    AlnJsonUtils.add(jsonResponse, "iTotalDisplayRecords", counts);
+                    AlnUtilsJson.add(jsonResponse, "counts", counts);
+                    AlnUtilsJson.add(jsonResponse, "iTotalRecords", counts);
+                    AlnUtilsJson.add(jsonResponse, "iTotalDisplayRecords", counts);
                 }
                 if(total > -1) {
-                    AlnJsonUtils.add(jsonResponse, "total", total);
+                    AlnUtilsJson.add(jsonResponse, "total", total);
                 }
                 if(page > -1) {
-                    AlnJsonUtils.add(jsonResponse, "page", page);
+                    AlnUtilsJson.add(jsonResponse, "page", page);
                 }
                 if(pages > -1) {
-                    AlnJsonUtils.add(jsonResponse, "pages", pages);
+                    AlnUtilsJson.add(jsonResponse, "pages", pages);
                 }
                 if(draw > -1) {
-                    AlnJsonUtils.add(jsonResponse, AlnDBUtils.PAR_DRAW, draw);
+                    AlnUtilsJson.add(jsonResponse, AlnUtilsDB.PAR_DRAW, draw);
                 }
-                if(!AlnTextUtils.isEmpty(token)) {
-                    AlnJsonUtils.add(jsonData, "token", token);
+                if(!AlnUtilsText.isEmpty(token)) {
+                    AlnUtilsJson.add(jsonData, "token", token);
                 }
-                if(jsonData.size() > 0) {
+                if(!jsonData.isEmpty()) {
                     jsonResponse.add("data", jsonData);
                 }else if(data != null) {
                     if(data instanceof AlnAuthData) {
@@ -200,15 +200,15 @@ public class AlnResponse {
                     }else if(data instanceof JsonElement) {
                         jsonResponse.add("data", (JsonElement) data);
                     }else {
-                        jsonResponse.add("data", AlnJsonUtils.toJson(data));
+                        jsonResponse.add("data", AlnUtilsJson.toJson(data));
                     }
                 }
-                AlnJsonUtils.add(jsonResponse, "message", message);
+                AlnUtilsJson.add(jsonResponse, "message", message);
             }else {
-                AlnJsonUtils.add(jsonResponse, "error", error);
+                AlnUtilsJson.add(jsonResponse, "error", error);
                 if(AlnConfig.IS_DEBUG_EXCEPTION && exception != null) {
                     String eMessage = Arrays.toString(exception.getStackTrace());
-                    AlnJsonUtils.add(jsonResponse, "exception", AlnTextUtils.notEmpty(eMessage, AlnTextUtils.toString(exception)));
+                    AlnUtilsJson.add(jsonResponse, "exception", AlnUtilsText.notEmpty(eMessage, AlnUtilsText.toString(exception)));
                 }
             }
         }catch(Exception e) {
@@ -236,7 +236,7 @@ public class AlnResponse {
         response.setContentType(contentType);
 
         if("application/json".equalsIgnoreCase(contentType)) {
-            final Gson gson = AlnJsonUtils.getGsonPretty();
+            final Gson gson = AlnUtilsJson.getGsonPretty();
             response.getWriter().write(gson.toJson(toJsonResponse()));
         }else {
             response.getWriter().write(getMessage());
@@ -248,21 +248,21 @@ public class AlnResponse {
     public void putData(final String key, final Object data) {
         try {
             if(data instanceof AlnAuthData) {
-                AlnJsonUtils.add(jsonData, key, ((AlnAuthData) data).getUserProfile());
+                AlnUtilsJson.add(jsonData, key, ((AlnAuthData) data).getUserProfile());
             }else if(data instanceof AlnDaoRes) {
-                AlnJsonUtils.add(jsonData, key, ((AlnDaoRes) data).getData());
+                AlnUtilsJson.add(jsonData, key, ((AlnDaoRes) data).getData());
             }else if(data instanceof AlnData) {
-                AlnJsonUtils.add(jsonData, key, ((AlnData) data).getData());
+                AlnUtilsJson.add(jsonData, key, ((AlnData) data).getData());
             }else if(data instanceof AlnDatas) {
-                AlnJsonUtils.add(jsonData, key, ((AlnDatas) data).getDatas());
+                AlnUtilsJson.add(jsonData, key, ((AlnDatas) data).getDatas());
             }else if(data instanceof JsonElement) {
-                AlnJsonUtils.add(jsonData, key, data);
+                AlnUtilsJson.add(jsonData, key, data);
             }else {
-                final JsonObject value = AlnJsonUtils.toJsonObject(data);
-                if(value != null && value.size() > 0) {
-                    AlnJsonUtils.add(jsonData, key, value);
+                final JsonObject value = AlnUtilsJson.toJsonObject(data);
+                if(!value.isEmpty()) {
+                    AlnUtilsJson.add(jsonData, key, value);
                 }else {
-                    this.jsonData.addProperty(key, AlnTextUtils.toString(data));
+                    this.jsonData.addProperty(key, AlnUtilsText.toString(data));
                 }
             }
         }catch(Exception e) {
@@ -273,7 +273,7 @@ public class AlnResponse {
 
     public <T> T getData(final Class<T> type) {
         try {
-            return AlnDataUtils.adaptTo(type, data);
+            return AlnUtilsData.adaptTo(type, data);
         }catch(Exception ignore) {
         }
         return null;

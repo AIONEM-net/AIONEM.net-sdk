@@ -1,6 +1,6 @@
 package aionem.net.sdk.jsp;
 
-import aionem.net.sdk.utils.AlnTextUtils;
+import aionem.net.sdk.utils.AlnUtilsText;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
@@ -9,7 +9,7 @@ import java.util.Objects;
 
 
 @Log4j2
-public @Data class AlnPageItem {
+public @Data class AlnJspPage {
 
     private String title = "";
     private String subTitle = "";
@@ -33,20 +33,20 @@ public @Data class AlnPageItem {
     private boolean authDisableUser = true;
     private AlnJspProperties properties = new AlnJspProperties();
 
-    public AlnPageItem() {
+    public AlnJspPage() {
 
     }
-    public AlnPageItem(final AlnJsp alnJsp) {
+    public AlnJspPage(final AlnJsp alnJsp) {
         init(alnJsp);
     }
-    public AlnPageItem(final AlnJsp alnJsp, final String path) {
+    public AlnJspPage(final AlnJsp alnJsp, final String path) {
         init(alnJsp, path);
     }
-    public AlnPageItem(final AlnJsp alnJsp, final String path, final AlnJspProperties properties) {
+    public AlnJspPage(final AlnJsp alnJsp, final String path, final AlnJspProperties properties) {
         this.properties = properties;
         init(alnJsp, path);
     }
-    public AlnPageItem(final AlnJsp alnJsp, final String title, final String path, final String icon) {
+    public AlnJspPage(final AlnJsp alnJsp, final String title, final String path, final String icon) {
         this.title = title;
         this.subTitle = title;
         this.navTitle = title;
@@ -68,7 +68,7 @@ public @Data class AlnPageItem {
     }
 
     public String getNavTitle() {
-        return AlnTextUtils.notEmpty(navTitle, pageTitle, title);
+        return AlnUtilsText.notEmpty(navTitle, pageTitle, title);
     }
 
     public void setPathUrl(final AlnJsp alnJsp) {
@@ -100,12 +100,12 @@ public @Data class AlnPageItem {
         if(index1 >= 0) {
             title = title.substring(index1 + 1);
         }
-        title = AlnTextUtils.capitalizeFirstLetter(title);
+        title = AlnUtilsText.capitalizeFirstLetter(title);
         setTitles(title);
     }
 
-    public void from(final AlnPageItem pageItem) {
-        if(isRoot || AlnTextUtils.isEmpty(this.title)) {
+    public void from(final AlnJspPage pageItem) {
+        if(isRoot || AlnUtilsText.isEmpty(this.title)) {
             this.title = pageItem.getTitle();
             this.navTitle = pageItem.getNavTitle();
             this.pageTitle = pageItem.getPageTitle();
@@ -118,16 +118,16 @@ public @Data class AlnPageItem {
     }
 
     public void from(final AlnJspProperties properties) {
-        if(isRoot || AlnTextUtils.isEmpty(this.title)) {
+        if(isRoot || AlnUtilsText.isEmpty(this.title)) {
 
         }
     }
 
     public String getMenuTitle() {
-        return AlnTextUtils.notEmpty(pageTitle, navTitle, title);
+        return AlnUtilsText.notEmpty(pageTitle, navTitle, title);
     }
 
-    public String getFullTitle(final AlnPageItem homePage) {
+    public String getFullTitle(final AlnJspPage homePage) {
         if(!homePage.equals(this)) {
             return getTitle() + homePage.getBrandSlug();
         }else {
@@ -135,7 +135,7 @@ public @Data class AlnPageItem {
         }
     }
 
-    public ArrayList<AlnPageItem> listChildren(final AlnJsp alnJsp) {
+    public ArrayList<AlnJspPage> listChildren(final AlnJsp alnJsp) {
         return alnJsp.getListPages(this);
     }
 
@@ -148,7 +148,7 @@ public @Data class AlnPageItem {
     public boolean equals(Object object) {
         if(this == object) return true;
         if(object == null || getClass() != object.getClass()) return false;
-        AlnPageItem that = (AlnPageItem) object;
+        AlnJspPage that = (AlnJspPage) object;
         return Objects.equals(path, that.path);
     }
 

@@ -3,7 +3,7 @@ package aionem.net.sdk.api;
 import aionem.net.sdk.config.AlnConfig;
 import aionem.net.sdk.data.AlnData;
 import aionem.net.sdk.data.AlnDatas;
-import aionem.net.sdk.utils.AlnTextUtils;
+import aionem.net.sdk.utils.AlnUtilsText;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.log4j.Log4j2;
@@ -23,7 +23,7 @@ public @Data class AlnDaoRes extends AlnData {
 
 
     public boolean hasResponse() {
-        return !AlnTextUtils.isEmpty(response);
+        return !AlnUtilsText.isEmpty(response);
     }
     public boolean hasData() {
         return !datas.isEmpty();
@@ -45,14 +45,14 @@ public @Data class AlnDaoRes extends AlnData {
     }
 
     public void setException(final String error) {
-        if(!AlnTextUtils.isEmpty(error)) {
+        if(!AlnUtilsText.isEmpty(error)) {
             setException(new Exception(error));
         }
     }
     public void setException(final Exception e) {
         this.exception = e;
-        if(AlnConfig.IS_DEBUG_EXCEPTION && e != null && AlnTextUtils.isEmpty(error)) {
-            this.error = AlnTextUtils.notEmpty(e.getMessage(), error);
+        if(AlnConfig.IS_DEBUG_EXCEPTION && e != null && AlnUtilsText.isEmpty(error)) {
+            this.error = AlnUtilsText.notEmpty(e.getMessage(), error);
         }
     }
 

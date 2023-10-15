@@ -1,11 +1,11 @@
 package aionem.net.sdk.data;
 
 import aionem.net.sdk.auth.AlnAuthData;
-import aionem.net.sdk.utils.AlnDBUtils;
-import aionem.net.sdk.utils.AlnDataUtils;
-import aionem.net.sdk.utils.AlnJsonUtils;
-import aionem.net.sdk.utils.AlnParseUtils;
-import aionem.net.sdk.utils.AlnTextUtils;
+import aionem.net.sdk.utils.AlnUtilsDB;
+import aionem.net.sdk.utils.AlnUtilsData;
+import aionem.net.sdk.utils.AlnUtilsJson;
+import aionem.net.sdk.utils.AlnUtilsParse;
+import aionem.net.sdk.utils.AlnUtilsText;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lombok.extern.log4j.Log4j2;
@@ -23,6 +23,7 @@ public class AlnQuerySelect extends AlnQueryCondition {
     public AlnQuerySelect(final AlnAuthData auth, final String table) {
         super(auth, table);
     }
+
 
     public AlnQuerySelect data(final AlnData data) {
         super.data(data);
@@ -53,7 +54,7 @@ public class AlnQuerySelect extends AlnQueryCondition {
 
     public AlnQuerySelect column(final String column, final String alias) {
         if(column != null && only) {
-            columns2.add(new AlnQueryColumn("" + table + "." + "`" + column + "`" + (!AlnTextUtils.isEmpty(alias) ? " AS " + "'" + alias + "'" : ""), ""));
+            columns2.add(new AlnQueryColumn("" + table + "." + "`" + column + "`" + (!AlnUtilsText.isEmpty(alias) ? " AS " + "'" + alias + "'" : ""), ""));
         }
         return this;
     }
@@ -102,8 +103,8 @@ public class AlnQuerySelect extends AlnQueryCondition {
 
     public AlnQuerySelect count(final int tableNo, String column, final String alias, final boolean distinct) {
         if(only) {
-            column = !AlnTextUtils.isEmpty(column) ? (distinct ? "DISTINCT " : "") + tables.get(tableNo) + "." + "`" + column + "`" : "*";
-            AlnQueryColumn columnValueCount = new AlnQueryColumn("COUNT(" + column + ")" + (!AlnTextUtils.isEmpty(alias) ? " AS " + "'" + alias + "'" : ""), "");
+            column = !AlnUtilsText.isEmpty(column) ? (distinct ? "DISTINCT " : "") + tables.get(tableNo) + "." + "`" + column + "`" : "*";
+            AlnQueryColumn columnValueCount = new AlnQueryColumn("COUNT(" + column + ")" + (!AlnUtilsText.isEmpty(alias) ? " AS " + "'" + alias + "'" : ""), "");
             if(!columns2.contains(columnValueCount)) {
                 columns2.add(columnValueCount);
             }
@@ -135,7 +136,7 @@ public class AlnQuerySelect extends AlnQueryCondition {
     public AlnQuerySelect sum(final int tableNo, String column, final String alias, final boolean distinct) {
         if(column != null && only) {
             column = (distinct ? "DISTINCT " : "") + tables.get(tableNo) + "." + "`" + column + "`";
-            AlnQueryColumn columnValueSum = new AlnQueryColumn("SUM(" + column + ")" + (!AlnTextUtils.isEmpty(alias) ? " AS " + "'" + alias + "'" : ""), "");
+            AlnQueryColumn columnValueSum = new AlnQueryColumn("SUM(" + column + ")" + (!AlnUtilsText.isEmpty(alias) ? " AS " + "'" + alias + "'" : ""), "");
             if(!columns2.contains(columnValueSum)) {
                 columns2.add(columnValueSum);
             }
@@ -450,16 +451,16 @@ public class AlnQuerySelect extends AlnQueryCondition {
 
     public AlnQuerySelect list(final AlnData data) {
 
-        final int length = data.get(AlnDBUtils.PAR_LENGTH, 10);
-        final int max = data.get(AlnDBUtils.PAR_MAX, length);
-        final int start = data.get(AlnDBUtils.PAR_START, 0);
-        final int page = data.get(AlnDBUtils.PAR_PAGE, length > 0 ? (start / length) + 1 : 1);
+        final int length = data.get(AlnUtilsDB.PAR_LENGTH, 10);
+        final int max = data.get(AlnUtilsDB.PAR_MAX, length);
+        final int start = data.get(AlnUtilsDB.PAR_START, 0);
+        final int page = data.get(AlnUtilsDB.PAR_PAGE, length > 0 ? (start / length) + 1 : 1);
 
         final String orderColumn = data.get("order[0][column]");
         final String orderName = data.get("columns[" + orderColumn + "][name]", "orderBy");
         final String[] orderBy = orderName.split("\\.");
         final String orderByColumn = orderBy.length > 1 ? orderBy[1] : orderName;
-        final int orderByTableNo = (int) AlnParseUtils.toNumber(orderBy.length > 1 ? orderBy[0] : 0, 0);
+        final int orderByTableNo = (int) AlnUtilsParse.toNumber(orderBy.length > 1 ? orderBy[0] : 0, 0);
         final String orderDir = data.get("order[0][dir]", "orderDir");
 
         this.order(orderByTableNo, orderByColumn, orderDir);
@@ -497,7 +498,7 @@ public class AlnQuerySelect extends AlnQueryCondition {
 
         query += groupBy;
         query += orderBy + limitOffset;
-        if(!AlnTextUtils.isEmpty(query)) {
+        if(!AlnUtilsText.isEmpty(query)) {
             query += "; ";
         }
         return query;
@@ -518,7 +519,7 @@ public class AlnQuerySelect extends AlnQueryCondition {
 
     public <T> T executeData(Class<T> type) {
         try {
-            return AlnDataUtils.adaptTo(type, executeJson());
+            return AlnUtilsData.adaptTo(type, executeJson());
         }catch(Exception e) {
             setException(e);
             return null;
@@ -535,7 +536,7 @@ public class AlnQuerySelect extends AlnQueryCondition {
     }
 
     public JsonArray executeJsonArray() {
-        final JsonArray arrayData = AlnJsonUtils.jsonArray();
+        final JsonArray arrayData = AlnUtilsJson.jsonArray();
         for(final AlnData data : executeListData()) {
             arrayData.add(data.getData());
         }
@@ -546,7 +547,7 @@ public class AlnQuerySelect extends AlnQueryCondition {
         final ArrayList<T> listData = new ArrayList<>();
         for(final AlnData data : executeListData()) {
             try {
-                listData.add(AlnDataUtils.adaptTo(type, data.getData()));
+                listData.add(AlnUtilsData.adaptTo(type, data.getData()));
             }catch(Exception e) {
                 setException(e);
             }
@@ -574,7 +575,7 @@ public class AlnQuerySelect extends AlnQueryCondition {
 
                     final String columnName = metaData.getColumnName(columnIndex);
                     final String columnLabel = metaData.getColumnLabel(columnIndex);
-                    final String column = AlnTextUtils.notEmpty(columnLabel, columnName);
+                    final String column = AlnUtilsText.notEmpty(columnLabel, columnName);
 
                     final int columnType = metaData.getColumnType(columnIndex);
 

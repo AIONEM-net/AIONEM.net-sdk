@@ -1,10 +1,10 @@
 package aionem.net.sdk.utils;
 
 
-public class AlnHTMLUtils {
+public class AlnUtilsHTML {
 
     public static String toHtml(final String value) {
-        String html = AlnTextUtils.notNull(value);
+        String html = AlnUtilsText.notNull(value);
         html = html.replace("\n", "<br>");
         return html;
     }

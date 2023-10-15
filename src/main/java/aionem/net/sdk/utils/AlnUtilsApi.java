@@ -11,7 +11,7 @@ import java.util.Map;
 
 
 @Log4j2
-public class AlnApiUtils {
+public class AlnUtilsApi {
 
     public static final String PAR_ID = "id";
     public static final String PAR_STATUS = "status";
@@ -32,7 +32,7 @@ public class AlnApiUtils {
             data.put(name, params.get(name)[0]);
         }
         final String id = getId(request);
-        if(!AlnTextUtils.isEmpty(id)) {
+        if(!AlnUtilsText.isEmpty(id)) {
             data.put(PAR_ID, id);
         }
         return data;
@@ -44,7 +44,7 @@ public class AlnApiUtils {
             data = getData(request);
         }else {
             final String id = getId(request);
-            if(!AlnTextUtils.isEmpty(id)) {
+            if(!AlnUtilsText.isEmpty(id)) {
                 data.put(PAR_ID, id);
             }
         }
@@ -83,7 +83,7 @@ public class AlnApiUtils {
     }
 
     public static String getAction(final HttpServletRequest request) {
-        String action = AlnTextUtils.notEmpty(request.getParameter("action"), request.getPathInfo());
+        String action = AlnUtilsText.notEmpty(request.getParameter("action"), request.getPathInfo());
         if(action.startsWith("/")) action = action.substring(1);
         if(action.contains("/")) action = action.substring(0, action.indexOf("/"));
         return action;
@@ -93,7 +93,7 @@ public class AlnApiUtils {
         return getId(request, getAction(request));
     }
     public static String getId(final HttpServletRequest request, final String action) {
-        String id = AlnTextUtils.notEmpty(request.getParameter("id"), request.getPathInfo());
+        String id = AlnUtilsText.notEmpty(request.getParameter("id"), request.getPathInfo());
         if(id.startsWith("/")) id = id.substring(1);
         if(id.startsWith(action)) id = id.substring(action.length());
         if(id.endsWith("/")) id = id.substring(0, id.length()-1);

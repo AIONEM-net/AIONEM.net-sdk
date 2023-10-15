@@ -14,7 +14,7 @@ import java.util.*;
 
 
 @Log4j2
-public class AlnDataUtils {
+public class AlnUtilsData {
 
 
     public static <T> T adaptTo(final Class<T> type, final JsonObject data) throws Exception {
@@ -28,7 +28,7 @@ public class AlnDataUtils {
             t = type.getConstructor().newInstance();
 
             if(type.getSuperclass().isAssignableFrom(HashMap.class) || type.isAssignableFrom(HashMap.class)) {
-                return adaptTo(t, AlnJsonUtils.fromHashMap((HashMap<String, Object>) data));
+                return adaptTo(t, AlnUtilsJson.fromHashMap((HashMap<String, Object>) data));
             }else if(type.getSuperclass().isAssignableFrom(JsonObject.class) || type.isAssignableFrom(JsonObject.class)) {
                 return adaptTo(t, (JsonObject) data);
             }else {
@@ -48,8 +48,8 @@ public class AlnDataUtils {
                 field.setAccessible(true);
                 final AlnDBCol col = field.isAnnotationPresent(AlnDBCol.class) ? field.getDeclaredAnnotation(AlnDBCol.class) : null;
                 final String fieldName = field.getName();
-                final String name = col != null ? AlnTextUtils.notEmpty(col.name(), fieldName) : fieldName;
-                Object value = AlnJsonUtils.getValue(data, name);
+                final String name = col != null ? AlnUtilsText.notEmpty(col.name(), fieldName) : fieldName;
+                Object value = AlnUtilsJson.getValue(data, name);
                 if(value != null) {
                     value = convert(value, field.getType());
                 }
@@ -75,7 +75,7 @@ public class AlnDataUtils {
         }else if(type == Date.class && object instanceof Calendar) {
             return (T) Converter.DateUtils.toDate((Calendar)object);
         }else {
-            String valueString = AlnTextUtils.toString(object);
+            String valueString = AlnUtilsText.toString(object);
             if(valueString == null) {
                 return null;
             }else if(type == String.class) {

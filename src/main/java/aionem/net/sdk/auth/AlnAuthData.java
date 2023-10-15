@@ -2,7 +2,7 @@ package aionem.net.sdk.auth;
 
 import aionem.net.sdk.data.AlnData;
 import aionem.net.sdk.jsp.AlnJsp;
-import aionem.net.sdk.utils.AlnTextUtils;
+import aionem.net.sdk.utils.AlnUtilsText;
 import com.google.gson.JsonObject;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -35,12 +35,12 @@ public @Data class AlnAuthData extends AlnData {
 
     protected void init(final HttpServletRequest request, final HttpServletResponse response, final String uid, final String email, final String phone, final String password, final String uidToken, final String code) {
 
-        this.uid = AlnTextUtils.notNull(uid);
-        this.email = AlnTextUtils.notNull(email);
-        this.phone = AlnTextUtils.notNull(phone);
-        this.password = AlnTextUtils.notNull(password);
-        this.uidToken = AlnTextUtils.notNull(uidToken);
-        this.code = AlnTextUtils.notNull(code);
+        this.uid = AlnUtilsText.notNull(uid);
+        this.email = AlnUtilsText.notNull(email);
+        this.phone = AlnUtilsText.notNull(phone);
+        this.password = AlnUtilsText.notNull(password);
+        this.uidToken = AlnUtilsText.notNull(uidToken);
+        this.code = AlnUtilsText.notNull(code);
 
         this.request = request;
         this.response = response;
@@ -76,153 +76,29 @@ public @Data class AlnAuthData extends AlnData {
     public static final String ENV_LOCAL = "LOCAL";
 
     public String getEnv() {
-        return getEnv(getRequest());
-    }
-    public static String getEnv(final HttpServletRequest request) {
-        String env;
-        final int port = request.getLocalPort();
-        final String localAddress = request.getLocalAddr();
-        if(localAddress.equals("66.29.143.32")) {
-            if(port == 443) {
-                env = ENV_PROD;
-            }else if(port == 80) {
-                env = ENV_STAGE;
-            }else {
-                env = ENV_DEV;
-            }
-        }else {
-            env = ENV_LOCAL;
-        }
-        return env;
-    }
-
-    public boolean isEnvProd() {
-        return ENV_PROD.equalsIgnoreCase(getEnv());
-    }
-    public boolean isEnvStage() {
-        return ENV_STAGE.equalsIgnoreCase(getEnv());
-    }
-    public boolean isEnvDev() {
-        return ENV_DEV.equalsIgnoreCase(getEnv());
-    }
-    public boolean isEnvLocal() {
-        return ENV_LOCAL.equalsIgnoreCase(getEnv());
-    }
-
-    public boolean isPublishMode() {
-        return true;
+        return alnJsp.getEnv();
     }
 
     public String getDBDriver() {
-        return "com.mysql.cj.jdbc.Driver";
+        return alnJsp.getConfig().get("db_driver");
     }
     public String getDBConnection() {
-        return "jdbc:mysql";
+        return alnJsp.getConfig().get("db_connection");
     }
     public String getDBHost() {
-        String dbHost;
-        switch(getEnv()) {
-            case ENV_LOCAL:
-                dbHost = "localhost";
-                break;
-            case ENV_DEV:
-                dbHost = "66.29.143.32";
-                break;
-            case ENV_STAGE:
-                dbHost = "66.29.143.32";
-                break;
-            case ENV_PROD:
-                dbHost = "66.29.143.32";
-                break;
-            default:
-                dbHost = "localhost";
-                break;
-        }
-        return dbHost;
+        return alnJsp.getConfig().get("db_host");
     }
     public String getDBPort() {
-        String dbPort;
-        switch(getEnv()) {
-            case ENV_LOCAL:
-                dbPort = "3307";
-                break;
-            case ENV_DEV:
-                dbPort = "3306";
-                break;
-            case ENV_STAGE:
-                dbPort = "3306";
-                break;
-            case ENV_PROD:
-                dbPort = "3306";
-                break;
-            default:
-                dbPort = "3306";
-                break;
-        }
-        return dbPort;
+        return alnJsp.getConfig().get("db_port");
     }
     public String getDBName() {
-        String dbName;
-        switch(getEnv()) {
-            case ENV_LOCAL:
-                dbName = "aionem_net_local";
-                break;
-            case ENV_DEV:
-                dbName = "aionem_net_1";
-                break;
-            case ENV_STAGE:
-                dbName = "aionem_net_1";
-                break;
-            case ENV_PROD:
-                dbName = "aionem_net";
-                break;
-            default:
-                dbName = "aionem_net_1";
-                break;
-        }
-        return dbName;
+        return alnJsp.getConfig().get("db_name");
     }
     public String getDBUser() {
-        String dbUser;
-        switch(getEnv()) {
-            case ENV_LOCAL:
-                dbUser = "root";
-                break;
-            case ENV_DEV:
-                dbUser = "aionem_net";
-                break;
-            case ENV_STAGE:
-                dbUser = "aionem_net";
-                break;
-            case ENV_PROD:
-                dbUser = "aionem_net";
-                break;
-            default:
-                dbUser = "aionem_net";
-                break;
-        }
-        return dbUser;
+        return alnJsp.getConfig().get("db_user");
     }
     public String getDBPassword() {
-        String dbPassword;
-        switch(getEnv()) {
-            case ENV_LOCAL:
-                dbPassword = "";
-                break;
-            case ENV_DEV:
-                dbPassword = "aionem_net";
-                break;
-            case ENV_STAGE:
-                dbPassword = "aionem_net";
-                break;
-            case ENV_PROD:
-                dbPassword = "aionem_net";
-                break;
-            default:
-                dbPassword = "aionem_net";
-                break;
-        }
-        return dbPassword;
+        return alnJsp.getConfig().get("db_password");
     }
 
 }

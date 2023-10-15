@@ -2,7 +2,7 @@ package aionem.net.sdk.data;
 
 import aionem.net.sdk.auth.AlnAuthData;
 import aionem.net.sdk.config.AlnConfig;
-import aionem.net.sdk.utils.AlnTextUtils;
+import aionem.net.sdk.utils.AlnUtilsText;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import oracle.ucp.jdbc.PoolDataSource;
@@ -111,7 +111,7 @@ public class AlnQuery {
     public void setException(final Exception e) {
         if(e != null) {
             this.exception = e;
-            if(AlnTextUtils.isEmpty(error)) {
+            if(AlnUtilsText.isEmpty(error)) {
                 this.error = e.getMessage();
             }
             if(AlnConfig.IS_DEBUG) log.info("\nERROR: " + e +"\n");

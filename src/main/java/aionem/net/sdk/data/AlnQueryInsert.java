@@ -2,7 +2,7 @@ package aionem.net.sdk.data;
 
 import aionem.net.sdk.api.AlnDaoRes;
 import aionem.net.sdk.auth.AlnAuthData;
-import aionem.net.sdk.utils.AlnTextUtils;
+import aionem.net.sdk.utils.AlnUtilsText;
 import com.google.gson.JsonObject;
 
 import java.sql.PreparedStatement;
@@ -18,6 +18,7 @@ public class AlnQueryInsert extends AlnQuery {
     public AlnQueryInsert(final AlnAuthData auth, final String table) {
         super(auth, table);
     }
+
 
     public AlnQueryInsert data(final AlnData data) {
         super.data(data);
@@ -81,7 +82,7 @@ public class AlnQueryInsert extends AlnQuery {
     public AlnQueryInsert put(final String column, Object value, final boolean condition) {
         value = getNullable(column, value);
         if(column != null && value != null && condition && only) {
-            columns1.add(new AlnQueryColumn("`" + column + "`", "'" + AlnTextUtils.toString(value) + "'"));
+            columns1.add(new AlnQueryColumn("`" + column + "`", "'" + AlnUtilsText.toString(value) + "'"));
         }
         return this;
     }
@@ -101,7 +102,7 @@ public class AlnQueryInsert extends AlnQuery {
         values.append(")");
 
         query += columns + values.toString();
-        if(!AlnTextUtils.isEmpty(query)) {
+        if(!AlnUtilsText.isEmpty(query)) {
             query += "; ";
         }
         return query;

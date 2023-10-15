@@ -15,7 +15,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 
-public class AlnTextUtils {
+public class AlnUtilsText {
 
     public static boolean isEmpty(final CharSequence value) {
         return value == null || value.length() == 0;
@@ -44,7 +44,7 @@ public class AlnTextUtils {
     public static String toString(final Object object, final String default1, final String default2) {
         final String defaultValue = !isEmpty(default1) ? default1 : default2;
         if(object == null) return defaultValue;
-        String value = AlnTextUtils.toString(object);
+        String value = AlnUtilsText.toString(object);
         if(isEmpty(value) || value.equalsIgnoreCase("null")) {
             value = defaultValue;
         }
@@ -68,7 +68,7 @@ public class AlnTextUtils {
                 }  else if(object instanceof AlnDatas) {
                     value = ((AlnDatas) object).getDatas().toString();
                 }else if(object instanceof ArrayList) {
-                    JsonArray jsonArray = AlnJsonUtils.jsonArray();
+                    JsonArray jsonArray = AlnUtilsJson.jsonArray();
                     for(Object item : ((ArrayList) object)) {
                         String itemValue = toString(item);
                         jsonArray.add(itemValue);
@@ -94,9 +94,9 @@ public class AlnTextUtils {
                         value = toString(Array.get(object, 0));
                     }
                 }else if(object instanceof Calendar) {
-                    value = AlnDataUtils.Converter.DateUtils.calendarToString((Calendar) object);
+                    value = AlnUtilsData.Converter.DateUtils.calendarToString((Calendar) object);
                 }else if(object instanceof Date) {
-                    value = AlnDataUtils.Converter.DateUtils.dateToString((Date) object);
+                    value = AlnUtilsData.Converter.DateUtils.dateToString((Date) object);
                 }else {
                     value = object.toString();
                 }

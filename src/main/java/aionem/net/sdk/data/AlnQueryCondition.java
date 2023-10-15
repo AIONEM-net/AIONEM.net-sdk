@@ -1,7 +1,7 @@
 package aionem.net.sdk.data;
 
 import aionem.net.sdk.auth.AlnAuthData;
-import aionem.net.sdk.utils.AlnTextUtils;
+import aionem.net.sdk.utils.AlnUtilsText;
 
 import java.util.List;
 
@@ -108,7 +108,7 @@ public class AlnQueryCondition extends AlnQuery {
     public AlnQueryCondition where(final int tableNo, final String column, final String logic, Object value, final boolean condition) {
         value = getNullable(column, value);
         if(column != null && value != null && condition && only) {
-            columns1.add(new AlnQueryColumn(tables.get(tableNo) + "." + "`" + column + "`", logic + "'" + AlnTextUtils.toString(value) + "'"));
+            columns1.add(new AlnQueryColumn(tables.get(tableNo) + "." + "`" + column + "`", logic + "'" + AlnUtilsText.toString(value) + "'"));
         }
         return this;
     }
@@ -151,7 +151,7 @@ public class AlnQueryCondition extends AlnQuery {
     public AlnQueryCondition and(final int tableNo, final String column, final String logic, Object value, final boolean condition) {
         value = getNullable(column, value);
         if(column != null && value != null && condition && only) {
-            columns1.add(new AlnQueryColumn(" AND " + tables.get(tableNo) + "." + "`" + column + "`", logic + "'" + AlnTextUtils.toString(value) + "'"));
+            columns1.add(new AlnQueryColumn(" AND " + tables.get(tableNo) + "." + "`" + column + "`", logic + "'" + AlnUtilsText.toString(value) + "'"));
         }
         return this;
     }
@@ -208,7 +208,7 @@ public class AlnQueryCondition extends AlnQuery {
     public AlnQueryCondition or(final int tableNo, final String column, final String logic, Object value, final boolean condition) {
         value = getNullable(column, value);
         if(column != null && value != null && condition && only) {
-            columns1.add(new AlnQueryColumn(" OR " + tables.get(tableNo) + "." + "`" + column + "`", logic + "'" + AlnTextUtils.toString(value) + "'"));
+            columns1.add(new AlnQueryColumn(" OR " + tables.get(tableNo) + "." + "`" + column + "`", logic + "'" + AlnUtilsText.toString(value) + "'"));
         }
         return this;
     }
@@ -244,7 +244,7 @@ public class AlnQueryCondition extends AlnQuery {
     public AlnQueryCondition andLike(final int tableNo, final String column, Object value, final boolean condition) {
         value = getNullable(column, value);
         if(column != null && value != null && condition && only) {
-            columns1.add(new AlnQueryColumn(" AND " + tables.get(tableNo) + "." + "`" + column + "`", " LIKE '%" + AlnTextUtils.toString(value) + "%'"));
+            columns1.add(new AlnQueryColumn(" AND " + tables.get(tableNo) + "." + "`" + column + "`", " LIKE '%" + AlnUtilsText.toString(value) + "%'"));
         }
         return this;
     }
@@ -264,7 +264,7 @@ public class AlnQueryCondition extends AlnQuery {
     public AlnQueryCondition orLike(final int tableNo, final String column, Object value, final boolean condition) {
         value = getNullable(column, value);
         if(column != null && value != null && condition && only) {
-            columns1.add(new AlnQueryColumn(" OR " + tables.get(tableNo) + "." + "`" + column + "`", " LIKE '%" + AlnTextUtils.toString(value) + "%'"));
+            columns1.add(new AlnQueryColumn(" OR " + tables.get(tableNo) + "." + "`" + column + "`", " LIKE '%" + AlnUtilsText.toString(value) + "%'"));
         }
         return this;
     }
@@ -276,7 +276,7 @@ public class AlnQueryCondition extends AlnQuery {
     public AlnQueryCondition andStartWith(final int tableNo, final String column, Object value) {
         value = getNullable(column, value);
         if(column != null && value != null && only) {
-            columns1.add(new AlnQueryColumn(" AND " + tables.get(tableNo) + "." + "`" + column + "`", " LIKE '" + AlnTextUtils.toString(value) + "%'"));
+            columns1.add(new AlnQueryColumn(" AND " + tables.get(tableNo) + "." + "`" + column + "`", " LIKE '" + AlnUtilsText.toString(value) + "%'"));
         }
         return this;
     }
@@ -288,7 +288,7 @@ public class AlnQueryCondition extends AlnQuery {
     public AlnQueryCondition orStartWith(final int tableNo, final String column, Object value) {
         value = getNullable(column, value);
         if(column != null && value != null && only) {
-            columns1.add(new AlnQueryColumn(" OR " + tables.get(tableNo) + "." + "`" + column + "`", " LIKE '" + AlnTextUtils.toString(value) + "%'"));
+            columns1.add(new AlnQueryColumn(" OR " + tables.get(tableNo) + "." + "`" + column + "`", " LIKE '" + AlnUtilsText.toString(value) + "%'"));
         }
         return this;
     }
@@ -300,7 +300,7 @@ public class AlnQueryCondition extends AlnQuery {
     public AlnQueryCondition andEndWith(final int tableNo, final String column, Object value) {
         value = getNullable(column, value);
         if(column != null && value != null && only) {
-            columns1.add(new AlnQueryColumn(" AND " + tables.get(tableNo) + "." + "`" + column + "`", " LIKE '%" + AlnTextUtils.toString(value) + "'"));
+            columns1.add(new AlnQueryColumn(" AND " + tables.get(tableNo) + "." + "`" + column + "`", " LIKE '%" + AlnUtilsText.toString(value) + "'"));
         }
         return this;
     }
@@ -312,7 +312,7 @@ public class AlnQueryCondition extends AlnQuery {
     public AlnQueryCondition orEndWith(final int tableNo, final String column, Object value) {
         value = getNullable(column, value);
         if(column != null && value != null && only) {
-            columns1.add(new AlnQueryColumn(" OR " + tables.get(tableNo) + "." + "`" + column + "`", " LIKE '%" + AlnTextUtils.toString(value) + "'"));
+            columns1.add(new AlnQueryColumn(" OR " + tables.get(tableNo) + "." + "`" + column + "`", " LIKE '%" + AlnUtilsText.toString(value) + "'"));
         }
         return this;
     }
@@ -351,8 +351,8 @@ public class AlnQueryCondition extends AlnQuery {
     }
 
     public AlnQueryCondition order(final int tableNo, final String column, String direction) {
-        if(!AlnTextUtils.isEmpty(column) && only) {
-            direction = AlnTextUtils.notEmpty(direction, "ASC");
+        if(!AlnUtilsText.isEmpty(column) && only) {
+            direction = AlnUtilsText.notEmpty(direction, "ASC");
             orderBy = " ORDER BY " + tables.get(tableNo) + "." + "`" + column + "`" + " " + direction;
         }
         return this;

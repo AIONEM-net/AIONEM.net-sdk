@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class AlnNetworkUtils {
+public class AlnUtilsNetwork {
 
 
     public static String addParameter(String url, final HashMap<String, String> params) {

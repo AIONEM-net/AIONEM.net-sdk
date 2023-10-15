@@ -4,8 +4,8 @@ import aionem.net.sdk.api.AlnDaoRes;
 import aionem.net.sdk.api.AlnNetwork;
 import aionem.net.sdk.config.AlnConfig;
 import aionem.net.sdk.data.AlnData;
-import aionem.net.sdk.utils.AlnJspUtils;
-import aionem.net.sdk.utils.AlnTextUtils;
+import aionem.net.sdk.utils.AlnUtilsJsp;
+import aionem.net.sdk.utils.AlnUtilsText;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -31,6 +31,8 @@ public @Getter class AlnJsp {
     protected PageContext pageContext;
     protected HttpSession session;
 
+    private AlnJspConfig config;
+
     public AlnJsp() {
 
     }
@@ -50,6 +52,48 @@ public @Getter class AlnJsp {
         this.pageContext = pageContext;
         this.session = request.getSession(true);
         return this;
+    }
+
+    public String getEnv() {
+        return getEnv(getInitParameter("env"));
+    }
+    public String getEnv(String env) {
+        if(AlnConfig.ENV_LOCAL.equalsIgnoreCase(env)) {
+            env = AlnConfig.ENV_LOCAL;
+        }else if(AlnConfig.ENV_DEV.equalsIgnoreCase(env)) {
+            env = AlnConfig.ENV_DEV;
+        }else if(AlnConfig.ENV_STAGE.equalsIgnoreCase(env)) {
+            env = AlnConfig.ENV_STAGE;
+        }else if(AlnConfig.ENV_PROD.equalsIgnoreCase(env)) {
+            env = AlnConfig.ENV_PROD;
+        }else {
+            env = AlnConfig.ENV_LOCAL;
+        }
+        return env;
+    }
+
+    public AlnJspConfig getConfig() {
+        if(config == null) {
+            config = new AlnJspConfig(this, "config");
+        }
+        return config;
+    }
+
+    public boolean isEnvProd() {
+        return AlnConfig.ENV_PROD.equalsIgnoreCase(getEnv());
+    }
+    public boolean isEnvStage() {
+        return AlnConfig.ENV_STAGE.equalsIgnoreCase(getEnv());
+    }
+    public boolean isEnvDev() {
+        return AlnConfig.ENV_DEV.equalsIgnoreCase(getEnv());
+    }
+    public boolean isEnvLocal() {
+        return AlnConfig.ENV_LOCAL.equalsIgnoreCase(getEnv());
+    }
+
+    public boolean isPublishMode() {
+        return true;
     }
 
     public void setAttribute(final Object value) {
@@ -72,19 +116,19 @@ public @Getter class AlnJsp {
         return request.getAttribute(name);
     }
 
-    public static String name(final AlnCmp alnCmp) {
+    public static String name(final AlnJspCmp alnCmp) {
         return name(alnCmp.getClass());
     }
     public static String name(final Class<?> type) {
         return type.getPackageName() +"."+ type.getName();
     }
-    public String value(final AlnCmp alnCmp) {
+    public String value(final AlnJspCmp alnCmp) {
         return value(alnCmp.getProperties(), alnCmp.getClass());
     }
-    public String value(final AlnCmp alnCmp, final Class<?> type) {
+    public String value(final AlnJspCmp alnCmp, final Class<?> type) {
         return value(alnCmp.getProperties(), type);
     }
-    public String value(final AlnCmp alnCmp, final String name) {
+    public String value(final AlnJspCmp alnCmp, final String name) {
         return value(alnCmp.getProperties(), name);
     }
     public String value(final AlnJspProperties properties, final Class<?> type) {
@@ -107,12 +151,15 @@ public @Getter class AlnJsp {
     public ServletContext getServletContext() {
         return request.getServletContext();
     }
+    public String getInitParameter(final String name) {
+        return getServletContext().getInitParameter(name);
+    }
 
     public String getRealPathCurrent() {
         return getRealPathCurrent("");
     }
     public String getRealPathCurrent(final String path) {
-        return getRealPathRoot(getServletPath()) + (!AlnTextUtils.isEmpty(path) ? "/" + path : "");
+        return getRealPathRoot(getServletPath()) + (!AlnUtilsText.isEmpty(path) ? "/" + path : "");
     }
     public String getRealPathRoot() {
         return getRealPathRoot("");
@@ -166,7 +213,7 @@ public @Getter class AlnJsp {
     }
     public String getRequestUrlQuery() {
         final String query = getRequestQuery();
-        return getRequestUrl() + AlnTextUtils.notEmptyUse(query, "?"+ query);
+        return getRequestUrl() + AlnUtilsText.notEmptyUse(query, "?"+ query);
     }
     public String getProtocol() {
         return request.getProtocol();
@@ -197,7 +244,7 @@ public @Getter class AlnJsp {
         return response.getWriter();
     }
     public String readFile(final String fileName) {
-        return AlnJspUtils.readResourceFile(this, fileName);
+        return AlnUtilsJsp.readResourceFile(this, fileName);
     }
 
     public String getHeader(final String name) {
@@ -205,7 +252,7 @@ public @Getter class AlnJsp {
     }
 
     public String getLanguage() {
-        return AlnTextUtils.notEmpty(session.getAttribute("language"), "en");
+        return AlnUtilsText.notEmpty(session.getAttribute("language"), "en");
     }
 
     public Locale getLocale() {
@@ -281,21 +328,21 @@ public @Getter class AlnJsp {
         return listPathPaths;
     }
 
-    public AlnPageItem getPage() {
+    public AlnJspPage getPage() {
         final File filePage = new File(getRealPathCurrent());
-        return new AlnPageItem(this, getServletPath(), new AlnJspProperties(new File(filePage, "properties.json")));
+        return new AlnJspPage(this, getServletPath(), new AlnJspProperties(new File(filePage, "properties.json")));
     }
-    public ArrayList<AlnPageItem> getListPagesRoot() {
-        final AlnPageItem pageItem = new AlnPageItem(this, "");
+    public ArrayList<AlnJspPage> getListPagesRoot() {
+        final AlnJspPage pageItem = new AlnJspPage(this, "");
         return getListPages(pageItem);
     }
-    public ArrayList<AlnPageItem> getListPages(final AlnPageItem page) {
-        final ArrayList<AlnPageItem> listPages = new ArrayList<>();
+    public ArrayList<AlnJspPage> getListPages(final AlnJspPage page) {
+        final ArrayList<AlnJspPage> listPages = new ArrayList<>();
         final String rootPagePath = getRealPathRoot();
         final File filePage = new File(getRealPathRoot(page.getPath()));
         for(final File filePageItem : getListFilePages(filePage)) {
             final String pagePath = filePageItem.getAbsolutePath().substring(rootPagePath.length()-1);
-            final AlnPageItem pageItem = new AlnPageItem(this, pagePath, new AlnJspProperties(new File(filePageItem, "properties.json")));
+            final AlnJspPage pageItem = new AlnJspPage(this, pagePath, new AlnJspProperties(new File(filePageItem, "properties.json")));
             if(!page.equals(pageItem)) {
                 listPages.add(pageItem);
             }

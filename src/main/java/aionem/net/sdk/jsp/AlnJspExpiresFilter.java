@@ -9,7 +9,7 @@ import javax.servlet.ServletResponse;
 import java.io.IOException;
 
 
-public class AlnExpiresFilter extends ExpiresFilter {
+public class AlnJspExpiresFilter extends ExpiresFilter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {

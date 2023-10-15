@@ -14,7 +14,7 @@ public class AlnUtils {
     }
 
     public static String getUUID() {
-        return AlnTextUtils.toString(UUID.randomUUID());
+        return AlnUtilsText.toString(UUID.randomUUID());
     }
 
 }

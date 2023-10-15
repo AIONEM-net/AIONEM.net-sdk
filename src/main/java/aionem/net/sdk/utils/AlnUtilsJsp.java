@@ -8,7 +8,7 @@ import java.io.InputStream;
 
 
 @Log4j2
-public class AlnJspUtils {
+public class AlnUtilsJsp {
 
     public static String readResourceFile(final AlnJsp alnJsp, final String fileName) {
         return readFile(alnJsp, "/WEB-INF/classes"+ fileName);
@@ -18,7 +18,7 @@ public class AlnJspUtils {
         try {
             final File file = new File(alnJsp.getRealPathRoot(fileName));
             if(!file.isDirectory()) {
-                return AlnTextUtils.toString(file);
+                return AlnUtilsText.toString(file);
             }
         }catch(Exception e) {
             log.error("\nERROR: - readFile ::" + e +"\n");
@@ -30,7 +30,7 @@ public class AlnJspUtils {
         try {
             final InputStream inputStream = alnJsp.getResourceAsStream(fileName);
             if(inputStream != null) {
-                return AlnTextUtils.toString(inputStream);
+                return AlnUtilsText.toString(inputStream);
             }
         }catch(Exception e) {
             log.error("\nERROR: - readResource ::" + e +"\n");

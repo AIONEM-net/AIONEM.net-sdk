@@ -1,8 +1,8 @@
 package aionem.net.sdk.api;
 
 import aionem.net.sdk.data.AlnData;
-import aionem.net.sdk.utils.AlnNetworkUtils;
-import aionem.net.sdk.utils.AlnTextUtils;
+import aionem.net.sdk.utils.AlnUtilsNetwork;
+import aionem.net.sdk.utils.AlnUtilsText;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
@@ -89,7 +89,7 @@ public @Data class AlnNetwork {
             try {
 
                 if(dataParams != null) {
-                    link = AlnNetworkUtils.addParameter(link, dataParams.getValuesString());
+                    link = AlnUtilsNetwork.addParameter(link, dataParams.getValuesString());
                 }
 
                 final URL url = new URL(link);
@@ -113,7 +113,7 @@ public @Data class AlnNetwork {
 
                 resGet.setSuccess(true);
                 resGet.setStatus(httpURLConnection.getResponseCode());
-                resGet.setResponse(AlnTextUtils.toString(httpURLConnection));
+                resGet.setResponse(AlnUtilsText.toString(httpURLConnection));
 
                 httpURLConnection.disconnect();
 
@@ -161,7 +161,7 @@ public @Data class AlnNetwork {
             try {
 
                 if(dataParams != null) {
-                    link = AlnNetworkUtils.addParameter(link, dataParams.getValuesString());
+                    link = AlnUtilsNetwork.addParameter(link, dataParams.getValuesString());
                 }
 
                 final URL url = new URL(link);
@@ -197,7 +197,7 @@ public @Data class AlnNetwork {
 
                 resPost.setSuccess(true);
                 resPost.setStatus(httpURLConnection.getResponseCode());
-                resPost.setResponse(AlnTextUtils.toString(httpURLConnection));
+                resPost.setResponse(AlnUtilsText.toString(httpURLConnection));
 
                 httpURLConnection.disconnect();
 

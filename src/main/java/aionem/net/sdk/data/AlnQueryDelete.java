@@ -1,7 +1,7 @@
 package aionem.net.sdk.data;
 
 import aionem.net.sdk.auth.AlnAuthData;
-import aionem.net.sdk.utils.AlnTextUtils;
+import aionem.net.sdk.utils.AlnUtilsText;
 
 import java.sql.Statement;
 
@@ -247,7 +247,7 @@ public class AlnQueryDelete extends AlnQueryCondition {
 
         query += groupBy;
         query += orderBy + limitOffset;
-        if(!AlnTextUtils.isEmpty(query)) {
+        if(!AlnUtilsText.isEmpty(query)) {
             query += "; ";
         }
         return query;

@@ -2,7 +2,7 @@ package aionem.net.sdk.data;
 
 import aionem.net.sdk.api.AlnDaoRes;
 import aionem.net.sdk.auth.AlnAuthData;
-import aionem.net.sdk.utils.AlnTextUtils;
+import aionem.net.sdk.utils.AlnUtilsText;
 import com.google.gson.JsonObject;
 
 import java.sql.Statement;
@@ -80,7 +80,7 @@ public class AlnQueryUpdate extends AlnQueryCondition {
     public AlnQueryUpdate set(final int tableNo, final String column, Object value, final boolean condition) {
         value = getNullable(column, value);
         if(column != null && value != null && condition) {
-            columns2.add(new AlnQueryColumn(tables.get(tableNo) + "." + "`" + column + "`", "='" + AlnTextUtils.toString(value) + "'"));
+            columns2.add(new AlnQueryColumn(tables.get(tableNo) + "." + "`" + column + "`", "='" + AlnUtilsText.toString(value) + "'"));
         }
         return this;
     }
@@ -347,7 +347,7 @@ public class AlnQueryUpdate extends AlnQueryCondition {
 
         query += groupBy;
         query += orderBy + limitOffset;
-        if(!AlnTextUtils.isEmpty(query)) {
+        if(!AlnUtilsText.isEmpty(query)) {
             query += "; ";
         }
         return query;

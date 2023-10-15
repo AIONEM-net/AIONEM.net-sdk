@@ -1,6 +1,5 @@
 package aionem.net.sdk.jsp;
 
-import lombok.extern.log4j.Log4j2;
 import org.tuckey.web.filters.urlrewrite.UrlRewriteFilter;
 
 import javax.servlet.FilterChain;
@@ -10,7 +9,7 @@ import javax.servlet.ServletResponse;
 import java.io.IOException;
 
 
-public class AlnUrlRewriteFilter extends UrlRewriteFilter {
+public class AlnJspUrlRewriteFilter extends UrlRewriteFilter {
 
     @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {

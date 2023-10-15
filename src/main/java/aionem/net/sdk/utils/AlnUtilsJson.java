@@ -11,7 +11,7 @@ import java.util.Map;
 
 
 @Log4j2
-public class AlnJsonUtils {
+public class AlnUtilsJson {
 
 
     public static JsonObject jsonObject() {
@@ -32,8 +32,8 @@ public class AlnJsonUtils {
         boolean isJson = false;
         try {
             if(!(object instanceof JsonElement)) {
-                final String value = AlnTextUtils.toString(object);
-                if(!AlnTextUtils.isEmpty(value)) {
+                final String value = AlnUtilsText.toString(object);
+                if(!AlnUtilsText.isEmpty(value)) {
                     new Gson().fromJson(value, JsonObject.class);
                     isJson = true;
                 }
@@ -62,8 +62,8 @@ public class AlnJsonUtils {
             if(object instanceof JsonElement) {
                 jsonObject = (JsonObject) object;
             }else {
-                final String value = AlnTextUtils.toString(object);
-                if(!AlnTextUtils.isEmpty(value)) {
+                final String value = AlnUtilsText.toString(object);
+                if(!AlnUtilsText.isEmpty(value)) {
                     jsonObject = new Gson().fromJson(value, JsonObject.class);
                 }
             }
@@ -127,18 +127,18 @@ public class AlnJsonUtils {
         }else if(value instanceof String) {
             data.addProperty(key, (String) value);
         }else {
-            final String valueString = AlnTextUtils.toString(value);
-            if(AlnJsonUtils.isJson(value)) {
-                data.add(key, AlnJsonUtils.toJsonObject(valueString));
-            }else if(AlnParseUtils.isNumber(valueString)) {
-                final double valueNumber = AlnParseUtils.toNumber(valueString, 0);
+            final String valueString = AlnUtilsText.toString(value);
+            if(AlnUtilsJson.isJson(value)) {
+                data.add(key, AlnUtilsJson.toJsonObject(valueString));
+            }else if(AlnUtilsParse.isNumber(valueString)) {
+                final double valueNumber = AlnUtilsParse.toNumber(valueString, 0);
                 if(valueString.contains(".")) {
                     data.addProperty(key, valueNumber);
                 }else {
                     data.addProperty(key, (long) valueNumber);
                 }
-            }else if(AlnParseUtils.isBoolean(valueString)) {
-                final boolean valueBoolean = AlnParseUtils.toBoolean(valueString, false);
+            }else if(AlnUtilsParse.isBoolean(valueString)) {
+                final boolean valueBoolean = AlnUtilsParse.toBoolean(valueString, false);
                 data.addProperty(key, valueBoolean);
             }else {
                 data.addProperty(key, valueString);
@@ -157,7 +157,7 @@ public class AlnJsonUtils {
     public static <T> T getValue(final JsonElement json, final String path, final Class<T> type) {
         final JsonElement value = getJson(json, path);
         final String stringValue = value != null && !value.isJsonNull() ? (value.isJsonPrimitive() ? value.getAsString() : value.toString()) : null;
-        return AlnDataUtils.convert(stringValue, type);
+        return AlnUtilsData.convert(stringValue, type);
     }
 
     public static JsonObject getJsonObject(final JsonElement json, final String path) {
@@ -177,7 +177,7 @@ public class AlnJsonUtils {
     }
 
     public static JsonElement getJson(final JsonElement json, String path) {
-        if(json == null || AlnTextUtils.isEmpty(path)) {
+        if(json == null || AlnUtilsText.isEmpty(path)) {
             return json;
         }
         JsonElement value = json;

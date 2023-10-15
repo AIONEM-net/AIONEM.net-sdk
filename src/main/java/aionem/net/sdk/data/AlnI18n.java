@@ -2,10 +2,9 @@ package aionem.net.sdk.data;
 
 import aionem.net.sdk.jsp.AlnJsp;
 import aionem.net.sdk.jsp.AlnJspProperties;
-import aionem.net.sdk.utils.AlnTextUtils;
+import aionem.net.sdk.utils.AlnUtilsText;
 import lombok.extern.log4j.Log4j2;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -15,7 +14,6 @@ import java.util.ResourceBundle;
 public class AlnI18n {
 
     private AlnData data;
-
     private String baseName;
     private ResourceBundle resourceBundle;
     private Locale locale;
@@ -104,20 +102,20 @@ public class AlnI18n {
         return get(key, key, isI18n);
     }
     public String get(final String key, final String defaultValue, final boolean isI18n) {
-        if(AlnTextUtils.isEmpty(key)) return AlnTextUtils.notEmpty(defaultValue, "");
+        if(AlnUtilsText.isEmpty(key)) return AlnUtilsText.notEmpty(defaultValue, "");
         String value = "";
         try {
             if(data != null && data.has(key)) {
                 value = data.get(key);
             }
-            if(resourceBundle != null && AlnTextUtils.isEmpty(value)) {
+            if(resourceBundle != null && AlnUtilsText.isEmpty(value)) {
                 if(resourceBundle.containsKey(key)) {
                     value = resourceBundle.getString(key);
                 }else if(resourceBundle.containsKey(key.toLowerCase())) {
                     value = resourceBundle.getString(key.toLowerCase());
                 }
             }
-            if(AlnTextUtils.isEmpty(value)) {
+            if(AlnUtilsText.isEmpty(value)) {
                 if(isI18n) {
                     if(pageContext != null) {
                         final Object i18n = pageContext.getAttribute("i18n", PageContext.APPLICATION_SCOPE);
@@ -130,7 +128,7 @@ public class AlnI18n {
         }catch(Exception e) {
             log.error("\nERROR: - get ::" + e +"\n");
         }
-        if(AlnTextUtils.isEmpty(value)) {
+        if(AlnUtilsText.isEmpty(value)) {
             value = defaultValue;
         }
         return value;

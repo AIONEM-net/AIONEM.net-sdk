@@ -1,28 +1,30 @@
 package aionem.net.sdk.jsp;
 
 import aionem.net.sdk.data.AlnData;
-import aionem.net.sdk.utils.AlnJspUtils;
-import aionem.net.sdk.utils.AlnTextUtils;
+import aionem.net.sdk.utils.AlnUtilsJsp;
+import aionem.net.sdk.utils.AlnUtilsText;
+import lombok.Getter;
 
 import java.util.HashMap;
 
 
-public class AlnDataConfig {
+public class AlnJspConfig {
 
     private static final HashMap<String, AlnData> mapData = new HashMap<>();
 
-    public String config;
-    public AlnJsp alnJsp;
+    @Getter
+    private String config;
+    private AlnJsp alnJsp;
     private AlnData data = new AlnData();
 
     public static String folder = "ui.config";
     private static final String extension = ".json";
     private static final String separator = "_";
 
-    private AlnDataConfig() {
+    private AlnJspConfig() {
 
     }
-    public AlnDataConfig(final AlnJsp alnJsp, final String config) {
+    public AlnJspConfig(final AlnJsp alnJsp, final String config) {
         this.init(alnJsp, config);
     }
 
@@ -31,46 +33,57 @@ public class AlnDataConfig {
     }
     public String getOr(final String key1, final String key2) {
         final String value = get(key1);
-        return !AlnTextUtils.isEmpty(value) ? value : get(key2);
+        return !AlnUtilsText.isEmpty(value) ? value : get(key2);
     }
     public <T> T get(final String key, final T defaultValue) {
         if(data.has(key)) {
             return data.get(key, defaultValue);
         }else {
-            return getBaseConfig(config).data.get(key, defaultValue);
+            return getBaseConfig().data.get(key, defaultValue);
         }
     }
 
     public void init(final AlnJsp alnJsp, String config) {
         this.alnJsp = alnJsp;
         this.config = config;
+        config = config + separator + alnJsp.getEnv().toLowerCase();
+
         if(!config.endsWith(extension)) config += extension;
         if(!config.startsWith("/"+folder+"/") && !config.startsWith(folder+"/")) {
             config = "/"+folder+"/" + config;
         }
+
         this.data = getData(alnJsp, config);
     }
 
-    public AlnDataConfig getBaseConfig(String config) {
-        final AlnDataConfig dataConfig = new AlnDataConfig();
-        this.config = config;
+    public AlnJspConfig getBaseConfig() {
+        final AlnJspConfig dataConfig = new AlnJspConfig();
+        String config = this.config;
         if(!config.endsWith(extension)) config += extension;
-        if(config.endsWith(separator+"dev"+extension)) {
+
+        if(config.endsWith(separator+"local"+extension)) {
+            config = config.replace(separator+"local"+extension, extension);
+        }else if(config.endsWith(separator+"dev"+extension)) {
             config = config.replace(separator+"dev"+extension, extension);
         }else if(config.endsWith(separator+"stage"+extension)) {
             config = config.replace(separator+"stage"+extension, extension);
         }else if(config.endsWith(separator+"prod"+extension)) {
             config = config.replace(separator+"prod"+extension, extension);
         }
-        dataConfig.data = getData(alnJsp, folder +"/"+ config);
+
+        if(!config.startsWith("/"+folder+"/") && !config.startsWith(folder+"/")) {
+            config = "/"+folder+"/" + config;
+        }
+
+        dataConfig.data = getData(alnJsp, config);
         return dataConfig;
     }
 
     private static AlnData getData(final AlnJsp alnJsp, final String config) {
         AlnData data = new AlnData();
         if(!mapData.containsKey(config) || mapData.get(config) == null) {
-            final String json = AlnJspUtils.readResourceFile(alnJsp, config);
-            if(!AlnTextUtils.isEmpty(json)) {
+            final String json = AlnUtilsJsp.readResourceFile(alnJsp, config);
+            if(!AlnUtilsText.isEmpty(json)) {
                 data = new AlnData();
                 data.fromData(json);
                 mapData.put(config, data);

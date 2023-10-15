@@ -2,7 +2,7 @@ package aionem.net.sdk.jsp;
 
 import aionem.net.sdk.data.AlnData;
 import aionem.net.sdk.data.AlnDatas;
-import aionem.net.sdk.utils.AlnTextUtils;
+import aionem.net.sdk.utils.AlnUtilsText;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -17,25 +17,25 @@ import java.lang.reflect.Modifier;
 
 
 @Log4j2
-public @Getter abstract class AlnCmp extends AlnJsp {
+public @Getter abstract class AlnJspCmp extends AlnJsp {
 
     protected AlnJspProperties properties;
 
-    public AlnCmp() {
+    public AlnJspCmp() {
         properties = new AlnJspProperties();
     }
-    public AlnCmp(final HttpServletRequest request, final HttpServletResponse response) {
+    public AlnJspCmp(final HttpServletRequest request, final HttpServletResponse response) {
         init(this, request, response, new AlnJspProperties());
     }
-    public AlnCmp(final HttpServletRequest request, final HttpServletResponse response, final AlnJspProperties properties) {
+    public AlnJspCmp(final HttpServletRequest request, final HttpServletResponse response, final AlnJspProperties properties) {
         init(this, request, response, properties);
     }
 
 
-    public AlnCmp init(final HttpServletRequest request, final HttpServletResponse response) {
+    public AlnJspCmp init(final HttpServletRequest request, final HttpServletResponse response) {
         return init(request, response, new AlnJspProperties());
     }
-    public AlnCmp init(final HttpServletRequest request, final HttpServletResponse response, final AlnJspProperties properties) {
+    public AlnJspCmp init(final HttpServletRequest request, final HttpServletResponse response, final AlnJspProperties properties) {
         return init(this, request, response, null, properties);
     }
     public <T> T init(final T t, final HttpServletRequest request, final HttpServletResponse response, final AlnJspProperties properties) {
@@ -66,7 +66,7 @@ public @Getter abstract class AlnCmp extends AlnJsp {
                     if(anInject != null) {
                         final Named anNamed = field.isAnnotationPresent(Named.class) ? field.getDeclaredAnnotation(Named.class) : null;
                         final String fieldName = field.getName();
-                        final String key = anNamed != null ? AlnTextUtils.notEmpty(anNamed.value(), fieldName) : fieldName;
+                        final String key = anNamed != null ? AlnUtilsText.notEmpty(anNamed.value(), fieldName) : fieldName;
                         try {
                             Object value = field.get(t);
                             if(properties.has(key)) {

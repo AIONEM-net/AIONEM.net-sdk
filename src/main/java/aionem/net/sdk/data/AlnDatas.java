@@ -1,17 +1,21 @@
 package aionem.net.sdk.data;
 
-import aionem.net.sdk.utils.AlnJsonUtils;
-import aionem.net.sdk.utils.AlnTextUtils;
+import aionem.net.sdk.utils.AlnUtilsJson;
+import aionem.net.sdk.utils.AlnUtilsText;
 import com.google.gson.JsonArray;
+import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Consumer;
 
 
-public class AlnDatas implements Iterable<AlnData> {
+@Log4j2
+public @Getter class AlnDatas implements Iterable<AlnData> {
 
     private final ArrayList<AlnData> listDatas = new ArrayList<>();
+
 
     @Override
     public @NotNull Iterator<AlnData> iterator() {
@@ -52,7 +56,7 @@ public class AlnDatas implements Iterable<AlnData> {
         sortByKeyASC(key, null);
     }
     public void sortByKeyASC(final String key, final String value) {
-        if(AlnTextUtils.isEmpty(key)) return;
+        if(AlnUtilsText.isEmpty(key)) return;
 
         final Comparator<AlnData> comparator = new Comparator<AlnData>() {
             @Override
@@ -62,7 +66,7 @@ public class AlnDatas implements Iterable<AlnData> {
                 if(isData1 && isData2) return 0;
                 if(isData1) return -1;
                 if(isData2) return 1;
-                return AlnTextUtils.compareTo(data1.get(key), data2.get(key));
+                return AlnUtilsText.compareTo(data1.get(key), data2.get(key));
             }
         };
 
@@ -73,7 +77,7 @@ public class AlnDatas implements Iterable<AlnData> {
         sortByKeyDESC(key, null);
     }
     public void sortByKeyDESC(final String key, final String value) {
-        if(AlnTextUtils.isEmpty(key)) return;
+        if(AlnUtilsText.isEmpty(key)) return;
 
         final Comparator<AlnData> comparator = new Comparator<AlnData>() {
             @Override
@@ -83,7 +87,7 @@ public class AlnDatas implements Iterable<AlnData> {
                 if(isData1 && isData2) return 0;
                 if(isData1) return 1;
                 if(isData2) return -1;
-                return AlnTextUtils.compareTo(data2.get(key), data1.get(key));
+                return AlnUtilsText.compareTo(data2.get(key), data1.get(key));
             }
         };
 
@@ -91,14 +95,11 @@ public class AlnDatas implements Iterable<AlnData> {
     }
 
     public JsonArray getDatas() {
-        final JsonArray jsonArray = AlnJsonUtils.jsonArray();
+        final JsonArray jsonArray = AlnUtilsJson.jsonArray();
         for(final AlnData data : listDatas) {
             jsonArray.add(data.getData());
         }
         return jsonArray;
-    }
-    public ArrayList<AlnData> getListDatas() {
-        return listDatas;
     }
 
     @Override

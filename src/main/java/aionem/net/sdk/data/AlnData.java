@@ -1,9 +1,9 @@
 package aionem.net.sdk.data;
 
-import aionem.net.sdk.utils.AlnDataUtils;
-import aionem.net.sdk.utils.AlnJsonUtils;
-import aionem.net.sdk.utils.AlnNetworkUtils;
-import aionem.net.sdk.utils.AlnTextUtils;
+import aionem.net.sdk.utils.AlnUtilsData;
+import aionem.net.sdk.utils.AlnUtilsJson;
+import aionem.net.sdk.utils.AlnUtilsNetwork;
+import aionem.net.sdk.utils.AlnUtilsText;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.Getter;
@@ -32,7 +32,7 @@ public class AlnData {
         fromData(values);
     }
     public AlnData(final Object data) {
-        fromData(AlnJsonUtils.toJsonObject(data));
+        fromData(AlnUtilsJson.toJsonObject(data));
     }
     
 
@@ -47,11 +47,11 @@ public class AlnData {
                 field.setAccessible(true);
                 final AlnDBCol col = field.isAnnotationPresent(AlnDBCol.class) ? field.getDeclaredAnnotation(AlnDBCol.class) : null;
                 final String fieldName = field.getName();
-                final String key = col != null ? AlnTextUtils.notEmpty(col.name(), fieldName) : fieldName;
+                final String key = col != null ? AlnUtilsText.notEmpty(col.name(), fieldName) : fieldName;
                 try {
                     Object value = field.get(t);
                     if(value != null) {
-                        value = AlnDataUtils.convert(value, field.getType());
+                        value = AlnUtilsData.convert(value, field.getType());
                     }
                     put(key, value);
                 }catch(Exception e) {
@@ -64,13 +64,13 @@ public class AlnData {
     }
 
     public JsonObject getData() {
-        return AlnJsonUtils.fromHashMap(values);
+        return AlnUtilsJson.fromHashMap(values);
     }
     public JsonObject getDataAll() {
-        return AlnJsonUtils.fromHashMap(values);
+        return AlnUtilsJson.fromHashMap(values);
     }
     public <T> JsonObject getData(final T db) {
-        final JsonObject data = AlnJsonUtils.jsonObject();
+        final JsonObject data = AlnUtilsJson.jsonObject();
         try {
             for(Field field : db.getClass().getDeclaredFields()) {
                 final int modifiers = field.getModifiers();
@@ -80,12 +80,12 @@ public class AlnData {
                     field.setAccessible(true);
                     final AlnDBCol col = field.isAnnotationPresent(AlnDBCol.class) ? field.getDeclaredAnnotation(AlnDBCol.class) : null;
                     final String fieldName = field.getName();
-                    final String key = col != null ? AlnTextUtils.notEmpty(col.name(), fieldName) : fieldName;
+                    final String key = col != null ? AlnUtilsText.notEmpty(col.name(), fieldName) : fieldName;
                     Object value = field.get(db);
                     if(value == null) {
                         value = this.values.get(key);
                     }
-                    AlnJsonUtils.add(data, key, value);
+                    AlnUtilsJson.add(data, key, value);
                 }
             }
         }catch(Exception e) {
@@ -108,17 +108,17 @@ public class AlnData {
     }
 
     public AlnData fromData(final JsonObject data) {
-        return fromData(AlnJsonUtils.toHashMap(data));
+        return fromData(AlnUtilsJson.toHashMap(data));
     }
 
     public AlnData fromData(final Object data) {
-        return fromData(AlnJsonUtils.toJsonObject(data));
+        return fromData(AlnUtilsJson.toJsonObject(data));
     }
 
     public <T> T fromData(final T dbInstance, final JsonObject data) {
-        fromData(AlnJsonUtils.toHashMap(data));
+        fromData(AlnUtilsJson.toHashMap(data));
         try {
-            return AlnDataUtils.adaptTo(dbInstance, data);
+            return AlnUtilsData.adaptTo(dbInstance, data);
         }catch(Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK : AlnData - fromData " + e +"\n");
         }
@@ -163,10 +163,10 @@ public class AlnData {
     public String getOrLast(final String[] keys, final boolean isOrLast) {
         for(int i = 0; i < keys.length; i++) {
             final String key = keys[i];
-            if(!AlnTextUtils.isEmpty(key)) {
+            if(!AlnUtilsText.isEmpty(key)) {
                 final String value = get(key, String.class);
                 if(i > 0 && i == keys.length - 1) {
-                    return AlnTextUtils.notEmpty(value, isOrLast ? key : "");
+                    return AlnUtilsText.notEmpty(value, isOrLast ? key : "");
                 }else {
                     if(has(key)) {
                         return value;
@@ -181,18 +181,18 @@ public class AlnData {
     }
     public String getEmptyNull(final String key) {
         final String value = get(key, String.class);
-        return !AlnTextUtils.isEmpty(value) ? value : null;
+        return !AlnUtilsText.isEmpty(value) ? value : null;
     }
     public Object getObject(final String key) {
         return this.values.get(key);
     }
     public <T> T get(final String key, final T defaultValue) {
         final Object value = this.values.get(key);
-        return AlnDataUtils.convert(value, defaultValue);
+        return AlnUtilsData.convert(value, defaultValue);
     }
     public <T> T get(final String key, final Class<T> type) {
         final Object value = this.values.get(key);
-        return AlnDataUtils.convert(value, type);
+        return AlnUtilsData.convert(value, type);
     }
     public AlnData getChild(final String key) {
         return new AlnData(get(key));
@@ -207,7 +207,7 @@ public class AlnData {
     }
     public AlnDatas getChildren(final String key) {
         final AlnDatas datas = new AlnDatas();
-        for(final JsonElement jsonElement : AlnJsonUtils.toJsonArray(get(key))) {
+        for(final JsonElement jsonElement : AlnUtilsJson.toJsonArray(get(key))) {
             datas.add(new AlnData(jsonElement));
         }
         return datas;
@@ -217,7 +217,7 @@ public class AlnData {
         final HashMap<String, String> valuesString = new HashMap<>();
         for(final String key : this.values.keySet()) {
             final Object value = this.values.get(key);
-            valuesString.put(key, AlnTextUtils.toString(value));
+            valuesString.put(key, AlnUtilsText.toString(value));
         }
         return valuesString;
     }
@@ -227,7 +227,7 @@ public class AlnData {
     }
 
     public boolean isEmpty(final String key) {
-        return AlnTextUtils.isEmpty(get(key));
+        return AlnUtilsText.isEmpty(get(key));
     }
 
     public int size() {
@@ -255,8 +255,8 @@ public class AlnData {
         final StringBuilder lines = new StringBuilder();
         int i = 0;
         for(final Map.Entry<String, Object> entry : this.values.entrySet()) {
-            final String key = AlnNetworkUtils.encodeUrl(entry.getKey());
-            final String value = AlnNetworkUtils.encodeUrl(AlnTextUtils.toString(entry.getValue()));
+            final String key = AlnUtilsNetwork.encodeUrl(entry.getKey());
+            final String value = AlnUtilsNetwork.encodeUrl(AlnUtilsText.toString(entry.getValue()));
             lines.append(i > 0 ? "&" : "").append(key).append("=").append(value);
             i++;
         }
@@ -292,7 +292,7 @@ public class AlnData {
     public boolean equals2(final String key, final Object... values) {
         final Object value = getObject(key);
         for(final Object value1 : values) {
-            final boolean isEqual = Objects.equals(value, value1) || AlnTextUtils.equals(AlnTextUtils.toString(value), AlnTextUtils.toString(value1));
+            final boolean isEqual = Objects.equals(value, value1) || AlnUtilsText.equals(AlnUtilsText.toString(value), AlnUtilsText.toString(value1));
             if(isEqual) return true;
         }
         return false;
@@ -300,7 +300,7 @@ public class AlnData {
     public boolean equalsIgnoreCase2(final String key, final Object... values) {
         final String value = get(key);
         for(final Object value1 : values) {
-            final boolean isEqual = Objects.equals(value, value1) || AlnTextUtils.equalsIgnoreCase(value, AlnTextUtils.toString(value1));
+            final boolean isEqual = Objects.equals(value, value1) || AlnUtilsText.equalsIgnoreCase(value, AlnUtilsText.toString(value1));
             if(isEqual) return true;
         }
         return false;
@@ -310,12 +310,12 @@ public class AlnData {
         return Objects.equals(value, getObject(key));
     }
     public boolean equalsIgnoreCase(final Object value, final String key) {
-        return equals(value, key) || AlnTextUtils.equalsIgnoreCase(AlnTextUtils.toString(value), get(key));
+        return equals(value, key) || AlnUtilsText.equalsIgnoreCase(AlnUtilsText.toString(value), get(key));
     }
 
     public <T> T adaptTo(Class<T> type) {
         try {
-            return AlnDataUtils.adaptTo(type, getData());
+            return AlnUtilsData.adaptTo(type, getData());
         }catch(Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK : AlnData - adaptTo(Class<T> type) " + e +"\n");
             return null;
@@ -323,7 +323,7 @@ public class AlnData {
     }
     public <T> T adaptTo(T t) {
         try {
-            return AlnDataUtils.adaptTo(t, getData());
+            return AlnUtilsData.adaptTo(t, getData());
         }catch(Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK : AlnData - adaptTo(T t) " + e +"\n");
             return null;

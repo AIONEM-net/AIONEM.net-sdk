@@ -1,6 +1,5 @@
 package aionem.net.sdk.utils;
 
-import aionem.net.sdk.utils.AlnTextUtils;
 import lombok.extern.log4j.Log4j2;
 
 import java.text.DateFormat;
@@ -11,7 +10,7 @@ import java.util.Locale;
 
 
 @Log4j2
-public class AlnDBUtils {
+public class AlnUtilsDB {
 
     public static final String PAR_ID = "id";
     public static final String PAR_DRAW = "draw";
@@ -48,7 +47,7 @@ public class AlnDBUtils {
         String formatDate = "";
         try {
             if(date != null) {
-                if(AlnTextUtils.isEmpty(format)) format = DATE_FORMAT;
+                if(AlnUtilsText.isEmpty(format)) format = DATE_FORMAT;
                 if(locale == null) locale = Locale.getDefault();
 
                 final DateFormat simpleDateFormat = new SimpleDateFormat(format, locale);

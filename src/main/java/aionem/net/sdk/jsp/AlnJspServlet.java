@@ -1,6 +1,6 @@
 package aionem.net.sdk.jsp;
 
-import aionem.net.sdk.utils.AlnApiUtils;
+import aionem.net.sdk.utils.AlnUtilsApi;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 
@@ -22,7 +22,7 @@ public class AlnJspServlet extends HttpServlet {
     @Override
     protected void doGet(@NonNull final HttpServletRequest request, @NonNull final HttpServletResponse response) throws ServletException, IOException {
 
-        final String action = AlnApiUtils.getAction(request);
+        final String action = AlnUtilsApi.getAction(request);
 
         final AlnJsp alnJsp = new AlnJsp(request, response);
 

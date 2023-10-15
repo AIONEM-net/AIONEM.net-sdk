@@ -10,13 +10,13 @@ import java.util.Locale;
 
 
 @Log4j2
-public class AlnParseUtils {
+public class AlnUtilsParse {
 
 
     public static boolean isNumber(final Object value) {
         boolean isNumber;
         try {
-            final String valueString = AlnTextUtils.toString(value);
+            final String valueString = AlnUtilsText.toString(value);
             Double.parseDouble(valueString);
             isNumber = true;
         }catch(Exception ignore) {
@@ -28,8 +28,8 @@ public class AlnParseUtils {
     public static double toNumber(final Object value, final double defaultValue) {
         if(value == null) return defaultValue;
         double number = defaultValue;
-        final String valueString = AlnTextUtils.toString(value, Double.toString(defaultValue));
-        if(!AlnTextUtils.isEmpty(valueString)) {
+        final String valueString = AlnUtilsText.toString(value, Double.toString(defaultValue));
+        if(!AlnUtilsText.isEmpty(valueString)) {
             try {
                 number = Double.parseDouble(valueString);
             }catch(Exception ignore) {
@@ -41,7 +41,7 @@ public class AlnParseUtils {
     public static boolean isBoolean(final Object value) {
         boolean isBoolean;
         try {
-            final String valueString = AlnTextUtils.toString(value);
+            final String valueString = AlnUtilsText.toString(value);
             isBoolean = valueString.equalsIgnoreCase("true") || valueString.equalsIgnoreCase("false");
         }catch(Exception ignore) {
             isBoolean = false;
@@ -52,8 +52,8 @@ public class AlnParseUtils {
     public static boolean toBoolean(final Object value, final boolean defaultValue) {
         if(value == null) return defaultValue;
         boolean bool = defaultValue;
-        final String valueString = AlnTextUtils.toString(value, Boolean.toString(defaultValue));
-        if(!AlnTextUtils.isEmpty(valueString)) {
+        final String valueString = AlnUtilsText.toString(value, Boolean.toString(defaultValue));
+        if(!AlnUtilsText.isEmpty(valueString)) {
             try {
                 bool = Boolean.parseBoolean(valueString);
             }catch(Exception ignore) {
@@ -71,7 +71,7 @@ public class AlnParseUtils {
     }
 
     public static Date parseDate(final String date, String format, Locale locale) {
-        if(AlnTextUtils.isEmpty(format)) format = "dd/MM/yyyy";
+        if(AlnUtilsText.isEmpty(format)) format = "dd/MM/yyyy";
         if(locale == null) locale = Locale.getDefault();
         try {
             final DateFormat simpleDateFormat = new SimpleDateFormat(format, locale);
