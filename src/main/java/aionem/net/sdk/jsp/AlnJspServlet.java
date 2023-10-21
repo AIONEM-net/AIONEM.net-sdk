@@ -1,6 +1,6 @@
 package aionem.net.sdk.jsp;
 
-import aionem.net.sdk.utils.AlnUtilsApi;
+import aionem.net.sdk.core.utils.AlnUtilsApi;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 

@@ -1,12 +1,12 @@
 package aionem.net.sdk.jsp;
 
-import aionem.net.sdk.api.AlnDaoRes;
-import aionem.net.sdk.api.AlnNetwork;
-import aionem.net.sdk.config.AlnConfig;
-import aionem.net.sdk.data.AlnData;
-import aionem.net.sdk.utils.AlnUtilsData;
-import aionem.net.sdk.utils.AlnUtilsJsp;
-import aionem.net.sdk.utils.AlnUtilsText;
+import aionem.net.sdk.core.api.AlnDaoRes;
+import aionem.net.sdk.core.api.AlnNetwork;
+import aionem.net.sdk.core.config.AlnConfig;
+import aionem.net.sdk.core.data.AlnData;
+import aionem.net.sdk.core.utils.AlnUtilsData;
+import aionem.net.sdk.core.utils.AlnUtilsJsp;
+import aionem.net.sdk.core.utils.AlnUtilsText;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -84,31 +84,31 @@ public @Getter class AlnJsp {
         return getConfigEnv(getInitParameter("host"));
     }
     public String getConfigEnv(String env) {
-        if(AlnConfig.ENV_LOCAL.equalsIgnoreCase(env)) {
-            env = AlnConfig.ENV_LOCAL;
-        }else if(AlnConfig.ENV_DEV.equalsIgnoreCase(env)) {
-            env = AlnConfig.ENV_DEV;
-        }else if(AlnConfig.ENV_STAGE.equalsIgnoreCase(env)) {
-            env = AlnConfig.ENV_STAGE;
-        }else if(AlnConfig.ENV_PROD.equalsIgnoreCase(env)) {
-            env = AlnConfig.ENV_PROD;
+        if(AlnJspConstants.ENV_LOCAL.equalsIgnoreCase(env)) {
+            env = AlnJspConstants.ENV_LOCAL;
+        }else if(AlnJspConstants.ENV_DEV.equalsIgnoreCase(env)) {
+            env = AlnJspConstants.ENV_DEV;
+        }else if(AlnJspConstants.ENV_STAGE.equalsIgnoreCase(env)) {
+            env = AlnJspConstants.ENV_STAGE;
+        }else if(AlnJspConstants.ENV_PROD.equalsIgnoreCase(env)) {
+            env = AlnJspConstants.ENV_PROD;
         }else {
-            env = AlnConfig.ENV_LOCAL;
+            env = AlnJspConstants.ENV_LOCAL;
         }
         return env;
     }
 
     public boolean isEnvProd() {
-        return AlnConfig.ENV_PROD.equalsIgnoreCase(getConfigEnv());
+        return AlnJspConstants.ENV_PROD.equalsIgnoreCase(getConfigEnv());
     }
     public boolean isEnvStage() {
-        return AlnConfig.ENV_STAGE.equalsIgnoreCase(getConfigEnv());
+        return AlnJspConstants.ENV_STAGE.equalsIgnoreCase(getConfigEnv());
     }
     public boolean isEnvDev() {
-        return AlnConfig.ENV_DEV.equalsIgnoreCase(getConfigEnv());
+        return AlnJspConstants.ENV_DEV.equalsIgnoreCase(getConfigEnv());
     }
     public boolean isEnvLocal() {
-        return AlnConfig.ENV_LOCAL.equalsIgnoreCase(getConfigEnv());
+        return AlnJspConstants.ENV_LOCAL.equalsIgnoreCase(getConfigEnv());
     }
 
     public boolean isPublishMode() {
