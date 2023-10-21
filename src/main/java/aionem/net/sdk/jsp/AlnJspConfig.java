@@ -20,9 +20,13 @@ public class AlnJspConfig {
     public static String folder = "ui.config";
     private static final String extension = ".json";
     private static final String separator = "_";
+    private static final String default_config = "config";
 
-    private AlnJspConfig() {
+    public AlnJspConfig() {
 
+    }
+    public AlnJspConfig(final AlnJsp alnJsp) {
+        this.init(alnJsp, default_config);
     }
     public AlnJspConfig(final AlnJsp alnJsp, final String config) {
         this.init(alnJsp, config);

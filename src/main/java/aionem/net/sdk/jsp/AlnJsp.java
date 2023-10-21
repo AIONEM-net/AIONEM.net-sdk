@@ -53,35 +53,55 @@ public @Getter class AlnJsp {
         this.response = response;
         this.pageContext = pageContext;
         this.session = request.getSession(true);
-        initConfig();
+        getConfig();
         return this;
     }
 
     public AlnJspConfig getConfig() {
         if(config == null) {
             config = new AlnJspConfig(this, "config");
-            initConfig();
+
+            AlnConfig.IS_DEBUG = config.get("debug", AlnConfig.IS_DEBUG);
+            AlnConfig.IS_DEBUG_EXCEPTION = config.get("debug_exception", AlnConfig.IS_DEBUG_EXCEPTION);
         }
         return config;
-    }
-    public void initConfig() {
-        if(config == null) {
-            AlnConfig.IS_DEBUG = getConfig().get("debug", AlnConfig.IS_DEBUG);
-            AlnConfig.IS_DEBUG_EXCEPTION = getConfig().get("debug_exception", AlnConfig.IS_DEBUG_EXCEPTION);
-        }
     }
 
     public String getConfigEnv() {
         return getConfigEnv(getInitParameter("env"));
     }
+    public String getConfigSenderID() {
+        return getConfig().get("senderID");
+    }
     public String getConfigDomain() {
-        return getConfigEnv(getInitParameter("domain"));
+        return getConfig().get("domain");
     }
     public String getConfigUrl() {
-        return getConfigEnv(getInitParameter("url"));
+        return getConfig().get("url");
     }
     public String getConfigHost() {
-        return getConfigEnv(getInitParameter("host"));
+        return getConfig().get("host");
+    }
+    public String getConfigSenderName() {
+        return getConfig().get("senderName");
+    }
+    public String getConfigSenderEmail() {
+        return getConfig().get("senderEmail");
+    }
+    public String getConfigSenderPassword() {
+        return getConfig().get("senderPassword");
+    }
+    public String getConfigSupportEmail() {
+        return getConfig().get("supportEmail");
+    }
+    public String getConfigCcEmail() {
+        return getConfig().get("ccEmail");
+    }
+    public String getInitGoogleSignInClientID() {
+        return getInitParameter("GoogleSignInClientID");
+    }
+    public String getConfigAPI_SMS_KEY() {
+        return getConfig().get("API_SMS_KEY");
     }
     public String getConfigEnv(String env) {
         if(AlnJspConstants.ENV_LOCAL.equalsIgnoreCase(env)) {
@@ -423,7 +443,7 @@ public @Getter class AlnJsp {
     private ArrayList<File> getListFilePages(final File filePage) {
         return getListFilePages(filePage, new ArrayList<>(), 1);
     }
-    public static final List<String> SYSTEM_PATH = List.of("ui.config", "ui.apps", "ui.dam", "ui.content", "ui.frontend", "META-INF", "WEB-INF");
+    public static final List<String> SYSTEM_PATH = List.of("ui.config", "ui.apps", "ui.dam", "ui.content", "ui.frontend", "ui.drive", "i18n", "META-INF", "WEB-INF");
     private ArrayList<File> getListFilePages(final File filePage, final ArrayList<File> listFilePages, final int level) {
         final File[] files = filePage.listFiles();
         if(!SYSTEM_PATH.contains(filePage.getName())) {
