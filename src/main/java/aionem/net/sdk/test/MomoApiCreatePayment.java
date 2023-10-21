@@ -23,7 +23,7 @@ public class MomoApiCreatePayment {
 
         System.out.println(x_Reference_Id);
 
-        String bearerToken = MomoApiAccessToken.getToken();
+        String bearerToken = MomoApi3AccessToken.getToken();
 
         momoApiCreatePayment(bearerToken, x_Reference_Id);
 

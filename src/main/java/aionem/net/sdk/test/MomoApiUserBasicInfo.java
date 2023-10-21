@@ -13,7 +13,7 @@ public class MomoApiUserBasicInfo {
         String userUUID = "250782027141";
         userUUID = "46733123453";
 
-        String bearerToken = MomoApiAccessToken.getToken();
+        String bearerToken = MomoApi3AccessToken.getToken();
 
         momoApiUserBasicinfo(bearerToken, userUUID);
 

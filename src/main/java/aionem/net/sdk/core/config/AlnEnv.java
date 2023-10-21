@@ -1,7 +1,7 @@
 package aionem.net.sdk.core.config;
 
 
-public class AlnConfig {
+public class AlnEnv {
 
 
     public static boolean IS_DEBUG = true;

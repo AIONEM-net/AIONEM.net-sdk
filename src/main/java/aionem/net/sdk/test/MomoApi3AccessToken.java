@@ -16,14 +16,14 @@ import java.security.cert.X509Certificate;
 import java.util.Base64;
 
 
-public class MomoApiAccessToken {
+public class MomoApi3AccessToken {
 
     public static void main(String[] args) {
 
         String userUUID = "c40a132c-e520-4f56-a85f-c59e7218982e";
         userUUID = "78adacd0-621d-4772-b6f4-c6d724aa8acb";
 
-        String apiKey = "a1ac56c5e6c14bb19a2df029569c1e5f";
+        String apiKey = "e3035aae99e74eb4ab47e0215141068a";
 
         String bearerToken = createBearerToken(userUUID, apiKey);
 
@@ -34,7 +34,7 @@ public class MomoApiAccessToken {
     }
 
     public static String getToken(){
-        String bearerToken = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSMjU2In0.eyJjbGllbnRJZCI6Ijc4YWRhY2QwLTYyMWQtNDc3Mi1iNmY0LWM2ZDcyNGFhOGFjYiIsImV4cGlyZXMiOiIyMDIzLTA4LTIxVDExOjE0OjUzLjQ0MCIsInNlc3Npb25JZCI6IjU1ZTQ4NmM2LWQyYjQtNDgyMy1iNWUwLWQxNDI0ZWI3ZWMwYiJ9.YpoYbRpQZGaYfmtmDk1VpsTuY35mgpf6w8TGMLU-BY0BAjQYdKweNPdhyOiUpUUQ_64lVJJ8iXa7X0RI24fcP-rMucPf-_PEC-Swx6-wonw62AzEQNBq8qcq0iAkm76IKmvLiHrYl_NAPkMvb-zbLbvKC_x4mK2mxXXuWmsAOYgg46aqm4o_Yy_btWMn3SQ6axi2a8FVEnaUZnyERxJPJwCNc01dvA10b_T7nYM0Ua8-Q9Z5d1BsFXleRSLiDq1tVnsOcxv1MvHk2NFx0-RISZW18CE0yBOBWTlF_NkC2ZpVesFe-L2PaC1mW8SC-pgTV4d99OAthD5lWJrbs8Byuw";
+        String bearerToken = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSMjU2In0.eyJjbGllbnRJZCI6Ijc4YWRhY2QwLTYyMWQtNDc3Mi1iNmY0LWM2ZDcyNGFhOGFjYiIsImV4cGlyZXMiOiIyMDIzLTEwLTIxVDIxOjEwOjQ0LjkwMiIsInNlc3Npb25JZCI6IjJhZDgzZDgwLTVhNjktNGU4Yy1iMmNiLWE5NDYyMTdiNjIyZSJ9.EETUohVuQ03lW3ereoL8ox2DtsftyMsj0qQpix_vZ-gFZ8ORF3Xc7pWJ56proHT6n39ppjLLmYgsEpR_7qORykA7ahkxQDW4verO_I9ucCbk3WiolgqFfgN0oOWdlUFTftfkt0hCOXAsYsp6WK55prEvhDIBz5kr0fi4n4K9Los3EdkIY4O_X4Wi0OCqlnY-4-KJJjjd5O3BR_BfNNoKU4zDwcT2XehhElqx1ZsaYjB72vUO4AqPrOcmH9JpO41JisAsuvNU8EnXWUaS4MT5J7tBMRYfXJoh8IMF3nXBKvcjLiRK9MhUlY-A-UgGhGB1hC_FbicWQKoNuf6STsyn7w";
         return bearerToken;
     }
 
@@ -90,9 +90,7 @@ public class MomoApiAccessToken {
                 }
                 in.close();
 
-                System.out.println("Response body: " + response.toString());
-
-            } else {
+                System.out.println("Response body: " + response);
 
             }
 

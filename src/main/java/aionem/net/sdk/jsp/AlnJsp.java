@@ -2,7 +2,7 @@ package aionem.net.sdk.jsp;
 
 import aionem.net.sdk.core.api.AlnDaoRes;
 import aionem.net.sdk.core.api.AlnNetwork;
-import aionem.net.sdk.core.config.AlnConfig;
+import aionem.net.sdk.core.config.AlnEnv;
 import aionem.net.sdk.core.data.AlnData;
 import aionem.net.sdk.core.utils.AlnUtilsData;
 import aionem.net.sdk.core.utils.AlnUtilsJsp;
@@ -61,8 +61,8 @@ public @Getter class AlnJsp {
         if(config == null) {
             config = new AlnJspConfig(this, "config");
 
-            AlnConfig.IS_DEBUG = config.get("debug", AlnConfig.IS_DEBUG);
-            AlnConfig.IS_DEBUG_EXCEPTION = config.get("debug_exception", AlnConfig.IS_DEBUG_EXCEPTION);
+            AlnEnv.IS_DEBUG = config.get("debug", AlnEnv.IS_DEBUG);
+            AlnEnv.IS_DEBUG_EXCEPTION = config.get("debug_exception", AlnEnv.IS_DEBUG_EXCEPTION);
         }
         return config;
     }

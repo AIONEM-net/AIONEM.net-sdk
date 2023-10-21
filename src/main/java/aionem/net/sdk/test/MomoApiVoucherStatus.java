@@ -12,7 +12,7 @@ public class MomoApiVoucherStatus {
 
         String x_Reference_Id = "d91f9a58-b6ad-4c78-9e22-6446073dfbec";
 
-        String bearerToken = MomoApiAccessToken.getToken();
+        String bearerToken = MomoApi3AccessToken.getToken();
 
         momoApiVoucherStatus(bearerToken, x_Reference_Id);
 

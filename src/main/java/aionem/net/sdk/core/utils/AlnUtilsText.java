@@ -53,7 +53,7 @@ public class AlnUtilsText {
 
     public static String toString(final Object object) {
         if(object == null) return null;
-        String value = String.valueOf(object);
+        String value = object.toString();
         try {
 
             if(!(object instanceof String || object instanceof Character || object instanceof StringBuilder ||
@@ -160,9 +160,12 @@ public class AlnUtilsText {
     }
 
     public static String join(final String... texts) {
-        return joinWith(texts, "");
+        return join(texts, "");
     }
-    public static String joinWith(final String[] texts, final String separator) {
+    public static String join(final String[] texts, final String separator) {
+        if(texts == null) return null;
+        if(texts.length == 1) return texts[0];
+
         final StringBuilder stringBuilder = new StringBuilder();
         for(int i = 0; i < texts.length; i++) {
             final String text = texts[i];

@@ -1,7 +1,7 @@
 package aionem.net.sdk.core.api;
 
 import aionem.net.sdk.core.auth.AlnAuthData;
-import aionem.net.sdk.core.config.AlnConfig;
+import aionem.net.sdk.core.config.AlnEnv;
 import aionem.net.sdk.core.data.AlnDatas;
 import aionem.net.sdk.core.utils.AlnUtilsDB;
 import aionem.net.sdk.core.data.AlnData;
@@ -15,7 +15,6 @@ import lombok.extern.log4j.Log4j2;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.Arrays;
 import java.util.Map;
 
 
@@ -107,22 +106,27 @@ public class AlnResponse {
     public void setMessage(final String message) {
         this.message = message;
     }
-    public void setError(final String error) {
-        this.error = error;
-    }
-    public void setError(final String error, String error1) {
-        this.error = error + (AlnConfig.IS_DEBUG_EXCEPTION && !AlnUtilsText.isEmpty(error1) ? ": "+ error1 : "");
+    public void setError(final String... errors) {
+        this.error = AlnUtilsText.join(errors, " : ");
     }
     public void setException(final Exception e) {
         this.exception = e;
-        if(AlnConfig.IS_DEBUG_EXCEPTION && e != null && AlnUtilsText.isEmpty(error)) {
+        if(AlnEnv.IS_DEBUG_EXCEPTION && e != null && AlnUtilsText.isEmpty(error)) {
             this.error = AlnUtilsText.notEmpty(e.getMessage(), error);
         }
     }
-    public void setException(final String message) {
-        if(message != null) {
-            setException(new Exception(message));
+    public void setException(final String... messages) {
+        if(messages != null) {
+            setException(new Exception(AlnUtilsText.join(messages, " : ")));
         }
+    }
+    public Exception getException() {
+        if(exception == null) {
+            if(!AlnUtilsText.isEmpty(error)) {
+                setException(error);
+            }
+        }
+        return exception;
     }
     public void setCounts(final long counts) {
         this.counts = counts;
@@ -206,9 +210,9 @@ public class AlnResponse {
                 AlnUtilsJson.add(jsonResponse, "message", message);
             }else {
                 AlnUtilsJson.add(jsonResponse, "error", error);
-                if(AlnConfig.IS_DEBUG_EXCEPTION && exception != null) {
-                    String eMessage = Arrays.toString(exception.getStackTrace());
-                    AlnUtilsJson.add(jsonResponse, "exception", AlnUtilsText.notEmpty(eMessage, AlnUtilsText.toString(exception)));
+                if(AlnEnv.IS_DEBUG_EXCEPTION && exception != null) {
+                    final String eMessage = exception.getLocalizedMessage() +" : "+ exception.getStackTrace()[0].toString();
+                    AlnUtilsJson.add(jsonResponse, "exception", eMessage);
                 }
             }
         }catch(Exception e) {
@@ -267,7 +271,7 @@ public class AlnResponse {
             }
         }catch(Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK : Response - Put Data :: " + e +"\n");
-            if(AlnConfig.IS_DEBUG) setException(e);
+            if(AlnEnv.IS_DEBUG) setException(e);
         }
     }
 

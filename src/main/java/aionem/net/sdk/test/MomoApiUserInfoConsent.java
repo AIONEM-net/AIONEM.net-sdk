@@ -10,7 +10,7 @@ public class MomoApiUserInfoConsent {
 
     public static void main(String[] args) {
 
-        String bearerToken = MomoApiAccessToken.getToken();
+        String bearerToken = MomoApi3AccessToken.getToken();
 
         momoApiUserBasicInfo(bearerToken);
 

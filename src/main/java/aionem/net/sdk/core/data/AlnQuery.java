@@ -1,7 +1,7 @@
 package aionem.net.sdk.core.data;
 
 import aionem.net.sdk.core.auth.AlnAuthData;
-import aionem.net.sdk.core.config.AlnConfig;
+import aionem.net.sdk.core.config.AlnEnv;
 import aionem.net.sdk.core.utils.AlnUtilsText;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -114,7 +114,7 @@ public class AlnQuery {
             if(AlnUtilsText.isEmpty(error)) {
                 this.error = e.getMessage();
             }
-            if(AlnConfig.IS_DEBUG) log.info("\nERROR: " + e +"\n");
+            if(AlnEnv.IS_DEBUG) log.info("\nERROR: " + e +"\n");
         }
     }
 

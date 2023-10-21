@@ -1,6 +1,6 @@
 package aionem.net.sdk.core.api;
 
-import aionem.net.sdk.core.config.AlnConfig;
+import aionem.net.sdk.core.config.AlnEnv;
 import aionem.net.sdk.core.data.AlnData;
 import aionem.net.sdk.core.data.AlnDatas;
 import aionem.net.sdk.core.utils.AlnUtilsText;
@@ -51,9 +51,18 @@ public @Data class AlnDaoRes extends AlnData {
     }
     public void setException(final Exception e) {
         this.exception = e;
-        if(AlnConfig.IS_DEBUG_EXCEPTION && e != null && AlnUtilsText.isEmpty(error)) {
+        if(AlnEnv.IS_DEBUG_EXCEPTION && e != null && AlnUtilsText.isEmpty(error)) {
             this.error = AlnUtilsText.notEmpty(e.getMessage(), error);
         }
+    }
+
+    public Exception getException() {
+        if(exception == null) {
+            if(!AlnUtilsText.isEmpty(error)) {
+                setException(error);
+            }
+        }
+        return exception;
     }
 
 }

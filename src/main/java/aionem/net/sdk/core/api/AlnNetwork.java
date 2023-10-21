@@ -39,6 +39,12 @@ public @Data class AlnNetwork {
         return this;
     }
 
+    public static AlnDaoRes doGet(final String link) throws IOException {
+        return doGet(link, new AlnData());
+    }
+    public static AlnDaoRes doGet(final String link, final AlnData dataParams) throws IOException {
+        return doGet(link, dataParams, new AlnData());
+    }
     public static AlnDaoRes doGet(final String link, final AlnData dataParams, final AlnData dataHeaders) throws IOException {
         return new Get(link)
                 .setDataParams(dataParams)
@@ -46,13 +52,15 @@ public @Data class AlnNetwork {
                 .get();
     }
 
-    public static AlnDaoRes doPost(final String link, final AlnData dataBody, final AlnData dataHeaders) {
-        return new Post(link)
-                .setDataBody(dataBody)
-                .setDataHeaders(dataHeaders)
-                .post();
+    public static AlnDaoRes doPost(final String link) throws IOException {
+        return doPost(link, new AlnData());
     }
-
+    public static AlnDaoRes doPost(final String link, final AlnData dataParams) throws IOException {
+        return doPost(link, dataParams, new AlnData());
+    }
+    public static AlnDaoRes doPost(final String link, final AlnData dataBody, final AlnData dataHeaders) {
+        return doPost(link, new AlnData(), dataBody, dataHeaders);
+    }
     public static AlnDaoRes doPost(final String link, final AlnData dataParams, final AlnData dataBody, final AlnData dataHeaders) {
         return new Post(link)
                 .setDataParams(dataParams)
@@ -187,7 +195,7 @@ public @Data class AlnNetwork {
                     httpURLConnection.setDoOutput(true);
                     final OutputStream outputStream = httpURLConnection.getOutputStream();
                     final byte[] input;
-                    if(dataBody.equalsIgnoreCase("application/json", "Content-Type")) {
+                    if(dataHeaders.equalsIgnoreCase("application/json", "Content-Type")) {
                         input = dataBody.getJsonBytes();
                     }else {
                         input = dataBody.getQueryBytes();

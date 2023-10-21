@@ -13,7 +13,7 @@ public class MomoApiAccountBalance {
         String currency = "";
         // currency = "ISO4217"; // Should be in ISO4217 Currency
 
-        String bearerToken = MomoApiAccessToken.getToken();
+        String bearerToken = MomoApi3AccessToken.getToken();
 
         momoApiAccountBalance(bearerToken, currency);
 

@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 
-public class MomoApiUserUUID {
+public class MomoApi1UserUUID {
 
     public static void main(String[] args) {
 

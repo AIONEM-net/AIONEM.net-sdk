@@ -10,8 +10,14 @@ import java.io.InputStream;
 @Log4j2
 public class AlnUtilsJsp {
 
+    public static String readEtcFile(final AlnJsp alnJsp, final String fileName) {
+        return readFile(alnJsp, "/WEB-INF/ui.etc"+ fileName);
+    }
     public static String readResourceFile(final AlnJsp alnJsp, final String fileName) {
         return readFile(alnJsp, "/WEB-INF/classes"+ fileName);
+    }
+    public static String readWebInfFile(final AlnJsp alnJsp, final String fileName) {
+        return readFile(alnJsp, "/WEB-INF"+ fileName);
     }
 
     public static String readFile(final AlnJsp alnJsp, final String fileName) {
