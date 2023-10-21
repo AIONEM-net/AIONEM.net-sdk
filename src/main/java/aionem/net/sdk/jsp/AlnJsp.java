@@ -323,6 +323,9 @@ public @Getter class AlnJsp {
         getResponse().sendRedirect(location);
     }
 
+    public boolean isHostMatch() {
+        return !getConfigHost().equalsIgnoreCase(getRemoteHost());
+    }
     public boolean isLocal() {
         final String remoteHost = getRequest().getRemoteHost();
         return "0:0:0:0:0:0:0:1".equalsIgnoreCase(remoteHost) || "127.0.0.1".equalsIgnoreCase(remoteHost) || "localhost".equalsIgnoreCase(remoteHost);

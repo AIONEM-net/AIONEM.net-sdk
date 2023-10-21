@@ -14,7 +14,7 @@ public class AlnJspUrlRewriteFilter extends UrlRewriteFilter {
     @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
         final AlnJsp alnJsp = new AlnJsp(request, response);
-        if(!"66.29.143.32".equalsIgnoreCase(alnJsp.getRemoteHost()) && !alnJsp.isLocal()) {
+        if(!alnJsp.isHostMatch() && !alnJsp.isLocal()) {
             final String urlQuery = alnJsp.getRequestUrlQuery();
             alnJsp.sendRedirect(alnJsp.getConfigUrl() + urlQuery);
         }else {
