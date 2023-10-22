@@ -5,6 +5,7 @@ import aionem.net.sdk.core.api.AlnDaoRes;
 import aionem.net.sdk.core.data.AlnDatas;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.*;
 import java.lang.reflect.Array;
@@ -13,8 +14,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
+@Log4j2
 public class AlnUtilsText {
 
     public static boolean isEmpty(final CharSequence value) {
@@ -176,6 +180,75 @@ public class AlnUtilsText {
             }
         }
         return stringBuilder.toString();
+    }
+
+    public static String replaceVariables(String text, final AlnData data) {
+        if(isEmpty(text)) return text;
+
+        if(text.contains("${list") && text.contains("}")) {
+
+            final StringBuilder stringBuilder = new StringBuilder();
+
+            final Pattern pattern = Pattern.compile("\\$\\{list(.*?)\\}\\s(.*?)\\s\\$\\{list(.*?)\\}");
+            final Matcher matcher = pattern.matcher(text);
+
+            int indexMatchEnd = 0;
+            while (matcher.find()) {
+                final String key = matcher.group(1);
+                final String child = matcher.group(2);
+
+                stringBuilder.append(text, indexMatchEnd, matcher.start());
+
+                final AlnDatas datas = data.has("$_list"+ key) ? data.getChildren("$_list"+ key) : data.getChildren("list"+ key);
+
+                for(AlnData data1 : datas) {
+                    final String text1 = replaceVariables(child, data1);
+                    stringBuilder.append(text1);
+                }
+
+                indexMatchEnd = matcher.end();
+            }
+
+            stringBuilder.append(text, indexMatchEnd, text.length());
+
+            if (!isEmpty(stringBuilder.toString())) {
+                text = stringBuilder.toString();
+            }
+        }
+
+        for(String key : data.keySet()) {
+            String name = key;
+            if(key.startsWith("$_")) {
+                name = key.substring(2);
+            }
+            final String value = data.get(key);
+            text = text.replace("${" + name + "}", value);
+        }
+
+        if(text.contains("${") && text.contains("}")) {
+
+            final StringBuffer stringBuffer = new StringBuffer();
+
+            final Pattern pattern = Pattern.compile("\\$\\{(\\w+)\\}");
+            final Matcher matcher = pattern.matcher(text);
+            while (matcher.find()) {
+                try {
+                    final String key = matcher.group(1);
+                    final String value = data.get(key);
+                    matcher.appendReplacement(stringBuffer, value);
+                } catch (Exception e) {
+                    log.info("\nERROR: TextUtils - replaceVariables ::" + e + "\n");
+                }
+            }
+            matcher.appendTail(stringBuffer);
+
+            if (!isEmpty(stringBuffer.toString())) {
+                text = stringBuffer.toString();
+            }
+
+        }
+
+        return text;
     }
 
 }
