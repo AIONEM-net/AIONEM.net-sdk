@@ -195,7 +195,7 @@ public @Data class AlnNetwork {
                     httpURLConnection.setDoOutput(true);
                     final OutputStream outputStream = httpURLConnection.getOutputStream();
                     final byte[] input;
-                    if(dataHeaders.equalsIgnoreCase("application/json", "Content-Type")) {
+                    if(dataHeaders != null && dataHeaders.equalsIgnoreCase("application/json", "Content-Type")) {
                         input = dataBody.getJsonBytes();
                     }else {
                         input = dataBody.getQueryBytes();

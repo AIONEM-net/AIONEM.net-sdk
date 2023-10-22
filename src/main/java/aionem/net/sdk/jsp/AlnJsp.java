@@ -79,6 +79,9 @@ public @Getter class AlnJsp {
     public String getConfigUrl() {
         return getConfig().get("url");
     }
+    public String getConfigUrl(final String path) {
+        return getConfigUrl() + (!AlnUtilsText.isEmpty(path) ? "/"+ path : "");
+    }
     public String getConfigHost() {
         return getConfig().get("host");
     }

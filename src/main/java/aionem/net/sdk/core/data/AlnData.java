@@ -127,11 +127,14 @@ public class AlnData {
 
     public AlnData fromData(final String key, final AlnData data) {
         final Object value = data.get(key);
-        return put(this, key, value);
+        return puts(this, key, value);
     }
 
-    public AlnData put(final String key, final Object value) {
-        return put(this, key, value);
+    public AlnData put(final String key, final Object... values) {
+        return puts(this, key, values);
+    }
+    public <T> T puts(final T dbInstance, final String key, final Object... values) {
+        return put(dbInstance, key, values.length > 0 ? (values.length == 1 ? values[0] : Arrays.asList(values)) : null);
     }
     public <T> T put(final T dbInstance, final String key, final Object value) {
         this.values.put(key, value);
@@ -140,13 +143,13 @@ public class AlnData {
             final int modifiers = field.getModifiers();
             final boolean isStatic = Modifier.isStatic(modifiers);
             final boolean isPrivate = Modifier.isPrivate(modifiers);
-            if(!isStatic && !isPrivate) {
+            if (!isStatic && !isPrivate) {
                 field.setAccessible(true);
                 field.set(dbInstance, value);
             }
-        }catch(NoSuchFieldException ignore) {
-        }catch(Exception e) {
-            log.error("\nERROR: AIONEM.NET_SDK put : " + e +"\n");
+        } catch (NoSuchFieldException ignore) {
+        } catch (Exception e) {
+            log.error("\nERROR: AIONEM.NET_SDK put : " + e + "\n");
         }
         return dbInstance;
     }
