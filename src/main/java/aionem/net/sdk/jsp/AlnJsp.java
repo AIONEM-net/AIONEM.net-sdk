@@ -80,7 +80,7 @@ public @Getter class AlnJsp {
         return getConfig().get("url");
     }
     public String getConfigUrl(final String path) {
-        return getConfigUrl() + (!AlnUtilsText.isEmpty(path) ? "/"+ path : "");
+        return getConfigUrl() + getContextPath(path);
     }
     public String getConfigHost() {
         return getConfig().get("host");

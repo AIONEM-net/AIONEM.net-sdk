@@ -543,6 +543,14 @@ public class AlnQuerySelect extends AlnQueryCondition {
         return arrayData;
     }
 
+    public AlnDatas executeDatas() {
+        final AlnDatas datas = new AlnDatas();
+        for(final AlnData data : executeListData()) {
+            datas.add(data);
+        }
+        return datas;
+    }
+
     public <T> ArrayList<T> executeList(final Class<T> type) {
         final ArrayList<T> listData = new ArrayList<>();
         for(final AlnData data : executeListData()) {
