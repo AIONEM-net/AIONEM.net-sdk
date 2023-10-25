@@ -10,9 +10,7 @@ import aionem.net.sdk.core.utils.AlnUtilsText;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -334,26 +332,33 @@ public @Getter class AlnJsp {
         return new Locale(getLanguage());
     }
 
-    public boolean isEdit() {
-        return false;
+    public boolean isDisabledMode() {
+        return !isEditMode();
     }
-
-    public boolean isDisabled() {
-        return true;
+    public boolean isEditMode() {
+        return "true".equalsIgnoreCase(getParameter("ui.edit"));
     }
 
     public void sendRedirect(final String location) throws IOException {
         getResponse().sendRedirect(location);
     }
+    public RequestDispatcher getRequestDispatcher(final String path) {
+        return getRequest().getRequestDispatcher(path);
+    }
+    public void forward(final String path) throws IOException, ServletException {
+        getRequestDispatcher(path).forward(getRequest(), getResponse());
+    }
+    public void include(final String path) throws IOException, ServletException {
+        getRequestDispatcher(path).include(getRequest(), getResponse());
+    }
 
     public boolean isHostMatch() {
-        return !getConfigHost().equalsIgnoreCase(getRemoteHost());
+        return getConfigHost().equalsIgnoreCase(getRemoteHost());
     }
     public boolean isLocal() {
         final String remoteHost = getRequest().getRemoteHost();
         return "0:0:0:0:0:0:0:1".equalsIgnoreCase(remoteHost) || "127.0.0.1".equalsIgnoreCase(remoteHost) || "localhost".equalsIgnoreCase(remoteHost);
     }
-
 
     public void cache(final boolean enabled) {
         if(enabled) {

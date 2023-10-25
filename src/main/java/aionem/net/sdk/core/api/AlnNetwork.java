@@ -96,11 +96,13 @@ public @Data class AlnNetwork {
 
             try {
 
+                String linkUrl = link;
+
                 if(dataParams != null) {
-                    link = AlnUtilsNetwork.addParameter(link, dataParams.getValuesString());
+                    linkUrl = AlnUtilsNetwork.addParameter(link, dataParams.getValuesString());
                 }
 
-                final URL url = new URL(link);
+                final URL url = new URL(linkUrl);
                 final HttpURLConnection httpURLConnection;
                 if("https".equalsIgnoreCase(url.getProtocol())) {
                     httpURLConnection = (HttpsURLConnection) url.openConnection();
@@ -168,11 +170,13 @@ public @Data class AlnNetwork {
 
             try {
 
+                String linkUrl = link;
+
                 if(dataParams != null) {
-                    link = AlnUtilsNetwork.addParameter(link, dataParams.getValuesString());
+                    linkUrl = AlnUtilsNetwork.addParameter(link, dataParams.getValuesString());
                 }
 
-                final URL url = new URL(link);
+                final URL url = new URL(linkUrl);
                 final HttpURLConnection httpURLConnection;
                 if("https".equalsIgnoreCase(url.getProtocol())) {
                     httpURLConnection = (HttpsURLConnection) url.openConnection();
