@@ -16,7 +16,6 @@ public class AlnJspUrlRewriteFilter extends UrlRewriteFilter {
         final AlnJsp alnJsp = new AlnJsp(request, response);
         if(!alnJsp.isHostMatch() && !alnJsp.isLocal()) {
             final String urlQuery = alnJsp.getRequestUrlQuery();
-            System.out.println(alnJsp.getConfigUrl(urlQuery));
             alnJsp.sendRedirect(alnJsp.getConfigUrl(urlQuery));
         }else {
             super.doFilter(request, response, chain);

@@ -82,7 +82,7 @@ public class AlnResponse {
         this.message = message + (!AlnUtilsText.isEmpty(message1) ? ": "+ message1 : "");
     }
     public void onFailure(final int status, final String error) {
-        onFailure(status, error, "", null);
+        onFailure(status, error, null, null);
     }
     public void onFailure(final int status, final String error, final Exception e) {
         onFailure(status, error, "", e);
@@ -107,7 +107,11 @@ public class AlnResponse {
         this.message = message;
     }
     public void setError(final String... errors) {
-        this.error = AlnUtilsText.join(errors, " : ");
+        String separator = " : ";
+        if(errors == null) error = "";
+        else if(errors.length == 1) error = errors[0];
+        else if(errors.length == 2) error = errors[0] + (AlnUtilsText.isEmpty(errors[1]) ?separator+ errors[1] : "");
+        else this.error = AlnUtilsText.join(errors, separator);
     }
     public void setException(final Exception e) {
         this.exception = e;

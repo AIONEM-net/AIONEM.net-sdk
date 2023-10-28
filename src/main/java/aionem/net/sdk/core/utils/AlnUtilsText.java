@@ -169,7 +169,7 @@ public class AlnUtilsText {
     public static String join(final String[] texts, final String separator) {
         if(texts == null) return null;
         if(texts.length == 1) return texts[0];
-        if(texts.length == 2) return texts[0] +separator+ texts[0];
+        if(texts.length == 2) return texts[0] +separator+ texts[1];
 
         final StringBuilder stringBuilder = new StringBuilder();
         for(int i = 0; i < texts.length; i++) {
