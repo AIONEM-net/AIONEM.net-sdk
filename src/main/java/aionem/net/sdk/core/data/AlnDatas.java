@@ -35,9 +35,23 @@ public @Getter class AlnDatas implements Iterable<AlnData> {
     public void add(final AlnData data) {
         listDatas.add(data);
     }
+    public void add(int index, final AlnData data) {
+        listDatas.add(index, data);
+    }
 
     public void addAll(final AlnDatas datas) {
         listDatas.addAll(datas.listDatas);
+    }
+
+    public AlnData get(int index) {
+        return listDatas.get(index);
+    }
+
+    public AlnData remove(int index) {
+        return listDatas.remove(index);
+    }
+    public boolean remove(AlnData data) {
+        return listDatas.remove(data);
     }
 
     public int size() {

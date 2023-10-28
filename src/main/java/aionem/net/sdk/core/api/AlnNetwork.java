@@ -39,23 +39,23 @@ public @Data class AlnNetwork {
         return this;
     }
 
-    public static AlnDaoRes doGet(final String link) throws IOException {
+    public static AlnDaoRes doGet(final String link) {
         return doGet(link, new AlnData());
     }
-    public static AlnDaoRes doGet(final String link, final AlnData dataParams) throws IOException {
+    public static AlnDaoRes doGet(final String link, final AlnData dataParams) {
         return doGet(link, dataParams, new AlnData());
     }
-    public static AlnDaoRes doGet(final String link, final AlnData dataParams, final AlnData dataHeaders) throws IOException {
+    public static AlnDaoRes doGet(final String link, final AlnData dataParams, final AlnData dataHeaders) {
         return new Get(link)
                 .setDataParams(dataParams)
                 .setDataHeaders(dataHeaders)
                 .get();
     }
 
-    public static AlnDaoRes doPost(final String link) throws IOException {
+    public static AlnDaoRes doPost(final String link) {
         return doPost(link, new AlnData());
     }
-    public static AlnDaoRes doPost(final String link, final AlnData dataParams) throws IOException {
+    public static AlnDaoRes doPost(final String link, final AlnData dataParams) {
         return doPost(link, dataParams, new AlnData());
     }
     public static AlnDaoRes doPost(final String link, final AlnData dataBody, final AlnData dataHeaders) {
@@ -121,9 +121,9 @@ public @Data class AlnNetwork {
 
                 httpURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
 
-                resGet.setSuccess(true);
                 resGet.setStatus(httpURLConnection.getResponseCode());
                 resGet.setResponse(AlnUtilsText.toString(httpURLConnection));
+                resGet.setSuccess(true);
 
                 httpURLConnection.disconnect();
 
