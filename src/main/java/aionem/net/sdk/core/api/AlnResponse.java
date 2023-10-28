@@ -79,7 +79,7 @@ public class AlnResponse {
         this.success = true;
         this.status = status;
         this.message = message;
-        this.message = message + (!AlnUtilsText.isEmpty(message1) ? ": "+ message1 : "");
+        setMessage(message, message1);
     }
     public void onFailure(final int status, final String error) {
         onFailure(status, error, null, null);
@@ -106,11 +106,18 @@ public class AlnResponse {
     public void setMessage(final String message) {
         this.message = message;
     }
+    public void setMessage(final String... messages) {
+        String separator = " : ";
+        if(messages == null) message = "";
+        else if(messages.length == 1) message = messages[0];
+        else if(messages.length == 2) message = messages[0] + (!AlnUtilsText.isEmpty(messages[1]) ?separator+ messages[1] : "");
+        else this.message = AlnUtilsText.join(messages, separator);
+    }
     public void setError(final String... errors) {
         String separator = " : ";
         if(errors == null) error = "";
         else if(errors.length == 1) error = errors[0];
-        else if(errors.length == 2) error = errors[0] + (AlnUtilsText.isEmpty(errors[1]) ?separator+ errors[1] : "");
+        else if(errors.length == 2) error = errors[0] + (!AlnUtilsText.isEmpty(errors[1]) ?separator+ errors[1] : "");
         else this.error = AlnUtilsText.join(errors, separator);
     }
     public void setException(final Exception e) {

@@ -28,9 +28,10 @@ public @Data class AlnJspPage {
     private boolean isRoot = false;
     private boolean isSeo = true;
     private boolean pwa = true;
+    private boolean isAuthAllow = true;
     private boolean authAllowAdmin = true;
     private boolean authAllowUser = true;
-    private boolean authDisableUser = true;
+    private boolean authDisableAuth = false;
     private AlnJspProperties properties = new AlnJspProperties();
 
     public AlnJspPage() {
@@ -137,6 +138,13 @@ public @Data class AlnJspPage {
 
     public ArrayList<AlnJspPage> listChildren(final AlnJsp alnJsp) {
         return alnJsp.getListPages(this);
+    }
+
+    public boolean isAuthAllow(final boolean isAdmins, final boolean isUsers, final boolean isAuths) {
+        if(isAuths && authDisableAuth) return false;
+        if(isUsers && !authAllowUser) return false;
+        if(isAdmins && !authAllowAdmin) return false;
+        return true;
     }
 
     @Override

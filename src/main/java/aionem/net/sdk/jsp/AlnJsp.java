@@ -340,7 +340,7 @@ public @Getter class AlnJsp {
     }
 
     public void sendRedirect(final String location) throws IOException {
-        getResponse().sendRedirect(location);
+        getResponse().sendRedirect(location.startsWith("http") ? location : getContextPath(location));
     }
     public RequestDispatcher getRequestDispatcher(final String path) {
         return getRequest().getRequestDispatcher(path);
