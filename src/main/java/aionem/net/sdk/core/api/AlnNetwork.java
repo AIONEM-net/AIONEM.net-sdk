@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -19,6 +18,8 @@ public @Data class AlnNetwork {
     protected String link;
     protected AlnData dataParams;
     protected AlnData dataHeaders;
+
+    protected int timeout = 30*1000;
 
     public AlnNetwork(final String link) {
         setLink(link);
@@ -36,6 +37,11 @@ public @Data class AlnNetwork {
 
     public AlnNetwork setDataHeaders(final AlnData dataHeaders) {
         this.dataHeaders = dataHeaders != null ? dataHeaders : new AlnData();
+        return this;
+    }
+
+    public AlnNetwork setTimeout(int timeout) {
+        this.timeout = timeout;
         return this;
     }
 
@@ -75,18 +81,27 @@ public @Data class AlnNetwork {
             super(link);
         }
 
+        @Override
         public Get setLink(final String link) {
             super.setLink(link);
             return this;
         }
 
+        @Override
         public Get setDataParams(final AlnData dataParams) {
             super.setDataParams(dataParams);
             return this;
         }
 
+        @Override
         public Get setDataHeaders(final AlnData dataHeaders) {
             super.setDataHeaders(dataHeaders);
+            return this;
+        }
+
+        @Override
+        public Get setTimeout(int timeout) {
+            super.setTimeout(timeout);
             return this;
         }
 
@@ -111,6 +126,8 @@ public @Data class AlnNetwork {
                 }
 
                 httpURLConnection.setRequestMethod("GET");
+                httpURLConnection.setConnectTimeout(timeout);
+                httpURLConnection.setReadTimeout(timeout);
 
                 if(dataHeaders != null) {
                     for(final String key : dataHeaders.keySet()) {
@@ -144,11 +161,13 @@ public @Data class AlnNetwork {
             super(link);
         }
 
+        @Override
         public Post setLink(final String link) {
             super.setLink(link);
             return this;
         }
 
+        @Override
         public Post setDataParams(final AlnData dataParams) {
             super.setDataParams(dataParams);
             return this;
@@ -159,8 +178,15 @@ public @Data class AlnNetwork {
             return this;
         }
 
+        @Override
         public Post setDataHeaders(final AlnData dataHeaders) {
             super.setDataHeaders(dataHeaders);
+            return this;
+        }
+
+        @Override
+        public Post setTimeout(int timeout) {
+            super.setTimeout(timeout);
             return this;
         }
 
@@ -183,7 +209,10 @@ public @Data class AlnNetwork {
                 }else {
                     httpURLConnection = (HttpURLConnection) url.openConnection();
                 }
+
                 httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setConnectTimeout(timeout);
+                httpURLConnection.setReadTimeout(timeout);
 
                 if(dataHeaders != null) {
                     for(final String key : dataHeaders.keySet()) {
