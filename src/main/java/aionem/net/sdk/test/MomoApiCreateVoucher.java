@@ -99,13 +99,13 @@ public class MomoApiCreateVoucher {
             int responseCode = httpURLConnection.getResponseCode();
             System.out.println("Response status: " + responseCode);
 
-            if (responseCode == HttpURLConnection.HTTP_ACCEPTED) {
+            if(responseCode == HttpURLConnection.HTTP_ACCEPTED) {
 
                 BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
                 String inputLine;
                 StringBuilder response = new StringBuilder();
 
-                while ((inputLine = in.readLine()) != null) {
+                while((inputLine = in.readLine()) != null) {
                     response.append(inputLine);
                 }
                 in.close();

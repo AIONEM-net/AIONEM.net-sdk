@@ -143,7 +143,7 @@ public class AlnData {
             final int modifiers = field.getModifiers();
             final boolean isStatic = Modifier.isStatic(modifiers);
             final boolean isPrivate = Modifier.isPrivate(modifiers);
-            if (!isStatic && !isPrivate) {
+            if(!isStatic && !isPrivate) {
                 field.setAccessible(true);
                 field.set(dbInstance, value);
             }

@@ -248,7 +248,7 @@ public @Getter class AlnJsp {
     public String getRealPathRoot(final String path) {
         String realPath = getServletContext().getRealPath(path);
         realPath = realPath.replace("//", "/");
-        if (realPath.endsWith("/")) realPath = realPath.substring(0, realPath.length()-1);
+        if(realPath.endsWith("/")) realPath = realPath.substring(0, realPath.length()-1);
         return realPath;
     }
 
@@ -553,26 +553,26 @@ public @Getter class AlnJsp {
     private ArrayList<File> getListFilePages(final File filePage, final ArrayList<File> listFilePages, final int level) {
         final File[] files = filePage.listFiles();
         if(!SYSTEM_PATH.contains(filePage.getName())) {
-            if (files != null) {
+            if(files != null) {
                 boolean hasHtml = false;
                 boolean hasJsp = false;
                 for (final File file : files) {
-                    if (file.isDirectory()) {
-                        if (level < 0) {
+                    if(file.isDirectory()) {
+                        if(level < 0) {
                             getListFilePages(file, listFilePages, level);
-                        } else if (level == 1) {
+                        } else if(level == 1) {
                             getListFilePages(file, listFilePages, 0);
                         }
                     } else {
                         final String fileName = file.getName();
-                        if (fileName.equalsIgnoreCase("index.html")) {
+                        if(fileName.equalsIgnoreCase("index.html")) {
                             hasHtml = true;
-                        } else if (fileName.equalsIgnoreCase("index.jsp")) {
+                        } else if(fileName.equalsIgnoreCase("index.jsp")) {
                             hasJsp = true;
                         }
                     }
                 }
-                if (hasHtml || hasJsp) {
+                if(hasHtml || hasJsp) {
                     listFilePages.add(filePage);
                 }
             }

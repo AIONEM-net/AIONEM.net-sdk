@@ -79,17 +79,20 @@ public class AlnJspMinifierJs {
             AlnJspUtils.writeFile(fileJs, builderJs.toString());
         }
 
-        final FilenameFilter filterJs = new FilenameFilter() {
-            @Override
-            public boolean accept(final File file, final String name) {
-                return name.endsWith(".js");
-            }
-        };
         if(isSave) {
-            final File[] listFiles = fileFolder.listFiles(filterJs);
-            for (int i = 0; i < listFiles.length; i++) {
-                File file = listFiles[i];
-                if (file.isFile()) {
+
+            final FilenameFilter filterJs = new FilenameFilter() {
+                @Override
+                public boolean accept(final File file, final String name) {
+                    return name.toLowerCase().endsWith(".js");
+                }
+            };
+
+            final ArrayList<File> listFiles = AlnJspUtils.findFiles(fileFolder, filterJs);
+
+            for(int i = 0; i < listFiles.size(); i++) {
+                File file = listFiles.get(i);
+                if(file.isFile()) {
 
                     String js = AlnUtilsText.toString(file, true);
 

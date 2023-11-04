@@ -79,13 +79,13 @@ public class MomoApi3AccessToken {
             int responseCode = httpsURLConnection.getResponseCode();
             System.out.println("Response status: " + responseCode);
 
-            if (responseCode == HttpURLConnection.HTTP_OK) {
+            if(responseCode == HttpURLConnection.HTTP_OK) {
 
                 BufferedReader in = new BufferedReader(new InputStreamReader(httpsURLConnection.getInputStream()));
                 String inputLine;
                 StringBuilder response = new StringBuilder();
 
-                while ((inputLine = in.readLine()) != null) {
+                while((inputLine = in.readLine()) != null) {
                     response.append(inputLine);
                 }
                 in.close();

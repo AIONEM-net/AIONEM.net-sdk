@@ -17,12 +17,6 @@ public class AlnJspUrlRewriteFilter extends UrlRewriteFilter {
 
         if(!alnJsp.isHostMatch() && !alnJsp.isLocal()) {
             final String urlQuery = alnJsp.getRequestUrlQuery();
-            System.out.println("env: "+ alnJsp.getConfigEnv());
-            System.out.println("host: "+ alnJsp.getConfigHost());
-            System.out.println("host: "+ alnJsp.getRemoteHost());
-            System.out.println("urlQuery: "+ urlQuery);
-            System.out.println("configUrl1: "+ alnJsp.getConfigUrl());
-            System.out.println("configUrl2: "+ alnJsp.getConfigUrl(urlQuery));
             alnJsp.getRedirect(alnJsp.getConfigUrl(urlQuery));
         }else {
             super.doFilter(request, response, chain);

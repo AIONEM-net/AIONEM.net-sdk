@@ -91,7 +91,6 @@ public class AlnUtilsText {
                     value = jsonArray.toString();
                 }else if(object instanceof File) {
                     value = Files.readString(((File) object).toPath());
-                    // value = toString(new BufferedReader(new FileReader((File) object, StandardCharsets.UTF_8)));
                 }else if(object instanceof HttpURLConnection) {
                         value = toString(new BufferedReader(new InputStreamReader(((HttpURLConnection) object).getInputStream(), StandardCharsets.UTF_8)));
                 }else if(object instanceof BufferedReader) {
@@ -194,17 +193,17 @@ public class AlnUtilsText {
     }
 
     public static String replaceVariables(String text, final AlnData data) {
-        if(isEmpty(text)) return text;
+        if(isEmpty(text)) return "";
 
         if(text.contains("${list") && text.contains("}")) {
 
             final StringBuilder stringBuilder = new StringBuilder();
 
-            final Pattern pattern = Pattern.compile("\\$\\{list(.*?)\\}\\s(.*?)\\s\\$\\{list(.*?)\\}");
+            final Pattern pattern = Pattern.compile("\\$\\{list(.*?)}(.*?)\\$\\{list(.*?)\\}", Pattern.DOTALL);
             final Matcher matcher = pattern.matcher(text);
 
             int indexMatchEnd = 0;
-            while (matcher.find()) {
+            while(matcher.find()) {
                 final String key = matcher.group(1);
                 final String child = matcher.group(2);
 
@@ -212,7 +211,7 @@ public class AlnUtilsText {
 
                 final AlnDatas datas = data.has("$_list"+ key) ? data.getChildren("$_list"+ key) : data.getChildren("list"+ key);
 
-                for(AlnData data1 : datas) {
+                for(final AlnData data1 : datas) {
                     final String text1 = replaceVariables(child, data1);
                     stringBuilder.append(text1);
                 }
@@ -222,7 +221,7 @@ public class AlnUtilsText {
 
             stringBuilder.append(text, indexMatchEnd, text.length());
 
-            if (!isEmpty(stringBuilder.toString())) {
+            if(!isEmpty(stringBuilder.toString())) {
                 text = stringBuilder.toString();
             }
         }
@@ -238,11 +237,11 @@ public class AlnUtilsText {
 
         if(text.contains("${") && text.contains("}")) {
 
-            final StringBuffer stringBuffer = new StringBuffer();
+            final StringBuilder stringBuffer = new StringBuilder();
 
             final Pattern pattern = Pattern.compile("\\$\\{(\\w+)\\}");
             final Matcher matcher = pattern.matcher(text);
-            while (matcher.find()) {
+            while(matcher.find()) {
                 try {
                     final String key = matcher.group(1);
                     final String value = data.get(key);
@@ -253,7 +252,7 @@ public class AlnUtilsText {
             }
             matcher.appendTail(stringBuffer);
 
-            if (!isEmpty(stringBuffer.toString())) {
+            if(!isEmpty(stringBuffer.toString())) {
                 text = stringBuffer.toString();
             }
 

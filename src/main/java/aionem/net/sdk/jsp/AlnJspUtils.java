@@ -5,8 +5,10 @@ import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 
 @Log4j2
@@ -58,6 +60,28 @@ public class AlnJspUtils {
             log.error("\nERROR: - writeFile ::"+ e +"\n");
         }
         return isWritten;
+    }
+
+    public static ArrayList<File> findFiles(final File fileFolder, final FilenameFilter filenameFilter) {
+
+        final ArrayList<File> listFiles = new ArrayList<>();
+
+        if(fileFolder.isDirectory()) {
+            final File[] files = fileFolder.listFiles();
+            if(files != null) {
+                for(final File file : files) {
+                    if(file.isDirectory()) {
+                        listFiles.addAll(findFiles(file, filenameFilter));
+                    } else {
+                        if(filenameFilter.accept(fileFolder, file.getName())) {
+                            listFiles.add(file);
+                        }
+                    }
+                }
+            }
+        }
+
+        return listFiles;
     }
 
 }

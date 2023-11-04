@@ -24,11 +24,10 @@ public class AlnJspWebApp {
             final ArrayList<File> listFilePagesCache = alnJsp.getListFilePagesAll("/en", "/it", "/rw", "/dev", "/auth/login", "/auth/register");
 
             final boolean isMinified = minify(alnJsp);
-            if(true) return isMinified;
 
             final boolean isCachedAll = cacheAll(alnJsp, env, listFilePagesCache);
 
-            if (isMinified && isCachedAll) {
+            if(isMinified && isCachedAll) {
 
                 final File fileWar = buildWar(alnJsp, warFileName);
                 final boolean isBuiltWar = fileWar != null && fileWar.exists();
@@ -97,7 +96,8 @@ public class AlnJspWebApp {
                 final boolean isCached = alnJsp.cache(env, jspPage);
                 boolean isDeleted = false;
                 if(isCached) {
-                    isDeleted = new File(filePage, "index.jsp").delete();
+                    isDeleted = new File(filePage, "properties.json").delete();
+                    isDeleted = isDeleted || new File(filePage, "index.jsp").delete();
                 }
                 if(!isCached || !isDeleted) {
                     isCachedAll = false;
@@ -120,7 +120,7 @@ public class AlnJspWebApp {
             final String webXml = AlnUtilsText.toString(fileWebXml, true);
 
             final String webXmlNew = AlnUtilsText.replaceVariables(webXml, new AlnData()
-                    // .put("env", env)
+                    .put("env", env)
             );
 
             isUpdated = AlnJspUtils.writeFile(fileWebXml, webXmlNew);
@@ -151,13 +151,13 @@ public class AlnJspWebApp {
         try {
 
             final boolean isEmpty;
-            if (fileWar.exists()) {
+            if(fileWar.exists()) {
                 isEmpty = fileWar.delete();
             } else {
                 isEmpty = true;
             }
 
-            if (isEmpty) {
+            if(isEmpty) {
 
                 final FileOutputStream fileOutputStream = new FileOutputStream(fileWar);
                 final ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
@@ -181,7 +181,7 @@ public class AlnJspWebApp {
 
     public static void createWar(final File file, final String name, final ZipOutputStream zipOutputStream) throws IOException {
 
-        if (file.isDirectory()) {
+        if(file.isDirectory()) {
             final String path = name + (!name.endsWith("/") ? "/" : "");
             zipOutputStream.putNextEntry(new ZipEntry(path));
             zipOutputStream.closeEntry();

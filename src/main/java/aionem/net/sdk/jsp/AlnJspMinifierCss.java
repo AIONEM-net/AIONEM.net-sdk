@@ -80,17 +80,22 @@ public class AlnJspMinifierCss {
             AlnJspUtils.writeFile(fileCss, builderCss.toString());
         }
 
-        final FilenameFilter filterCss = new FilenameFilter() {
-            @Override
-            public boolean accept(final File file, final String name) {
-                return name.endsWith(".css");
-            }
-        };
         if(isSave) {
-            final File[] listFiles = fileFolder.listFiles(filterCss);
-            for (int i = 0; i < listFiles.length; i++) {
-                File file = listFiles[i];
-                if (file.isFile()) {
+
+            final FilenameFilter filterCss = new FilenameFilter() {
+                @Override
+                public boolean accept(final File file, final String name) {
+                    return name.toLowerCase().endsWith(".css");
+                }
+            };
+
+            final ArrayList<File> listFiles = AlnJspUtils.findFiles(fileFolder, filterCss);
+
+            for(int i = 0; i < listFiles.size(); i++) {
+
+                final File file = listFiles.get(i);
+
+                if(file.isFile()) {
 
                     String css = AlnUtilsText.toString(file);
 
@@ -120,13 +125,13 @@ public class AlnJspMinifierCss {
             StringBuilder sb = new StringBuilder(css);
 
             n = 0;
-            while ((n = sb.indexOf("/*", n)) != -1) {
-                if (sb.charAt(n + 2) == '*') {
+            while((n = sb.indexOf("/*", n)) != -1) {
+                if(sb.charAt(n + 2) == '*') {
                     n += 2;
                     continue;
                 }
                 k = sb.indexOf("*/", n + 2);
-                if (k == -1) {
+                if(k == -1) {
                     throw new Exception("UnterminatedCommentException");
                 }
                 sb.delete(n, k + 2);
@@ -137,14 +142,14 @@ public class AlnJspMinifierCss {
             j = 0;
             for (int i = 0; i < sb.length(); i++) {
                 curr = sb.charAt(i);
-                if (j < 0) {
+                if(j < 0) {
                     throw new Exception("UnbalancedBracesException");
                 }
-                if (curr == '{') {
+                if(curr == '{') {
                     j++;
-                } else if (curr == '}') {
+                } else if(curr == '}') {
                     j--;
-                    if (j == 0) {
+                    if(j == 0) {
                         try {
                             selectors.add(new AlnJspMinifierCssUtils.Selector(sb.substring(n, i + 1)));
                         } catch (Exception ignore) {
@@ -215,7 +220,7 @@ public class AlnJspMinifierCss {
             public Selector(String selector)
                     throws Exception {
                 String[] parts = selector.split("\\{");
-                if (parts.length < 2) {
+                if(parts.length < 2) {
                     throw new Exception("IncompleteSelectorException("+ selector +")");
                 }
 
@@ -223,13 +228,13 @@ public class AlnJspMinifierCss {
 
                 this.selector = this.selector.replaceAll("\\s?(\\+|~|,|=|~=|\\^=|\\$=|\\*=|\\|=|>)\\s?", "$1");
 
-                if (parts.length > 2) {
+                if(parts.length > 2) {
                     this.subSelectors = new ArrayList<>();
                     parts = selector.split("(\\s*\\{\\s*)|(\\s*\\}\\s*)");
                     for (int i = 1; i < parts.length; i += 2) {
                         parts[i] = parts[i].trim();
                         parts[i + 1] = parts[i + 1].trim();
-                        if (!(parts[i].isEmpty() || (parts[i + 1].isEmpty()))) {
+                        if(!(parts[i].isEmpty() || (parts[i + 1].isEmpty()))) {
                             this.subSelectors.add(new Selector(parts[i] + "{" + parts[i + 1] + "}"));
                         }
                     }
@@ -237,14 +242,14 @@ public class AlnJspMinifierCss {
                     String contents = parts[parts.length - 1].trim();
                     log.debug("Parsing selector: {}", this.selector);
                     log.debug("\t{}", contents);
-                    if (contents.charAt(contents.length() - 1) != '}') {
+                    if(contents.charAt(contents.length() - 1) != '}') {
                         throw new Exception("UnterminatedSelectorException("+ selector +")");
                     }
-                    if (contents.length() == 1) {
+                    if(contents.length() == 1) {
                         throw new Exception("EmptySelectorBodyException("+ selector +")");
                     }
                     contents = contents.substring(0, contents.length() - 1);
-                    if (contents.charAt(contents.length() - 1) == ';') {
+                    if(contents.charAt(contents.length() - 1) == ';') {
                         contents = contents.substring(0, contents.length() - 1);
                     }
 
@@ -257,17 +262,17 @@ public class AlnJspMinifierCss {
             public String toString() {
                 StringBuilder sb = new StringBuilder();
                 sb.append(this.selector).append("{");
-                if (this.subSelectors != null) {
+                if(this.subSelectors != null) {
                     for (Selector s : this.subSelectors) {
                         sb.append(s.toString());
                     }
                 }
-                if (this.properties != null) {
+                if(this.properties != null) {
                     for (Property p : this.properties) {
                         sb.append(p.toString());
                     }
                 }
-                if (sb.charAt(sb.length() - 1) == ';') {
+                if(sb.charAt(sb.length() - 1) == ';') {
                     sb.deleteCharAt(sb.length() - 1);
                 }
                 sb.append("}");
@@ -280,25 +285,25 @@ public class AlnJspMinifierCss {
                 int j = 0;
                 String substr;
                 for (int i = 0; i < contents.length(); i++) {
-                    if (bInsideString) {
+                    if(bInsideString) {
                         bInsideString = !(contents.charAt(i) == '"');
-                    } else if (bInsideURL) {
+                    } else if(bInsideURL) {
                         bInsideURL = !(contents.charAt(i) == ')');
-                    } else if (contents.charAt(i) == '"') {
+                    } else if(contents.charAt(i) == '"') {
                         bInsideString = true;
-                    } else if (contents.charAt(i) == '(') {
-                        if ((i - 3) > 0 && "url".equals(contents.substring(i - 3, i)))
+                    } else if(contents.charAt(i) == '(') {
+                        if((i - 3) > 0 && "url".equals(contents.substring(i - 3, i)))
                             bInsideURL = true;
-                    } else if (contents.charAt(i) == ';') {
+                    } else if(contents.charAt(i) == ';') {
                         substr = contents.substring(j, i);
-                        if (!substr.trim().isEmpty()) {
+                        if(!substr.trim().isEmpty()) {
                             parts.add(substr);
                         }
                         j = i + 1;
                     }
                 }
                 substr = contents.substring(j);
-                if (!substr.trim().isEmpty()) {
+                if(!substr.trim().isEmpty()) {
                     parts.add(substr);
                 }
 
@@ -330,28 +335,28 @@ public class AlnJspMinifierCss {
                 String substr;
                 log.debug("\t\tExamining property: {}", property);
                 for (int i = 0; i < property.length(); i++) {
-                    if (!bCanSplit) {
+                    if(!bCanSplit) {
                         bCanSplit = (property.charAt(i) == '"');
-                    } else if (property.charAt(i) == '"') {
+                    } else if(property.charAt(i) == '"') {
                         bCanSplit = false;
-                    } else if (property.charAt(i) == ':' && parts.isEmpty()) {
+                    } else if(property.charAt(i) == ':' && parts.isEmpty()) {
                         substr = property.substring(j, i);
-                        if (!substr.trim().isEmpty()) {
+                        if(!substr.trim().isEmpty()) {
                             parts.add(substr);
                         }
                         j = i + 1;
                     }
                 }
                 substr = property.substring(j);
-                if (!substr.trim().isEmpty()) {
+                if(!substr.trim().isEmpty()) {
                     parts.add(substr);
                 }
-                if (parts.size() < 2) {
+                if(parts.size() < 2) {
                     throw new Exception("IncompletePropertyException("+ property +")");
                 }
 
                 String prop = parts.get(0).trim();
-                if (!(prop.length() > 2 && prop.startsWith("--"))) {
+                if(!(prop.length() > 2 && prop.startsWith("--"))) {
                     prop = prop.toLowerCase();
                 }
                 this.property = prop;
@@ -373,17 +378,17 @@ public class AlnJspMinifierCss {
                 String thisProp = this.property;
                 String thatProp = other.property;
 
-                if (thisProp.charAt(0) == '-') {
+                if(thisProp.charAt(0) == '-') {
                     thisProp = thisProp.substring(1);
                     thisProp = thisProp.substring(thisProp.indexOf('-') + 1);
-                } else if (thisProp.charAt(0) < 65) {
+                } else if(thisProp.charAt(0) < 65) {
                     thisProp = thisProp.substring(1);
                 }
 
-                if (thatProp.charAt(0) == '-') {
+                if(thatProp.charAt(0) == '-') {
                     thatProp = thatProp.substring(1);
                     thatProp = thatProp.substring(thatProp.indexOf('-') + 1);
-                } else if (thatProp.charAt(0) < 65) {
+                } else if(thatProp.charAt(0) < 65) {
                     thatProp = thatProp.substring(1);
                 }
 
@@ -419,12 +424,12 @@ public class AlnJspMinifierCss {
                 Pattern pattern = Pattern.compile("rgb\\s*\\(\\s*([0-9,\\s]+)\\s*\\)");
                 Matcher matcher = pattern.matcher(contents);
 
-                while (matcher.find()) {
+                while(matcher.find()) {
                     hexColour = new StringBuilder("#");
                     rgbColours = matcher.group(1).split(",");
                     for (int i = 0; i < rgbColours.length; i++) {
                         colourValue = Integer.parseInt(rgbColours[i]);
-                        if (colourValue < 16) {
+                        if(colourValue < 16) {
                             hexColour.append("0");
                         }
                         hexColour.append(Integer.toHexString(colourValue));
@@ -455,13 +460,13 @@ public class AlnJspMinifierCss {
 
                 this.contents = this.contents.trim();
 
-                if (this.contents.equals("0 0 0 0")) {
+                if(this.contents.equals("0 0 0 0")) {
                     this.contents = "0";
                 }
-                if (this.contents.equals("0 0 0")) {
+                if(this.contents.equals("0 0 0")) {
                     this.contents = "0";
                 }
-                if (this.contents.equals("0 0")) {
+                if(this.contents.equals("0 0")) {
                     this.contents = "0";
                 }
 
@@ -476,25 +481,25 @@ public class AlnJspMinifierCss {
             }
 
             private void simplifyParameters() {
-                if (this.property.equals("background-size") || this.property.equals("quotes")
+                if(this.property.equals("background-size") || this.property.equals("quotes")
                         || this.property.equals("transform-origin"))
                     return;
 
                 StringBuilder newContents = new StringBuilder();
 
                 String[] params = this.contents.split(" ");
-                if (params.length == 4) {
-                    if (params[1].equalsIgnoreCase(params[3])) {
+                if(params.length == 4) {
+                    if(params[1].equalsIgnoreCase(params[3])) {
                         params = Arrays.copyOf(params, 3);
                     }
                 }
-                if (params.length == 3) {
-                    if (params[0].equalsIgnoreCase(params[2])) {
+                if(params.length == 3) {
+                    if(params[0].equalsIgnoreCase(params[2])) {
                         params = Arrays.copyOf(params, 2);
                     }
                 }
-                if (params.length == 2) {
-                    if (params[0].equalsIgnoreCase(params[1])) {
+                if(params.length == 2) {
+                    if(params[0].equalsIgnoreCase(params[1])) {
                         params = Arrays.copyOf(params, 1);
                     }
                 }
@@ -508,13 +513,13 @@ public class AlnJspMinifierCss {
             }
 
             private void simplifyFontWeights() {
-                if (!this.property.equals("font-weight"))
+                if(!this.property.equals("font-weight"))
                     return;
 
                 String lcContents = this.contents.toLowerCase();
 
                 for (int i = 0; i < FONT_WEIGHT_NAMES.length; i++) {
-                    if (lcContents.equals(FONT_WEIGHT_NAMES[i])) {
+                    if(lcContents.equals(FONT_WEIGHT_NAMES[i])) {
                         this.contents = FONT_WEIGHT_VALUES[i];
                         break;
                     }
@@ -522,14 +527,14 @@ public class AlnJspMinifierCss {
             }
 
             private void simplifyQuotesAndCaps() {
-                if ((this.contents.length() > 4) && (this.contents.substring(0, 4).equalsIgnoreCase("url("))) {
+                if((this.contents.length() > 4) && (this.contents.substring(0, 4).equalsIgnoreCase("url("))) {
                     this.contents = this.contents.replaceAll("(?i)url\\(('|\")?(.*?)\\1\\)", "url($2)");
-                } else if ((this.contents.length() > 4) && (this.contents.substring(0, 4).equalsIgnoreCase("var("))) {
+                } else if((this.contents.length() > 4) && (this.contents.substring(0, 4).equalsIgnoreCase("var("))) {
                     this.contents = this.contents.replaceAll("\\s", "");
                 } else {
                     String[] words = this.contents.split("\\s");
-                    if (words.length == 1) {
-                        if (!this.property.equalsIgnoreCase("animation-name")) {
+                    if(words.length == 1) {
+                        if(!this.property.equalsIgnoreCase("animation-name")) {
                             this.contents = this.contents.toLowerCase();
                         }
                         this.contents = this.contents.replaceAll("('|\")?(.*?)\1", "$2");
@@ -541,13 +546,13 @@ public class AlnJspMinifierCss {
                 String lcContents = this.contents.toLowerCase();
 
                 for (int i = 0; i < HTML_COLOUR_NAMES.length; i++) {
-                    if (lcContents.equals(HTML_COLOUR_NAMES[i])) {
-                        if (HTML_COLOUR_VALUES[i].length() < HTML_COLOUR_NAMES[i].length()) {
+                    if(lcContents.equals(HTML_COLOUR_NAMES[i])) {
+                        if(HTML_COLOUR_VALUES[i].length() < HTML_COLOUR_NAMES[i].length()) {
                             this.contents = HTML_COLOUR_VALUES[i];
                         }
                         break;
-                    } else if (lcContents.equals(HTML_COLOUR_VALUES[i])) {
-                        if (HTML_COLOUR_NAMES[i].length() < HTML_COLOUR_VALUES[i].length()) {
+                    } else if(lcContents.equals(HTML_COLOUR_VALUES[i])) {
+                        if(HTML_COLOUR_NAMES[i].length() < HTML_COLOUR_VALUES[i].length()) {
                             this.contents = HTML_COLOUR_NAMES[i];
                         }
                     }
@@ -560,8 +565,8 @@ public class AlnJspMinifierCss {
                 Pattern pattern = Pattern.compile("#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])");
                 Matcher matcher = pattern.matcher(this.contents);
 
-                while (matcher.find()) {
-                    if (matcher.group(1).equalsIgnoreCase(matcher.group(2))
+                while(matcher.find()) {
+                    if(matcher.group(1).equalsIgnoreCase(matcher.group(2))
                             && matcher.group(3).equalsIgnoreCase(matcher.group(4))
                             && matcher.group(5).equalsIgnoreCase(matcher.group(6))) {
                         matcher.appendReplacement(newContents, "#" + matcher.group(1).toLowerCase()

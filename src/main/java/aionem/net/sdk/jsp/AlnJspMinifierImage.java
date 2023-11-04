@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 
 @Log4j2
-public class AlnJspMinifierHtml {
+public class AlnJspMinifierImage {
 
     public static AlnDaoRes minifySave(final String pathIn) throws Exception {
         return minifySave(pathIn, pathIn);
@@ -38,7 +38,10 @@ public class AlnJspMinifierHtml {
         final FilenameFilter htmlFilter = new FilenameFilter() {
             @Override
             public boolean accept(final File file, final String name) {
-                return name.toLowerCase().endsWith(".html");
+                final String fileName = file.getName().toLowerCase();
+                return fileName.endsWith(".jpg") || fileName.endsWith(".jpeg") ||
+                        fileName.endsWith(".png") || fileName.endsWith(".gif") ||
+                        fileName.endsWith(".bmp") || fileName.endsWith(".webp");
             }
         };
 
@@ -75,7 +78,7 @@ public class AlnJspMinifierHtml {
             html = compressor.compress(html);
 
         }catch(final Exception e) {
-            log.error("AIONEM.Jsp_ERROR: AlnJspMinifyHtml - minify :: {}", e.getMessage());
+            log.error("AIONEM.Jsp_ERROR: AlnJspMinifierImage - minify :: {}", e.getMessage());
         }
         return html;
     }
