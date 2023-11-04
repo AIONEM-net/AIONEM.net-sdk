@@ -426,7 +426,8 @@ public @Getter class AlnJsp {
                 .get();
 
         if(resCache.isSuccess() && resCache.hasResponse()) {
-            isCached = AlnJspUtils.writeFile(realPath +"/"+ "index.html", resCache.getResponse());
+            final String html = AlnJspMinifierHtml.minify(resCache.getResponse());
+            isCached = AlnJspUtils.writeFile(realPath +"/"+ "index.html", html);
         }
 
         return isCached;

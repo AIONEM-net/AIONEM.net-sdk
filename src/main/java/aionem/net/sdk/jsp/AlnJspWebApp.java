@@ -4,10 +4,7 @@ import aionem.net.sdk.core.data.AlnData;
 import aionem.net.sdk.core.utils.AlnUtilsText;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -26,9 +23,12 @@ public class AlnJspWebApp {
 
             final ArrayList<File> listFilePagesCache = alnJsp.getListFilePagesAll("/en", "/it", "/rw", "/dev", "/auth/login", "/auth/register");
 
+            final boolean isMinified = minify(alnJsp);
+            if(true) return isMinified;
+
             final boolean isCachedAll = cacheAll(alnJsp, env, listFilePagesCache);
 
-            if (isCachedAll) {
+            if (isMinified && isCachedAll) {
 
                 final File fileWar = buildWar(alnJsp, warFileName);
                 final boolean isBuiltWar = fileWar != null && fileWar.exists();
@@ -46,6 +46,40 @@ public class AlnJspWebApp {
         }
 
         return isDeployedWar;
+    }
+
+    public static boolean minify(final AlnJsp alnJsp) {
+
+        boolean isMinified = true;
+
+        final File fileUiFrontend = new File(alnJsp.getRealPathRoot("/ui.frontend"));
+
+        if(fileUiFrontend.isDirectory()) {
+
+            for(final File file : fileUiFrontend.listFiles()) {
+
+                if(file.isDirectory()) {
+
+                    final String css = AlnJspMinifierCss.minifyFolder(alnJsp, file, true);
+                    final String js = AlnJspMinifierJs.minifyFolder(alnJsp, file, true);
+
+                    AlnJspUtils.writeFile(new File(file, ".css"), css);
+                    AlnJspUtils.writeFile(new File(file, ".js"), js);
+
+                }else {
+                    if(file.getName().endsWith(".css")) {
+                        AlnJspMinifierCss.minifyFile(file);
+
+                    }else if(file.getName().equals(".js")) {
+                        AlnJspMinifierJs.minifyFile(file);
+                    }
+                }
+
+            }
+
+        }
+
+        return isMinified;
     }
 
     public static boolean cacheAll(final AlnJsp alnJsp, String env, final ArrayList<File> listFilePagesAll) {
@@ -86,7 +120,7 @@ public class AlnJspWebApp {
             final String webXml = AlnUtilsText.toString(fileWebXml, true);
 
             final String webXmlNew = AlnUtilsText.replaceVariables(webXml, new AlnData()
-                    .put("env", env)
+                    // .put("env", env)
             );
 
             isUpdated = AlnJspUtils.writeFile(fileWebXml, webXmlNew);

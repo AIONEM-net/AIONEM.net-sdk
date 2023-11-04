@@ -11,6 +11,7 @@ import java.io.*;
 import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -89,7 +90,8 @@ public class AlnUtilsText {
                     }
                     value = jsonArray.toString();
                 }else if(object instanceof File) {
-                    value = toString(new BufferedReader(new FileReader((File) object, StandardCharsets.UTF_8)));
+                    value = Files.readString(((File) object).toPath());
+                    // value = toString(new BufferedReader(new FileReader((File) object, StandardCharsets.UTF_8)));
                 }else if(object instanceof HttpURLConnection) {
                         value = toString(new BufferedReader(new InputStreamReader(((HttpURLConnection) object).getInputStream(), StandardCharsets.UTF_8)));
                 }else if(object instanceof BufferedReader) {
