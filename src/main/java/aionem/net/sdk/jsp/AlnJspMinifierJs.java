@@ -60,18 +60,19 @@ public class AlnJspMinifierJs {
                 // js = minifyFile(file);
             }
 
+            if(isSave) {
+                AlnJspUtils.writeFile(file, js);
+            }
+
             js = js
                     .replace("(/ui.frontend", "("+ uiFrontend)
                     .replace("\"/ui.frontend", "\""+ uiFrontend)
                     .replace("'/ui.frontend", "'"+ uiFrontend)
-                    .replace("`/ui.frontend", "`"+ uiFrontend);
+                    .replace("`/ui.frontend", "`"+ uiFrontend)
+                    .replace("../", "");
 
             if(!AlnUtilsText.isEmpty(js)) {
                 builderJs.append(i > 0 ? "\n" : "").append(js);
-            }
-
-            if(isSave) {
-                AlnJspUtils.writeFile(file, js);
             }
         }
         if(isSave) {
@@ -95,12 +96,6 @@ public class AlnJspMinifierJs {
                     if(!file.getName().equals("min.js")) {
                         // js = minifyFile(file);
                     }
-
-                    js = js
-                            .replace("(/ui.frontend", "("+ uiFrontend)
-                            .replace("\"/ui.frontend", "\""+ uiFrontend)
-                            .replace("'/ui.frontend", "'"+ uiFrontend)
-                            .replace("`/ui.frontend", "`"+ uiFrontend);
 
                     AlnJspUtils.writeFile(file, js);
                 }

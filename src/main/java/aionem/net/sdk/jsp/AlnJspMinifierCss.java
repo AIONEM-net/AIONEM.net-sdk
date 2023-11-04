@@ -60,19 +60,21 @@ public class AlnJspMinifierCss {
                 css = minifyFile(file);
             }
 
+            if(isSave) {
+                AlnJspUtils.writeFile(file, css);
+            }
+
             css = css
                     .replace("(/ui.frontend", "("+ uiFrontend)
                     .replace("\"/ui.frontend", "\""+ uiFrontend)
                     .replace("'/ui.frontend", "'"+ uiFrontend)
-                    .replace("`/ui.frontend", "`"+ uiFrontend);
+                    .replace("`/ui.frontend", "`"+ uiFrontend)
+                    .replace("../", "");
 
             if(!AlnUtilsText.isEmpty(css)) {
                 builderCss.append(i > 0 ? "\n" : "").append(css);
             }
 
-            if(isSave) {
-                AlnJspUtils.writeFile(file, css);
-            }
         }
         if(isSave) {
             AlnJspUtils.writeFile(fileCss, builderCss.toString());
@@ -95,12 +97,6 @@ public class AlnJspMinifierCss {
                     if(!file.getName().equals("min.css")) {
                         css = minifyFile(file);
                     }
-
-                    css = css
-                            .replace("(/ui.frontend", "("+ uiFrontend)
-                            .replace("\"/ui.frontend", "\""+ uiFrontend)
-                            .replace("'/ui.frontend", "'"+ uiFrontend)
-                            .replace("`/ui.frontend", "`"+ uiFrontend);
 
                     AlnJspUtils.writeFile(file, css);
                 }
@@ -526,7 +522,6 @@ public class AlnJspMinifierCss {
             }
 
             private void simplifyQuotesAndCaps() {
-                // Strip quotes from URLs
                 if ((this.contents.length() > 4) && (this.contents.substring(0, 4).equalsIgnoreCase("url("))) {
                     this.contents = this.contents.replaceAll("(?i)url\\(('|\")?(.*?)\\1\\)", "url($2)");
                 } else if ((this.contents.length() > 4) && (this.contents.substring(0, 4).equalsIgnoreCase("var("))) {
