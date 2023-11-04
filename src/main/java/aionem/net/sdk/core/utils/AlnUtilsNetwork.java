@@ -54,32 +54,37 @@ public class AlnUtilsNetwork {
         }
     }
 
+    private static boolean isDisabledSslVerification = false;
     public static void disableSslVerification() throws NoSuchAlgorithmException, KeyManagementException {
+        if(!isDisabledSslVerification) {
 
-        final TrustManager[] dummyTrustManager = new TrustManager[] { new X509TrustManager() {
-            public X509Certificate[] getAcceptedIssuers() {
-                return null;
-            }
+            final TrustManager[] dummyTrustManager = new TrustManager[]{new X509TrustManager() {
+                public X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
 
-            public void checkClientTrusted(final X509Certificate[] certs, final String authType) {
-            }
+                public void checkClientTrusted(final X509Certificate[] certs, final String authType) {
+                }
 
-            public void checkServerTrusted(final X509Certificate[] certs, final String authType) {
-            }
-        }};
+                public void checkServerTrusted(final X509Certificate[] certs, final String authType) {
+                }
+            }};
 
-        final SSLContext sslContext = SSLContext.getInstance("SSL");
-        sslContext.init(null, dummyTrustManager, new SecureRandom());
+            final SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, dummyTrustManager, new SecureRandom());
 
-        HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
 
-        final HostnameVerifier allHostsValid = new HostnameVerifier() {
-            public boolean verify(final String hostname, final SSLSession session) {
-                return true;
-            }
-        };
+            final HostnameVerifier allHostsValid = new HostnameVerifier() {
+                public boolean verify(final String hostname, final SSLSession session) {
+                    return true;
+                }
+            };
 
-        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+
+            isDisabledSslVerification = true;
+        }
     }
 
 }

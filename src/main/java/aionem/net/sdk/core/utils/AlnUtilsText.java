@@ -41,6 +41,13 @@ public class AlnUtilsText {
         return !isEmpty(toString(object, "")) ? useValue : elseValue;
     }
 
+    public static String notNull(final Object object) {
+        return notNull(object, "");
+    }
+    public static String notNull(final Object object, final String holder) {
+        return object != null ? toString(object) : toString(holder);
+    }
+
     public static String toString(final Object object, final String defaultValue) {
         return toString(object, defaultValue, "");
     }
@@ -56,6 +63,9 @@ public class AlnUtilsText {
     }
 
     public static String toString(final Object object) {
+        return toString(object, false);
+    }
+    public static String toString(final Object object, final boolean isLine) {
         if(object == null) return null;
         String value = object.toString();
         try {
@@ -86,8 +96,10 @@ public class AlnUtilsText {
                     final StringBuilder response = new StringBuilder();
                     final BufferedReader bufferedReader = (BufferedReader) object;
                     String line;
+                    int i = 0;
                     while((line = bufferedReader.readLine()) != null) {
-                        response.append(line);
+                        response.append(i > 0 && isLine ? "\n" : "").append(line);
+                        i++;
                     }
                     value = response.toString();
                     bufferedReader.close();
@@ -109,10 +121,6 @@ public class AlnUtilsText {
         }catch(Exception ignore) {
         }
         return value;
-    }
-
-    public static String notNull(final Object object) {
-        return notEmpty(object, "");
     }
 
     public static boolean equals(final String text1, final String text2) {

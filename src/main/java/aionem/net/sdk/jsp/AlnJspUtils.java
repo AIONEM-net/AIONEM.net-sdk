@@ -1,14 +1,16 @@
-package aionem.net.sdk.core.utils;
+package aionem.net.sdk.jsp;
 
-import aionem.net.sdk.jsp.AlnJsp;
+import aionem.net.sdk.core.utils.AlnUtilsText;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 
 @Log4j2
-public class AlnUtilsJsp {
+public class AlnJspUtils {
 
     public static String readEtcFile(final AlnJsp alnJsp, final String fileName) {
         return readFile(alnJsp, "/WEB-INF/ui.etc"+ fileName);
@@ -42,6 +44,20 @@ public class AlnUtilsJsp {
             log.error("\nERROR: - readResource ::" + e +"\n");
         }
         return null;
+    }
+
+    public static boolean writeFile(final String realPath, final String contents) {
+        return writeFile(new File(realPath), contents);
+    }
+    public static boolean writeFile(final File file, final String contents) {
+        boolean isWritten = false;
+        try(final FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8)) {
+            fileWriter.write(contents);
+            isWritten = true;
+        } catch (Exception e) {
+            log.error("\nERROR: - writeFile ::"+ e +"\n");
+        }
+        return isWritten;
     }
 
 }

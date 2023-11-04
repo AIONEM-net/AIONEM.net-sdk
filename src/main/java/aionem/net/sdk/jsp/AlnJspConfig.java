@@ -1,7 +1,6 @@
 package aionem.net.sdk.jsp;
 
 import aionem.net.sdk.core.data.AlnData;
-import aionem.net.sdk.core.utils.AlnUtilsJsp;
 import aionem.net.sdk.core.utils.AlnUtilsText;
 import lombok.Getter;
 
@@ -86,7 +85,7 @@ public class AlnJspConfig {
     private static AlnData getData(final AlnJsp alnJsp, final String config) {
         AlnData data = new AlnData();
         if(!mapData.containsKey(config) || mapData.get(config) == null) {
-            final String json = AlnUtilsJsp.readWebInfFile(alnJsp, config);
+            final String json = AlnJspUtils.readWebInfFile(alnJsp, config);
             if(!AlnUtilsText.isEmpty(json)) {
                 data = new AlnData();
                 data.fromData(json);

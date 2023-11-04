@@ -117,6 +117,8 @@ public @Data class AlnNetwork {
                     linkUrl = AlnUtilsNetwork.addParameter(link, dataParams.getValuesString());
                 }
 
+                AlnUtilsNetwork.disableSslVerification();
+
                 final URL url = new URL(linkUrl);
                 final HttpURLConnection httpURLConnection;
                 if("https".equalsIgnoreCase(url.getProtocol())) {
@@ -201,6 +203,8 @@ public @Data class AlnNetwork {
                 if(dataParams != null) {
                     linkUrl = AlnUtilsNetwork.addParameter(link, dataParams.getValuesString());
                 }
+
+                AlnUtilsNetwork.disableSslVerification();
 
                 final URL url = new URL(linkUrl);
                 final HttpURLConnection httpURLConnection;

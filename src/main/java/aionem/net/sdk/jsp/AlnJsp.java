@@ -5,7 +5,7 @@ import aionem.net.sdk.core.api.AlnNetwork;
 import aionem.net.sdk.core.config.AlnEnv;
 import aionem.net.sdk.core.data.AlnData;
 import aionem.net.sdk.core.utils.AlnUtilsData;
-import aionem.net.sdk.core.utils.AlnUtilsJsp;
+import aionem.net.sdk.core.utils.AlnUtilsNetwork;
 import aionem.net.sdk.core.utils.AlnUtilsText;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -17,7 +17,6 @@ import javax.servlet.http.HttpSession;
 
 import javax.servlet.jsp.PageContext;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -30,6 +29,7 @@ public @Getter class AlnJsp {
     protected HttpServletResponse response;
     protected PageContext pageContext;
     protected HttpSession session;
+    protected String contextPath;
 
     private AlnJspConfig config;
 
@@ -51,7 +51,7 @@ public @Getter class AlnJsp {
         this.response = response;
         this.pageContext = pageContext;
         this.session = request.getSession(true);
-        getConfig();
+        this.contextPath = getConfig().get("contextPath", request.getContextPath());
         return this;
     }
 
@@ -66,7 +66,9 @@ public @Getter class AlnJsp {
     }
 
     public String getConfigEnv() {
-        return getConfigEnv(getInitParameter("env"));
+        final String envRequest = getRequest().getHeader("A-Env");
+        final String envWebApp = getInitParameter("env");
+        return getConfigEnv(AlnUtilsText.notEmpty(envRequest, envWebApp));
     }
     public String getConfigSenderID() {
         return getConfig().get("senderID");
@@ -234,12 +236,19 @@ public @Getter class AlnJsp {
     public String getRealPathCurrent(final String path) {
         return getRealPathRoot(getServletPath()) + (!AlnUtilsText.isEmpty(path) ? "/" + path : "");
     }
+    public String getRealPathWebInf() {
+        return getRealPathWebInf("");
+    }
+    public String getRealPathWebInf(final String path) {
+        return getRealPathRoot("/WEB-INF"+ (!AlnUtilsText.isEmpty(path) ? "/" + path : ""));
+    }
     public String getRealPathRoot() {
         return getRealPathRoot("");
     }
     public String getRealPathRoot(final String path) {
         String realPath = getServletContext().getRealPath(path);
         realPath = realPath.replace("//", "/");
+        if (realPath.endsWith("/")) realPath = realPath.substring(0, realPath.length()-1);
         return realPath;
     }
 
@@ -247,11 +256,12 @@ public @Getter class AlnJsp {
         return getRequest().getServletPath().replace("/index.jsp", "");
     }
     public String getContextPath() {
-        return getRequest().getContextPath();
+        return AlnUtilsText.notNull(contextPath, getRequest().getContextPath());
     }
     public String getContextPath(final String path) {
         String contextPath = getContextPath() +"/"+ path;
         contextPath = contextPath.replace("//", "/");
+        if(contextPath.endsWith("/")) contextPath = contextPath.substring(0, contextPath.length()-1);
         return contextPath;
     }
     public String getContextServletPath() {
@@ -285,11 +295,14 @@ public @Getter class AlnJsp {
         return requestURI.substring(contextPath.length());
     }
     public String getRequestQuery() {
-        return getRequest().getQueryString();
+        return AlnUtilsText.notNull(getRequest().getQueryString());
     }
     public String getRequestUrlQuery() {
         final String query = getRequestQuery();
         return getRequestUrl() + AlnUtilsText.notEmptyUse(query, "?"+ query);
+    }
+    public String getContextUrlQuery() {
+        return getContextPath(getRequestUrlQuery());
     }
     public String getProtocol() {
         return getRequest().getProtocol();
@@ -320,7 +333,7 @@ public @Getter class AlnJsp {
         return getResponse().getWriter();
     }
     public String readFile(final String fileName) {
-        return AlnUtilsJsp.readResourceFile(this, fileName);
+        return AlnJspUtils.readResourceFile(this, fileName);
     }
 
     public String getHeader(final String name) {
@@ -342,8 +355,15 @@ public @Getter class AlnJsp {
         return "true".equalsIgnoreCase(getParameter("ui.edit"));
     }
 
-    public void sendRedirect(final String location) throws IOException {
-        getResponse().sendRedirect(location.startsWith("http") ? location : getContextPath(location));
+    public String getRedirect(final String location) {
+        return getRedirect(location, false);
+    }
+    public String getRedirect(final String location, boolean isRedirect) {
+        String url = location.startsWith("http") ? location : getContextPath(location);
+        if(isRedirect) {
+            url = AlnUtilsNetwork.addParameter(url, "redirect", getContextUrlQuery());
+        }
+        return url;
     }
     public RequestDispatcher getRequestDispatcher(final String path) {
         return getRequest().getRequestDispatcher(path);
@@ -387,22 +407,26 @@ public @Getter class AlnJsp {
     }
 
     public boolean cache(final AlnJspPage page) {
-        return cache(getURI(page.getUrl()), getRealPathRoot(page.getPath()));
+        return cache("", page);
+    }
+    public boolean cache(final String env, final AlnJspPage page) {
+        return cache(env, getURI(page.getUrl()), getRealPathRoot(page.getPath()));
     }
     public boolean cache(final String uri, final String realPath) {
+        return cache("", uri, realPath);
+    }
+    public boolean cache(final String env, final String uri, final String realPath) {
         boolean isCached = false;
 
         final AlnDaoRes resCache = new AlnNetwork.Get(uri)
-                .setDataHeaders(new AlnData().put("A-Caching", "true"))
+                .setDataHeaders(new AlnData()
+                        .put("A-Caching", "true")
+                        .put("A-Env", env)
+                )
                 .get();
 
         if(resCache.isSuccess() && resCache.hasResponse()) {
-            try(final FileWriter fileWriter = new FileWriter(realPath +"/"+ "index.html", StandardCharsets.UTF_8)) {
-                fileWriter.write(resCache.getResponse());
-                isCached = true;
-            } catch (Exception e) {
-                log.error("checkToCache: "+ e);
-            }
+            isCached = AlnJspUtils.writeFile(realPath +"/"+ "index.html", resCache.getResponse());
         }
 
         return isCached;
