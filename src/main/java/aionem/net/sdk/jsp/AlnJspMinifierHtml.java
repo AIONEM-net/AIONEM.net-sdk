@@ -74,6 +74,37 @@ public class AlnJspMinifierHtml {
 
             html = compressor.compress(html);
 
+            html = html
+                    .replace("background-image: unset;", "")
+                    .replace("--fontSize1: unset;", "")
+                    .replace("--fontSize2: unset;", "")
+                    .replace("--fontWeight1: unset;", "")
+                    .replace("--fontWeight2: unset;", "")
+                    .replace("--color1: none;", "")
+                    .replace("--color2: none;", "")
+                    .replace("--colorHover1: none;", "")
+                    .replace("--colorHover2: none;", "")
+                    .replace("---webkit-text-fill-color: unset;", "")
+                    .replace("--colorBackground1: unset;", "")
+                    .replace("--colorBackground2: unset;", "")
+                    .replace("--colorBackgroundHover1: unset;", "")
+                    .replace("--colorBackgroundHover2: ;", "")
+                    .replace("--borderRadius: -px;", "")
+                    .replace("--borderRadiusTopLeft:: -px;", "")
+                    .replace("--borderRadiusTopRight: -px;", "")
+                    .replace("--borderRadiusBottomLeft: -px;", "")
+                    .replace("--borderRadiusBottomRight: -px;", "")
+                    .replace("--borderWidth: -px;", "")
+                    .replace("--borderWidthLeft: -px;", "")
+                    .replace("--borderWidthRight: -px;", "")
+                    .replace("--borderWidthTop: -px;", "")
+                    .replace("--borderWidthBottom: -px;", "")
+                    .replace("--borderColor1: unset;", "")
+                    .replace("--borderColor2: none;", "")
+                    .replace("--borderColorMenu1: none;", "")
+                    .replace("--borderColorMenu2: none;", "")
+            ;
+
         }catch(final Exception e) {
             log.error("AIONEM.Jsp_ERROR: AlnJspMinifyHtml - minify :: {}", e.getMessage());
         }
