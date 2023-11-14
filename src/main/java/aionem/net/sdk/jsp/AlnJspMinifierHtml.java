@@ -13,10 +13,10 @@ import java.util.ArrayList;
 @Log4j2
 public class AlnJspMinifierHtml {
 
-    public static AlnDaoRes minifySave(final String pathIn) throws Exception {
+    public static AlnDaoRes minifySave(final String pathIn) {
         return minifySave(pathIn, pathIn);
     }
-    public static AlnDaoRes minifySave(final String inputFilePath, final String outputFilePath) throws Exception {
+    public static AlnDaoRes minifySave(final String inputFilePath, final String outputFilePath) {
 
         final AlnDaoRes resMinify = new AlnDaoRes();
 
