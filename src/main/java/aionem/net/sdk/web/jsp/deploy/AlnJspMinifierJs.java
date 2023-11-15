@@ -1,7 +1,9 @@
-package aionem.net.sdk.jsp;
+package aionem.net.sdk.web.jsp.deploy;
 
 import aionem.net.sdk.core.api.AlnDaoRes;
 import aionem.net.sdk.core.utils.AlnUtilsText;
+import aionem.net.sdk.web.jsp.AlnJsp;
+import aionem.net.sdk.web.jsp.utils.AlnJspUtils;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.*;
 

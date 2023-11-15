@@ -1,6 +1,7 @@
-package aionem.net.sdk.jsp;
+package aionem.net.sdk.web.jsp.map;
 
 import aionem.net.sdk.core.utils.AlnUtilsApi;
+import aionem.net.sdk.web.jsp.AlnJsp;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 

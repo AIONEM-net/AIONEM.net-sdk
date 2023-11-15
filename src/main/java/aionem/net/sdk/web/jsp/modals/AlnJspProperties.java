@@ -1,7 +1,8 @@
-package aionem.net.sdk.jsp;
+package aionem.net.sdk.web.jsp.modals;
 
 import aionem.net.sdk.core.data.AlnData;
 import aionem.net.sdk.core.data.AlnDatas;
+import aionem.net.sdk.web.jsp.AlnJsp;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 

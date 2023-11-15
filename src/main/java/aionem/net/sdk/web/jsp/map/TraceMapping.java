@@ -1,4 +1,4 @@
-package aionem.net.sdk.jsp.map;
+package aionem.net.sdk.web.jsp.map;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,7 +7,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface GetMapping {
+public @interface TraceMapping {
     String value() default "";
 }
-

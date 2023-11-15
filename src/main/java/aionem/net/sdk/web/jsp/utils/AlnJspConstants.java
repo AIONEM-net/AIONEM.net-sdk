@@ -1,4 +1,4 @@
-package aionem.net.sdk.jsp;
+package aionem.net.sdk.web.jsp.utils;
 
 public class AlnJspConstants {
 

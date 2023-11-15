@@ -1,4 +1,4 @@
-package aionem.net.sdk.jsp;
+package aionem.net.sdk.web.jsp;
 
 import aionem.net.sdk.core.api.AlnDaoRes;
 import aionem.net.sdk.core.api.AlnNetwork;
@@ -7,6 +7,13 @@ import aionem.net.sdk.core.data.AlnData;
 import aionem.net.sdk.core.utils.AlnUtilsData;
 import aionem.net.sdk.core.utils.AlnUtilsNetwork;
 import aionem.net.sdk.core.utils.AlnUtilsText;
+import aionem.net.sdk.web.jsp.deploy.AlnJspMinifierHtml;
+import aionem.net.sdk.web.jsp.modals.AlnJspCmp;
+import aionem.net.sdk.web.jsp.modals.AlnJspConfig;
+import aionem.net.sdk.web.jsp.modals.AlnJspPage;
+import aionem.net.sdk.web.jsp.modals.AlnJspProperties;
+import aionem.net.sdk.web.jsp.utils.AlnJspConstants;
+import aionem.net.sdk.web.jsp.utils.AlnJspUtils;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 

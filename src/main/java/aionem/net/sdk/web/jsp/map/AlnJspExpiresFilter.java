@@ -1,4 +1,4 @@
-package aionem.net.sdk.jsp;
+package aionem.net.sdk.web.jsp.map;
 
 import org.apache.catalina.filters.ExpiresFilter;
 

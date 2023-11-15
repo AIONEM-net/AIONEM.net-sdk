@@ -1,5 +1,6 @@
-package aionem.net.sdk.jsp;
+package aionem.net.sdk.web.jsp.map;
 
+import aionem.net.sdk.web.jsp.AlnJsp;
 import org.tuckey.web.filters.urlrewrite.UrlRewriteFilter;
 
 import javax.servlet.FilterChain;

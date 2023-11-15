@@ -1,6 +1,6 @@
 package aionem.net.sdk.test;
 
-import aionem.net.sdk.jsp.map.*;
+import aionem.net.sdk.web.jsp.map.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

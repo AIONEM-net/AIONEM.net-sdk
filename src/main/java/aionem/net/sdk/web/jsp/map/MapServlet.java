@@ -1,4 +1,4 @@
-package aionem.net.sdk.jsp.map;
+package aionem.net.sdk.web.jsp.map;
 
 import aionem.net.sdk.core.utils.AlnUtilsText;
 import lombok.extern.log4j.Log4j2;

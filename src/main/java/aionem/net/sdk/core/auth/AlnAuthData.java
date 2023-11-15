@@ -1,7 +1,7 @@
 package aionem.net.sdk.core.auth;
 
 import aionem.net.sdk.core.data.AlnData;
-import aionem.net.sdk.jsp.AlnJsp;
+import aionem.net.sdk.web.jsp.AlnJsp;
 import aionem.net.sdk.core.utils.AlnUtilsText;
 import com.google.gson.JsonObject;
 import lombok.Data;

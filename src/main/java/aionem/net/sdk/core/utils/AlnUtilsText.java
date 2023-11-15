@@ -260,5 +260,5 @@ public class AlnUtilsText {
 
         return text;
     }
-
+    
 }

@@ -1,7 +1,12 @@
-package aionem.net.sdk.jsp;
+package aionem.net.sdk.web.jsp.deploy;
 
 import aionem.net.sdk.core.data.AlnData;
 import aionem.net.sdk.core.utils.AlnUtilsText;
+import aionem.net.sdk.web.jsp.AlnJsp;
+import aionem.net.sdk.web.jsp.deploy.AlnJspMinifierCss;
+import aionem.net.sdk.web.jsp.deploy.AlnJspMinifierJs;
+import aionem.net.sdk.web.jsp.modals.AlnJspPage;
+import aionem.net.sdk.web.jsp.utils.AlnJspUtils;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.*;

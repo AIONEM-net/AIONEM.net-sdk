@@ -25,7 +25,7 @@ public class AlnUtilsNetwork {
         return addParameter(url, request.getParameterMap());
     }
     public static String addParameter(final String url, final Map<String, String[]> paramsMap) {
-        final HashMap<String, String> params = new HashMap<String, String>();
+        final HashMap<String, String> params = new HashMap<>();
         for(final String name : paramsMap.keySet()) {
             params.put(name, paramsMap.get(name)[0]);
         }

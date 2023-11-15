@@ -1,7 +1,9 @@
-package aionem.net.sdk.jsp;
+package aionem.net.sdk.web.jsp.modals;
 
 import aionem.net.sdk.core.data.AlnData;
 import aionem.net.sdk.core.utils.AlnUtilsText;
+import aionem.net.sdk.web.jsp.AlnJsp;
+import aionem.net.sdk.web.jsp.utils.AlnJspUtils;
 import lombok.Getter;
 
 import java.util.HashMap;
