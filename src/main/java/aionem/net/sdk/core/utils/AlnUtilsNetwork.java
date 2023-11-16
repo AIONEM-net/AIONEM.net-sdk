@@ -1,7 +1,6 @@
 package aionem.net.sdk.core.utils;
 
 import javax.net.ssl.*;
-import javax.servlet.http.HttpServletRequest;
 import java.net.URLEncoder;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -20,9 +19,6 @@ public class AlnUtilsNetwork {
             url += getParameter(url, name, value);
         }
         return url;
-    }
-    public static String addParameter(String url, final HttpServletRequest request) {
-        return addParameter(url, request.getParameterMap());
     }
     public static String addParameter(final String url, final Map<String, String[]> paramsMap) {
         final HashMap<String, String> params = new HashMap<>();

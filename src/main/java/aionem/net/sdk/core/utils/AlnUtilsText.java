@@ -1,26 +1,21 @@
 package aionem.net.sdk.core.utils;
 
-import aionem.net.sdk.core.data.AlnData;
-import aionem.net.sdk.core.api.AlnDaoRes;
-import aionem.net.sdk.core.data.AlnDatas;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 @Log4j2
 public class AlnUtilsText {
+
 
     public static boolean isEmpty(final CharSequence value) {
         return value == null || value.length() == 0;
@@ -74,22 +69,24 @@ public class AlnUtilsText {
             if(!(object instanceof String || object instanceof Character || object instanceof StringBuilder ||
                     object instanceof Integer || object instanceof Long || object instanceof Double || object instanceof Boolean)) {
 
-                if(object instanceof JsonElement) {
-                    value = ((JsonElement) object).getAsString();
-                }else if(object instanceof AlnDaoRes) {
-                    value = ((AlnDaoRes) object).getData().toString();
-                }else if(object instanceof AlnData) {
-                    value = ((AlnData) object).getData().toString();
-                }  else if(object instanceof AlnDatas) {
-                    value = ((AlnDatas) object).getDatas().toString();
-                }else if(object instanceof ArrayList) {
-                    JsonArray jsonArray = AlnUtilsJson.jsonArray();
-                    for(Object item : ((ArrayList) object)) {
-                        String itemValue = toString(item);
-                        jsonArray.add(itemValue);
-                    }
-                    value = jsonArray.toString();
-                }else if(object instanceof File) {
+//                if(object instanceof JsonElement) {
+//                    value = ((JsonElement) object).getAsString();
+//                }else if(object instanceof AlnDaoRes) {
+//                    value = ((AlnDaoRes) object).getData().toString();
+//                }else if(object instanceof AlnData) {
+//                    value = ((AlnData) object).getData().toString();
+//                }  else if(object instanceof AlnDatas) {
+//                    value = ((AlnDatas) object).getDatas().toString();
+//                }else if(object instanceof ArrayList) {
+//                    JsonArray jsonArray = AlnUtilsJson.jsonArray();
+//                    for(Object item : ((ArrayList) object)) {
+//                        String itemValue = toString(item);
+//                        jsonArray.add(itemValue);
+//                    }
+//                    value = jsonArray.toString();
+//                }
+
+                if(object instanceof File) {
                     value = Files.readString(((File) object).toPath());
                 }else if(object instanceof HttpURLConnection) {
                         value = toString(new BufferedReader(new InputStreamReader(((HttpURLConnection) object).getInputStream(), StandardCharsets.UTF_8)));
@@ -111,9 +108,9 @@ public class AlnUtilsText {
                         value = toString(Array.get(object, 0));
                     }
                 }else if(object instanceof Calendar) {
-                    value = AlnUtilsData.Converter.DateUtils.calendarToString((Calendar) object);
+                    value = AlnUtilsConverter.Converter.DateUtils.calendarToString((Calendar) object);
                 }else if(object instanceof Date) {
-                    value = AlnUtilsData.Converter.DateUtils.dateToString((Date) object);
+                    value = AlnUtilsConverter.Converter.DateUtils.dateToString((Date) object);
                 }else {
                     value = object.toString();
                 }
@@ -192,73 +189,4 @@ public class AlnUtilsText {
         return stringBuilder.toString();
     }
 
-    public static String replaceVariables(String text, final AlnData data) {
-        if(isEmpty(text)) return "";
-
-        if(text.contains("${list") && text.contains("}")) {
-
-            final StringBuilder stringBuilder = new StringBuilder();
-
-            final Pattern pattern = Pattern.compile("\\$\\{list(.*?)}(.*?)\\$\\{list(.*?)\\}", Pattern.DOTALL);
-            final Matcher matcher = pattern.matcher(text);
-
-            int indexMatchEnd = 0;
-            while(matcher.find()) {
-                final String key = matcher.group(1);
-                final String child = matcher.group(2);
-
-                stringBuilder.append(text, indexMatchEnd, matcher.start());
-
-                final AlnDatas datas = data.has("$_list"+ key) ? data.getChildren("$_list"+ key) : data.getChildren("list"+ key);
-
-                for(final AlnData data1 : datas) {
-                    final String text1 = replaceVariables(child, data1);
-                    stringBuilder.append(text1);
-                }
-
-                indexMatchEnd = matcher.end();
-            }
-
-            stringBuilder.append(text, indexMatchEnd, text.length());
-
-            if(!isEmpty(stringBuilder.toString())) {
-                text = stringBuilder.toString();
-            }
-        }
-
-        for(String key : data.keySet()) {
-            String name = key;
-            if(key.startsWith("$_")) {
-                name = key.substring(2);
-            }
-            final String value = data.get(key);
-            text = text.replace("${" + name + "}", value);
-        }
-
-        if(text.contains("${") && text.contains("}")) {
-
-            final StringBuilder stringBuffer = new StringBuilder();
-
-            final Pattern pattern = Pattern.compile("\\$\\{(\\w+)\\}");
-            final Matcher matcher = pattern.matcher(text);
-            while(matcher.find()) {
-                try {
-                    final String key = matcher.group(1);
-                    final String value = data.get(key);
-                    matcher.appendReplacement(stringBuffer, value);
-                } catch (Exception e) {
-                    log.info("\nERROR: TextUtils - replaceVariables ::" + e + "\n");
-                }
-            }
-            matcher.appendTail(stringBuffer);
-
-            if(!isEmpty(stringBuffer.toString())) {
-                text = stringBuffer.toString();
-            }
-
-        }
-
-        return text;
-    }
-    
 }

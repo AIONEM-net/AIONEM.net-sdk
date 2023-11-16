@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>aionem.net</groupId>
-    <artifactId>aionem.net-sdk</artifactId>
+    <artifactId>aionem.net-sdk-core</artifactId>
     <version>1.0.0</version>
-    <name>AIONEM.sdk</name>
+    <name>AIONEM.sdk-core</name>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -16,85 +16,11 @@
     </properties>
 
     <dependencies>
-        <!-- AIONEM.sdk -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>jsp-api</artifactId>
-            <version>2.2</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.33</version>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle.database.jdbc</groupId>
-            <artifactId>ucp</artifactId>
-            <version>23.2.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle.database.jdbc</groupId>
-            <artifactId>ojdbc8</artifactId>
-            <version>23.2.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.10.1</version>
-            <scope>compile</scope>
-        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.30</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.openhtmltopdf</groupId>
-            <artifactId>openhtmltopdf-core</artifactId>
-            <version>1.0.10</version>
-        </dependency>
-        <dependency>
-            <groupId>com.openhtmltopdf</groupId>
-            <artifactId>openhtmltopdf-pdfbox</artifactId>
-            <version>1.0.10</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>1.15.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.tuckey</groupId>
-            <artifactId>urlrewritefilter</artifactId>
-            <version>4.0.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.controller.thirdparty</groupId>
-            <artifactId>org.apache.catalina.filters.CorsFilter</artifactId>
-            <version>7.0.42</version>
-        </dependency>
-        <dependency>
-            <groupId>com.googlecode.htmlcompressor</groupId>
-            <artifactId>htmlcompressor</artifactId>
-            <version>1.5.2</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-            <version>1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.javascript</groupId>
-            <artifactId>closure-compiler</artifactId>
-            <version>v20230802</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
