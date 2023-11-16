@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AemProjectConfiguration">
+    <option name="wasInitialized" value="true" />
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="0fbd7da5-b200-430e-b9d2-f6b923d1c91a" name="Changes" comment="AIONEM.NET - SDK - ver1.1.0">
+      <change afterPath="$PROJECT_DIR$/AIONEM.sdk-core" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AIONEM.sdk-data" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AIONEM.sdk-web" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-data/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-data/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/core/utils/AlnUtilsNetwork.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/core/utils/AlnUtilsNetwork.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/core/utils/AlnUtilsText.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/core/utils/AlnUtilsText.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/AlnDBCol.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/AlnDBCol.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/AlnData.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/AlnData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/AlnDatas.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/AlnDatas.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/AlnQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/AlnQuery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/AlnQueryColumn.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/AlnQueryColumn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/AlnQueryCondition.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/AlnQueryCondition.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/AlnQueryDelete.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/AlnQueryDelete.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/AlnQueryInsert.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/AlnQueryInsert.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/AlnQuerySelect.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/AlnQuerySelect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/AlnQueryUpdate.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/AlnQueryUpdate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/api/AlnAuthData.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/api/AlnAuthData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/api/AlnDaoRes.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/api/AlnDaoRes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/net/AlnNetwork.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/net/AlnNetwork.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/utils/AlnUtilsConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/utils/AlnUtilsConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/utils/AlnUtilsDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/utils/AlnUtilsDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/utils/AlnUtilsJson.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-data/src/main/java/aionem/net/sdk/data/utils/AlnUtilsJson.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/lib/htmlcompressor-1.5.2.jar" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/lib/htmlcompressor-1.5.2.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/core/utils/AlnUtilsNetwork.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/core/utils/AlnUtilsNetwork.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/core/utils/AlnUtilsText.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/core/utils/AlnUtilsText.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/AlnJsp.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/AlnJsp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/deploy/AlnJspMinifierCss.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/deploy/AlnJspMinifierCss.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/deploy/AlnJspMinifierHtml.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/deploy/AlnJspMinifierHtml.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/deploy/AlnJspMinifierImage.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/deploy/AlnJspMinifierImage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/deploy/AlnJspMinifierJs.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/deploy/AlnJspMinifierJs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/deploy/AlnJspWebApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/deploy/AlnJspWebApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/map/AlnJspExpiresFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/map/AlnJspServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/map/AlnJspServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/map/AlnJspUrlRewriteFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/map/AlnJspUrlRewriteFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/map/DeleteMapping.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/map/GetMapping.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/map/HeadMapping.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/map/MapServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/map/MapServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/map/OptionsMapping.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/map/PostMapping.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/map/PutMapping.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/map/TraceMapping.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/modals/AlnI18n.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/modals/AlnI18n.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/modals/AlnJspCmp.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/modals/AlnJspCmp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/modals/AlnJspConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/modals/AlnJspConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/modals/AlnJspPage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/modals/AlnJspProperties.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/modals/AlnJspProperties.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/modals/AlnResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/modals/AlnResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/utils/AlnJspConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/utils/AlnJspConstants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/utils/AlnJspUtils.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/utils/AlnUtilsApi.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/utils/AlnUtilsApi.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/utils/AlnUtilsConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/jsp/utils/AlnUtilsConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/spring/AlnSpring.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/test/MapServletTest1.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/test/MapServletTest1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/test/MapServletTest2.java" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web/src/main/java/aionem/net/sdk/web/test/MapServletTest2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/htmlcompressor-1.5.2.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/AIONEM_NET_SDK.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/api/mail/AlnApiMail.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/api/pay/AlnApiPay.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/api/AlnDaoRes.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/api/AlnNetwork.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/api/AlnResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/auth/AlnAuthData.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/config/AlnEnv.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/data/AlnDBCol.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/data/AlnData.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/data/AlnDatas.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/data/AlnI18n.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/data/AlnQuery.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/data/AlnQueryColumn.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/data/AlnQueryCondition.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/data/AlnQueryDelete.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/data/AlnQueryInsert.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/data/AlnQuerySelect.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/data/AlnQueryUpdate.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/utils/AlnUtils.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/utils/AlnUtilsApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/utils/AlnUtilsDB.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/utils/AlnUtilsData.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/utils/AlnUtilsHTML.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/utils/AlnUtilsJson.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/utils/AlnUtilsNetwork.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/utils/AlnUtilsPDF.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/utils/AlnUtilsParse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/core/utils/AlnUtilsText.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/dev/AlnDev.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/test/MapServletTest1.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/test/MapServletTest2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/test/MomoApi1UserUUID.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/test/MomoApi2UserKey.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/test/MomoApi3AccessToken.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/test/MomoApi4RequestPay.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/test/MomoApiAccountBalance.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/test/MomoApiCreatePayment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/test/MomoApiCreateVoucher.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/test/MomoApiRequestPayDeliveryNotification.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/test/MomoApiRequestPayInvoiceStatus.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/test/MomoApiRequestPayTransactionStatus.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/test/MomoApiUserBasicInfo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/test/MomoApiUserDetails.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/test/MomoApiUserInfoConsent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/test/MomoApiVoucherStatus.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/AlnJsp.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/deploy/AlnJspMinifierCss.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/deploy/AlnJspMinifierHtml.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/deploy/AlnJspMinifierImage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/deploy/AlnJspMinifierJs.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/deploy/AlnJspWebApp.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/map/AlnJspExpiresFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/map/AlnJspServlet.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/map/AlnJspUrlRewriteFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/map/DeleteMapping.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/map/GetMapping.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/map/HeadMapping.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/map/MapServlet.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/map/OptionsMapping.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/map/PostMapping.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/map/PutMapping.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/map/TraceMapping.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/modals/AlnJspCmp.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/modals/AlnJspConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/modals/AlnJspPage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/modals/AlnJspProperties.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/utils/AlnJspConstants.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/jsp/utils/AlnJspUtils.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/aionem/net/sdk/web/spring/AlnSpring.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/AIONEM.sdk-web" />
+    <option name="ROOT_SYNC" value="SYNC" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2VDJmfrEm1evol0J4iCP6HPQloH" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "Merging main",
+    "last_opened_file_path": "/Users/alain-niyonema/AIONEM.net/AIONEM.sdk",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="AIONEM.sdk" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="AIONEM.sdk" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0fbd7da5-b200-430e-b9d2-f6b923d1c91a" name="Changes" comment="" />
+      <created>1694364878105</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1694364878105</updated>
+      <workItem from="1694364879354" duration="219000" />
+      <workItem from="1694471386304" duration="34000" />
+      <workItem from="1695932648800" duration="54000" />
+      <workItem from="1696052978474" duration="606000" />
+      <workItem from="1696093270485" duration="3028000" />
+      <workItem from="1696264378443" duration="754000" />
+      <workItem from="1696784237569" duration="62000" />
+      <workItem from="1696784305133" duration="2006000" />
+      <workItem from="1696885699317" duration="34000" />
+      <workItem from="1700114894806" duration="540000" />
+    </task>
+    <task id="LOCAL-00001" summary="AIONEM.NET - SDK - ver1.0.0">
+      <option name="closed" value="true" />
+      <created>1694365010798</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1694365010798</updated>
+    </task>
+    <task id="LOCAL-00002" summary="AIONEM.NET - SDK - ver1.0.0">
+      <option name="closed" value="true" />
+      <created>1694471406425</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1694471406425</updated>
+    </task>
+    <task id="LOCAL-00003" summary="AIONEM.NET - SDK - ver1.0.0">
+      <option name="closed" value="true" />
+      <created>1695932664088</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1695932664088</updated>
+    </task>
+    <task id="LOCAL-00004" summary="AIONEM.NET - SDK - ver1.0.0">
+      <option name="closed" value="true" />
+      <created>1696052982822</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1696052982822</updated>
+    </task>
+    <task id="LOCAL-00005" summary="AIONEM.NET - SDK - ver1.0.0">
+      <option name="closed" value="true" />
+      <created>1696101777122</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1696101777122</updated>
+    </task>
+    <task id="LOCAL-00006" summary="AIONEM.NET - SDK - ver1.0.0">
+      <option name="closed" value="true" />
+      <created>1696121180227</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1696121180227</updated>
+    </task>
+    <task id="LOCAL-00007" summary="AIONEM.NET - SDK - ver1.0.0">
+      <option name="closed" value="true" />
+      <created>1696234084924</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1696234084924</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="AIONEM.NET - SDK - ver1.0.0" />
+    <MESSAGE value="AIONEM.NET - SDK - ver1.1.0" />
+    <option name="LAST_COMMIT_MESSAGE" value="AIONEM.NET - SDK - ver1.1.0" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
