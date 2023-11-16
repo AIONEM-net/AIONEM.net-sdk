@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>aionem.net</groupId>
-    <artifactId>aionem.net-sdk-core</artifactId>
+    <artifactId>aionem.net-sdk-data</artifactId>
     <version>1.0.0</version>
-    <name>AIONEM.sdk-core</name>
+    <name>AIONEM.sdk-data</name>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -17,10 +17,41 @@
 
     <dependencies>
         <dependency>
+            <groupId>aionem.net</groupId>
+            <artifactId>aionem.net-sdk-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ucp</artifactId>
+            <version>23.2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <version>23.2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.30</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
