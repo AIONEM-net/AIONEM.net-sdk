@@ -7,10 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0fbd7da5-b200-430e-b9d2-f6b923d1c91a" name="Changes" comment="AIONEM.NET - SDK - ver1.2.0">
-      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-core" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-core" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AIONEM.sdk-web" beforeDir="false" afterPath="$PROJECT_DIR$/AIONEM.sdk-web" afterDir="false" />
-    </list>
+    <list default="true" id="0fbd7da5-b200-430e-b9d2-f6b923d1c91a" name="Changes" comment="AIONEM.NET - SDK - ver1.2.0" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,7 +17,7 @@
     <execution />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/AIONEM.sdk-web" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="SYNC" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
@@ -28,7 +25,7 @@
   &quot;associatedIndex&quot;: 2
 }</component>
   <component name="ProjectId" id="2VDJmfrEm1evol0J4iCP6HPQloH" />
-  <component name="ProjectLevelVcsManager">
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
@@ -50,7 +47,10 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "project.structure.last.edited": "Facets",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.16920471",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -92,6 +92,8 @@
       <workItem from="1696784305133" duration="2006000" />
       <workItem from="1696885699317" duration="34000" />
       <workItem from="1700114894806" duration="982000" />
+      <workItem from="1700118304970" duration="25000" />
+      <workItem from="1700118701464" duration="325000" />
     </task>
     <task id="LOCAL-00001" summary="AIONEM.NET - SDK - ver1.0.0">
       <option name="closed" value="true" />
@@ -183,6 +185,11 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/AIONEM.sdk-core" />
+      <path value="$PROJECT_DIR$/AIONEM.sdk-data" />
+      <path value="$PROJECT_DIR$/AIONEM.sdk-web" />
+    </ignored-roots>
     <MESSAGE value="AIONEM.NET - SDK - ver1.0.0" />
     <MESSAGE value="AIONEM.NET - SDK - ver1.1.0" />
     <MESSAGE value="AIONEM.NET - SDK - ver1.2.0" />
