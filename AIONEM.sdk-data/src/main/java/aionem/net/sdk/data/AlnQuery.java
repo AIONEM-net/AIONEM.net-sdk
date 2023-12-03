@@ -79,7 +79,7 @@ public class AlnQuery {
         }
         try {
 
-            if(false && poolDataSource == null) {
+            if(auth.isUsePoolDataSource() && poolDataSource == null) {
                 poolDataSource = PoolDataSourceFactory.getPoolDataSource();
                 poolDataSource.setConnectionFactoryClassName("com.mysql.cj.jdbc.MysqlDataSource");
                 poolDataSource.setURL(auth.getDBConnection() + "://"+ auth.getDBHost() +":"+ auth.getDBPort() +"/"+ auth.getDBName());

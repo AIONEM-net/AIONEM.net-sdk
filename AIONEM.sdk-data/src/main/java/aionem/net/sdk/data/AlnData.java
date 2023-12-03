@@ -46,7 +46,7 @@ public class AlnData {
             final boolean isPrivate = Modifier.isPrivate(modifiers);
             if(!isStatic && !isFinal && !isPrivate) {
                 field.setAccessible(true);
-                final AlnDBCol col = field.isAnnotationPresent(AlnDBCol.class) ? field.getDeclaredAnnotation(AlnDBCol.class) : null;
+                final AlnDb col = field.isAnnotationPresent(AlnDb.class) ? field.getDeclaredAnnotation(AlnDb.class) : null;
                 final String fieldName = field.getName();
                 final String key = col != null ? AlnUtilsText.notEmpty(col.value(), fieldName) : fieldName;
                 try {
@@ -79,7 +79,7 @@ public class AlnData {
                 final boolean isPrivate = Modifier.isPrivate(modifiers);
                 if(!isStatic && !isPrivate) {
                     field.setAccessible(true);
-                    final AlnDBCol col = field.isAnnotationPresent(AlnDBCol.class) ? field.getDeclaredAnnotation(AlnDBCol.class) : null;
+                    final AlnDb col = field.isAnnotationPresent(AlnDb.class) ? field.getDeclaredAnnotation(AlnDb.class) : null;
                     final String fieldName = field.getName();
                     final String key = col != null ? AlnUtilsText.notEmpty(col.value(), fieldName) : fieldName;
                     Object value = field.get(db);

@@ -16,6 +16,7 @@ public class AlnUtilsDB {
     public static final String PAR_ID = "id";
     public static final String PAR_DRAW = "draw";
     public static final String PAR_START = "start";
+    public static final String PAR_END = "end";
     public static final String PAR_MAX = "max";
     public static final String PAR_LENGTH = "length";
     public static final String PAR_PAGE = "page";

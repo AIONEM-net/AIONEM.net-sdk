@@ -5,7 +5,7 @@ import java.lang.annotation.RetentionPolicy;
 
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface AlnDBCol {
+public @interface AlnDb {
 
     String value();
 

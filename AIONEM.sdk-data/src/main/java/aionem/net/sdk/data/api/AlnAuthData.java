@@ -58,7 +58,7 @@ public @Data class AlnAuthData extends AlnData {
     private ResourceBundle resourceBundle;
     public ResourceBundle getResourceBundle() {
         if(resourceBundle == null) {
-            resourceBundle = ResourceBundle.getBundle("application.properties");
+            resourceBundle = ResourceBundle.getBundle("application");
         }
         return resourceBundle;
     }
@@ -76,6 +76,9 @@ public @Data class AlnAuthData extends AlnData {
         return value;
     }
 
+    public boolean isUsePoolDataSource() {
+        return false;
+    }
     public String getDBDriver() {
         return getResourceBundle("db_driver");
     }

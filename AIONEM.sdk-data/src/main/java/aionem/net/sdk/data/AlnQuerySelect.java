@@ -454,10 +454,11 @@ public class AlnQuerySelect extends AlnQueryCondition {
 
     public AlnQuerySelect list(final AlnData data) {
 
-        final int length = data.get(AlnUtilsDB.PAR_LENGTH, 10);
-        final int max = data.get(AlnUtilsDB.PAR_MAX, length);
         final int start = data.get(AlnUtilsDB.PAR_START, 0);
-        final int page = data.get(AlnUtilsDB.PAR_PAGE, length > 0 ? (start / length) + 1 : 1);
+        final int end = data.get(AlnUtilsDB.PAR_END, 0);
+        final int length = data.get(AlnUtilsDB.PAR_LENGTH, 10);
+        final int max = (end > 0 && end > start) ? end - start : data.get(AlnUtilsDB.PAR_MAX, length);
+        final int page = data.get(AlnUtilsDB.PAR_PAGE, max > 0 ? Math.round((float) start / max) + 1 : 1);
 
         final String orderColumn = data.get("order[0][column]");
         final String orderName = data.get("columns[" + orderColumn + "][name]", "orderBy");

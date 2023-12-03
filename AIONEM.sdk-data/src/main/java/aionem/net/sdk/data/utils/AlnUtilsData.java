@@ -2,7 +2,7 @@ package aionem.net.sdk.data.utils;
 
 import aionem.net.sdk.core.utils.AlnUtilsConverter;
 import aionem.net.sdk.core.utils.AlnUtilsText;
-import aionem.net.sdk.data.AlnDBCol;
+import aionem.net.sdk.data.AlnDb;
 import aionem.net.sdk.data.AlnData;
 import aionem.net.sdk.data.AlnDatas;
 import com.google.gson.JsonObject;
@@ -23,11 +23,11 @@ public class AlnUtilsData {
         return adaptTo(type, (Object) data);
     }
     public static <T> T adaptTo(final Class<T> type, final Object data) throws Exception {
-        T t;
+        if(data == null) return null;
         if(type.getSuperclass().isAssignableFrom(AlnData.class) || type.isAssignableFrom(AlnData.class)) {
             return type.getConstructor(data.getClass()).newInstance(data);
         }else {
-            t = type.getConstructor().newInstance();
+            T t = type.getConstructor().newInstance();
 
             if(type.getSuperclass().isAssignableFrom(HashMap.class) || type.isAssignableFrom(HashMap.class)) {
                 return adaptTo(t, AlnUtilsJson.fromHashMap((HashMap<String, Object>) data));
@@ -48,7 +48,7 @@ public class AlnUtilsData {
             final boolean isPrivate = Modifier.isPrivate(modifiers);
             if(!isStatic && !isFinal && !isPrivate) {
                 field.setAccessible(true);
-                final AlnDBCol col = field.isAnnotationPresent(AlnDBCol.class) ? field.getDeclaredAnnotation(AlnDBCol.class) : null;
+                final AlnDb col = field.isAnnotationPresent(AlnDb.class) ? field.getDeclaredAnnotation(AlnDb.class) : null;
                 final String fieldName = field.getName();
                 final String name = col != null ? AlnUtilsText.notEmpty(col.value(), fieldName) : fieldName;
                 Object value = AlnUtilsJson.getValue(data, name);
