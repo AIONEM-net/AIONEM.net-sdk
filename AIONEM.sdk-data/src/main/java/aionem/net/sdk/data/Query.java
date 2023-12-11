@@ -28,11 +28,6 @@ public class Query {
     private String error = "";
     private Exception exception;
 
-    public enum QueryDate { NOW("NOW()"), CURDATE("CURDATE()"), ;
-        QueryDate(String date) {
-        }
-    }
-
     protected Query(final String table) {
         this(new AuthData(), table);
     }

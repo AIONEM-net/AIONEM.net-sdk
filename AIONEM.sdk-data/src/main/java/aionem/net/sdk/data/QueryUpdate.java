@@ -73,7 +73,7 @@ public class QueryUpdate extends QueryCondition {
     public QueryUpdate set(final int tableNo, final String column, Object value, final boolean condition) {
         value = getNullable(column, value);
         if(column != null && value != null && condition) {
-            columns2.add(new QueryColumn(tables.get(tableNo) + "." + "`" + column + "`", "='" + UtilsText.toString(value) + "'"));
+            columns2.add(new QueryColumn(tables.get(tableNo), column, "=", value));
         }
         return this;
     }
@@ -118,7 +118,7 @@ public class QueryUpdate extends QueryCondition {
     }
     public QueryUpdate adjust(final int tableNo, final String column1, final String column2, final double value, final boolean condition) {
         if(column1 != null && column2 != null && condition) {
-            columns2.add(new QueryColumn(tables.get(tableNo) + "." + "`" + column1 + "`", "=`" + column2 + "`" +" + "+ value));
+            columns2.add(new QueryColumn(tables.get(tableNo) + "." + "`" + column1 + "`", "=", column2, "+"+ value));
         }
         return this;
     }

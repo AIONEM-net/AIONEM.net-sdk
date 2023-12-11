@@ -76,7 +76,7 @@ public class QueryInsert extends Query {
     public QueryInsert put(final String column, Object value, final boolean condition) {
         value = getNullable(column, value);
         if(column != null && value != null && condition && only) {
-            columns1.add(new QueryColumn("`" + column + "`", "'" + UtilsText.toString(value) + "'"));
+            columns1.add(new QueryColumn("`" + column + "`", value));
         }
         return this;
     }

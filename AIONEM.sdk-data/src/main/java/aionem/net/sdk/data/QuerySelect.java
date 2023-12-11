@@ -35,7 +35,7 @@ public class QuerySelect extends QueryCondition {
 
     public QuerySelect all() {
         if(only) {
-            select(new QueryColumn("" + table + "." + "*", ""));
+            select(new QueryColumn("" + table + "." + "*"));
         }
         return this;
     }
@@ -49,8 +49,8 @@ public class QuerySelect extends QueryCondition {
         return this;
     }
     
-    public QuerySelect select(final QueryColumn queryColumn) {
-        if(queryColumn != null) {
+    protected QuerySelect select(final QueryColumn queryColumn) {
+        if(queryColumn != null && only) {
             columns2.add(queryColumn);
         }
         return this;
@@ -62,7 +62,7 @@ public class QuerySelect extends QueryCondition {
     }
     public QuerySelect column(final String column, final String alias) {
         if(column != null && only) {
-            select(new QueryColumn("" + table + "." + "`" + column + "`" + (!UtilsText.isEmpty(alias) ? " AS " + "'" + alias + "'" : ""), ""));
+            select(new QueryColumn("" + table + "." + "`" + column + "`" + (!UtilsText.isEmpty(alias) ? " AS " + "'" + alias + "'" : "")));
         }
         return this;
     }
@@ -81,7 +81,7 @@ public class QuerySelect extends QueryCondition {
     }
     public QuerySelect coalesce(final int tableNo, final String column1, final String column2, final String alias) {
         if(column1 != null && column2 != null && only) {
-            select(new QueryColumn("COALESCE(NULLIF(NULLIF(" + tables.get(tableNo) + "." + "`" + column1 + "`" + ", '0'), ''), " + table + "." + "`" + column2 + "`)" + " AS " + "'" + alias + "'", ""));
+            select(new QueryColumn("COALESCE(NULLIF(NULLIF(" + tables.get(tableNo) + "." + "`" + column1 + "`" + ", '0'), ''), " + table + "." + "`" + column2 + "`)" + " AS " + "'" + alias + "'"));
         }
         return this;
     }
@@ -97,7 +97,7 @@ public class QuerySelect extends QueryCondition {
     public QuerySelect max(final int tableNo, String column, final String alias) {
         if(only) {
             column = tables.get(tableNo) + "." + "`" + column + "`";
-            QueryColumn columnValueMax = new QueryColumn("MAX(" + column + ")" + (!UtilsText.isEmpty(alias) ? " AS " + "'" + alias + "'" : "'" + alias + "'"), "");
+            QueryColumn columnValueMax = new QueryColumn("MAX(" + column + ")" + (!UtilsText.isEmpty(alias) ? " AS " + "'" + alias + "'" : "'" + alias + "'"));
             if(!columns2.contains(columnValueMax)) {
                 select(columnValueMax);
             }
@@ -124,7 +124,7 @@ public class QuerySelect extends QueryCondition {
     public QuerySelect count(final int tableNo, String column, final String alias, final boolean distinct) {
         if(only) {
             column = !UtilsText.isEmpty(column) ? (distinct ? "DISTINCT " : "") + tables.get(tableNo) + "." + "`" + column + "`" : "*";
-            QueryColumn columnValueCount = new QueryColumn("COUNT(" + column + ")" + (!UtilsText.isEmpty(alias) ? " AS " + "'" + alias + "'" : ""), "");
+            QueryColumn columnValueCount = new QueryColumn("COUNT(" + column + ")" + (!UtilsText.isEmpty(alias) ? " AS " + "'" + alias + "'" : ""));
             if(!columns2.contains(columnValueCount)) {
                 select(columnValueCount);
             }
@@ -152,7 +152,7 @@ public class QuerySelect extends QueryCondition {
     public QuerySelect sum(final int tableNo, String column, final String alias, final boolean distinct) {
         if(column != null && only) {
             column = (distinct ? "DISTINCT " : "") + tables.get(tableNo) + "." + "`" + column + "`";
-            QueryColumn columnValueSum = new QueryColumn("SUM(" + column + ")" + (!UtilsText.isEmpty(alias) ? " AS " + "'" + alias + "'" : ""), "");
+            QueryColumn columnValueSum = new QueryColumn("SUM(" + column + ")" + (!UtilsText.isEmpty(alias) ? " AS " + "'" + alias + "'" : ""));
             if(!columns2.contains(columnValueSum)) {
                 select(columnValueSum);
             }
