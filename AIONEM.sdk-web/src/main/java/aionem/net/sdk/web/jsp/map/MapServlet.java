@@ -1,6 +1,6 @@
 package aionem.net.sdk.web.jsp.map;
 
-import aionem.net.sdk.core.utils.AlnUtilsText;
+import aionem.net.sdk.core.utils.UtilsText;
 import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.ServletException;
@@ -30,7 +30,7 @@ public class MapServlet extends HttpServlet {
             if (patterns.length > 0) {
                 urlPattern = patterns[0];
             }
-            urlPattern = AlnUtilsText.notNull(urlPattern);
+            urlPattern = UtilsText.notNull(urlPattern);
 
             if (urlPattern.endsWith("*")) {
                 urlPattern = urlPattern.substring(0, urlPattern.length() - 1);
@@ -121,11 +121,11 @@ public class MapServlet extends HttpServlet {
 
         boolean isInvokeMethod = true;
 
-        if(!AlnUtilsText.isEmpty(urlPattern)) {
+        if(!UtilsText.isEmpty(urlPattern)) {
 
             String mappingValue = getMappingValue(method);
 
-            if(!AlnUtilsText.isEmpty(mappingValue)) {
+            if(!UtilsText.isEmpty(mappingValue)) {
 
                 if(!mappingValue.startsWith("/")) {
                     mappingValue = "/" + mappingValue;
