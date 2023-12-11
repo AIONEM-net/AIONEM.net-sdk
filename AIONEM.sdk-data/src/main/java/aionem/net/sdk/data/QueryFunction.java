@@ -14,4 +14,6 @@ public class QueryFunction {
         return value;
     }
 
+    public static final QueryFunction NOW = new QueryFunction("NOW()");
+
 }

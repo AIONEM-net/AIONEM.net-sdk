@@ -67,7 +67,7 @@ public class Data {
     public JsonObject toJson() {
         return UtilsJson.fromHashMap(values);
     }
-    public JsonObject getDataAll() {
+    public JsonObject toJsonAll() {
         return UtilsJson.fromHashMap(values);
     }
     public <T> JsonObject toJson(final T db) {
