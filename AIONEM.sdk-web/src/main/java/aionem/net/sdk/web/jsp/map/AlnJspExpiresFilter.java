@@ -1,7 +1,5 @@
 package aionem.net.sdk.web.jsp.map;
 
-import org.apache.catalina.filters.ExpiresFilter;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;

@@ -64,13 +64,13 @@ public class AlnData {
         return t;
     }
 
-    public JsonObject getData() {
+    public JsonObject toJson() {
         return AlnUtilsJson.fromHashMap(values);
     }
     public JsonObject getDataAll() {
         return AlnUtilsJson.fromHashMap(values);
     }
-    public <T> JsonObject getData(final T db) {
+    public <T> JsonObject toJson(final T db) {
         final JsonObject data = AlnUtilsJson.jsonObject();
         try {
             for(Field field : db.getClass().getDeclaredFields()) {
@@ -146,7 +146,15 @@ public class AlnData {
             final boolean isPrivate = Modifier.isPrivate(modifiers);
             if(!isStatic && !isPrivate) {
                 field.setAccessible(true);
-                field.set(dbInstance, value);
+                if(value != null) {
+                    field.set(dbInstance, value);
+                }else {
+                    final T defaultInstance = (T) dbInstance.getClass().newInstance();
+                    final Field defaultField = defaultInstance.getClass().getDeclaredField(key);
+                    defaultField.setAccessible(true);
+                    final Object defaultValue = defaultField.get(defaultInstance);
+                    defaultField.set(dbInstance, defaultValue);
+                }
             }
         } catch (NoSuchFieldException ignore) {
         } catch (Exception e) {
@@ -201,16 +209,16 @@ public class AlnData {
     public AlnData getChild(final String key) {
         return new AlnData(get(key));
     }
-    public AlnDatas getChildren() {
-        final AlnDatas datas = new AlnDatas();
+    public AlnDataArray getChildren() {
+        final AlnDataArray datas = new AlnDataArray();
         for(final String key : this.values.keySet()) {
             final Object value = this.values.get(key);
             datas.add(new AlnData(value));
         }
         return datas;
     }
-    public AlnDatas getChildren(final String key) {
-        final AlnDatas datas = new AlnDatas();
+    public AlnDataArray getChildren(final String key) {
+        final AlnDataArray datas = new AlnDataArray();
         for(final JsonElement jsonElement : AlnUtilsJson.toJsonArray(get(key))) {
             datas.add(new AlnData(jsonElement));
         }
@@ -224,6 +232,15 @@ public class AlnData {
             valuesString.put(key, AlnUtilsText.toString(value));
         }
         return valuesString;
+    }
+
+    public AlnData remove(final String key) {
+        return remove(this, key);
+    }
+    public <T> T remove(final T dbInstance, final String key) {
+        put(dbInstance, key, null);
+        this.values.remove(key);
+        return dbInstance;
     }
 
     public boolean has(String key) {
@@ -277,7 +294,7 @@ public class AlnData {
 
     @Override
     public String toString() {
-        return getData().toString();
+        return toJson().toString();
     }
 
     @Override
@@ -319,7 +336,7 @@ public class AlnData {
 
     public <T> T adaptTo(Class<T> type) {
         try {
-            return AlnUtilsData.adaptTo(type, getData());
+            return AlnUtilsData.adaptTo(type, toJson());
         }catch(Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK : AlnData - adaptTo(Class<T> type) " + e +"\n");
             return null;
@@ -327,7 +344,7 @@ public class AlnData {
     }
     public <T> T adaptTo(T t) {
         try {
-            return AlnUtilsData.adaptTo(t, getData());
+            return AlnUtilsData.adaptTo(t, toJson());
         }catch(Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK : AlnData - adaptTo(T t) " + e +"\n");
             return null;

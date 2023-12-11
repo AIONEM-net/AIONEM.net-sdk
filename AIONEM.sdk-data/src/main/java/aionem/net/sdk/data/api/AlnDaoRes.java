@@ -3,7 +3,9 @@ package aionem.net.sdk.data.api;
 import aionem.net.sdk.core.config.AlnEnv;
 import aionem.net.sdk.core.utils.AlnUtilsText;
 import aionem.net.sdk.data.AlnData;
-import aionem.net.sdk.data.AlnDatas;
+import aionem.net.sdk.data.AlnDataArray;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.log4j.Log4j2;
@@ -17,10 +19,25 @@ public @Data class AlnDaoRes extends AlnData {
     private int status = -1;
     private boolean success = false;
     private String response = "";
-    private AlnDatas datas = new AlnDatas();
+    private AlnData data = new AlnData();
+    private AlnDataArray datas = new AlnDataArray();
     private String error = "";
     private Exception exception;
 
+
+    public void setData(final JsonObject jsonObject) {
+        setData(new AlnData(jsonObject));
+    }
+    public void setData(final AlnData data) {
+        this.data = data;
+    }
+
+    public void setDataArray(final JsonArray jsonArray) {
+        setDataArray(new AlnDataArray(jsonArray));
+    }
+    public void setDataArray(final AlnDataArray dataArray) {
+        this.datas = dataArray;
+    }
 
     public boolean hasResponse() {
         return !AlnUtilsText.isEmpty(response);

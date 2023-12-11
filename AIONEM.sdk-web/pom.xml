@@ -6,7 +6,7 @@
 
     <groupId>net.aionem</groupId>
     <artifactId>aionem.net-sdk-web</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>AIONEM.sdk-web</name>
 
     <properties>
@@ -19,13 +19,13 @@
         <dependency>
             <groupId>net.aionem</groupId>
             <artifactId>aionem.net-sdk-core</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.aionem</groupId>
             <artifactId>aionem.net-sdk-data</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -39,6 +39,11 @@
             <artifactId>jsp-api</artifactId>
             <version>2.2</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>6.1.1</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
@@ -88,11 +93,6 @@
             <version>4.0.4</version>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.controller.thirdparty</groupId>
-            <artifactId>org.apache.catalina.filters.CorsFilter</artifactId>
-            <version>7.0.42</version>
-        </dependency>
-        <dependency>
             <groupId>com.googlecode.htmlcompressor</groupId>
             <artifactId>htmlcompressor</artifactId>
             <version>1.5.2</version>
@@ -118,6 +118,12 @@
             <version>24.0.1</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-commons</artifactId>
+            <version>1.9.3</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <scm>
@@ -129,7 +135,7 @@
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
         </snapshotRepository>
         <repository>
             <id>ossrh</id>
@@ -180,6 +186,7 @@
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>1.5</version>
                 <executions>
+                    <!--
                     <execution>
                         <id>sign-artifacts</id>
                         <phase>verify</phase>
@@ -190,6 +197,7 @@
                             <executable>gpg</executable>
                         </configuration>
                     </execution>
+                    -->
                 </executions>
             </plugin>
         </plugins>

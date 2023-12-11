@@ -1,7 +1,7 @@
 package aionem.net.sdk.web.jsp.modals;
 
 import aionem.net.sdk.data.AlnData;
-import aionem.net.sdk.data.AlnDatas;
+import aionem.net.sdk.data.AlnDataArray;
 import aionem.net.sdk.web.jsp.AlnJsp;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -77,10 +77,10 @@ public @Getter class AlnJspProperties {
     public AlnData getChild(final String key) {
         return data.getChild(key);
     }
-    public AlnDatas getChildren() {
+    public AlnDataArray getChildren() {
         return data.getChildren();
     }
-    public AlnDatas getChildren(final String key) {
+    public AlnDataArray getChildren(final String key) {
         return data.getChildren(key);
     }
 

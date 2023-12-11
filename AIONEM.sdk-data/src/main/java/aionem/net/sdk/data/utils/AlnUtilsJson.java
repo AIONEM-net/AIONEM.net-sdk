@@ -4,7 +4,7 @@ import aionem.net.sdk.core.utils.AlnUtilsConverter;
 import aionem.net.sdk.core.utils.AlnUtilsParse;
 import aionem.net.sdk.core.utils.AlnUtilsText;
 import aionem.net.sdk.data.AlnData;
-import aionem.net.sdk.data.AlnDatas;
+import aionem.net.sdk.data.AlnDataArray;
 import com.google.gson.*;
 import lombok.extern.log4j.Log4j2;
 
@@ -118,9 +118,9 @@ public class AlnUtilsJson {
         }else if(value instanceof JsonElement) {
             data.add(key, (JsonElement) value);
         }else if(value instanceof AlnData) {
-            data.add(key, ((AlnData) value).getData());
-        }else if(value instanceof AlnDatas) {
-            data.add(key, ((AlnDatas) value).getDatas());
+            data.add(key, ((AlnData) value).toJson());
+        }else if(value instanceof AlnDataArray) {
+            data.add(key, ((AlnDataArray) value).toJsonArray());
         }else if(value instanceof Number) {
             data.addProperty(key, (Number) value);
         }else if(value instanceof Boolean) {

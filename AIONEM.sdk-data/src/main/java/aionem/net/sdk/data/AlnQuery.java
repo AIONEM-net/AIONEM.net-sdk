@@ -24,9 +24,14 @@ public class AlnQuery {
     protected final ArrayList<String> tables = new ArrayList<>();
     protected final ArrayList<AlnQueryColumn> columns1 = new ArrayList<>();
     protected final ArrayList<AlnQueryColumn> columns2 = new ArrayList<>();
-    protected AlnData data = new AlnData();
+    protected AlnData params = new AlnData();
     private String error = "";
     private Exception exception;
+
+    public enum AlnQueryDate { NOW("NOW()"), CURDATE("CURDATE()"), ;
+        AlnQueryDate(String date) {
+        }
+    }
 
     protected AlnQuery(final String table) {
         this(new AlnAuthData(), table);
@@ -130,12 +135,8 @@ public class AlnQuery {
         }
     }
 
-    public static int getOffset(final int page, final int max) {
-        return page <= 0 ? 0 : (page * max) - max;
-    }
-
-    public AlnQuery data(final AlnData data) {
-        this.data = data != null ? data : new AlnData();
+    public AlnQuery params(final AlnData data) {
+        this.params = data != null ? data : new AlnData();
         return this;
     }
 

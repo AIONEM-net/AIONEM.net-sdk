@@ -18,8 +18,8 @@ public class AlnQueryUpdate extends AlnQueryCondition {
     }
 
 
-    public AlnQueryUpdate data(final AlnData data) {
-        super.data(data);
+    public AlnQueryUpdate params(final AlnData data) {
+        super.params(data);
         return this;
     }
 
@@ -27,54 +27,44 @@ public class AlnQueryUpdate extends AlnQueryCondition {
         set(0, column);
         return this;
     }
-
     public AlnQueryUpdate set(final int tableNo, final String column) {
-        set(tableNo, column, data, true);
+        set(tableNo, column, params, true);
         return this;
     }
-
     public AlnQueryUpdate set(final String column, final Object value) {
         set(0, column, value);
         return this;
     }
-
     public AlnQueryUpdate set(final int tableNo, final String column, final Object value) {
         set(tableNo, column, value, true);
         return this;
     }
-
     public AlnQueryUpdate set(final JsonObject data) {
         set(0, data);
         return this;
     }
-
     public AlnQueryUpdate set(final int tableNo, final JsonObject data) {
         for(String column : data.keySet()) {
             set(tableNo, column, data.get(column), true);
         }
         return this;
     }
-
     public AlnQueryUpdate set(final String column, final AlnData data) {
         set(0, column, data);
         return this;
     }
-
     public AlnQueryUpdate set(final int tableNo, final String column, final AlnData data) {
         set(tableNo, column, data, column);
         return this;
     }
-
     public AlnQueryUpdate set(final String column, final AlnData data, final String key) {
         set(0, column, data.get(key), data.has(key));
         return this;
     }
-
     public AlnQueryUpdate set(final int tableNo, final String column, final AlnData data, final String key) {
         set(tableNo, column, data.get(key), data.has(key));
         return this;
     }
-
     public AlnQueryUpdate set(final String column, final Object value, final boolean condition) {
         set(0, column, value, condition);
         return this;
@@ -88,21 +78,63 @@ public class AlnQueryUpdate extends AlnQueryCondition {
         return this;
     }
 
+    public AlnQueryUpdate increment(final String column) {
+        increment(0, column);
+        return this;
+    }
+    public AlnQueryUpdate increment(final int tableNo, final String column) {
+        increment(tableNo, column, true);
+        return this;
+    }
+    public AlnQueryUpdate increment(final int tableNo, final String column, final boolean condition) {
+        adjust(tableNo, column, column, 1, condition);
+        return this;
+    }
+
+    public AlnQueryUpdate decrement(final String column) {
+        decrement(0, column);
+        return this;
+    }
+    public AlnQueryUpdate decrement(final int tableNo, final String column) {
+        decrement(tableNo, column, true);
+        return this;
+    }
+    public AlnQueryUpdate decrement(final int tableNo, final String column, final boolean condition) {
+        adjust(tableNo, column, column, 1, condition);
+        return this;
+    }
+
+    public AlnQueryUpdate adjust(final String column, final double value) {
+        adjust(0, column, value);
+        return this;
+    }
+    public AlnQueryUpdate adjust(final int tableNo, final String column, final double value) {
+        adjust(tableNo, column, column, value);
+        return this;
+    }
+    public AlnQueryUpdate adjust(final int tableNo, final String column1, final String column2, final double value) {
+        adjust(tableNo, column1, column2, value, true);
+        return this;
+    }
+    public AlnQueryUpdate adjust(final int tableNo, final String column1, final String column2, final double value, final boolean condition) {
+        if(column1 != null && column2 != null && condition) {
+            columns2.add(new AlnQueryColumn(tables.get(tableNo) + "." + "`" + column1 + "`", "=`" + column2 + "`" +" + "+ value));
+        }
+        return this;
+    }
+
     public AlnQueryUpdate only(final boolean only) {
         super.only(only);
         return this;
     }
-
     public AlnQueryUpdate onlyElse() {
         super.onlyElse();
         return this;
     }
-
     public AlnQueryUpdate forAll() {
         super.forAll();
         return this;
     }
-
     public AlnQueryUpdate then() {
         super.then();
         return this;
@@ -127,27 +159,22 @@ public class AlnQueryUpdate extends AlnQueryCondition {
         super.where(column);
         return this;
     }
-
     public AlnQueryUpdate where(final String column, final Object value) {
         super.where(column, value);
         return this;
     }
-
     public AlnQueryUpdate where(final int tableNo, final String column) {
         super.where(tableNo, column);
         return this;
     }
-
     public AlnQueryUpdate where(final int tableNo, final String column, final Object value) {
         super.where(tableNo, column, value);
         return this;
     }
-
     public AlnQueryUpdate where(final String column, final String logic, final Object value) {
         super.where(0, column, logic, value);
         return this;
     }
-
     public AlnQueryUpdate where(final int tableNo, final String column, final String logic, final Object value) {
         super.where(tableNo, column, logic, value);
         return this;
@@ -157,22 +184,18 @@ public class AlnQueryUpdate extends AlnQueryCondition {
         super.and(column);
         return this;
     }
-
     public AlnQueryUpdate and(final String column, final Object value) {
         super.and(column, value);
         return this;
     }
-
     public AlnQueryUpdate and(final String column, final String logic, final Object value) {
         super.and(0, column, logic, value);
         return this;
     }
-
     public AlnQueryUpdate and(final int tableNo, final String column, final Object value) {
         super.and(tableNo, column, value);
         return this;
     }
-
     public AlnQueryUpdate and(final int tableNo, final String column, final String logic, final Object value) {
         super.and(tableNo, column, logic, value);
         return this;
@@ -182,22 +205,18 @@ public class AlnQueryUpdate extends AlnQueryCondition {
         super.or(column);
         return this;
     }
-
     public AlnQueryUpdate or(final String column, final Object value) {
         super.or(column, value);
         return this;
     }
-
     public AlnQueryUpdate or(final int tableNo, final String column, final Object value) {
         super.or(tableNo, column, value);
         return this;
     }
-
     public AlnQueryUpdate or(final int tableNo, final String column, final Object value, final boolean condition) {
         super.or(tableNo, column, value, condition);
         return this;
     }
-
     public AlnQueryUpdate or(final int tableNo, final String column, final String logic, final Object value) {
         super.or(tableNo, column, logic, value);
         return this;
@@ -207,7 +226,6 @@ public class AlnQueryUpdate extends AlnQueryCondition {
         super.like(columns, value);
         return this;
     }
-
     public AlnQueryUpdate like(final String[] columns, final Object value, final boolean condition) {
         super.like(columns, value, condition);
         return this;
@@ -217,17 +235,14 @@ public class AlnQueryUpdate extends AlnQueryCondition {
         super.andLike(column, value);
         return this;
     }
-
     public AlnQueryUpdate andLike(final String column, final Object value, final boolean condition) {
         super.andLike(column, value, condition);
         return this;
     }
-
     public AlnQueryUpdate andLike(final int tableNo, final String column, final Object value) {
         super.andLike(tableNo, column, value);
         return this;
     }
-
     public AlnQueryUpdate andLike(final int tableNo, final String column, final Object value, boolean condition) {
         super.andLike(tableNo, column, value, condition);
         return this;
@@ -237,19 +252,84 @@ public class AlnQueryUpdate extends AlnQueryCondition {
         super.orLike(column, value);
         return this;
     }
-
     public AlnQueryUpdate orLike(final String column, final Object value, boolean condition) {
         super.orLike(column, value, condition);
         return this;
     }
-
     public AlnQueryUpdate orLike(final int tableNo, final String column, final Object value) {
         super.orLike(tableNo, column, value);
         return this;
     }
-
     public AlnQueryUpdate orLike(final int tableNo, final String column, final Object value, final boolean condition) {
         super.orLike(tableNo, column, value, condition);
+        return this;
+    }
+
+    public AlnQueryUpdate andGreater(final String column, final Object value) {
+        super.andGreater(column, value);
+        return this;
+    }
+    public AlnQueryUpdate andGreater(final String column, final Object value, final boolean condition) {
+        super.andGreater(column, value, condition);
+        return this;
+    }
+    public AlnQueryUpdate andGreater(final int tableNo, final String column, final Object value) {
+        super.andGreater(tableNo, column, value);
+        return this;
+    }
+    public AlnQueryUpdate andGreater(final int tableNo, final String column, final Object value, boolean condition) {
+        super.andGreater(tableNo, column, value, condition);
+        return this;
+    }
+
+    public AlnQueryUpdate orGreater(final String column, final Object value) {
+        super.orGreater(column, value);
+        return this;
+    }
+    public AlnQueryUpdate orGreater(final String column, final Object value, boolean condition) {
+        super.orGreater(column, value, condition);
+        return this;
+    }
+    public AlnQueryUpdate orGreater(final int tableNo, final String column, final Object value) {
+        super.orGreater(tableNo, column, value);
+        return this;
+    }
+    public AlnQueryUpdate orGreater(final int tableNo, final String column, final Object value, final boolean condition) {
+        super.orGreater(tableNo, column, value, condition);
+        return this;
+    }
+
+    public AlnQueryUpdate andLess(final String column, final Object value) {
+        super.andLess(column, value);
+        return this;
+    }
+    public AlnQueryUpdate andLess(final String column, final Object value, final boolean condition) {
+        super.andLess(column, value, condition);
+        return this;
+    }
+    public AlnQueryUpdate andLess(final int tableNo, final String column, final Object value) {
+        super.andLess(tableNo, column, value);
+        return this;
+    }
+    public AlnQueryUpdate andLess(final int tableNo, final String column, final Object value, boolean condition) {
+        super.andLess(tableNo, column, value, condition);
+        return this;
+    }
+
+    public AlnQueryUpdate orLess(final String column, final Object value) {
+        super.orLess(column, value);
+        return this;
+    }
+    public AlnQueryUpdate orLess(final String column, final Object value, boolean condition) {
+        super.orLess(column, value, condition);
+        return this;
+    }
+    public AlnQueryUpdate orLess(final int tableNo, final String column, final Object value) {
+        super.orLess(tableNo, column, value);
+        return this;
+    }
+    public AlnQueryUpdate orLess(final int tableNo, final String column, final Object value, final boolean condition) {
+        super.orLess(tableNo, column, value, condition);
         return this;
     }
 
@@ -257,27 +337,22 @@ public class AlnQueryUpdate extends AlnQueryCondition {
         super.andStartWith(column, value);
         return this;
     }
-
     public AlnQueryUpdate andStartWith(final int tableNo, final String column, final Object value) {
         super.andStartWith(tableNo, column, value);
         return this;
     }
-
     public AlnQueryUpdate orStartWith(final String column, final Object value) {
         super.orStartWith(column, value);
         return this;
     }
-
     public AlnQueryUpdate orStartWith(final int tableNo, final String column, final Object value) {
         super.orStartWith(tableNo, column, value);
         return this;
     }
-
     public AlnQueryUpdate orEndWith(final String column, final Object value) {
         super.orEndWith(column, value);
         return this;
     }
-
     public AlnQueryUpdate orEndWith(final int tableNo, final String column, final Object value) {
         super.orEndWith(tableNo, column, value);
         return this;
@@ -287,7 +362,6 @@ public class AlnQueryUpdate extends AlnQueryCondition {
         super.andEndWith(column, value);
         return this;
     }
-
     public AlnQueryUpdate andEndWith(final int tableNo, final String column, final Object value) {
         super.andEndWith(tableNo, column, value);
         return this;
@@ -297,12 +371,10 @@ public class AlnQueryUpdate extends AlnQueryCondition {
         super.order(column, direction);
         return this;
     }
-
     public AlnQueryUpdate orderByASC(final String column) {
         super.orderByASC(column);
         return this;
     }
-
     public AlnQueryUpdate orderByDESC(final String column) {
         super.orderByDESC(column);
         return this;
@@ -312,12 +384,10 @@ public class AlnQueryUpdate extends AlnQueryCondition {
         super.limit(limit);
         return this;
     }
-
     public AlnQueryUpdate offset(final int offset) {
         super.offset(offset);
         return this;
     }
-
     public AlnQueryUpdate pageMax(final int page, final int max) {
         super.pageMax(page, max);
         return this;

@@ -18,7 +18,6 @@ public class AlnQueryColumn {
         this.value = value;
     }
 
-
     @Override
     public boolean equals(final Object o) {
         if(this == o) return true;

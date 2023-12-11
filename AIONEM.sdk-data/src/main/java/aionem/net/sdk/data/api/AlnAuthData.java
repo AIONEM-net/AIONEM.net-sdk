@@ -35,8 +35,8 @@ public @Data class AlnAuthData extends AlnData {
     }
 
     @Override
-    public JsonObject getData() {
-        return super.getData(this);
+    public JsonObject toJson() {
+        return super.toJson(this);
     }
 
     @Override
@@ -47,7 +47,7 @@ public @Data class AlnAuthData extends AlnData {
 
     @Override
     public String toString() {
-        return getData().toString();
+        return toJson().toString();
     }
 
     public JsonObject getUserProfile() {

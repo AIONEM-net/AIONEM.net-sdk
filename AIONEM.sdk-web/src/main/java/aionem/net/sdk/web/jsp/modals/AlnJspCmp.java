@@ -1,7 +1,7 @@
 package aionem.net.sdk.web.jsp.modals;
 
 import aionem.net.sdk.data.AlnData;
-import aionem.net.sdk.data.AlnDatas;
+import aionem.net.sdk.data.AlnDataArray;
 import aionem.net.sdk.core.utils.AlnUtilsText;
 import aionem.net.sdk.web.jsp.AlnJsp;
 import lombok.Getter;
@@ -110,11 +110,11 @@ public @Getter abstract class AlnJspCmp {
         return properties.getChild(key);
     }
 
-    public AlnDatas getChildren() {
+    public AlnDataArray getChildren() {
         return properties.getChildren();
     }
 
-    public AlnDatas getChildren(final String key) {
+    public AlnDataArray getChildren(final String key) {
         return properties.getChildren(key);
     }
 

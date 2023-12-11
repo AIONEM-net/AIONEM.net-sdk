@@ -23,8 +23,8 @@ public class AlnQueryInsert extends AlnQuery {
     }
 
 
-    public AlnQueryInsert data(final AlnData data) {
-        super.data(data);
+    public AlnQueryInsert params(final AlnData data) {
+        super.params(data);
         return this;
     }
 
@@ -33,55 +33,46 @@ public class AlnQueryInsert extends AlnQuery {
         this.oElse = oElse && !only;
         return this;
     }
-
     public AlnQueryInsert onlyElse() {
         this.only = oElse;
         return this;
     }
-
     public AlnQueryInsert forAll() {
         this.only = true;
         return this;
     }
-
     public AlnQueryInsert then() {
         return this;
     }
 
     public AlnQueryInsert put(final String column) {
-        put(column, data);
+        put(column, params);
         return this;
     }
-
     public AlnQueryInsert put(final String column, final Object value) {
         put(column, value, true);
         return this;
     }
-
     public AlnQueryInsert put(final String column, final AlnData data) {
         put(column, data, column);
         return this;
     }
-
     public AlnQueryInsert put(final String column, final AlnData data, final String key) {
         put(column, data.get(key), data.has(key));
         return this;
     }
-
     public AlnQueryInsert put(final AlnData data) {
         for(final String column : data.keySet()) {
             put(column, data.get(column), true);
         }
         return this;
     }
-
     public AlnQueryInsert put(final JsonObject data) {
         for(final String column : data.keySet()) {
             put(column, data.get(column), true);
         }
         return this;
     }
-
     public AlnQueryInsert put(final String column, Object value, final boolean condition) {
         value = getNullable(column, value);
         if(column != null && value != null && condition && only) {

@@ -4,7 +4,7 @@ import aionem.net.sdk.core.utils.AlnUtilsConverter;
 import aionem.net.sdk.core.utils.AlnUtilsText;
 import aionem.net.sdk.data.AlnDb;
 import aionem.net.sdk.data.AlnData;
-import aionem.net.sdk.data.AlnDatas;
+import aionem.net.sdk.data.AlnDataArray;
 import com.google.gson.JsonObject;
 import lombok.extern.log4j.Log4j2;
 
@@ -54,8 +54,10 @@ public class AlnUtilsData {
                 Object value = AlnUtilsJson.getValue(data, name);
                 if(value != null) {
                     value = AlnUtilsConverter.convert(value, field.getType());
+                    if(value != null) {
+                        field.set(t, value);
+                    }
                 }
-                field.set(t, value);
             }
         }
         return t;
@@ -78,7 +80,7 @@ public class AlnUtilsData {
 
                 stringBuilder.append(text, indexMatchEnd, matcher.start());
 
-                final AlnDatas datas = data.has("$_list"+ key) ? data.getChildren("$_list"+ key) : data.getChildren("list"+ key);
+                final AlnDataArray datas = data.has("$_list"+ key) ? data.getChildren("$_list"+ key) : data.getChildren("list"+ key);
 
                 for(final AlnData data1 : datas) {
                     final String text1 = replaceVariables(child, data1);

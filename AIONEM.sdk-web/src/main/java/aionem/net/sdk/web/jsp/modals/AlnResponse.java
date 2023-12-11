@@ -3,7 +3,7 @@ package aionem.net.sdk.web.jsp.modals;
 import aionem.net.sdk.data.api.AlnDaoRes;
 import aionem.net.sdk.data.api.AlnAuthData;
 import aionem.net.sdk.core.config.AlnEnv;
-import aionem.net.sdk.data.AlnDatas;
+import aionem.net.sdk.data.AlnDataArray;
 import aionem.net.sdk.data.utils.AlnUtilsDB;
 import aionem.net.sdk.data.AlnData;
 import aionem.net.sdk.data.utils.AlnUtilsData;
@@ -167,6 +167,13 @@ public class AlnResponse {
         this.jsonData = AlnUtilsJson.toJsonObject(data);
     }
 
+    public void setDataArray(final JsonArray jsonArray) {
+        setDataArray(new AlnDataArray(jsonArray));
+    }
+    public void setDataArray(final AlnDataArray dataArray) {
+        this.data = dataArray;
+    }
+
     @Override
     public String toString() {
         return toJsonResponse().toString();
@@ -204,11 +211,11 @@ public class AlnResponse {
                     if(data instanceof AlnAuthData) {
                         jsonResponse.add("data", ((AlnAuthData) data).getUserProfile());
                     }else if(data instanceof AlnDaoRes) {
-                        jsonResponse.add("data", ((AlnDaoRes) data).getData());
+                        jsonResponse.add("data", ((AlnDaoRes) data).toJson());
                     }else if(data instanceof AlnData) {
-                        jsonResponse.add("data", ((AlnData) data).getData());
-                    }else if(data instanceof AlnDatas) {
-                        jsonResponse.add("data", ((AlnDatas) data).getDatas());
+                        jsonResponse.add("data", ((AlnData) data).toJson());
+                    }else if(data instanceof AlnDataArray) {
+                        jsonResponse.add("data", ((AlnDataArray) data).toJsonArray());
                     }else if(data instanceof JsonObject) {
                         jsonResponse.add("data", (JsonObject) data);
                     }else if(data instanceof JsonArray) {
@@ -266,11 +273,11 @@ public class AlnResponse {
             if(data instanceof AlnAuthData) {
                 AlnUtilsJson.add(jsonData, key, ((AlnAuthData) data).getUserProfile());
             }else if(data instanceof AlnDaoRes) {
-                AlnUtilsJson.add(jsonData, key, ((AlnDaoRes) data).getData());
+                AlnUtilsJson.add(jsonData, key, ((AlnDaoRes) data).toJson());
             }else if(data instanceof AlnData) {
-                AlnUtilsJson.add(jsonData, key, ((AlnData) data).getData());
-            }else if(data instanceof AlnDatas) {
-                AlnUtilsJson.add(jsonData, key, ((AlnDatas) data).getDatas());
+                AlnUtilsJson.add(jsonData, key, ((AlnData) data).toJson());
+            }else if(data instanceof AlnDataArray) {
+                AlnUtilsJson.add(jsonData, key, ((AlnDataArray) data).toJsonArray());
             }else if(data instanceof JsonElement) {
                 AlnUtilsJson.add(jsonData, key, data);
             }else {
@@ -302,5 +309,12 @@ public class AlnResponse {
         }
         return null;
     }
+
+//    public ResponseEntity<String> toResponseEntity() {
+//        return ResponseEntity
+//                .status(200)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(toJsonResponse());
+//    }
 
 }
