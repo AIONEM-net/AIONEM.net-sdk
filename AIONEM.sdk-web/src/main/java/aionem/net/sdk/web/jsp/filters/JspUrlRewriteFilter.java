@@ -45,7 +45,12 @@ public class JspUrlRewriteFilter extends UrlRewriteFilter {
                 boolean isHome = UtilsText.isEmpty(requestRoot) || !homes.contains(requestRoot);
 
                 try {
+
+                    response.setCharacterEncoding("UTF-8");
+                    response.setContentType("text/html; charset=UTF-8");
+
                     aioJsp.include(aioJsp.getContextPath("/ui.page" +(isHome ? home : "")+ requestUrl + "/index.jsp" +"?"+ aioJsp.getRequestQuery()));
+
                 }catch (Exception e) {
                     aioJsp.getResponse().sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
