@@ -21,7 +21,7 @@ public class JspConfig {
     public static String folder = "ui.config";
     private static final String extension = ".json";
     private static final String separator = "_";
-    private static final String default_config = "config";
+    private static final String default_config = "application";
 
     public JspConfig() {
 
