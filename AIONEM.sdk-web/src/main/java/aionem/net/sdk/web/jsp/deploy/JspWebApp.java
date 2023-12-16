@@ -25,7 +25,7 @@ public class JspWebApp {
 
         if(isUpdatedEnv) {
 
-            final ArrayList<File> listFilePagesCache = aioJsp.getListFilePagesAll("/en", "/it", "/rw", "/dev", "/auth/login", "/auth/register");
+            final ArrayList<File> listFilePagesCache = aioJsp.getListFilePagesAll("/ui.page/en", "/ui.page/it", "/ui.page/rw", "/ui.page/dev", "/ui.page/auth/login", "/ui.page/auth/register");
 
             final boolean isMinified = minify(aioJsp);
 
