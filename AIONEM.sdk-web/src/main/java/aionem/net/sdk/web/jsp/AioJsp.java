@@ -32,6 +32,15 @@ import java.util.Locale;
 @Log4j2
 public @Getter class AioJsp {
 
+    public static final List<String> SYSTEM_PATH_1 = List.of("/ui.admin", "/ui.dam", "/ui.content", "/ui.frontend", "/ui.drive", "/META-INF", "/WEB-INF");
+    public static final List<String> SYSTEM_PATH_2 = List.of("/ui.config", "/ui.apps", "/ui.template", "/ui.i18n", "/ui.etc");
+    public static final List<String> SYSTEM_PATH_3 = List.of("/api", "/drive", "/assets", "/cdn");
+    public static final List<String> SYSTEM_PATH = new ArrayList<>(SYSTEM_PATH_1);
+    static {
+        SYSTEM_PATH.addAll(SYSTEM_PATH_2);
+        SYSTEM_PATH.addAll(SYSTEM_PATH_3);
+    }
+
     protected HttpServletRequest request;
     protected HttpServletResponse response;
     protected PageContext pageContext;
@@ -293,39 +302,55 @@ public @Getter class AioJsp {
     public String getURI() {
         return getURI(getRequestURI());
     }
+
     public String getURI(final String uri) {
         return getDomain() + uri;
     }
+
     public String getRequestUrl() {
         final String contextPath = getContextPath();
         final String requestURI = getRequestURI();
         return requestURI.substring(contextPath.length());
     }
+
+    public String getRequestRoot() {
+        String[] paths = getRequestUrl().split("/");
+        return "/" + (paths.length > 0 ? paths[1] : "");
+    }
+
     public String getRequestQuery() {
         return UtilsText.notNull(getRequest().getQueryString());
     }
+
     public String getRequestUrlQuery() {
         final String query = getRequestQuery();
         return getRequestUrl() + UtilsText.notEmptyUse(query, "?"+ query);
     }
+
     public String getContextUrlQuery() {
         return getContextPath(getRequestUrlQuery());
     }
+
     public String getProtocol() {
         return getRequest().getProtocol();
     }
+
     public String getRemoteHost() {
         return getRequest().getRemoteHost();
     }
+
     public String getRemoteAddr() {
         return getRequest().getRemoteAddr();
     }
+
     public int getRemotePort() {
         return getRequest().getRemotePort();
     }
+
     public int getLocalPort() {
         return getRequest().getLocalPort();
     }
+
     public int getServerPort() {
         return getRequest().getServerPort();
     }
@@ -556,10 +581,9 @@ public @Getter class AioJsp {
         }
         return listFilePagesAll;
     }
-    public static final List<String> SYSTEM_PATH = List.of("ui.admin", "ui.config", "ui.apps", "ui.dam", "ui.content", "ui.frontend", "ui.drive", "i18n", "META-INF", "WEB-INF");
     private ArrayList<File> getListFilePages(final File filePage, final ArrayList<File> listFilePages, final int level) {
         final File[] files = filePage.listFiles();
-        if(!SYSTEM_PATH.contains(filePage.getName())) {
+        if(!SYSTEM_PATH.contains("/"+ filePage.getName())) {
             if(files != null) {
                 boolean hasHtml = false;
                 boolean hasJsp = false;

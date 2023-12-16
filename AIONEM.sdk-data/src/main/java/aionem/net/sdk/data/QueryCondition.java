@@ -65,7 +65,7 @@ public class QueryCondition extends Query {
     }
     public QueryCondition on(final int tableNo, final String column1, final String column2) {
         if(only) {
-            join += " ON " + tables.get(tableNo) + "." + "`" + column1 + "`" + "=" + "" + table + "." + "`" + column2 + "`";
+            join += " ON " + getTable(tableNo) + "." + "`" + column1 + "`" + "=" + "" + table + "." + "`" + column2 + "`";
         }
         return this;
     }
@@ -107,7 +107,7 @@ public class QueryCondition extends Query {
     public QueryCondition where(final int tableNo, final String column, final String logic, Object value, final boolean condition) {
         value = getNullable(column, value);
         if(column != null && value != null && condition && only) {
-            condition(new QueryColumn(tables.get(tableNo), column, logic, value));
+            condition(new QueryColumn(getTable(tableNo), column, logic, value));
         }
         return this;
     }
@@ -143,7 +143,7 @@ public class QueryCondition extends Query {
     public QueryCondition and(final int tableNo, final String column, final String logic, Object value, final boolean condition) {
         value = getNullable(column, value);
         if(column != null && value != null && condition && only) {
-            condition(new QueryColumn("AND", tables.get(tableNo), column, logic, value));
+            condition(new QueryColumn("AND", getTable(tableNo), column, logic, value));
         }
         return this;
     }
@@ -191,7 +191,7 @@ public class QueryCondition extends Query {
     public QueryCondition or(final int tableNo, final String column, final String logic, Object value, final boolean condition) {
         value = getNullable(column, value);
         if(column != null && value != null && condition && only) {
-            condition(new QueryColumn("OR", tables.get(tableNo), column, logic, value));
+            condition(new QueryColumn("OR", getTable(tableNo), column, logic, value));
         }
         return this;
     }
@@ -223,7 +223,7 @@ public class QueryCondition extends Query {
     public QueryCondition andLike(final int tableNo, final String column, Object value, final boolean condition) {
         value = getNullable(column, value);
         if(column != null && value != null && condition && only) {
-            condition(new QueryColumn("AND", tables.get(tableNo), column, "LIKE", "%" + UtilsText.toString(value) + "%"));
+            condition(new QueryColumn("AND", getTable(tableNo), column, "LIKE", "%" + UtilsText.toString(value) + "%"));
         }
         return this;
     }
@@ -240,7 +240,7 @@ public class QueryCondition extends Query {
     public QueryCondition orLike(final int tableNo, final String column, Object value, final boolean condition) {
         value = getNullable(column, value);
         if(column != null && value != null && condition && only) {
-            condition(new QueryColumn("OR", tables.get(tableNo), column, "LIKE", "%" + UtilsText.toString(value) + "%"));
+            condition(new QueryColumn("OR", getTable(tableNo), column, "LIKE", "%" + UtilsText.toString(value) + "%"));
         }
         return this;
     }
@@ -257,7 +257,7 @@ public class QueryCondition extends Query {
     public QueryCondition andGreater(final int tableNo, final String column, Object value, final boolean condition) {
         value = getNullable(column, value);
         if(column != null && value != null && condition && only) {
-            condition(new QueryColumn("AND", tables.get(tableNo), column, ">", value));
+            condition(new QueryColumn("AND", getTable(tableNo), column, ">", value));
         }
         return this;
     }
@@ -274,7 +274,7 @@ public class QueryCondition extends Query {
     public QueryCondition orGreater(final int tableNo, final String column, Object value, final boolean condition) {
         value = getNullable(column, value);
         if(column != null && value != null && condition && only) {
-            condition(new QueryColumn("OR", tables.get(tableNo), column, ">", value));
+            condition(new QueryColumn("OR", getTable(tableNo), column, ">", value));
         }
         return this;
     }
@@ -291,7 +291,7 @@ public class QueryCondition extends Query {
     public QueryCondition andLess(final int tableNo, final String column, Object value, final boolean condition) {
         value = getNullable(column, value);
         if(column != null && value != null && condition && only) {
-            condition(new QueryColumn("AND", tables.get(tableNo), column, "<", value));
+            condition(new QueryColumn("AND", getTable(tableNo), column, "<", value));
         }
         return this;
     }
@@ -308,7 +308,7 @@ public class QueryCondition extends Query {
     public QueryCondition orLess(final int tableNo, final String column, Object value, final boolean condition) {
         value = getNullable(column, value);
         if(column != null && value != null && condition && only) {
-            condition(new QueryColumn("OR", tables.get(tableNo), column, "<", value));
+            condition(new QueryColumn("OR", getTable(tableNo), column, "<", value));
         }
         return this;
     }
@@ -319,7 +319,7 @@ public class QueryCondition extends Query {
     public QueryCondition andStartWith(final int tableNo, final String column, Object value) {
         value = getNullable(column, value);
         if(column != null && value != null && only) {
-            condition(new QueryColumn("AND", tables.get(tableNo), column, "LIKE", "'" + UtilsText.toString(value) + "%'"));
+            condition(new QueryColumn("AND", getTable(tableNo), column, "LIKE", "'" + UtilsText.toString(value) + "%'"));
         }
         return this;
     }
@@ -329,7 +329,7 @@ public class QueryCondition extends Query {
     public QueryCondition orStartWith(final int tableNo, final String column, Object value) {
         value = getNullable(column, value);
         if(column != null && value != null && only) {
-            condition(new QueryColumn("OR", tables.get(tableNo), column, "LIKE", "'" + UtilsText.toString(value) + "%'"));
+            condition(new QueryColumn("OR", getTable(tableNo), column, "LIKE", "'" + UtilsText.toString(value) + "%'"));
         }
         return this;
     }
@@ -340,7 +340,7 @@ public class QueryCondition extends Query {
     public QueryCondition andEndWith(final int tableNo, final String column, Object value) {
         value = getNullable(column, value);
         if(column != null && value != null && only) {
-            condition(new QueryColumn("AND", tables.get(tableNo), column, "LIKE", "'%" + UtilsText.toString(value) + "'"));
+            condition(new QueryColumn("AND", getTable(tableNo), column, "LIKE", "'%" + UtilsText.toString(value) + "'"));
         }
         return this;
     }
@@ -350,17 +350,35 @@ public class QueryCondition extends Query {
     public QueryCondition orEndWith(final int tableNo, final String column, Object value) {
         value = getNullable(column, value);
         if(column != null && value != null && only) {
-            condition(new QueryColumn("OR", tables.get(tableNo), column, "LIKE", "%" + UtilsText.toString(value) + ""));
+            condition(new QueryColumn("OR", getTable(tableNo), column, "LIKE", "%" + UtilsText.toString(value) + ""));
         }
         return this;
     }
 
-    public QueryCondition groupBy(final String column) {
-        return groupBy(0, column);
+
+    public QueryCondition groupBy(final String... columns) {
+        return groupBy(0, columns);
     }
-    public QueryCondition groupBy(final int tableNo, final String column) {
-        if(column != null && only) {
-            groupBy = " GROUP BY " + tables.get(tableNo) + "." + "`" + column + "`" + "";
+    public QueryCondition groupBy(final int tableNo, final String... columns) {
+        if(columns != null && only) {
+            for(int i = 0; i < columns.length; i++) {
+                String column = columns[i];
+                if(column != null) {
+                    if(i == 0) {
+
+                        if(UtilsText.isEmpty(groupBy)) {
+                            groupBy = " GROUP BY ";
+                        }else {
+                            groupBy += ", ";
+                        }
+
+                    }else {
+                        groupBy += ", ";
+                    }
+
+                    groupBy += getTableColumn(tableNo, column);
+                }
+            }
         }
         return this;
     }
@@ -385,7 +403,7 @@ public class QueryCondition extends Query {
     public QueryCondition order(final int tableNo, final String column, String direction) {
         if(!UtilsText.isEmpty(column) && only) {
             direction = UtilsText.notEmpty(direction, "ASC");
-            orderBy = " ORDER BY " + tables.get(tableNo) + "." + "`" + column + "`" + " " + direction;
+            orderBy = " ORDER BY " + getTableColumn(tableNo, column) + " " + direction;
         }
         return this;
     }

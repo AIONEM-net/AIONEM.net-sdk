@@ -3,7 +3,7 @@ package aionem.net.sdk.data.api;
 import aionem.net.sdk.core.config.Env;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.Data;
-import aionem.net.sdk.data.DataArray;
+import aionem.net.sdk.data.Datas;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lombok.EqualsAndHashCode;
@@ -19,7 +19,7 @@ public @lombok.Data class DaoRes extends Data {
     private boolean success = false;
     private String response = "";
     private Data data = new Data();
-    private DataArray datas = new DataArray();
+    private Datas datas = new Datas();
     private String error = "";
     private Exception exception;
 
@@ -32,10 +32,10 @@ public @lombok.Data class DaoRes extends Data {
     }
 
     public void setDataArray(final JsonArray jsonArray) {
-        setDataArray(new DataArray(jsonArray));
+        setDataArray(new Datas(jsonArray));
     }
-    public void setDataArray(final DataArray dataArray) {
-        this.datas = dataArray;
+    public void setDataArray(final Datas datas) {
+        this.datas = datas;
     }
 
     public boolean hasResponse() {

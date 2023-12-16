@@ -3,7 +3,7 @@ package aionem.net.sdk.web.jsp.modals;
 import aionem.net.sdk.data.api.DaoRes;
 import aionem.net.sdk.data.api.AuthData;
 import aionem.net.sdk.core.config.Env;
-import aionem.net.sdk.data.DataArray;
+import aionem.net.sdk.data.Datas;
 import aionem.net.sdk.data.utils.UtilsDB;
 import aionem.net.sdk.data.Data;
 import aionem.net.sdk.data.utils.UtilsData;
@@ -168,10 +168,10 @@ public class AioResponse {
     }
 
     public void setDataArray(final JsonArray jsonArray) {
-        setDataArray(new DataArray(jsonArray));
+        setDataArray(new Datas(jsonArray));
     }
-    public void setDataArray(final DataArray dataArray) {
-        this.data = dataArray;
+    public void setDataArray(final Datas datas) {
+        this.data = datas;
     }
 
     @Override
@@ -214,8 +214,8 @@ public class AioResponse {
                         jsonResponse.add("data", ((DaoRes) data).toJson());
                     }else if(data instanceof Data) {
                         jsonResponse.add("data", ((Data) data).toJson());
-                    }else if(data instanceof DataArray) {
-                        jsonResponse.add("data", ((DataArray) data).toJsonArray());
+                    }else if(data instanceof Datas) {
+                        jsonResponse.add("data", ((Datas) data).toJsonArray());
                     }else if(data instanceof JsonObject) {
                         jsonResponse.add("data", (JsonObject) data);
                     }else if(data instanceof JsonArray) {
@@ -276,8 +276,8 @@ public class AioResponse {
                 UtilsJson.add(jsonData, key, ((DaoRes) data).toJson());
             }else if(data instanceof Data) {
                 UtilsJson.add(jsonData, key, ((Data) data).toJson());
-            }else if(data instanceof DataArray) {
-                UtilsJson.add(jsonData, key, ((DataArray) data).toJsonArray());
+            }else if(data instanceof Datas) {
+                UtilsJson.add(jsonData, key, ((Datas) data).toJsonArray());
             }else if(data instanceof JsonElement) {
                 UtilsJson.add(jsonData, key, data);
             }else {

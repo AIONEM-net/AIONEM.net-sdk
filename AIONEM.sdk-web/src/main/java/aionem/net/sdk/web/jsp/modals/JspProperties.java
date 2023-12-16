@@ -1,7 +1,7 @@
 package aionem.net.sdk.web.jsp.modals;
 
 import aionem.net.sdk.data.Data;
-import aionem.net.sdk.data.DataArray;
+import aionem.net.sdk.data.Datas;
 import aionem.net.sdk.web.jsp.AioJsp;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -77,10 +77,10 @@ public @Getter class JspProperties {
     public Data getChild(final String key) {
         return data.getChild(key);
     }
-    public DataArray getChildren() {
+    public Datas getChildren() {
         return data.getChildren();
     }
-    public DataArray getChildren(final String key) {
+    public Datas getChildren(final String key) {
         return data.getChildren(key);
     }
 

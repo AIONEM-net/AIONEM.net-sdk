@@ -209,16 +209,16 @@ public class Data {
     public Data getChild(final String key) {
         return new Data(get(key));
     }
-    public DataArray getChildren() {
-        final DataArray datas = new DataArray();
+    public Datas getChildren() {
+        final Datas datas = new Datas();
         for(final String key : this.values.keySet()) {
             final Object value = this.values.get(key);
             datas.add(new Data(value));
         }
         return datas;
     }
-    public DataArray getChildren(final String key) {
-        final DataArray datas = new DataArray();
+    public Datas getChildren(final String key) {
+        final Datas datas = new Datas();
         for(final JsonElement jsonElement : UtilsJson.toJsonArray(get(key))) {
             datas.add(new Data(jsonElement));
         }

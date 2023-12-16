@@ -4,7 +4,7 @@ import aionem.net.sdk.core.utils.UtilsConverter;
 import aionem.net.sdk.core.utils.UtilsParse;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.Data;
-import aionem.net.sdk.data.DataArray;
+import aionem.net.sdk.data.Datas;
 import com.google.gson.*;
 import lombok.extern.log4j.Log4j2;
 
@@ -119,8 +119,8 @@ public class UtilsJson {
             data.add(key, (JsonElement) value);
         }else if(value instanceof Data) {
             data.add(key, ((Data) value).toJson());
-        }else if(value instanceof DataArray) {
-            data.add(key, ((DataArray) value).toJsonArray());
+        }else if(value instanceof Datas) {
+            data.add(key, ((Datas) value).toJsonArray());
         }else if(value instanceof Number) {
             data.addProperty(key, (Number) value);
         }else if(value instanceof Boolean) {

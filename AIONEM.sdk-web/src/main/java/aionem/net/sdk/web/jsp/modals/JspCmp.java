@@ -1,7 +1,7 @@
 package aionem.net.sdk.web.jsp.modals;
 
 import aionem.net.sdk.data.Data;
-import aionem.net.sdk.data.DataArray;
+import aionem.net.sdk.data.Datas;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.web.jsp.AioJsp;
 import lombok.Getter;
@@ -110,11 +110,11 @@ public @Getter abstract class JspCmp {
         return properties.getChild(key);
     }
 
-    public DataArray getChildren() {
+    public Datas getChildren() {
         return properties.getChildren();
     }
 
-    public DataArray getChildren(final String key) {
+    public Datas getChildren(final String key) {
         return properties.getChildren(key);
     }
 

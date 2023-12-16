@@ -1,4 +1,4 @@
-package aionem.net.sdk.web.jsp.map;
+package aionem.net.sdk.web.jsp.filters;
 
 import java.util.Enumeration;
 import javax.servlet.Filter;

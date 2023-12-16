@@ -13,14 +13,14 @@ import java.util.function.Consumer;
 
 
 @Log4j2
-public @Getter class DataArray implements Iterable<Data> {
+public @Getter class Datas implements Iterable<Data> {
 
     private final ArrayList<Data> listDatas = new ArrayList<>();
 
-    public DataArray() {
+    public Datas() {
 
     }
-    public DataArray(final JsonArray jsonArray) {
+    public Datas(final JsonArray jsonArray) {
         for(final JsonElement jsonElement : jsonArray) {
             listDatas.add(new Data(jsonElement));
         }
@@ -48,7 +48,7 @@ public @Getter class DataArray implements Iterable<Data> {
         listDatas.add(index, data);
     }
 
-    public void addAll(final DataArray datas) {
+    public void addAll(final Datas datas) {
         listDatas.addAll(datas.listDatas);
     }
 
@@ -134,8 +134,8 @@ public @Getter class DataArray implements Iterable<Data> {
     public boolean equals(final Object object) {
         if(this == object) return true;
         if(object == null || getClass() != object.getClass()) return false;
-        final DataArray dataArray = (DataArray) object;
-        return Objects.equals(listDatas, dataArray.listDatas);
+        final Datas datas = (Datas) object;
+        return Objects.equals(listDatas, datas.listDatas);
     }
 
     @Override

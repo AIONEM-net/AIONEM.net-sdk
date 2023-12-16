@@ -1,4 +1,6 @@
-package aionem.net.sdk.web.jsp.map;
+package aionem.net.sdk.web.jsp.filters;
+
+import aionem.net.sdk.web.jsp.filters.ExpiresFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

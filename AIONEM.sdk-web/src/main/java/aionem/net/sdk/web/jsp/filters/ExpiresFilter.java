@@ -1,4 +1,4 @@
-package aionem.net.sdk.web.jsp.map;
+package aionem.net.sdk.web.jsp.filters;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,8 +21,10 @@ import javax.servlet.http.HttpServletResponseWrapper;
 
 import lombok.extern.log4j.Log4j2;
 
+
 @Log4j2
 public class ExpiresFilter extends FilterBase {
+
     private static final Pattern commaSeparatedValuesPattern = Pattern.compile("\\s*,\\s*");
     private static final String HEADER_CACHE_CONTROL = "Cache-Control";
     private static final String HEADER_EXPIRES = "Expires";

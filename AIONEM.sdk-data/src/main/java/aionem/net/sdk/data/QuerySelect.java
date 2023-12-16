@@ -81,7 +81,7 @@ public class QuerySelect extends QueryCondition {
     }
     public QuerySelect coalesce(final int tableNo, final String column1, final String column2, final String alias) {
         if(column1 != null && column2 != null && only) {
-            select(new QueryColumn("COALESCE(NULLIF(NULLIF(" + tables.get(tableNo) + "." + "`" + column1 + "`" + ", '0'), ''), " + table + "." + "`" + column2 + "`)" + " AS " + "'" + alias + "'"));
+            select(new QueryColumn("COALESCE(NULLIF(NULLIF(" + getTable(tableNo) + "." + "`" + column1 + "`" + ", '0'), ''), " + table + "." + "`" + column2 + "`)" + " AS " + "'" + alias + "'"));
         }
         return this;
     }
@@ -96,7 +96,7 @@ public class QuerySelect extends QueryCondition {
     }
     public QuerySelect max(final int tableNo, String column, final String alias) {
         if(only) {
-            column = tables.get(tableNo) + "." + "`" + column + "`";
+            column = getTableColumn(tableNo, column);
             QueryColumn columnValueMax = new QueryColumn("MAX(" + column + ")" + (!UtilsText.isEmpty(alias) ? " AS " + "'" + alias + "'" : "'" + alias + "'"));
             if(!columns2.contains(columnValueMax)) {
                 select(columnValueMax);
@@ -123,7 +123,7 @@ public class QuerySelect extends QueryCondition {
     }
     public QuerySelect count(final int tableNo, String column, final String alias, final boolean distinct) {
         if(only) {
-            column = !UtilsText.isEmpty(column) ? (distinct ? "DISTINCT " : "") + tables.get(tableNo) + "." + "`" + column + "`" : "*";
+            column = !UtilsText.isEmpty(column) ? (distinct ? "DISTINCT " : "") + getTableColumn(tableNo, column) : "*";
             QueryColumn columnValueCount = new QueryColumn("COUNT(" + column + ")" + (!UtilsText.isEmpty(alias) ? " AS " + "'" + alias + "'" : ""));
             if(!columns2.contains(columnValueCount)) {
                 select(columnValueCount);
@@ -151,7 +151,7 @@ public class QuerySelect extends QueryCondition {
     }
     public QuerySelect sum(final int tableNo, String column, final String alias, final boolean distinct) {
         if(column != null && only) {
-            column = (distinct ? "DISTINCT " : "") + tables.get(tableNo) + "." + "`" + column + "`";
+            column = (distinct ? "DISTINCT " : "") + getTableColumn(tableNo, column);
             QueryColumn columnValueSum = new QueryColumn("SUM(" + column + ")" + (!UtilsText.isEmpty(alias) ? " AS " + "'" + alias + "'" : ""));
             if(!columns2.contains(columnValueSum)) {
                 select(columnValueSum);
@@ -440,11 +440,11 @@ public class QuerySelect extends QueryCondition {
         return this;
     }
 
-    public QuerySelect groupBy(final String column) {
-        super.groupBy(column);
+    public QuerySelect groupBy(final String... columns) {
+        super.groupBy(columns);
         return this;
     }
-    public QuerySelect groupBy(final int tableNo, final String column) {
+    public QuerySelect groupBy(final int tableNo, final String... column) {
         super.groupBy(tableNo, column);
         return this;
     }
@@ -583,8 +583,8 @@ public class QuerySelect extends QueryCondition {
         return arrayData;
     }
 
-    public DataArray executeDatas() {
-        final DataArray datas = new DataArray();
+    public Datas executeDatas() {
+        final Datas datas = new Datas();
         for(final Data data : executeListData()) {
             datas.add(data);
         }
@@ -610,7 +610,7 @@ public class QuerySelect extends QueryCondition {
             final Statement statement = getConnection(auth).createStatement();
             final ResultSet resultSet = statement.executeQuery(getQuery());
 
-            long index = offset + 1;
+            long index = offset;
             while(resultSet.next()) {
 
                 final Data data = new Data();

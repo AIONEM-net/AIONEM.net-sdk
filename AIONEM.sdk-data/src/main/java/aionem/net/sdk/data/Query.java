@@ -130,6 +130,15 @@ public class Query {
         }
     }
 
+    public String getTable(final int tableNo) {
+        if(tableNo < 0) return "";
+        return tables.get(tableNo);
+    }
+    public String getTableColumn(final int tableNo, final String column) {
+        if(tableNo < 0) return column;
+        return tables.get(tableNo) + "." + "`" + column + "`";
+    }
+
     public Query params(final Data data) {
         this.params = data != null ? data : new Data();
         return this;

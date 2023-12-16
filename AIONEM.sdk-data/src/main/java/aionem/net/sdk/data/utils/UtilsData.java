@@ -4,7 +4,7 @@ import aionem.net.sdk.core.utils.UtilsConverter;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.Col;
 import aionem.net.sdk.data.Data;
-import aionem.net.sdk.data.DataArray;
+import aionem.net.sdk.data.Datas;
 import com.google.gson.JsonObject;
 import lombok.extern.log4j.Log4j2;
 
@@ -80,7 +80,7 @@ public class UtilsData {
 
                 stringBuilder.append(text, indexMatchEnd, matcher.start());
 
-                final DataArray datas = data.has("$_list"+ key) ? data.getChildren("$_list"+ key) : data.getChildren("list"+ key);
+                final Datas datas = data.has("$_list"+ key) ? data.getChildren("$_list"+ key) : data.getChildren("list"+ key);
 
                 for(final Data data1 : datas) {
                     final String text1 = replaceVariables(child, data1);
