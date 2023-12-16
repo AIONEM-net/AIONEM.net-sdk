@@ -44,7 +44,11 @@ public class JspUrlRewriteFilter extends UrlRewriteFilter {
                 String homes = "/en,/it,/rw,/auth,/dashboard";
                 boolean isHome = UtilsText.isEmpty(requestRoot) || !homes.contains(requestRoot);
 
-                aioJsp.include(aioJsp.getContextPath("/ui.content" +(isHome ? home : "")+ requestUrl + "/index.jsp" +"?"+ aioJsp.getRequestQuery()));
+                try {
+                    aioJsp.include(aioJsp.getContextPath("/ui.content" +(isHome ? home : "")+ requestUrl + "/index.jsp" +"?"+ aioJsp.getRequestQuery()));
+                }catch (Exception e) {
+                    aioJsp.getResponse().sendError(HttpServletResponse.SC_NOT_FOUND);
+                }
 
             }else {
 
