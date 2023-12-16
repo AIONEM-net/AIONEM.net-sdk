@@ -45,14 +45,14 @@ public class JspUrlRewriteFilter extends UrlRewriteFilter {
                 boolean isHome = UtilsText.isEmpty(requestRoot) || !homes.contains(requestRoot);
 
                 try {
-                    aioJsp.include(aioJsp.getContextPath("/ui.content" +(isHome ? home : "")+ requestUrl + "/index.jsp" +"?"+ aioJsp.getRequestQuery()));
+                    aioJsp.include(aioJsp.getContextPath("/ui.page" +(isHome ? home : "")+ requestUrl + "/index.jsp" +"?"+ aioJsp.getRequestQuery()));
                 }catch (Exception e) {
                     aioJsp.getResponse().sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
 
             }else {
 
-                String filePath = aioJsp.getRealPathRoot("/ui.dam" + requestUrl);
+                String filePath = aioJsp.getRealPathRoot("/ui.frontend" + requestUrl);
 
                 System.out.println(filePath);
 

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class JspUtils {
 
     public static String readEtcFile(final AioJsp aioJsp, final String fileName) {
-        return readFile(aioJsp, "/WEB-INF/ui.etc"+ fileName);
+        return readFile(aioJsp, "/WEB-INF/ui.app/etc"+ fileName);
     }
     public static String readResourceFile(final AioJsp aioJsp, final String fileName) {
         return readFile(aioJsp, "/WEB-INF/classes"+ fileName);
