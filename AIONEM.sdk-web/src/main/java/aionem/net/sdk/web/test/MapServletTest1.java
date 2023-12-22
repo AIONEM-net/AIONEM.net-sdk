@@ -1,25 +1,23 @@
 package aionem.net.sdk.web.test;
 
-import aionem.net.sdk.web.jsp.map.*;
+import aionem.net.sdk.web.map.*;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-@WebServlet(urlPatterns = "/api/go/*")
+@WebServlet(urlPatterns="/api/go/*")
 public class MapServletTest1 extends MapServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.getWriter().write("doGET request");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.getWriter().write("doGET request 0");
     }
 
-    @GetMapping("/hello")
     public void handleGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.getWriter().write("Go GET request");
+        response.getWriter().write("Go GET request 1");
     }
 
     @PostMapping("/hello")

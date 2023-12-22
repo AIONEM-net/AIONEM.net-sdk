@@ -1,6 +1,6 @@
 package aionem.net.sdk.web.test;
 
-import aionem.net.sdk.web.jsp.map.*;
+import aionem.net.sdk.web.map.*;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-@WebServlet(urlPatterns = "/api/ok/*")
+@WebServlet(urlPatterns="/api/ok/*")
 public class MapServletTest2 extends MapServlet {
 
     @GetMapping("/")
