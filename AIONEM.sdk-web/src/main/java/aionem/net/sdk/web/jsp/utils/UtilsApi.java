@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Enumeration;
 import java.util.Map;
 
 
@@ -15,6 +16,7 @@ import java.util.Map;
 public class UtilsApi {
 
     public static final String PAR_ID = "id";
+    public static final String PAR_ACTION = "action";
     public static final String PAR_STATUS = "status";
     public static final String PAR_SYSTEM = "system";
     public static final String PAR_CATEGORY = "category";
@@ -30,7 +32,7 @@ public class UtilsApi {
         final Data data = new Data();
         final Map<String, String[]> params = request.getParameterMap();
         for(final String name : params.keySet()) {
-            data.put(name, params.get(name)[0]);
+            data.put(name, String.join(",", params.get(name)));
         }
         final String id = getId(request);
         if(!UtilsText.isEmpty(id)) {
@@ -48,6 +50,16 @@ public class UtilsApi {
             if(!UtilsText.isEmpty(id)) {
                 data.put(PAR_ID, id);
             }
+        }
+        return data;
+    }
+
+    public static Data getDataHeaders(final HttpServletRequest request) {
+        final Data data = new Data();
+        final Enumeration<String> params = request.getHeaderNames();
+        while(params.hasMoreElements()) {
+            final String name = params.nextElement();
+            data.put(name, request.getHeader(name));
         }
         return data;
     }
@@ -84,7 +96,7 @@ public class UtilsApi {
     }
 
     public static String getAction(final HttpServletRequest request) {
-        String action = UtilsText.notEmpty(request.getParameter("action"), request.getPathInfo());
+        String action = UtilsText.notEmpty(request.getParameter(PAR_ACTION), request.getPathInfo());
         if(action.startsWith("/")) action = action.substring(1);
         if(action.contains("/")) action = action.substring(0, action.indexOf("/"));
         return action;
@@ -93,6 +105,7 @@ public class UtilsApi {
     public static String getId(final HttpServletRequest request) {
         return getId(request, getAction(request));
     }
+
     public static String getId(final HttpServletRequest request, final String action) {
         String id = UtilsText.notEmpty(request.getParameter("id"), request.getPathInfo());
         if(id.startsWith("/")) id = id.substring(1);

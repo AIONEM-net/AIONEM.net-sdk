@@ -21,7 +21,7 @@ import java.util.Map;
 
 @Log4j2
 @Getter
-public class AioResponse {
+public class ApiResponse {
 
     private int status = 200;
     private boolean success = false;
@@ -38,10 +38,10 @@ public class AioResponse {
     private Object data;
 
 
-    public AioResponse() {
+    public ApiResponse() {
     }
 
-    public AioResponse(final int status, final boolean success, final String message, final String error, final long counts, final JsonObject jsonData) {
+    public ApiResponse(final int status, final boolean success, final String message, final String error, final long counts, final JsonObject jsonData) {
         this.status = status;
         this.success = success;
         this.message = message;
@@ -50,7 +50,7 @@ public class AioResponse {
         this.jsonData = jsonData;
     }
 
-    public AioResponse(final int status, final boolean success, final String message, final String error, final long counts, final Object data) {
+    public ApiResponse(final int status, final boolean success, final String message, final String error, final long counts, final Object data) {
         this.status = status;
         this.success = success;
         this.message = message;
@@ -59,17 +59,17 @@ public class AioResponse {
         this.data = data;
     }
 
-    public static AioResponse withSuccess(final int status, final String message) {
-        return new AioResponse(status, true, message, "", -1, UtilsJson.jsonObject());
+    public static ApiResponse withSuccess(final int status, final String message) {
+        return new ApiResponse(status, true, message, "", -1, UtilsJson.jsonObject());
     }
-    public static AioResponse withError(final int status, final String error) {
-        return new AioResponse(status, false, "", error, -1, UtilsJson.jsonObject());
+    public static ApiResponse withError(final int status, final String error) {
+        return new ApiResponse(status, false, "", error, -1, UtilsJson.jsonObject());
     }
-    public static AioResponse noAction(final String action) {
+    public static ApiResponse noAction(final String action) {
         if(!UtilsText.isEmpty(action)) {
-            return AioResponse.withError(400, "wrong action");
+            return ApiResponse.withError(400, "wrong action");
         }else {
-            return AioResponse.withError(400, "action required");
+            return ApiResponse.withError(400, "action required");
         }
     }
 
