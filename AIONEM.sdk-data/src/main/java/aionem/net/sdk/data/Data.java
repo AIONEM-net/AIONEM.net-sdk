@@ -2,6 +2,7 @@ package aionem.net.sdk.data;
 
 import aionem.net.sdk.core.utils.UtilsConverter;
 import aionem.net.sdk.core.utils.UtilsNetwork;
+import aionem.net.sdk.core.utils.UtilsParse;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsData;
 import aionem.net.sdk.data.utils.UtilsJson;
@@ -127,24 +128,26 @@ public class Data {
     public <T> JsonObject toJson(final T dbInstance) {
         final JsonObject data = UtilsJson.jsonObject();
         try {
-            for(Field field : dbInstance.getClass().getDeclaredFields()) {
-                final int modifiers = field.getModifiers();
-                final boolean isStatic = Modifier.isStatic(modifiers);
-                final boolean isPrivate = Modifier.isPrivate(modifiers);
-                if(!isStatic && !isPrivate) {
-                    field.setAccessible(true);
-                    final Col col = field.isAnnotationPresent(Col.class) ? field.getDeclaredAnnotation(Col.class) : null;
-                    final String fieldName = field.getName();
-                    final String key = col != null ? UtilsText.notEmpty(col.value(), fieldName) : fieldName;
-                    Object value = field.get(dbInstance);
-                    if(value == null) {
-                        value = this.values.get(key);
+            if(dbInstance != null) {
+                for (Field field : dbInstance.getClass().getDeclaredFields()) {
+                    final int modifiers = field.getModifiers();
+                    final boolean isStatic = Modifier.isStatic(modifiers);
+                    final boolean isPrivate = Modifier.isPrivate(modifiers);
+                    if (!isStatic && !isPrivate) {
+                        field.setAccessible(true);
+                        final Col col = field.isAnnotationPresent(Col.class) ? field.getDeclaredAnnotation(Col.class) : null;
+                        final String fieldName = field.getName();
+                        final String key = col != null ? UtilsText.notEmpty(col.value(), fieldName) : fieldName;
+                        Object value = field.get(dbInstance);
+                        if (value == null) {
+                            value = this.values.get(key);
+                        }
+                        UtilsJson.add(data, key, value);
                     }
-                    UtilsJson.add(data, key, value);
                 }
             }
         }catch(Exception e) {
-            log.error("\nERROR: " + e +"\n");
+            log.error("\nERROR: toJson " + e +"\n");
         }
         return data;
     }
@@ -188,7 +191,24 @@ public class Data {
             if(!isStatic && !isPrivate) {
                 field.setAccessible(true);
                 if(value != null) {
-                    field.set(getInstance(), value);
+
+                    final Object defaultValue = field.get(getInstance());
+                    final Class<?> fieldType = field.getType();
+
+                    if(String.class.isAssignableFrom(fieldType)) {
+                        field.set(getInstance(), UtilsText.toString(value));
+                    }else if(Integer.class.isAssignableFrom(fieldType)) {
+                        field.set(getInstance(), UtilsParse.toNumber(value, (Integer) defaultValue));
+                    }else if(Double.class.isAssignableFrom(fieldType)) {
+                        field.set(getInstance(), UtilsParse.toNumber(value, (Double) defaultValue));
+                    }else if(Long.class.isAssignableFrom(fieldType)) {
+                        field.set(getInstance(), UtilsParse.toNumber(value, (Long) defaultValue));
+                    }else if(Boolean.class.isAssignableFrom(fieldType)) {
+                        field.set(getInstance(), UtilsParse.toBoolean(value, (Boolean) defaultValue));
+                    }else {
+                        field.set(getInstance(), value);
+                    }
+
                 }else {
                     final Object defaultInstance = getInstance().getClass().newInstance();
                     final Field defaultField = defaultInstance.getClass().getDeclaredField(key);
@@ -207,12 +227,15 @@ public class Data {
     public String get(final String key1, final String key2) {
         return getOrLast(new String[] {key1, key2}, false);
     }
+    
     public String get(final String... keys) {
         return getOrLast(keys, false);
     }
+
     public String getOr(final String... keys) {
         return getOrLast(keys, true);
     }
+
     public String getOrLast(final String[] keys, final boolean isOrLast) {
         for(int i = 0; i < keys.length; i++) {
             final String key = keys[i];
@@ -229,27 +252,34 @@ public class Data {
         }
         return isOrLast && keys.length > 0 ? keys[keys.length-1] : "";
     }
+
     public String getNullable(final String key) {
         return has(key) ? get(key) : null;
     }
+
     public String getEmptyNull(final String key) {
         final String value = get(key, String.class);
         return !UtilsText.isEmpty(value) ? value : null;
     }
+
     public Object getObject(final String key) {
         return this.values.get(key);
     }
+
     public <T> T get(final String key, final T defaultValue) {
         final Object value = this.values.get(key);
         return UtilsConverter.convert(value, defaultValue);
     }
+
     public <T> T get(final String key, final Class<T> type) {
         final Object value = this.values.get(key);
         return UtilsConverter.convert(value, type);
     }
+
     public Data getChild(final String key) {
         return new Data(get(key));
     }
+
     public Datas getChildren() {
         final Datas datas = new Datas();
         for(final String key : this.values.keySet()) {
@@ -258,6 +288,7 @@ public class Data {
         }
         return datas;
     }
+
     public Datas getChildren(final String key) {
         final Datas datas = new Datas();
         for(final JsonElement jsonElement : UtilsJson.toJsonArray(get(key))) {
@@ -356,6 +387,7 @@ public class Data {
         }
         return false;
     }
+
     public boolean equalsIgnoreCase2(final String key, final Object... values) {
         final String value = get(key);
         for(final Object value1 : values) {
@@ -368,6 +400,7 @@ public class Data {
     public boolean equals(final Object value, final String key) {
         return Objects.equals(value, getObject(key));
     }
+
     public boolean equalsIgnoreCase(final Object value, final String key) {
         return equals(value, key) || UtilsText.equalsIgnoreCase(UtilsText.toString(value), get(key));
     }
@@ -380,6 +413,7 @@ public class Data {
             return null;
         }
     }
+
     public <T> T adaptTo(T t) {
         try {
             return UtilsData.adaptTo(t, toJson());

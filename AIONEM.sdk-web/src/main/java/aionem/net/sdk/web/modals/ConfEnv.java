@@ -3,10 +3,14 @@ package aionem.net.sdk.web.modals;
 
 import aionem.net.sdk.core.Env;
 import aionem.net.sdk.web.AioWeb;
-import aionem.net.sdk.web.utils.Constants;
 
 public class ConfEnv extends Config {
-    
+
+    public static final String ENV_PROD = "prod";
+    public static final String ENV_STAGE = "stage";
+    public static final String ENV_DEV = "dev";
+    public static final String ENV_LOCAL = "local";
+
     private static ConfEnv confEnv;
     public static ConfEnv getInstance(final AioWeb aioWeb) {
         if(confEnv == null) {
@@ -75,19 +79,19 @@ public class ConfEnv extends Config {
     }
 
     public boolean isEnvProd() {
-        return Constants.ENV_PROD.equalsIgnoreCase(getEnv());
+        return ENV_PROD.equalsIgnoreCase(getEnv());
     }
 
     public boolean isEnvStage() {
-        return Constants.ENV_STAGE.equalsIgnoreCase(getEnv());
+        return ENV_STAGE.equalsIgnoreCase(getEnv());
     }
 
     public boolean isEnvDev() {
-        return Constants.ENV_DEV.equalsIgnoreCase(getEnv());
+        return ENV_DEV.equalsIgnoreCase(getEnv());
     }
 
     public boolean isEnvLocal() {
-        return Constants.ENV_LOCAL.equalsIgnoreCase(getEnv());
+        return ENV_LOCAL.equalsIgnoreCase(getEnv());
     }
 
     public boolean isDebug() {

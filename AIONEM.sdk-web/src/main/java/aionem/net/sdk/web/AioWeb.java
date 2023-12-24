@@ -199,6 +199,14 @@ public @Getter class AioWeb {
         return getRealPathRoot("/WEB-INF"+ (!UtilsText.isEmpty(path) ? "/" + path : ""));
     }
 
+    public String getRealPathPage() {
+        return getRealPathWebInf("");
+    }
+
+    public String getRealPathPage(final String path) {
+        return getRealPathRoot("/ui.page"+ (!UtilsText.isEmpty(path) ? "/" + path : ""));
+    }
+
     public String getRealPathRoot() {
         return getRealPathRoot("");
     }

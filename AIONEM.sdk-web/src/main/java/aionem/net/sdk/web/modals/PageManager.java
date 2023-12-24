@@ -9,8 +9,15 @@ import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Log4j2
@@ -32,22 +39,25 @@ public class PageManager {
     }
 
     public Page getPage() {
-        final File filePage = new File(aioWeb.getRealPathCurrent());
-        return new Page(aioWeb, aioWeb.getServletPath(), new Properties(new File(filePage, "properties.json")));
+        return new Page(aioWeb);
+    }
+
+    public Page getPageRoot() {
+        return new Page(aioWeb, "/");
     }
 
     public ArrayList<Page> getListPagesRoot() {
-        final Page pageItem = new Page(aioWeb, "");
+        final Page pageItem = getPageRoot();
         return getListPages(pageItem);
     }
 
     public ArrayList<Page> getListPages(final Page pageParent) {
         final ArrayList<Page> listPages = new ArrayList<>();
-        final String rootPagePath = aioWeb.getRealPathRoot();
-        final File filePageParent = new File(aioWeb.getRealPathRoot(pageParent.getPath()));
+        final String rootPagePath = aioWeb.getRealPathPage();
+        final File filePageParent = new File(aioWeb.getRealPathPage(pageParent.getPath()));
 
         for(final File filePage : getListFilePages(filePageParent)) {
-            final String pagePath = filePage.getAbsolutePath().substring(rootPagePath.length()-1);
+            final String pagePath = filePage.getAbsolutePath().substring(rootPagePath.length());
             final Page page = new Page(aioWeb, pagePath, new Properties(new File(filePage, "properties.json")));
             if(!pageParent.equals(page)) {
                 listPages.add(page);
@@ -58,10 +68,10 @@ public class PageManager {
 
     public ArrayList<Page> getListPagesAll() {
         final ArrayList<Page> listPages = new ArrayList<>();
-        final String rootPagePath = aioWeb.getRealPathRoot();
+        final String rootPagePath = aioWeb.getRealPathPage();
 
         for(final File filePage : getListFilePagesAll()) {
-            final String pagePath = filePage.getAbsolutePath().substring(rootPagePath.length()-1);
+            final String pagePath = filePage.getAbsolutePath().substring(rootPagePath.length());
             final Page page = new Page(aioWeb, pagePath);
             listPages.add(page);
         }
@@ -77,7 +87,7 @@ public class PageManager {
     }
 
     public ArrayList<File> getListFilePages(final int level) {
-        final String realPathRoot = aioWeb.getRealPathRoot();
+        final String realPathRoot = aioWeb.getRealPathPage();
         final ArrayList<File> listFilePages = new ArrayList<>();
         final File fileRoot = new File(realPathRoot);
         if(fileRoot.isDirectory()) {
@@ -97,7 +107,7 @@ public class PageManager {
     public ArrayList<File> getListFilePages(final String... pagePaths) {
         final File[] filePages = new File[pagePaths.length];
         for(int i = 0; i < pagePaths.length; i++) {
-            filePages[i] = new File(aioWeb.getRealPathRoot(pagePaths[i]));
+            filePages[i] = new File(aioWeb.getRealPathPage(pagePaths[i]));
         }
         return getListFilePages(filePages);
     }
@@ -125,7 +135,7 @@ public class PageManager {
     public ArrayList<File> getListFilePagesAll(final String... paths) {
         final File[] filePages = new File[paths.length];
         for(int i = 0; i < paths.length; i++) {
-            filePages[i] = new File(aioWeb.getRealPathRoot(paths[i]));
+            filePages[i] = new File(aioWeb.getRealPathPage(paths[i]));
         }
         return getListFilePagesAll(filePages);
     }
@@ -144,29 +154,28 @@ public class PageManager {
 
     private ArrayList<File> getListFilePages(final File filePage, final ArrayList<File> listFilePages, final int level) {
         final File[] files = filePage.listFiles();
-        if(!SYSTEM_PATH.contains("/"+ filePage.getName())) {
-            if(files != null) {
-                boolean hasHtml = false;
-                boolean hasJsp = false;
-                for (final File file : files) {
-                    if(file.isDirectory()) {
-                        if(level < 0) {
-                            getListFilePages(file, listFilePages, level);
-                        } else if(level == 1) {
-                            getListFilePages(file, listFilePages, 0);
-                        }
-                    } else {
-                        final String fileName = file.getName();
-                        if(fileName.equalsIgnoreCase("index.html")) {
-                            hasHtml = true;
-                        } else if(fileName.equalsIgnoreCase("index.jsp")) {
-                            hasJsp = true;
-                        }
+        if(files != null) {
+            boolean hasHtml = false;
+            boolean hasJsp = false;
+            Arrays.sort(files, Comparator.comparing(File::getName));
+            for(final File file : files) {
+                if(file.isDirectory()) {
+                    if(level < 0) {
+                        getListFilePages(file, listFilePages, level);
+                    } else if(level == 1) {
+                        getListFilePages(file, listFilePages, 0);
+                    }
+                }else {
+                    final String fileName = file.getName();
+                    if(fileName.equalsIgnoreCase("index.html")) {
+                        hasHtml = true;
+                    }else if(fileName.equalsIgnoreCase("index.jsp")) {
+                        hasJsp = true;
                     }
                 }
-                if(hasHtml || hasJsp) {
-                    listFilePages.add(filePage);
-                }
+            }
+            if(hasHtml || hasJsp) {
+                listFilePages.add(filePage);
             }
         }
         return listFilePages;
@@ -200,7 +209,7 @@ public class PageManager {
     }
 
     public boolean cache(final String env, final Page page) {
-        return cache(env, aioWeb.getURI(page.getUrl()), aioWeb.getRealPathRoot(page.getPath()));
+        return cache(env, aioWeb.getURI(page.getUrl()), aioWeb.getRealPathPage(page.getPath()));
     }
 
     public boolean cache(final String uri, final String realPath) {
@@ -228,18 +237,115 @@ public class PageManager {
     public ArrayList<String> invalidateCache() {
         final ArrayList<String> listPathPaths = new ArrayList<>();
         final List<File> listFilePages = getListFilePagesAll();
-        final String rootPagePath = aioWeb.getRealPathRoot();
+        final String rootPagePath = aioWeb.getRealPathPage();
         for(final File filePage : listFilePages) {
             final File filePageHtml = new File(filePage, "index.html");
             if(filePageHtml.exists()) {
                 final boolean deleted = filePageHtml.delete();
                 if(deleted) {
-                    final String pagePath = filePage.getAbsolutePath().substring(rootPagePath.length()-1);
+                    final String pagePath = filePage.getAbsolutePath().substring(rootPagePath.length());
                     listPathPaths.add(pagePath);
                 }
             }
         }
         return listPathPaths;
+    }
+
+    public boolean move(final Page page, final String pathNew) {
+        return move(page, pathNew, page.getName());
+    }
+
+    public boolean move(final Page page, final String pathNew, final String nameNew) {
+        try {
+            final Path sourcePath = Paths.get(aioWeb.getRealPathPage(page.getPath()));
+            final Path destinationPath = Paths.get(aioWeb.getRealPathPage(pathNew + "/" + nameNew));
+            Files.move(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+            return true;
+        } catch (IOException e) {
+            log.error("Error moving page {}", e.toString());
+        }
+        return false;
+    }
+
+    public boolean copy(final Page page, final String pathNew) {
+        return copy(page, pathNew, page.getName(), false);
+    }
+
+    public boolean copy(final Page page, final String pathNew, final boolean excludeChildren) {
+        return copy(page, pathNew, page.getName(), excludeChildren);
+    }
+
+    public boolean copy(final Page page, final String pathNew, final String nameNew, final boolean excludeChildren) {
+        try {
+            final Path sourcePath = Paths.get(aioWeb.getRealPathPage(page.getPath()));
+            final Path destinationPath = Paths.get(aioWeb.getRealPathPage(pathNew + "/" + nameNew));
+
+            Files.walkFileTree(sourcePath, new SimpleFileVisitor<>() {
+
+                @Override
+                public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
+                    if (excludeChildren && !dir.equals(sourcePath)) {
+                        return FileVisitResult.SKIP_SUBTREE;
+                    }
+                    final Path targetDir = destinationPath.resolve(sourcePath.relativize(dir));
+                    Files.createDirectories(targetDir);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                    final Path targetFile = destinationPath.resolve(sourcePath.relativize(file));
+                    Files.copy(file, targetFile, StandardCopyOption.REPLACE_EXISTING);
+                    return FileVisitResult.CONTINUE;
+                }
+
+            });
+
+            return true;
+        } catch (IOException e) {
+            log.error("Error copying page {}", e.toString());
+        }
+        return false;
+    }
+
+    public int references(final Page page, final Page pageNew, final boolean update) {
+        return references(page, pageNew, getPageRoot(), update);
+    }
+
+    public int references(final Page page, final Page pageNew, final Page pageSection, final boolean update) {
+        final int[] totalReferences = {0};
+
+        final String path = page.getPath();
+        final Path pathSection = Paths.get(aioWeb.getRealPathPage(pageSection.getPath()));
+
+        try {
+            Files.walkFileTree(pathSection, new SimpleFileVisitor<>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    if (Files.isRegularFile(file)) {
+                        final int references = references(file, page.getPath(), pageNew.getPath(), update);
+                        totalReferences[0] += references;
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            log.error("Error updating references: {}", e.toString());
+        }
+
+        return totalReferences[0];
+    }
+
+    private int references(final Path pathFile, final String pathOld, final String pathNew, final boolean update) throws IOException {
+        final String content = new String(Files.readAllBytes(pathFile));
+        final String updatedContent = content
+                .replaceAll(Pattern.quote("ui.page"+ pathOld +"\""), Matcher.quoteReplacement("ui.page"+ pathNew +"\""))
+                .replaceAll(Pattern.quote("ui.page"+ pathOld +"'"), Matcher.quoteReplacement("ui.page"+ pathNew +"'"));
+        int references = (content.length() - updatedContent.length()) / (pathOld.length() - pathNew.length());
+        if(update) {
+            UtilsWeb.writeFile(pathFile.toFile(), updatedContent);
+        }
+        return Math.abs(references);
     }
 
 }

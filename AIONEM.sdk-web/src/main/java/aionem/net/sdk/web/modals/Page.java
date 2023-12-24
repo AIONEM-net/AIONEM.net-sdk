@@ -5,6 +5,7 @@ import aionem.net.sdk.web.AioWeb;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -48,8 +49,7 @@ public @Data class Page {
     }
 
     public Page(final AioWeb aioWeb, final String path, final Properties properties) {
-        this.properties = properties;
-        init(aioWeb, path);
+        init(aioWeb, path, properties);
     }
 
     public Page(final AioWeb aioWeb, final String title, final String path, final String icon) {
@@ -61,41 +61,19 @@ public @Data class Page {
         setPath(aioWeb, path);
     }
 
-    public void setTitles(final String title) {
-        this.title = title;
-        this.subTitle = title;
-        this.navTitle = title;
-        this.pageTitle = title;
-    }
-
-    public void setPath(final AioWeb aioWeb, final String path) {
-        this.path = aioWeb.getRelativePath(path);
-        this.url = aioWeb.getContextPath(this.path);
-    }
-
-    public String getNavTitle() {
-        return UtilsText.notEmpty(navTitle, pageTitle, title);
-    }
-
-    public void setPathUrl(final AioWeb aioWeb) {
-        this.path = aioWeb.getServletPath();
-        this.url = aioWeb.getContextServletPath();
-    }
-    public void setPathUrl(final AioWeb aioWeb, final String path) {
-        this.path = path;
-        this.url = aioWeb.getContextPath(path);
-    }
-
     public void init(final AioWeb aioWeb) {
-        setPathUrl(aioWeb);
         init(aioWeb, this.path);
-        from(new PageManager(aioWeb).getPage());
     }
 
     public void init(final AioWeb aioWeb, final String path) {
-        setPathUrl(aioWeb, path);
-        String title = this.path;
-        title = title
+        final File filePage = new File(aioWeb.getRealPathPage(path));
+        init(aioWeb, path, new Properties(new File(filePage, "properties.json")));
+    }
+
+    public void init(final AioWeb aioWeb, final String path, final Properties properties) {
+        this.properties = properties;
+        setPath(aioWeb, path);
+        String title = this.path
                 .replace("/index.jsp", "")
                 .replace("/index.html", "")
                 .replace(".jsp", "")
@@ -103,31 +81,67 @@ public @Data class Page {
                 .replace("-", " ")
                 .replace("_", " ")
                 .replace("//", "");
-        final int index1 = title.lastIndexOf("/");
-        if(index1 >= 0) {
-            title = title.substring(index1 + 1);
+        final int index = title.lastIndexOf("/");
+        if(index >= 0) {
+            title = title.substring(index + 1);
         }
         title = UtilsText.capitalizeFirstLetter(title);
         setTitles(title);
     }
 
-    public void from(final Page pageItem) {
+    public void setTitles(final String title) {
+        this.title = title;
+        this.subTitle = title;
+        this.navTitle = title;
+        this.pageTitle = title;
+    }
+
+    public void from(final Page page) {
         if(isRoot || UtilsText.isEmpty(this.title)) {
-            this.title = pageItem.getTitle();
-            this.navTitle = pageItem.getNavTitle();
-            this.pageTitle = pageItem.getPageTitle();
-            this.brandSlug = pageItem.getBrandSlug();
-            this.path = pageItem.getPath();
-            this.url = pageItem.getUrl();
-            this.icon = pageItem.getIcon();
-            this.properties = pageItem.getProperties();
+            this.title = page.getTitle();
+            this.navTitle = page.getNavTitle();
+            this.pageTitle = page.getPageTitle();
+            this.brandSlug = page.getBrandSlug();
+            this.path = page.getPath();
+            this.url = page.getUrl();
+            this.icon = page.getIcon();
+            this.properties = page.getProperties();
         }
     }
 
     public void from(final Properties properties) {
         if(isRoot || UtilsText.isEmpty(this.title)) {
-
+            this.title = properties.get("title");
+            this.navTitle = properties.get("navTitle");
+            this.pageTitle = properties.get("pageTitle");
+            this.brandSlug = properties.get("brandSlug");
+            this.path = properties.get("path");
+            this.url = properties.get("url");
+            this.icon = properties.get("icon");
+            this.properties = properties;
         }
+    }
+
+    public void setPath(final AioWeb aioWeb) {
+        setPath(aioWeb, "");
+    }
+
+    public void setPath(final AioWeb aioWeb, final String path) {
+        if(UtilsText.isEmpty(path)) {
+            this.path = aioWeb.getServletPath();
+            this.url = aioWeb.getContextServletPath();
+        }else {
+            this.path = aioWeb.getRelativePath(path);
+            this.url = aioWeb.getContextPath(path);
+        }
+    }
+
+    public String getName() {
+        return path.substring(path.lastIndexOf("/"));
+    }
+
+    public String getNavTitle() {
+        return UtilsText.notEmpty(navTitle, pageTitle, title);
     }
 
     public String getMenuTitle() {
@@ -159,10 +173,10 @@ public @Data class Page {
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if(this == object) return true;
         if(object == null || getClass() != object.getClass()) return false;
-        Page that = (Page) object;
+        final Page that = (Page) object;
         return Objects.equals(path, that.path);
     }
 

@@ -3,7 +3,6 @@ package aionem.net.sdk.web.modals;
 import aionem.net.sdk.data.Data;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.web.AioWeb;
-import aionem.net.sdk.web.utils.Constants;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.Getter;
 
@@ -58,16 +57,16 @@ public class Config {
     }
 
     public String getEnv(String env) {
-        if(Constants.ENV_LOCAL.equalsIgnoreCase(env)) {
-            env = Constants.ENV_LOCAL;
-        }else if(Constants.ENV_DEV.equalsIgnoreCase(env)) {
-            env = Constants.ENV_DEV;
-        }else if(Constants.ENV_STAGE.equalsIgnoreCase(env)) {
-            env = Constants.ENV_STAGE;
-        }else if(Constants.ENV_PROD.equalsIgnoreCase(env)) {
-            env = Constants.ENV_PROD;
+        if(ConfEnv.ENV_LOCAL.equalsIgnoreCase(env)) {
+            env = ConfEnv.ENV_LOCAL;
+        }else if(ConfEnv.ENV_DEV.equalsIgnoreCase(env)) {
+            env = ConfEnv.ENV_DEV;
+        }else if(ConfEnv.ENV_STAGE.equalsIgnoreCase(env)) {
+            env = ConfEnv.ENV_STAGE;
+        }else if(ConfEnv.ENV_PROD.equalsIgnoreCase(env)) {
+            env = ConfEnv.ENV_PROD;
         }else {
-            env = Constants.ENV_LOCAL;
+            env = ConfEnv.ENV_LOCAL;
         }
         return UtilsText.notNull(env).toLowerCase();
     }
