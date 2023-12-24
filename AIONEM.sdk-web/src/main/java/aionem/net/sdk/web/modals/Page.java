@@ -38,16 +38,20 @@ public @Data class Page {
     public Page() {
 
     }
+
     public Page(final AioWeb aioWeb) {
         init(aioWeb);
     }
+
     public Page(final AioWeb aioWeb, final String path) {
         init(aioWeb, path);
     }
+
     public Page(final AioWeb aioWeb, final String path, final Properties properties) {
         this.properties = properties;
         init(aioWeb, path);
     }
+
     public Page(final AioWeb aioWeb, final String title, final String path, final String icon) {
         this.title = title;
         this.subTitle = title;
@@ -85,8 +89,9 @@ public @Data class Page {
     public void init(final AioWeb aioWeb) {
         setPathUrl(aioWeb);
         init(aioWeb, this.path);
-        from(aioWeb.getPage());
+        from(new PageManager(aioWeb).getPage());
     }
+
     public void init(final AioWeb aioWeb, final String path) {
         setPathUrl(aioWeb, path);
         String title = this.path;
@@ -138,7 +143,7 @@ public @Data class Page {
     }
 
     public ArrayList<Page> listChildren(final AioWeb aioWeb) {
-        return aioWeb.getListPages(this);
+        return new PageManager(aioWeb).getListPages(this);
     }
 
     public boolean isAuthAllow(final boolean isAdmins, final boolean isUsers, final boolean isAuths) {

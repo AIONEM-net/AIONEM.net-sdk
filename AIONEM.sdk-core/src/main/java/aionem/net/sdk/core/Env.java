@@ -1,4 +1,4 @@
-package aionem.net.sdk.core.config;
+package aionem.net.sdk.core;
 
 
 public class Env {

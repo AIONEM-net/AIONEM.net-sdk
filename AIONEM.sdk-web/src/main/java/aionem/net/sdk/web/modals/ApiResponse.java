@@ -1,8 +1,8 @@
 package aionem.net.sdk.web.modals;
 
-import aionem.net.sdk.data.api.DaoRes;
-import aionem.net.sdk.data.api.AuthData;
-import aionem.net.sdk.core.config.Env;
+import aionem.net.sdk.data.DaoRes;
+import aionem.net.sdk.data.AuthData;
+import aionem.net.sdk.core.Env;
 import aionem.net.sdk.data.Datas;
 import aionem.net.sdk.data.utils.UtilsDB;
 import aionem.net.sdk.data.Data;
@@ -39,6 +39,7 @@ public class ApiResponse {
 
 
     public ApiResponse() {
+
     }
 
     public ApiResponse(final int status, final boolean success, final String message, final String error, final long counts, final JsonObject jsonData) {
@@ -62,9 +63,11 @@ public class ApiResponse {
     public static ApiResponse withSuccess(final int status, final String message) {
         return new ApiResponse(status, true, message, "", -1, UtilsJson.jsonObject());
     }
+
     public static ApiResponse withError(final int status, final String error) {
         return new ApiResponse(status, false, "", error, -1, UtilsJson.jsonObject());
     }
+
     public static ApiResponse noAction(final String action) {
         if(!UtilsText.isEmpty(action)) {
             return ApiResponse.withError(400, "wrong action");
@@ -76,21 +79,26 @@ public class ApiResponse {
     public void onSuccess(final int status, final String message) {
         onSuccess(status, message, "");
     }
+
     public void onSuccess(final int status, final String message, final String message1) {
         this.success = true;
         this.status = status;
         this.message = message;
         setMessage(message, message1);
     }
+
     public void onFailure(final int status, final String error) {
         onFailure(status, error, null, null);
     }
+
     public void onFailure(final int status, final String error, final Exception e) {
         onFailure(status, error, "", e);
     }
+
     public void onFailure(final int status, final String error, final String error1) {
         onFailure(status, error, error1, null);
     }
+
     public void onFailure(final int status, final String error, final String error1, final Exception e) {
         this.success = false;
         this.status = status;
@@ -101,12 +109,15 @@ public class ApiResponse {
     public void setStatus(final int status) {
         this.status = status;
     }
+
     public void setSuccess(final boolean success) {
         this.success = success;
     }
+
     public void setMessage(final String message) {
         this.message = message;
     }
+
     public void setMessage(final String... messages) {
         String separator = " : ";
         if(messages == null) message = "";
@@ -114,6 +125,7 @@ public class ApiResponse {
         else if(messages.length == 2) message = messages[0] + (!UtilsText.isEmpty(messages[1]) ?separator+ messages[1] : "");
         else this.message = UtilsText.join(messages, separator);
     }
+
     public void setError(final String... errors) {
         String separator = " : ";
         if(errors == null) error = "";
@@ -121,17 +133,20 @@ public class ApiResponse {
         else if(errors.length == 2) error = errors[0] + (!UtilsText.isEmpty(errors[1]) ?separator+ errors[1] : "");
         else this.error = UtilsText.join(errors, separator);
     }
+
     public void setException(final Exception e) {
         this.exception = e;
         if(Env.IS_DEBUG_EXCEPTION && e != null && UtilsText.isEmpty(error)) {
             this.error = UtilsText.notEmpty(e.getMessage(), error);
         }
     }
+
     public void setException(final String... messages) {
         if(messages != null) {
             setException(new Exception(UtilsText.join(messages, " : ")));
         }
     }
+
     public Exception getException() {
         if(exception == null) {
             if(!UtilsText.isEmpty(error)) {
@@ -140,28 +155,36 @@ public class ApiResponse {
         }
         return exception;
     }
+
     public void setCounts(final long counts) {
         this.counts = counts;
     }
+
     public void setCounts(final long counts, final long max) {
         this.counts = counts;
         this.pages = max > 0 ? (long) Math.ceil(counts / (double) max) : -1;
     }
+
     public void setTotal(final long total) {
         this.total = total;
     }
+
     public void setPage(final long page) {
         this.page = page;
     }
+
     public void setPages(final long pages) {
         this.pages = pages;
     }
+
     public void setDraw(final long draw) {
         this.draw = draw;
     }
+
     public void setToken(final String token) {
         this.token = token;
     }
+
     public void setData(final Object data) {
         this.data = data;
         this.jsonData = UtilsJson.toJsonObject(data);
@@ -170,6 +193,7 @@ public class ApiResponse {
     public void setDataArray(final JsonArray jsonArray) {
         setDataArray(new Datas(jsonArray));
     }
+
     public void setDataArray(final Datas datas) {
         this.data = datas;
     }
@@ -215,7 +239,7 @@ public class ApiResponse {
                     }else if(data instanceof Data) {
                         jsonResponse.add("data", ((Data) data).toJson());
                     }else if(data instanceof Datas) {
-                        jsonResponse.add("data", ((Datas) data).toJsonArray());
+                        jsonResponse.add("data", ((Datas) data).toJson());
                     }else if(data instanceof JsonObject) {
                         jsonResponse.add("data", (JsonObject) data);
                     }else if(data instanceof JsonArray) {
@@ -277,7 +301,7 @@ public class ApiResponse {
             }else if(data instanceof Data) {
                 UtilsJson.add(jsonData, key, ((Data) data).toJson());
             }else if(data instanceof Datas) {
-                UtilsJson.add(jsonData, key, ((Datas) data).toJsonArray());
+                UtilsJson.add(jsonData, key, ((Datas) data).toJson());
             }else if(data instanceof JsonElement) {
                 UtilsJson.add(jsonData, key, data);
             }else {
@@ -309,12 +333,5 @@ public class ApiResponse {
         }
         return null;
     }
-
-//    public ResponseEntity<String> toResponseEntity() {
-//        return ResponseEntity
-//                .status(200)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .body(toJsonResponse());
-//    }
 
 }

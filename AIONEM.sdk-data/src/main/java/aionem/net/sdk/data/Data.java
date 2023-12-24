@@ -20,6 +20,8 @@ import java.util.*;
 @Getter
 public class Data {
 
+    private Object instance;
+
     private final LinkedHashMap<String, Object> values = new LinkedHashMap<>();
 
     public Data() {
@@ -29,34 +31,42 @@ public class Data {
     public Data(final JsonObject values) {
         fromData(values);
     }
+
     public Data(final HashMap<String, Object> values) {
         fromData(values);
     }
+
     public Data(final Object data) {
         fromData(UtilsJson.toJsonObject(data));
     }
-    
+
+    public <T> T getInstance() {
+        return (T) instance;
+    }
 
     public <T> T init(T t) {
+        instance = t;
 
-        for(Field field : t.getClass().getDeclaredFields()) {
-            final int modifiers = field.getModifiers();
-            final boolean isStatic = Modifier.isStatic(modifiers);
-            final boolean isFinal = Modifier.isFinal(modifiers);
-            final boolean isPrivate = Modifier.isPrivate(modifiers);
-            if(!isStatic && !isFinal && !isPrivate) {
-                field.setAccessible(true);
-                final Col col = field.isAnnotationPresent(Col.class) ? field.getDeclaredAnnotation(Col.class) : null;
-                final String fieldName = field.getName();
-                final String key = col != null ? UtilsText.notEmpty(col.value(), fieldName) : fieldName;
-                try {
-                    Object value = field.get(t);
-                    if(value != null) {
-                        value = UtilsConverter.convert(value, field.getType());
+        if(t != null) {
+            for (Field field : t.getClass().getDeclaredFields()) {
+                final int modifiers = field.getModifiers();
+                final boolean isStatic = Modifier.isStatic(modifiers);
+                final boolean isFinal = Modifier.isFinal(modifiers);
+                final boolean isPrivate = Modifier.isPrivate(modifiers);
+                if (!isStatic && !isFinal && !isPrivate) {
+                    field.setAccessible(true);
+                    final Col col = field.isAnnotationPresent(Col.class) ? field.getDeclaredAnnotation(Col.class) : null;
+                    final String fieldName = field.getName();
+                    final String key = col != null ? UtilsText.notEmpty(col.value(), fieldName) : fieldName;
+                    try {
+                        Object value = field.get(t);
+                        if (value != null) {
+                            value = UtilsConverter.convert(value, field.getType());
+                        }
+                        put(key, value);
+                    } catch (Exception e) {
+                        log.error("\nERROR: Data - init " + e + "\n");
                     }
-                    put(key, value);
-                }catch(Exception e) {
-                    log.error("\nERROR: Data - fromData " + e +"\n");
                 }
             }
         }
@@ -64,16 +74,60 @@ public class Data {
         return t;
     }
 
-    public JsonObject toJson() {
-        return UtilsJson.fromHashMap(values);
+    public <T> T init(T t, final boolean init) {
+        if(init) return init(t);
+        return t;
     }
+
+    public <T> T init(final T dbInstance, final Data data) {
+        fromData(data);
+        try {
+            init(dbInstance);
+            return UtilsData.adaptTo(dbInstance, data.toJson());
+        }catch(Exception e) {
+            log.error("\nERROR: AIONEM.NET_SDK : Data - fromData " + e +"\n");
+        }
+        return dbInstance;
+    }
+
+    public <T> T init(final T dbInstance, final HashMap<String, Object> data) {
+        fromData(data);
+        try {
+            init(dbInstance);
+            return UtilsData.adaptTo(dbInstance, UtilsJson.fromHashMap(data));
+        }catch(Exception e) {
+            log.error("\nERROR: AIONEM.NET_SDK : Data - fromData " + e +"\n");
+        }
+        return dbInstance;
+    }
+
+    public <T> T init(final T dbInstance, final JsonObject data) {
+        fromData(UtilsJson.toHashMap(data));
+        try {
+            init(dbInstance);
+            return UtilsData.adaptTo(dbInstance, data);
+        }catch(Exception e) {
+            log.error("\nERROR: AIONEM.NET_SDK : Data - fromData " + e +"\n");
+        }
+        return dbInstance;
+    }
+
+    public <T> T init(final T dbInstance, final Object data) {
+        return init(dbInstance, UtilsJson.toJsonObject(data));
+    }
+
+    public JsonObject toJson() {
+        return toJson(getInstance());
+    }
+
     public JsonObject toJsonAll() {
         return UtilsJson.fromHashMap(values);
     }
-    public <T> JsonObject toJson(final T db) {
+
+    public <T> JsonObject toJson(final T dbInstance) {
         final JsonObject data = UtilsJson.jsonObject();
         try {
-            for(Field field : db.getClass().getDeclaredFields()) {
+            for(Field field : dbInstance.getClass().getDeclaredFields()) {
                 final int modifiers = field.getModifiers();
                 final boolean isStatic = Modifier.isStatic(modifiers);
                 final boolean isPrivate = Modifier.isPrivate(modifiers);
@@ -82,7 +136,7 @@ public class Data {
                     final Col col = field.isAnnotationPresent(Col.class) ? field.getDeclaredAnnotation(Col.class) : null;
                     final String fieldName = field.getName();
                     final String key = col != null ? UtilsText.notEmpty(col.value(), fieldName) : fieldName;
-                    Object value = field.get(db);
+                    Object value = field.get(dbInstance);
                     if(value == null) {
                         value = this.values.get(key);
                     }
@@ -109,58 +163,45 @@ public class Data {
     }
 
     public Data fromData(final JsonObject data) {
-        return fromData(UtilsJson.toHashMap(data));
+        return init(getInstance(), data);
     }
 
     public Data fromData(final Object data) {
-        return fromData(UtilsJson.toJsonObject(data));
-    }
-
-    public <T> T fromData(final T dbInstance, final JsonObject data) {
-        fromData(UtilsJson.toHashMap(data));
-        try {
-            return UtilsData.adaptTo(dbInstance, data);
-        }catch(Exception e) {
-            log.error("\nERROR: AIONEM.NET_SDK : Data - fromData " + e +"\n");
-        }
-        return dbInstance;
-    }
-
-    public Data fromData(final String key, final Data data) {
-        final Object value = data.get(key);
-        return puts(this, key, value);
+        return init(getInstance(), UtilsJson.toJsonObject(data));
     }
 
     public Data put(final String key, final Object... values) {
-        return puts(this, key, values);
+        return puts(key, values);
     }
-    public <T> T puts(final T dbInstance, final String key, final Object... values) {
-        return put(dbInstance, key, values.length > 0 ? (values.length == 1 ? values[0] : Arrays.asList(values)) : null);
+
+    public Data puts(final String key, final Object... values) {
+        return put(key, values.length > 0 ? (values.length == 1 ? values[0] : Arrays.asList(values)) : null);
     }
-    public <T> T put(final T dbInstance, final String key, final Object value) {
+
+    public Data put(final String key, final Object value) {
         this.values.put(key, value);
         try {
-            final Field field = dbInstance.getClass().getDeclaredField(key);
+            final Field field = getInstance().getClass().getDeclaredField(key);
             final int modifiers = field.getModifiers();
             final boolean isStatic = Modifier.isStatic(modifiers);
             final boolean isPrivate = Modifier.isPrivate(modifiers);
             if(!isStatic && !isPrivate) {
                 field.setAccessible(true);
                 if(value != null) {
-                    field.set(dbInstance, value);
+                    field.set(getInstance(), value);
                 }else {
-                    final T defaultInstance = (T) dbInstance.getClass().newInstance();
+                    final Object defaultInstance = getInstance().getClass().newInstance();
                     final Field defaultField = defaultInstance.getClass().getDeclaredField(key);
                     defaultField.setAccessible(true);
                     final Object defaultValue = defaultField.get(defaultInstance);
-                    defaultField.set(dbInstance, defaultValue);
+                    defaultField.set(getInstance(), defaultValue);
                 }
             }
         } catch (NoSuchFieldException ignore) {
         } catch (Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK put : " + e + "\n");
         }
-        return dbInstance;
+        return getInstance();
     }
 
     public String get(final String key1, final String key2) {
@@ -234,13 +275,10 @@ public class Data {
         return valuesString;
     }
 
-    public Data remove(final String key) {
-        return remove(this, key);
-    }
-    public <T> T remove(final T dbInstance, final String key) {
-        put(dbInstance, key, null);
+    public <T> T remove(final String key) {
+        put(key, null);
         this.values.remove(key);
-        return dbInstance;
+        return getInstance();
     }
 
     public boolean has(String key) {

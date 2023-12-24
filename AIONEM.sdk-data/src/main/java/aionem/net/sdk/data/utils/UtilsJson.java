@@ -120,7 +120,7 @@ public class UtilsJson {
         }else if(value instanceof Data) {
             data.add(key, ((Data) value).toJson());
         }else if(value instanceof Datas) {
-            data.add(key, ((Datas) value).toJsonArray());
+            data.add(key, ((Datas) value).toJson());
         }else if(value instanceof Number) {
             data.addProperty(key, (Number) value);
         }else if(value instanceof Boolean) {

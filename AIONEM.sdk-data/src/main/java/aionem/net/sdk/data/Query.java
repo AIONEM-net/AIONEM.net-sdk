@@ -1,8 +1,7 @@
 package aionem.net.sdk.data;
 
-import aionem.net.sdk.core.config.Env;
+import aionem.net.sdk.core.Env;
 import aionem.net.sdk.core.utils.UtilsText;
-import aionem.net.sdk.data.api.AuthData;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import oracle.ucp.jdbc.PoolDataSource;
@@ -82,7 +81,7 @@ public class Query {
             if(auth.isUsePoolDataSource() && poolDataSource == null) {
                 poolDataSource = PoolDataSourceFactory.getPoolDataSource();
                 poolDataSource.setConnectionFactoryClassName("com.mysql.cj.jdbc.MysqlDataSource");
-                poolDataSource.setURL(auth.getDBConnection() + "://"+ auth.getDBHost() +":"+ auth.getDBPort() +"/"+ auth.getDBName());
+                poolDataSource.setURL(auth.getDBConnection() + "://"+ auth.getDBUrl());
                 poolDataSource.setUser(auth.getDBUser());
                 poolDataSource.setPassword(auth.getPassword());
                 poolDataSource.setInitialPoolSize(1);
@@ -93,7 +92,7 @@ public class Query {
 
             if(connection == null || connection.isClosed()) {
                 Class.forName(auth.getDBDriver());
-                connection = DriverManager.getConnection(auth.getDBConnection() + "://"+ auth.getDBHost() +":"+ auth.getDBPort() +"/"+ auth.getDBName(), auth.getDBUser(), auth.getDBPassword());
+                connection = DriverManager.getConnection(auth.getDBConnection() + "://"+ auth.getDBUrl(), auth.getDBUser(), auth.getDBPassword());
             }
 
         }catch(Exception e) {

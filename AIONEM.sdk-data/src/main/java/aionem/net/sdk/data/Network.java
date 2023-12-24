@@ -1,9 +1,7 @@
-package aionem.net.sdk.data.net;
+package aionem.net.sdk.data;
 
 import aionem.net.sdk.core.utils.UtilsNetwork;
 import aionem.net.sdk.core.utils.UtilsText;
-import aionem.net.sdk.data.Data;
-import aionem.net.sdk.data.api.DaoRes;
 import lombok.extern.log4j.Log4j2;
 
 import javax.net.ssl.HttpsURLConnection;

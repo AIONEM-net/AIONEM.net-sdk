@@ -5,6 +5,7 @@ import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsData;
 import aionem.net.sdk.web.AioWeb;
 import aionem.net.sdk.web.modals.Page;
+import aionem.net.sdk.web.modals.PageManager;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.extern.log4j.Log4j2;
 
@@ -25,7 +26,7 @@ public class Deploy {
 
         if(isUpdatedEnv) {
 
-            final ArrayList<File> listFilePagesCache = aioWeb.getListFilePagesAll("/ui.page/en", "/ui.page/it", "/ui.page/rw", "/ui.page/dev", "/ui.page/auth/login", "/ui.page/auth/register");
+            final ArrayList<File> listFilePagesCache = new PageManager(aioWeb).getListFilePagesAll("/ui.page/en", "/ui.page/it", "/ui.page/rw", "/ui.page/dev", "/ui.page/auth/login", "/ui.page/auth/register");
 
             final boolean isMinified = minify(aioWeb);
 
@@ -97,7 +98,7 @@ public class Deploy {
             final Page page = new Page(aioWeb, pagePath);
 
             if(new File(filePage, "index.jsp").exists()) {
-                final boolean isCached = aioWeb.cache(env, page);
+                final boolean isCached = aioWeb.getPageManager().cache(env, page);
                 boolean isDeleted = false;
                 if(isCached) {
                     isDeleted = new File(filePage, "properties.json").delete();

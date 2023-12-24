@@ -4,11 +4,13 @@ import lombok.extern.log4j.Log4j2;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -69,27 +71,12 @@ public class UtilsText {
             if(!(object instanceof String || object instanceof Character || object instanceof StringBuilder ||
                     object instanceof Integer || object instanceof Long || object instanceof Double || object instanceof Boolean)) {
 
-//                if(object instanceof JsonElement) {
-//                    value = ((JsonElement) object).getAsString();
-//                }else if(object instanceof DaoRes) {
-//                    value = ((DaoRes) object).getData().toString();
-//                }else if(object instanceof Data) {
-//                    value = ((Data) object).getData().toString();
-//                }  else if(object instanceof Datas) {
-//                    value = ((Datas) object).getDatas().toString();
-//                }else if(object instanceof ArrayList) {
-//                    JsonArray jsonArray = UtilsJson.jsonArray();
-//                    for(Object item : ((ArrayList) object)) {
-//                        String itemValue = toString(item);
-//                        jsonArray.add(itemValue);
-//                    }
-//                    value = jsonArray.toString();
-//                }
-
                 if(object instanceof File) {
                     value = Files.readString(((File) object).toPath());
                 }else if(object instanceof HttpURLConnection) {
-                        value = toString(new BufferedReader(new InputStreamReader(((HttpURLConnection) object).getInputStream(), StandardCharsets.UTF_8)));
+                        value = toString(((HttpURLConnection) object).getInputStream());
+                }else if(object instanceof InputStream) {
+                        value = toString(new BufferedReader(new InputStreamReader((InputStream) object, StandardCharsets.UTF_8)));
                 }else if(object instanceof BufferedReader) {
                     final StringBuilder response = new StringBuilder();
                     final BufferedReader bufferedReader = (BufferedReader) object;

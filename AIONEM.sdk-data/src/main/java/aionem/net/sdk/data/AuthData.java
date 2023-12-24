@@ -1,12 +1,9 @@
-package aionem.net.sdk.data.api;
+package aionem.net.sdk.data;
 
 import aionem.net.sdk.core.utils.UtilsText;
-import aionem.net.sdk.data.Data;
 import com.google.gson.JsonObject;
 import lombok.EqualsAndHashCode;
 import lombok.extern.log4j.Log4j2;
-
-import java.util.ResourceBundle;
 
 
 @Log4j2
@@ -22,7 +19,8 @@ public @lombok.Data class AuthData extends Data {
     protected String code = "";
     protected String passwordHash = "";
     protected String language = "";
-    
+    private Conf conf;
+
     protected void init(final String uid, final String email, final String phone, final String password, final String uidToken, final String code) {
 
         this.uid = UtilsText.notNull(uid);
@@ -40,7 +38,7 @@ public @lombok.Data class AuthData extends Data {
 
     @Override
     public AuthData fromData(final JsonObject data) {
-        super.fromData(this, data);
+        super.init(this, data);
         return this;
     }
 
@@ -53,51 +51,45 @@ public @lombok.Data class AuthData extends Data {
         return null;
     }
 
-
-    private ResourceBundle resourceBundle;
-    public ResourceBundle getResourceBundle() {
-        if(resourceBundle == null) {
-            resourceBundle = ResourceBundle.getBundle("application");
-        }
-        return resourceBundle;
-    }
-    public String getResourceBundle(final String key) {
-        return getResourceBundle(key, "");
-    }
-    public String getResourceBundle(final String key, final String defaultValue) {
-        String value;
-        try {
-            value = getResourceBundle().getString(key);
-        }catch (Exception e) {
-            log.error("Error getting resource bundle {}", e.getMessage());
-            value = defaultValue;
-        }
-        return value;
+    public Conf getConf() {
+        if(conf == null) conf = new Conf();
+        return conf;
     }
 
     public boolean isUsePoolDataSource() {
         return false;
     }
+
     public String getDBDriver() {
-        return getResourceBundle("db_driver");
+        return getConf().getOr("db_driver", "spring.datasource.driver-class-name");
     }
+
     public String getDBConnection() {
-        return getResourceBundle("db_connection");
+        return getConf().getOr("db_connection", "");
     }
+
+    public String getDBUrl() {
+        return getConf().get("db_url", "spring.datasource.url", getDBHost() +":"+ getDBPort() +"/"+ getDBName());
+    }
+
     public String getDBHost() {
-        return getResourceBundle("db_host");
+        return getConf().get("db_host", "localhost");
     }
+
     public String getDBPort() {
-        return getResourceBundle("db_port");
+        return getConf().get("db_port", "3306");
     }
+
     public String getDBName() {
-        return getResourceBundle("db_name");
+        return getConf().getOr("db_name", "spring.datasource.name");
     }
+
     public String getDBUser() {
-        return getResourceBundle("db_user");
+        return getConf().getOr("db_user", "spring.datasource.username");
     }
+
     public String getDBPassword() {
-        return getResourceBundle("db_password");
+        return getConf().getOr("db_password", "spring.datasource.password");
     }
 
 }

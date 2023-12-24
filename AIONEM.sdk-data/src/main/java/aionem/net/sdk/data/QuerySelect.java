@@ -3,7 +3,6 @@ package aionem.net.sdk.data;
 import aionem.net.sdk.data.utils.UtilsDB;
 import aionem.net.sdk.core.utils.UtilsParse;
 import aionem.net.sdk.core.utils.UtilsText;
-import aionem.net.sdk.data.api.AuthData;
 import aionem.net.sdk.data.utils.UtilsData;
 import aionem.net.sdk.data.utils.UtilsJson;
 import com.google.gson.JsonArray;

@@ -19,18 +19,39 @@ public @Getter abstract class Component {
 
     private AioWeb aioWeb;
     protected Properties properties;
+    private volatile Object instance;
 
     public Component() {
         properties = new Properties();
     }
-    public Component(final AioWeb aioWeb) {
-        init(this, aioWeb, new Properties());
+
+    protected Component(final Object instance, final AioWeb aioWeb) {
+        init(instance, aioWeb, new Properties());
     }
+
     public Component(final AioWeb aioWeb, final Properties properties) {
         init(this, aioWeb, properties);
     }
 
-    public <T> T init(T t, final AioWeb aioWeb, Properties properties) {
+    public <T> T init(T instance) {
+        this.instance = instance;
+        return instance;
+    }
+
+    public <T> T init(final AioWeb aioWeb) {
+        return (T) init(instance, aioWeb, new Properties());
+    }
+
+    public <T> T init(T instance, final AioWeb aioWeb) {
+        return init(instance, aioWeb, new Properties());
+    }
+
+    public <T> T init(final AioWeb aioWeb, Properties properties) {
+        return (T) init(instance, aioWeb, properties);
+    }
+
+    public <T> T init(T instance, final AioWeb aioWeb, Properties properties) {
+        this.instance = instance;
         this.aioWeb = aioWeb;
         boolean isNew = false;
 
@@ -43,11 +64,11 @@ public @Getter abstract class Component {
             properties.init(data);
         }
 
-        System.out.println(properties.size() +" == "+ this.properties.size() +" : "+ t);
+        System.out.println(properties.size() +" == "+ this.properties.size() +" : "+ instance);
 
         if(!properties.isEmpty() && !properties.equals(this.properties)) {
 
-            for(final Field field : t.getClass().getDeclaredFields()) {
+            for(final Field field : instance.getClass().getDeclaredFields()) {
                 final int modifiers = field.getModifiers();
                 final boolean isStatic = Modifier.isStatic(modifiers);
                 final boolean isFinal = Modifier.isFinal(modifiers);
@@ -59,14 +80,14 @@ public @Getter abstract class Component {
                         final String fieldName = field.getName();
                         final String key = anNamed != null ? UtilsText.notEmpty(anNamed.value(), fieldName) : fieldName;
                         try {
-                            Object value = field.get(t);
+                            Object value = field.get(instance);
                             if(properties.has(key)) {
                                 value = properties.get(key, value);
                             }
                             if(value == null) {
                                 value = properties.get(key);
                             }
-                            field.set(t, value);
+                            field.set(instance, value);
                         } catch (Exception e) {
                             log.error("\nERROR: Cmp - init " + e + "\n");
                         }
@@ -85,7 +106,7 @@ public @Getter abstract class Component {
             init();
         }
 
-        return t;
+        return instance;
     }
 
     protected abstract void init();

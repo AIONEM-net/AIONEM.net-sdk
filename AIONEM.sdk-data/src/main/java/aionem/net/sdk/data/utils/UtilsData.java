@@ -23,7 +23,7 @@ public class UtilsData {
         return adaptTo(type, (Object) data);
     }
     public static <T> T adaptTo(final Class<T> type, final Object data) throws Exception {
-        if(data == null) return null;
+        if(type == null || data == null) return null;
         if(type.getSuperclass().isAssignableFrom(Data.class) || type.isAssignableFrom(Data.class)) {
             return type.getConstructor(data.getClass()).newInstance(data);
         }else {
@@ -40,7 +40,7 @@ public class UtilsData {
     }
 
     public static <T> T adaptTo(final T t, final JsonObject data) throws Exception {
-        if(data == null) return null;
+        if(t == null || data == null) return null;
         for(final Field field : t.getClass().getDeclaredFields()) {
             final int modifiers = field.getModifiers();
             final boolean isStatic = Modifier.isStatic(modifiers);

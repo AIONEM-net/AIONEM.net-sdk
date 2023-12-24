@@ -1,8 +1,6 @@
 package aionem.net.sdk.data;
 
 import aionem.net.sdk.core.utils.UtilsText;
-import aionem.net.sdk.data.api.AuthData;
-import aionem.net.sdk.data.api.DaoRes;
 import com.google.gson.JsonObject;
 
 import java.sql.PreparedStatement;

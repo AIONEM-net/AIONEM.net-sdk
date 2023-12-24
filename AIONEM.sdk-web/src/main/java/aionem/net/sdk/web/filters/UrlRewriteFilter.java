@@ -2,6 +2,7 @@ package aionem.net.sdk.web.filters;
 
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.modals.PageManager;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -25,14 +26,14 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
         final String requestUrl = aioWeb.getRequestUrl();
 
         boolean isSystemPath = false;
-        for(final String systemPath: AioWeb.SYSTEM_PATH) {
+        for(final String systemPath: PageManager.SYSTEM_PATH) {
             isSystemPath = requestUrl.startsWith(systemPath);
             if(isSystemPath) break;
         }
 
         if(!aioWeb.isHostMatch() && !aioWeb.isLocal()) {
             final String urlQuery = aioWeb.getRequestUrlQuery();
-            aioWeb.getRedirect(aioWeb.getConfigUrl(urlQuery));
+            aioWeb.getRedirect(aioWeb.getConfEnv().getUrl(urlQuery));
         }else if(!isSystemPath) {
 
             if(requestUrl.lastIndexOf(".") < 0) {

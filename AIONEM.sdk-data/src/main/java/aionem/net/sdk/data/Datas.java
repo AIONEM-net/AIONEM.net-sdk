@@ -20,6 +20,7 @@ public @Getter class Datas implements Iterable<Data> {
     public Datas() {
 
     }
+
     public Datas(final JsonArray jsonArray) {
         for(final JsonElement jsonElement : jsonArray) {
             listDatas.add(new Data(jsonElement));
@@ -44,6 +45,7 @@ public @Getter class Datas implements Iterable<Data> {
     public void add(final Data data) {
         listDatas.add(data);
     }
+
     public void add(int index, final Data data) {
         listDatas.add(index, data);
     }
@@ -78,6 +80,7 @@ public @Getter class Datas implements Iterable<Data> {
     public void sortByKeyASC(final String key) {
         sortByKeyASC(key, null);
     }
+
     public void sortByKeyASC(final String key, final String value) {
         if(UtilsText.isEmpty(key)) return;
 
@@ -99,6 +102,7 @@ public @Getter class Datas implements Iterable<Data> {
     public void sortByKeyDESC(final String key) {
         sortByKeyDESC(key, null);
     }
+
     public void sortByKeyDESC(final String key, final String value) {
         if(UtilsText.isEmpty(key)) return;
 
@@ -117,7 +121,7 @@ public @Getter class Datas implements Iterable<Data> {
         sort(comparator);
     }
 
-    public JsonArray toJsonArray() {
+    public JsonArray toJson() {
         final JsonArray jsonArray = UtilsJson.jsonArray();
         for(final Data data : listDatas) {
             jsonArray.add(data.toJson());
@@ -127,7 +131,7 @@ public @Getter class Datas implements Iterable<Data> {
 
     @Override
     public String toString() {
-        return toJsonArray().toString();
+        return toJson().toString();
     }
 
     @Override
