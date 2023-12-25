@@ -40,9 +40,9 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
 
                 final String requestRoot = aioWeb.getRequestRoot();
 
-                String home = "/en";
-                String homes = "/en,/it,/rw,/auth,/dashboard";
-                boolean isHome = UtilsText.isEmpty(requestRoot) || !homes.contains(requestRoot);
+                final String home = aioWeb.getInitParameter("home", "/en");
+                final String sites = aioWeb.getInitParameter("sites", "/en");
+                final boolean isHome = UtilsText.isEmpty(requestRoot) || !sites.contains(requestRoot);
 
                 try {
 
@@ -57,32 +57,28 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
 
             }else {
 
-                String filePath = aioWeb.getRealPathRoot("/ui.frontend" + requestUrl);
-
-                System.out.println(filePath);
-
-                Path file = Path.of(filePath);
+                final String filePath = aioWeb.getRealPathRoot("/ui.frontend" + requestUrl);
+                final Path file = Path.of(filePath);
 
                 if(Files.exists(file)) {
 
-                    String fileName = file.getFileName().toString();
-
-                    aioWeb.getResponse().setHeader("Content-Disposition", "inline; filename=\"" + fileName + "\"");
+                    final String fileName = file.getFileName().toString();
 
                     response.setContentType("text/plain");
                     response.setContentLength((int) Files.size(file));
+                    aioWeb.getResponse().setHeader("Content-Disposition", "inline; filename=\"" + fileName + "\"");
 
-                    try( InputStream inputStream = Files.newInputStream(file);
-                         OutputStream outputStream = response.getOutputStream()) {
+                    try( final InputStream inputStream = Files.newInputStream(file);
+                         final OutputStream outputStream = response.getOutputStream()) {
 
-                        byte[] buffer = new byte[4096];
+                        final byte[] buffer = new byte[4096];
                         int bytesRead;
-                        while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        while((bytesRead = inputStream.read(buffer)) != -1) {
                             outputStream.write(buffer, 0, bytesRead);
                         }
                     }
 
-                } else {
+                }else {
                     aioWeb.getResponse().sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
 
@@ -91,7 +87,6 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
         }else {
             super.doFilter(request, response, chain);
         }
-
     }
 
 }

@@ -35,7 +35,7 @@ public class UtilsText {
         return !isEmpty(toString(object, "")) ? value : "";
     }
 
-    public static String notEmptyUseElse(final Object object, final String useValue, final String elseValue) {
+    public static String notEmptyUse(final Object object, final String useValue, final String elseValue) {
         return !isEmpty(toString(object, "")) ? useValue : elseValue;
     }
 

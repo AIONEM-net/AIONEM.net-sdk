@@ -17,6 +17,8 @@ import javax.servlet.http.HttpSession;
 
 import javax.servlet.jsp.PageContext;
 import java.io.*;
+import java.net.URI;
+import java.net.URL;
 import java.util.Locale;
 
 
@@ -92,7 +94,7 @@ public @Getter class AioWeb {
     }
 
     public Object getAttribute(final String name) {
-        return getRequest().getAttribute(name);
+        return request.getAttribute(name);
     }
 
     public <T> T getPageAttribute(final String name, final Object defaultValue) {
@@ -104,7 +106,7 @@ public @Getter class AioWeb {
     }
 
     public Object getPageAttribute(final String name) {
-        return getPageContext().getAttribute(name, PageContext.PAGE_SCOPE);
+        return pageContext.getAttribute(name, PageContext.PAGE_SCOPE);
     }
 
     public <T> T getApplicationAttribute(final String name, final Object defaultValue) {
@@ -116,7 +118,7 @@ public @Getter class AioWeb {
     }
 
     public Object getApplicationAttribute(final String name) {
-        return getPageContext().getAttribute(name, PageContext.APPLICATION_SCOPE);
+        return pageContext.getAttribute(name, PageContext.APPLICATION_SCOPE);
     }
 
     public <T> T getSessionAttribute(final String name, final Object defaultValue) {
@@ -128,7 +130,7 @@ public @Getter class AioWeb {
     }
 
     public Object getSessionAttribute(final String name) {
-        return getSession().getAttribute(name);
+        return session.getAttribute(name);
     }
 
     public static String name(final Component component) {
@@ -165,22 +167,27 @@ public @Getter class AioWeb {
 
     public String value(final Object data, final String name) {
         if(!Properties.PROPERTIES.equals(name)) {
-            getRequest().setAttribute(name, data);
+            request.setAttribute(name, data);
         }
-        getRequest().setAttribute(Properties.PROPERTIES, data);
+        request.setAttribute(Properties.PROPERTIES, data);
         return data.toString();
     }
 
     public ServletContext getServletContext() {
-        return getRequest().getServletContext();
+        return request.getServletContext();
     }
 
     public String getParameter(final String name) {
-        return getRequest().getParameter(name);
+        return request.getParameter(name);
     }
 
     public String getInitParameter(final String name) {
-        return getServletContext().getInitParameter(name);
+        return getInitParameter(name, "");
+    }
+
+
+    public String getInitParameter(final String name, final String defaultValue) {
+        return request != null ? getServletContext().getInitParameter(name) : defaultValue;
     }
 
     public String getRealPathCurrent() {
@@ -219,11 +226,11 @@ public @Getter class AioWeb {
     }
 
     public String getServletPath() {
-        return getRequest().getServletPath().replace("/index.jsp", "");
+        return request.getServletPath().replace("/index.jsp", "");
     }
 
     public String getContextPath() {
-        return UtilsText.notNull(contextPath, getRequest().getContextPath());
+        return UtilsText.notNull(contextPath, request.getContextPath());
     }
 
     public String getContextPath(final String path) {
@@ -246,12 +253,12 @@ public @Getter class AioWeb {
     }
 
     public String getRequestURI() {
-        return getRequest().getRequestURI();
+        return request.getRequestURI();
     }
 
     public String getDomain() {
         final String domain = isLocal() ? "127.0.0.1" : getConfEnv().getDomain();
-        return (getRequest().isSecure() ? "https" : "http") +"://"+ domain +":"+ getServerPort();
+        return (request.isSecure() ? "https" : "http") +"://"+ domain +":"+ getServerPort();
     }
 
     public String getURI() {
@@ -274,7 +281,7 @@ public @Getter class AioWeb {
     }
 
     public String getRequestQuery() {
-        return UtilsText.notNull(getRequest().getQueryString());
+        return UtilsText.notNull(request.getQueryString());
     }
 
     public String getRequestUrlQuery() {
@@ -287,27 +294,27 @@ public @Getter class AioWeb {
     }
 
     public String getProtocol() {
-        return getRequest().getProtocol();
+        return request.getProtocol();
     }
 
     public String getRemoteHost() {
-        return getRequest().getRemoteHost();
+        return request.getRemoteHost();
     }
 
     public String getRemoteAddr() {
-        return getRequest().getRemoteAddr();
+        return request.getRemoteAddr();
     }
 
     public int getRemotePort() {
-        return getRequest().getRemotePort();
+        return request.getRemotePort();
     }
 
     public int getLocalPort() {
-        return getRequest().getLocalPort();
+        return request.getLocalPort();
     }
 
     public int getServerPort() {
-        return getRequest().getServerPort();
+        return request.getServerPort();
     }
 
     public ClassLoader getClassLoader() {
@@ -318,8 +325,12 @@ public @Getter class AioWeb {
         return getClassLoader().getResourceAsStream(name);
     }
 
+    public URL getResource(final String name) {
+        return getClassLoader().getResource(name);
+    }
+
     public PrintWriter getWriter() throws IOException {
-        return getResponse().getWriter();
+        return response.getWriter();
     }
 
     public String readFile(final String fileName) {
@@ -327,7 +338,7 @@ public @Getter class AioWeb {
     }
 
     public String getHeader(final String name) {
-        return getRequest().getHeader(name);
+        return request.getHeader(name);
     }
 
     public String getLanguage() {
@@ -359,15 +370,15 @@ public @Getter class AioWeb {
     }
 
     public RequestDispatcher getRequestDispatcher(final String path) {
-        return getRequest().getRequestDispatcher(path);
+        return request.getRequestDispatcher(path);
     }
 
     public void forward(final String path) throws IOException, ServletException {
-        getRequestDispatcher(path).forward(getRequest(), getResponse());
+        getRequestDispatcher(path).forward(request, response);
     }
 
     public void include(final String path) throws IOException, ServletException {
-        getRequestDispatcher(path).include(getRequest(), getResponse());
+        getRequestDispatcher(path).include(request, response);
     }
 
     public boolean isHostMatch() {
@@ -375,7 +386,7 @@ public @Getter class AioWeb {
     }
 
     public boolean isLocal() {
-        final String remoteHost = getRequest().getRemoteHost();
+        final String remoteHost = request.getRemoteHost();
         return "0:0:0:0:0:0:0:1".equalsIgnoreCase(remoteHost) || "127.0.0.1".equalsIgnoreCase(remoteHost) || "localhost".equalsIgnoreCase(remoteHost);
     }
 

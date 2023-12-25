@@ -4,64 +4,107 @@ import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.web.AioWeb;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.FilenameFilter;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 
 @Log4j2
 public class UtilsWeb {
 
-
-    public static String readFileWebInfEtc(final AioWeb aioWeb, final String fileName) {
-        return readFile(aioWeb, "/WEB-INF/ui.app", "/etc/"+ fileName);
-    }
     public static String readFileResource(final AioWeb aioWeb, final String fileName) {
-        return readFile(aioWeb, "/WEB-INF/classes/", fileName);
-    }
-    public static String readFileWebInf(final AioWeb aioWeb, final String fileName) {
-        return readFile(aioWeb, "/WEB-INF/", fileName);
-    }
-    public static String readFileWebInfConfig(final AioWeb aioWeb, final String fileName) {
-        return readFile(aioWeb, "/WEB-INF/ui.config/", fileName);
-    }
-    public static String readFileWebInfEnv(final AioWeb aioWeb, final String fileName) {
-        return readFile(aioWeb, "/WEB-INF/ui.config/env/", fileName);
-    }
-    public static String readFileWebInfI18n(final AioWeb aioWeb, final String fileName) {
-        return readFile(aioWeb, "/WEB-INF/ui.config", "/i18n/"+ fileName);
+        return readFile(aioWeb, "/WEB-INF/classes/", "/", fileName);
     }
 
-    public static String readFile(final AioWeb aioWeb, final String folderName, final String fileName) {
+    public static String readFileWebInf(final AioWeb aioWeb, final String fileName) {
+        return readFile(aioWeb, "/WEB-INF/", "/", fileName);
+    }
+
+    public static String readFileConfig(final AioWeb aioWeb, final String fileName) {
+        return readFile(aioWeb, "/WEB-INF/ui.config/", "/config/", fileName);
+    }
+
+    public static String readFileEnv(final AioWeb aioWeb, final String fileName) {
+        return readFile(aioWeb, "/WEB-INF/ui.config/env/", "/config/env/", fileName);
+    }
+
+    public static String readFileI18n(final AioWeb aioWeb, final String fileName) {
+        return readFile(aioWeb, "/WEB-INF/ui.config/i18n/", "/config/i18n/", fileName);
+    }
+
+    public static String readFileEtc(final AioWeb aioWeb, final String fileName) {
+        return readFile(aioWeb, "/WEB-INF/ui.app/etc/", "/etc/", fileName);
+    }
+
+    public static ResourceBundle getResourceBundleConfig(final String fileName) {
+        return getResourceBundle("/config/" + fileName);
+    }
+
+    public static ResourceBundle getResourceBundleEnv(final String fileName) {
+        return getResourceBundle("/config/env/" + fileName);
+    }
+
+    public static ResourceBundle getResourceBundleI18n(final String fileName) {
+        return getResourceBundle("/config/i18n/" + fileName);
+    }
+
+    public static ResourceBundle getResourceBundleI18n(final String fileName, final Locale locale) {
+        return getResourceBundle("/config/i18n/" + fileName, locale);
+    }
+
+    public static ResourceBundle getResourceBundleEtc(final String fileName) {
+        return getResourceBundle("/etc/" + fileName);
+    }
+
+    public static String readFile(final AioWeb aioWeb, final String folder1, final String folder2, final String fileName) {
+        final InputStream inputStream = readStream(aioWeb, folder1, folder2, fileName);
+        if(inputStream != null) {
+            return UtilsText.toString(inputStream);
+        }else  {
+            return null;
+        }
+    }
+
+    public static InputStream readStream(AioWeb aioWeb, final String folder1, final String folder2, final String fileName) {
         try {
             if(aioWeb != null) {
-                final File file = new File(aioWeb.getRealPathRoot(folderName + fileName));
-                if(!file.isDirectory() && file.exists()) {
-                    return UtilsText.toString(file);
-                }
-            }else {
-                final InputStream inputStream = new AioWeb().getResourceAsStream(folderName + fileName);
-                if(inputStream != null) {
-                    return UtilsText.toString(inputStream);
+                final File file = new File(aioWeb.getRealPathRoot(folder1 + fileName));
+                if(file.exists() && !file.isDirectory()) {
+                    return new FileInputStream(file);
                 }
             }
+
+            if(aioWeb == null) aioWeb = new AioWeb();
+            InputStream inputStream = aioWeb.getResourceAsStream(folder1 + fileName);
+            if(inputStream != null) {
+                return inputStream;
+            }else {
+                inputStream = aioWeb.getResourceAsStream(folder2 + fileName);
+                if(inputStream != null) {
+                    return inputStream;
+                }
+            }
+
         }catch(Exception e) {
-            log.error("\nERROR: - readFile ::" + e + folderName + fileName +"\n");
+            log.error("\nERROR: - readFile ::" + e + folder1 + fileName +"\n");
         }
-        return readResource(aioWeb, fileName);
+        return null;
     }
 
-    public static String readResource(final AioWeb aioWeb, final String fileName) {
+    public static ResourceBundle getResourceBundle(final String name) {
+        return getResourceBundle(name, null);
+    }
+
+    public static ResourceBundle getResourceBundle(final String name, final Locale locale) {
         try {
-            final InputStream inputStream = (aioWeb == null ? new AioWeb() : aioWeb).getResourceAsStream(fileName);
-            if(inputStream != null) {
-                return UtilsText.toString(inputStream);
+            if(locale != null) {
+                return ResourceBundle.getBundle(name, locale);
+            }else {
+                return ResourceBundle.getBundle(name);
             }
-        }catch(Exception e) {
-            log.error("\nERROR: - readResource ::" + e +"\n");
+        }catch (Exception ignore) {
         }
         return null;
     }

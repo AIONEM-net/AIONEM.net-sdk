@@ -14,7 +14,6 @@ import java.util.ResourceBundle;
 @Log4j2
 public class I18n {
 
-    public static final String folder = "i18n";
     public static final String DEFAULT_LANGUAGE = "en";
 
     @Getter
@@ -38,6 +37,10 @@ public class I18n {
         init(locale);
     }
 
+    public I18n(final AioWeb aioWeb) {
+        init(aioWeb);
+    }
+
     public I18n(final String baseName, final Locale locale) {
         init(baseName, locale);
     }
@@ -56,6 +59,10 @@ public class I18n {
 
     public I18n init(final Locale locale) {
         return init(baseName, locale);
+    }
+
+    public I18n init(final AioWeb aioWeb) {
+        return init(baseName, aioWeb);
     }
 
     public I18n init(final String baseName, final Locale locale) {
@@ -82,10 +89,10 @@ public class I18n {
                 this.baseName = baseName;
                 this.locale = locale == null ? getLocal() : locale;
 
-                final String json = UtilsWeb.readFileWebInfI18n(aioWeb, baseName + ".json");
+                final String json = UtilsWeb.readFileI18n(aioWeb, baseName + ".json");
                 this.data = new Data(json);
 
-                this.resourceBundle = ResourceBundle.getBundle("/"+folder+"/" + baseName, this.locale);
+                this.resourceBundle = UtilsWeb.getResourceBundleI18n(baseName, this.locale);
             }
 
         }catch(Exception e) {

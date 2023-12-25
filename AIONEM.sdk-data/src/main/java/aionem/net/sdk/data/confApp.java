@@ -7,19 +7,19 @@ import java.util.ResourceBundle;
 
 
 @Log4j2
-public class Conf {
+public class confApp {
 
     private Data data;
     private ResourceBundle resourceBundle;
 
-    public Data getData() {
+    private Data getData() {
         if(data == null) {
             data = new Data(getClass().getClassLoader().getResourceAsStream("application.json"));
         }
         return data;
     }
 
-    public ResourceBundle getResourceBundle() {
+    private ResourceBundle getResourceBundle() {
         if(resourceBundle == null) {
             resourceBundle = ResourceBundle.getBundle("application");
         }

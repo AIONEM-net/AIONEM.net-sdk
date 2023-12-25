@@ -1,7 +1,9 @@
 package aionem.net.sdk.web.modals;
 
+import aionem.net.sdk.core.utils.UtilsConverter;
 import aionem.net.sdk.data.Data;
 import aionem.net.sdk.core.utils.UtilsText;
+import aionem.net.sdk.data.utils.UtilsData;
 import aionem.net.sdk.web.AioWeb;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.Getter;
@@ -13,7 +15,6 @@ import java.util.ResourceBundle;
 public class Config {
 
     private static final String extension = ".json";
-    private static final String separator = "_";
     private static final String default_config = "application";
 
     private static final HashMap<String, Data> mapData = new HashMap<>();
@@ -32,43 +33,39 @@ public class Config {
         this.init(aioWeb, default_config);
     }
 
-    public Config(final String config) {
-        this.init(aioWeb, config);
+    public Config(final String name) {
+        init(aioWeb, name);
     }
 
-    public Config(final AioWeb aioWeb, final String config) {
-        this.init(aioWeb, config);
+    public Config(final AioWeb aioWeb, final String name) {
+        init(aioWeb, name);
     }
 
     public void init(final AioWeb aioWeb, String name) {
         this.aioWeb = aioWeb;
         this.name = name;
-        name = name + separator + getEnv();
+        
+        final String env = getEnv();
+        if(!UtilsText.isEmpty(env)) {
+            name = env +"/"+ name;
+            this.resourceBundle = UtilsWeb.getResourceBundleEnv(name);
+        }else {
+            this.resourceBundle = UtilsWeb.getResourceBundleConfig(name);
+            if(this.resourceBundle == null) {
+                this.resourceBundle = UtilsWeb.getResourceBundleEnv(name);
+            }
+        }
 
-        if(!name.endsWith(extension)) name += extension;
-
-        this.data = getData(aioWeb, name);
+        this.data = getData(aioWeb, !name.endsWith(extension) ? name + extension : name);
     }
 
     public String getEnv() {
+        if(aioWeb == null) return "";
         final String envRequest = aioWeb.getRequest().getHeader("A-Env");
         final String envWebApp = aioWeb.getInitParameter("env");
-        return getEnv(UtilsText.notEmpty(envRequest, envWebApp));
-    }
-
-    public String getEnv(String env) {
-        if(ConfEnv.ENV_LOCAL.equalsIgnoreCase(env)) {
-            env = ConfEnv.ENV_LOCAL;
-        }else if(ConfEnv.ENV_DEV.equalsIgnoreCase(env)) {
-            env = ConfEnv.ENV_DEV;
-        }else if(ConfEnv.ENV_STAGE.equalsIgnoreCase(env)) {
-            env = ConfEnv.ENV_STAGE;
-        }else if(ConfEnv.ENV_PROD.equalsIgnoreCase(env)) {
-            env = ConfEnv.ENV_PROD;
-        }else {
-            env = ConfEnv.ENV_LOCAL;
-        }
-        return UtilsText.notNull(env).toLowerCase();
+        String env = UtilsText.notEmpty(envRequest, envWebApp);
+        if(env.equalsIgnoreCase("${env}")) env = ConfEnv.ENV_LOCAL;
+        return env.toLowerCase();
     }
 
     public String get(final String key) {
@@ -84,33 +81,49 @@ public class Config {
         if(data.has(key)) {
             return data.get(key, defaultValue);
         }else {
-            return getBaseConfig().data.get(key, defaultValue);
+            final Config configBase = getBaseConfig();
+            if(configBase.data.has(key)) {
+                return getBaseConfig().get(key, defaultValue);
+            }else {
+                if(resourceBundle != null && resourceBundle.containsKey(key)) {
+                    return UtilsConverter.convert(resourceBundle.getString(key), defaultValue);
+                }else {
+                    final ResourceBundle resourceBundleBase = getBaseResourceBundle();
+                    if(resourceBundleBase != null && resourceBundleBase.containsKey(key)) {
+                        return UtilsConverter.convert(resourceBundleBase.getString(key), defaultValue);
+                    }
+                }
+            }
         }
+        return defaultValue;
+    }
+
+    public String getBaseName() {
+        String name = this.name;
+        if(!name.endsWith(extension)) name += extension;
+        if(name.contains("/")) name = name.substring(name.indexOf("/"));
+        return name;
     }
 
     public Config getBaseConfig() {
         final Config dataConfig = new Config();
-        String config = this.name;
-        if(!config.endsWith(extension)) config += extension;
-
-        if(config.endsWith(separator +"local"+ extension)) {
-            config = config.replace(separator +"local"+ extension, extension);
-        }else if(config.endsWith(separator+"dev"+extension)) {
-            config = config.replace(separator +"dev"+ extension, extension);
-        }else if(config.endsWith(separator +"stage"+ extension)) {
-            config = config.replace(separator+"stage"+extension, extension);
-        }else if(config.endsWith(separator +"prod"+ extension)) {
-            config = config.replace(separator +"prod"+ extension, extension);
-        }
-
-        dataConfig.data = getData(aioWeb, config);
+        dataConfig.data = getData(aioWeb, getBaseName());
         return dataConfig;
     }
 
+    public ResourceBundle getBaseResourceBundle() {
+        return UtilsWeb.getResourceBundleConfig(getBaseName());
+    }
+
     private static Data getData(final AioWeb aioWeb, final String name) {
-        Data data = new Data();
+        Data data = null;
         if(!mapData.containsKey(name) || mapData.get(name) == null) {
-            final String json = UtilsWeb.readFileWebInfConfig(aioWeb, name);
+
+            String json = UtilsWeb.readFileEnv(aioWeb, name);
+            if(json == null) {
+                json = UtilsWeb.readFileConfig(aioWeb, name);
+            }
+
             if(!UtilsText.isEmpty(json)) {
                 data = new Data(json);
                 mapData.put(name, data);

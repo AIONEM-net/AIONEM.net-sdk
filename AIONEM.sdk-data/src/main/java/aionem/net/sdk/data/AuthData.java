@@ -19,7 +19,7 @@ public @lombok.Data class AuthData extends Data {
     protected String code = "";
     protected String passwordHash = "";
     protected String language = "";
-    private Conf conf;
+    private confApp confApp;
 
     protected void init(final String uid, final String email, final String phone, final String password, final String uidToken, final String code) {
 
@@ -51,9 +51,9 @@ public @lombok.Data class AuthData extends Data {
         return null;
     }
 
-    public Conf getConf() {
-        if(conf == null) conf = new Conf();
-        return conf;
+    public confApp getConfApp() {
+        if(confApp == null) confApp = new confApp();
+        return confApp;
     }
 
     public boolean isUsePoolDataSource() {
@@ -61,35 +61,35 @@ public @lombok.Data class AuthData extends Data {
     }
 
     public String getDBDriver() {
-        return getConf().getOr("db_driver", "spring.datasource.driver-class-name");
+        return getConfApp().getOr("db_driver", "spring.datasource.driver-class-name");
     }
 
     public String getDBConnection() {
-        return getConf().getOr("db_connection", "");
+        return getConfApp().getOr("db_connection", "");
     }
 
     public String getDBUrl() {
-        return getConf().get("db_url", "spring.datasource.url", getDBHost() +":"+ getDBPort() +"/"+ getDBName());
+        return getConfApp().get("db_url", "spring.datasource.url", getDBHost() +":"+ getDBPort() +"/"+ getDBName());
     }
 
     public String getDBHost() {
-        return getConf().get("db_host", "localhost");
+        return getConfApp().get("db_host", "localhost");
     }
 
     public String getDBPort() {
-        return getConf().get("db_port", "3306");
+        return getConfApp().get("db_port", "3306");
     }
 
     public String getDBName() {
-        return getConf().getOr("db_name", "spring.datasource.name");
+        return getConfApp().getOr("db_name", "spring.datasource.name");
     }
 
     public String getDBUser() {
-        return getConf().getOr("db_user", "spring.datasource.username");
+        return getConfApp().getOr("db_user", "spring.datasource.username");
     }
 
     public String getDBPassword() {
-        return getConf().getOr("db_password", "spring.datasource.password");
+        return getConfApp().getOr("db_password", "spring.datasource.password");
     }
 
 }
