@@ -329,6 +329,21 @@ public @Getter class AioWeb {
         return getClassLoader().getResource(name);
     }
 
+    public File getResourceFile(final String name) {
+        final URL resource = getResource(name);
+        return resource != null ? new File(resource.getFile()) : null;
+    }
+
+    public File getResourceParent() {
+        final File file = getResourceFile("");
+        return file != null ? file.getParentFile() : null;
+    }
+
+    public File getResourceParent(final String name) {
+        final File file = getResourceParent();
+        return file != null ? new File(file, name) : null;
+    }
+
     public PrintWriter getWriter() throws IOException {
         return response.getWriter();
     }

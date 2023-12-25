@@ -1,9 +1,7 @@
-package aionem.net.sdk.web.modals;
+package aionem.net.sdk.data;
 
-import aionem.net.sdk.data.Data;
 import aionem.net.sdk.core.utils.UtilsText;
-import aionem.net.sdk.web.AioWeb;
-import aionem.net.sdk.web.utils.UtilsWeb;
+import aionem.net.sdk.data.utils.UtilsResource;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -23,7 +21,6 @@ public class I18n {
 
     private ResourceBundle resourceBundle;
     private Locale locale;
-    private AioWeb aioWeb;
 
     public I18n() {
         init("");
@@ -37,20 +34,12 @@ public class I18n {
         init(locale);
     }
 
-    public I18n(final AioWeb aioWeb) {
-        init(aioWeb);
-    }
-
     public I18n(final String baseName, final Locale locale) {
         init(baseName, locale);
     }
 
-    public I18n(final String baseName, final I18n i18n) {
-        init(baseName, i18n);
-    }
-
-    public I18n(final String baseName, final AioWeb aioWeb) {
-        init(baseName, aioWeb);
+    public I18n(final String baseName, final I18n I18n1) {
+        init(baseName, I18n1);
     }
 
     public I18n init(final String baseName) {
@@ -61,25 +50,12 @@ public class I18n {
         return init(baseName, locale);
     }
 
-    public I18n init(final AioWeb aioWeb) {
-        return init(baseName, aioWeb);
+    public I18n init(final String baseName, final I18n I18n1) {
+        return init(baseName, I18n1.getLocal());
     }
 
-    public I18n init(final String baseName, final Locale locale) {
-        return init(baseName, locale, aioWeb);
-    }
-
-    public I18n init(final String baseName, final I18n i18n) {
-        return init(baseName, i18n.getLocal(), i18n.aioWeb);
-    }
-
-    public I18n init(final String baseName, final AioWeb aioWeb) {
-        return init(baseName, aioWeb.getLocale(), aioWeb);
-    }
-
-    public I18n init(String baseName, final Locale locale, final AioWeb aioWeb) {
+    public I18n init(String baseName, final Locale locale) {
         try {
-            this.aioWeb = aioWeb;
 
             if(UtilsText.isEmpty(baseName)) {
                 baseName = locale != null ? locale.getLanguage() : DEFAULT_LANGUAGE;
@@ -89,10 +65,10 @@ public class I18n {
                 this.baseName = baseName;
                 this.locale = locale == null ? getLocal() : locale;
 
-                final String json = UtilsWeb.readFileI18n(aioWeb, baseName + ".json");
+                final String json = UtilsResource.readParentResource(this.getClass(), baseName + ".json", "/ui.config/i18n", "/i18n");
                 this.data = new Data(json);
 
-                this.resourceBundle = UtilsWeb.getResourceBundleI18n(baseName, this.locale);
+                this.resourceBundle = UtilsResource.getResourceBundle(baseName, this.locale, "/ui.config/i18n", "/i18n");
             }
 
         }catch(Exception e) {
@@ -117,11 +93,11 @@ public class I18n {
         }
     }
 
-    public String get(final String key, final boolean isI18n) {
-        return get(key, key, isI18n);
+    public String get(final String key, final boolean isI18n1) {
+        return get(key, key, isI18n1);
     }
 
-    public String get(final String key, final String defaultValue, final boolean isI18n) {
+    public String get(final String key, final String defaultValue, final boolean isI18n1) {
         if(UtilsText.isEmpty(key)) return UtilsText.notEmpty(defaultValue, "");
 
         String value = "";
@@ -150,17 +126,6 @@ public class I18n {
                     value = resourceBundle.getString(key.replace(" ", "_").toLowerCase());
                 }else if(resourceBundle.containsKey(key.replace("_", " ").toLowerCase())) {
                     value = resourceBundle.getString(key.replace("_", " ").toLowerCase());
-                }
-            }
-
-            if(UtilsText.isEmpty(value)) {
-                if(isI18n) {
-                    if(aioWeb != null) {
-                        final Object i18n = aioWeb.getApplicationAttribute("i18n");
-                        if(i18n != null) {
-                            value = ((I18n) i18n).get(key, defaultValue, false);
-                        }
-                    }
                 }
             }
 

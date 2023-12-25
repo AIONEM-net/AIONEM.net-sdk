@@ -1,6 +1,7 @@
 package aionem.net.sdk.data;
 
 import aionem.net.sdk.core.utils.UtilsText;
+import aionem.net.sdk.data.utils.UtilsResource;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ResourceBundle;
@@ -9,19 +10,40 @@ import java.util.ResourceBundle;
 @Log4j2
 public class ConfApp {
 
+    private final String env;
     private Data data;
     private ResourceBundle resourceBundle;
 
+    private ConfApp() {
+        this("");
+    }
+
+    private static ConfApp confApp;
+    public static ConfApp getInstance() {
+        if(confApp == null) {
+            confApp = new ConfApp();
+        }
+        return confApp;
+    }
+
+    public ConfApp(final String env) {
+        this.env = UtilsText.notNull(env);
+    }
+
     private Data getData() {
         if(data == null) {
-            data = new Data(getClass().getClassLoader().getResourceAsStream("application.json"));
+            data = new Data(UtilsResource.getParentResourceAsStream(this.getClass(), "application.json",
+                    "ui.config/env/"+env, "config/env/"+env, "config/", "")
+            );
         }
         return data;
     }
 
     private ResourceBundle getResourceBundle() {
         if(resourceBundle == null) {
-            resourceBundle = ResourceBundle.getBundle("application");
+            resourceBundle = UtilsResource.getResourceBundle("application",
+                    "ui.config/env/"+env, "config/env/"+env, "config/", ""
+            );
         }
         return resourceBundle;
     }

@@ -1,9 +1,8 @@
 package aionem.net.sdk.web.modals;
 
 import aionem.net.sdk.core.utils.UtilsConverter;
-import aionem.net.sdk.data.Data;
 import aionem.net.sdk.core.utils.UtilsText;
-import aionem.net.sdk.data.utils.UtilsData;
+import aionem.net.sdk.data.Data;
 import aionem.net.sdk.web.AioWeb;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.Getter;
@@ -14,13 +13,10 @@ import java.util.ResourceBundle;
 
 public class Config {
 
-    private static final String extension = ".json";
-    private static final String default_config = "application";
-
     private static final HashMap<String, Data> mapData = new HashMap<>();
 
     @Getter
-    private String name;
+    private String name = "application";
     private Data data = new Data();
     private ResourceBundle resourceBundle;
     protected AioWeb aioWeb;
@@ -30,7 +26,7 @@ public class Config {
     }
 
     public Config(final AioWeb aioWeb) {
-        this.init(aioWeb, default_config);
+        this.init(aioWeb, name);
     }
 
     public Config(final String name) {
@@ -56,7 +52,7 @@ public class Config {
             }
         }
 
-        this.data = getData(aioWeb, !name.endsWith(extension) ? name + extension : name);
+        this.data = getData(aioWeb, !name.endsWith(".json") ? name + ".json" : name);
     }
 
     public String getEnv() {
@@ -100,7 +96,7 @@ public class Config {
 
     public String getBaseName() {
         String name = this.name;
-        if(!name.endsWith(extension)) name += extension;
+        if(!name.endsWith(".json")) name += ".json";
         if(name.contains("/")) name = name.substring(name.indexOf("/"));
         return name;
     }

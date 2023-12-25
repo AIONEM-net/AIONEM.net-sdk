@@ -51,45 +51,40 @@ public @lombok.Data class AuthData extends Data {
         return null;
     }
 
-    public ConfApp getConfApp() {
-        if(confApp == null) confApp = new ConfApp();
-        return confApp;
-    }
-
     public boolean isUsePoolDataSource() {
         return false;
     }
 
     public String getDBDriver() {
-        return getConfApp().getOr("db_driver", "spring.datasource.driver-class-name");
+        return ConfApp.getInstance().getOr("db_driver", "spring.datasource.driver-class-name");
     }
 
     public String getDBConnection() {
-        return getConfApp().getOr("db_connection", "");
+        return ConfApp.getInstance().getOr("db_connection", "");
     }
 
     public String getDBUrl() {
-        return getConfApp().get("db_url", "spring.datasource.url", getDBHost() +":"+ getDBPort() +"/"+ getDBName());
+        return ConfApp.getInstance().get("db_url", "spring.datasource.url", getDBHost() +":"+ getDBPort() +"/"+ getDBName());
     }
 
     public String getDBHost() {
-        return getConfApp().get("db_host", "localhost");
+        return ConfApp.getInstance().get("db_host", "localhost");
     }
 
     public String getDBPort() {
-        return getConfApp().get("db_port", "3306");
+        return ConfApp.getInstance().get("db_port", "3306");
     }
 
     public String getDBName() {
-        return getConfApp().getOr("db_name", "spring.datasource.name");
+        return ConfApp.getInstance().getOr("db_name", "spring.datasource.name");
     }
 
     public String getDBUser() {
-        return getConfApp().getOr("db_user", "spring.datasource.username");
+        return ConfApp.getInstance().getOr("db_user", "spring.datasource.username");
     }
 
     public String getDBPassword() {
-        return getConfApp().getOr("db_password", "spring.datasource.password");
+        return ConfApp.getInstance().getOr("db_password", "spring.datasource.password");
     }
 
 }

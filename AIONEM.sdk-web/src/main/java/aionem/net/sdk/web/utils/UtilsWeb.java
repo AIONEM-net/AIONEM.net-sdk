@@ -1,6 +1,7 @@
 package aionem.net.sdk.web.utils;
 
 import aionem.net.sdk.core.utils.UtilsText;
+import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.AioWeb;
 import lombok.extern.log4j.Log4j2;
 
@@ -39,23 +40,23 @@ public class UtilsWeb {
     }
 
     public static ResourceBundle getResourceBundleConfig(final String fileName) {
-        return getResourceBundle("/config/" + fileName);
+        return UtilsResource.getResourceBundle("/config/" + fileName);
     }
 
     public static ResourceBundle getResourceBundleEnv(final String fileName) {
-        return getResourceBundle("/config/env/" + fileName);
+        return UtilsResource.getResourceBundle("/config/env/" + fileName);
     }
 
     public static ResourceBundle getResourceBundleI18n(final String fileName) {
-        return getResourceBundle("/config/i18n/" + fileName);
+        return UtilsResource.getResourceBundle("/config/i18n/" + fileName);
     }
 
     public static ResourceBundle getResourceBundleI18n(final String fileName, final Locale locale) {
-        return getResourceBundle("/config/i18n/" + fileName, locale);
+        return UtilsResource.getResourceBundle("/config/i18n/" + fileName, locale);
     }
 
     public static ResourceBundle getResourceBundleEtc(final String fileName) {
-        return getResourceBundle("/etc/" + fileName);
+        return UtilsResource.getResourceBundle("/etc/" + fileName);
     }
 
     public static String readFile(final AioWeb aioWeb, final String folder1, final String folder2, final String fileName) {
@@ -89,22 +90,6 @@ public class UtilsWeb {
 
         }catch(Exception e) {
             log.error("\nERROR: - readFile ::" + e + folder1 + fileName +"\n");
-        }
-        return null;
-    }
-
-    public static ResourceBundle getResourceBundle(final String name) {
-        return getResourceBundle(name, null);
-    }
-
-    public static ResourceBundle getResourceBundle(final String name, final Locale locale) {
-        try {
-            if(locale != null) {
-                return ResourceBundle.getBundle(name, locale);
-            }else {
-                return ResourceBundle.getBundle(name);
-            }
-        }catch (Exception ignore) {
         }
         return null;
     }
