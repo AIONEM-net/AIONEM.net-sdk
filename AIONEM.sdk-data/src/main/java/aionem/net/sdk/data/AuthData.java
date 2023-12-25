@@ -19,7 +19,6 @@ public @lombok.Data class AuthData extends Data {
     protected String code = "";
     protected String passwordHash = "";
     protected String language = "";
-    private ConfApp confApp;
 
     protected void init(final String uid, final String email, final String phone, final String password, final String uidToken, final String code) {
 

@@ -1,22 +1,24 @@
 package aionem.net.sdk.data;
 
+import aionem.net.sdk.core.utils.UtilsConverter;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsResource;
-import lombok.extern.log4j.Log4j2;
+import lombok.Getter;
 
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 
-@Log4j2
 public class ConfApp {
 
-    private final String env;
-    private Data data;
-    private ResourceBundle resourceBundle;
+    private static final HashMap<String, Data> mapData = new HashMap<>();
 
-    private ConfApp() {
-        this("");
-    }
+    @Getter
+    private String name = "application";
+    @Getter
+    private String env = "";
+    private Data data = new Data();
+    private ResourceBundle resourceBundle;
 
     private static ConfApp confApp;
     public static ConfApp getInstance() {
@@ -26,63 +28,99 @@ public class ConfApp {
         return confApp;
     }
 
-    public ConfApp(final String env) {
-        this.env = UtilsText.notNull(env);
+    public ConfApp() {
+
     }
 
-    private Data getData() {
-        if(data == null) {
-            data = new Data(UtilsResource.getParentResourceAsStream(this.getClass(), "application.json",
-                    "ui.config/env/"+env, "config/env/"+env, "config/", "")
-            );
-        }
-        return data;
+    public ConfApp(final String name) {
+        init(name, env);
     }
 
-    private ResourceBundle getResourceBundle() {
-        if(resourceBundle == null) {
-            resourceBundle = UtilsResource.getResourceBundle("application",
-                    "ui.config/env/"+env, "config/env/"+env, "config/", ""
-            );
+    public ConfApp(final String name, final String env) {
+        init(name, env);
+    }
+
+    public void init(String name, final String env) {
+        this.name = name;
+        this.env = env;
+
+        if(!UtilsText.isEmpty(env)) {
+            name = "/"+ env +"/"+ name;
+            this.resourceBundle = UtilsResource.getResourceBundle(name, "/ui.config/env", "/config/env");
+        }else {
+            this.resourceBundle = UtilsResource.getResourceBundle(name, "/ui.config", "/config");
         }
-        return resourceBundle;
+
+        this.data = getData(this.getClass(), !name.endsWith(".json") ? name + ".json" : name);
     }
 
     public String get(final String key) {
-        return get(key, null, "");
-    }
-
-    public String get(final String key, final String defaultValue) {
-        return get(key, null, defaultValue);
+        return get(key, "");
     }
 
     public String getOr(final String key1, final String key2) {
-        return get(key1, key2, "");
+        final String value = get(key1);
+        return !UtilsText.isEmpty(value) ? value : get(key2);
     }
 
     public String get(final String key1, final String key2, final String defaultValue) {
-        String value = "";
-        try {
-            if(!UtilsText.isEmpty(key1)) {
-                if(getData().has(key1)) {
-                    value = getData().get(key1);
-                }else if(getResourceBundle().containsKey(key1)) {
-                    value = getResourceBundle().getString(key1);
+        final String value = get(key1);
+        return UtilsText.notEmpty(!UtilsText.isEmpty(value) ? value : get(key2, defaultValue), defaultValue);
+    }
+
+    public <T> T get(final String key, final T defaultValue) {
+        if(data.has(key)) {
+            return data.get(key, defaultValue);
+        }else {
+            final ConfApp confBase = getBaseConfig();
+            if(confBase.data.has(key)) {
+                return getBaseConfig().get(key, defaultValue);
+            }else {
+                if(resourceBundle != null && resourceBundle.containsKey(key)) {
+                    return UtilsConverter.convert(resourceBundle.getString(key), defaultValue);
+                }else {
+                    final ResourceBundle resourceBundleBase = getBaseResourceBundle();
+                    if(resourceBundleBase != null && resourceBundleBase.containsKey(key)) {
+                        return UtilsConverter.convert(resourceBundleBase.getString(key), defaultValue);
+                    }
                 }
+            }
+        }
+        return defaultValue;
+    }
+
+    public String getBaseName() {
+        String name = this.name;
+        if(!name.endsWith(".json")) name += ".json";
+        if(name.contains("/")) name = name.substring(name.indexOf("/"));
+        return name;
+    }
+
+    public ConfApp getBaseConfig() {
+        final ConfApp dataConf = new ConfApp();
+        dataConf.data = getData(this.getClass(), getBaseName());
+        return dataConf;
+    }
+
+    public ResourceBundle getBaseResourceBundle() {
+        return UtilsResource.getResourceBundle(getBaseName(), "/ui.config", "/ui.config/env", "/config", "/config/env");
+    }
+
+    private static <T> Data getData(Class<T> tClass, final String name) {
+        Data data = null;
+        if(!mapData.containsKey(name) || mapData.get(name) == null) {
+
+            String json = UtilsResource.readParentResource(tClass, "/ui.config", "/config");
+
+            if(!UtilsText.isEmpty(json)) {
+                data = new Data(json);
+                mapData.put(name, data);
             }
 
-            if(UtilsText.isEmpty(value) && !UtilsText.isEmpty(key2)) {
-                if(getData().has(key2)) {
-                    value = getData().get(key2);
-                }else if(getResourceBundle().containsKey(key2)) {
-                    value = getResourceBundle().getString(key2);
-                }
-            }
-        }catch (Exception e) {
-            log.error("Error getting resource bundle {}", e.getMessage());
-            value = defaultValue;
+        }else if(mapData.containsKey(name)) {
+            data = mapData.get(name);
         }
-        return UtilsText.notNull(value);
+        return data != null ? data : new Data();
     }
 
 }
