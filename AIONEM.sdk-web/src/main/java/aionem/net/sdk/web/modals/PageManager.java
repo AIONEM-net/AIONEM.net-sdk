@@ -257,9 +257,14 @@ public class PageManager {
 
     public boolean move(final Page page, final String pathNew, final String nameNew) {
         try {
-            final Path sourcePath = Paths.get(aioWeb.getRealPathPage(page.getPath()));
-            final Path destinationPath = Paths.get(aioWeb.getRealPathPage(pathNew + "/" + nameNew));
-            Files.move(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+            final Path pathSource = Paths.get(aioWeb.getRealPathPage(page.getPath()));
+            final Path pathDestination = Paths.get(aioWeb.getRealPathPage(pathNew + "/" + nameNew));
+
+            if(!pathSource.toFile().exists()) {
+                return false;
+            }
+            
+            Files.move(pathSource, pathDestination, StandardCopyOption.REPLACE_EXISTING);
             return true;
         } catch (IOException e) {
             log.error("Error moving page {}", e.toString());
@@ -277,24 +282,28 @@ public class PageManager {
 
     public boolean copy(final Page page, final String pathNew, final String nameNew, final boolean excludeChildren) {
         try {
-            final Path sourcePath = Paths.get(aioWeb.getRealPathPage(page.getPath()));
-            final Path destinationPath = Paths.get(aioWeb.getRealPathPage(pathNew + "/" + nameNew));
+            final Path pathSource = Paths.get(aioWeb.getRealPathPage(page.getPath()));
+            final Path pathDestination = Paths.get(aioWeb.getRealPathPage(pathNew + "/" + nameNew));
 
-            Files.walkFileTree(sourcePath, new SimpleFileVisitor<>() {
+            if(!pathSource.toFile().exists()) {
+              return false;  
+            }
+            
+            Files.walkFileTree(pathSource, new SimpleFileVisitor<>() {
 
                 @Override
                 public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
-                    if (excludeChildren && !dir.equals(sourcePath)) {
+                    if (excludeChildren && !dir.equals(pathSource)) {
                         return FileVisitResult.SKIP_SUBTREE;
                     }
-                    final Path targetDir = destinationPath.resolve(sourcePath.relativize(dir));
+                    final Path targetDir = pathDestination.resolve(pathSource.relativize(dir));
                     Files.createDirectories(targetDir);
                     return FileVisitResult.CONTINUE;
                 }
 
                 @Override
                 public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-                    final Path targetFile = destinationPath.resolve(sourcePath.relativize(file));
+                    final Path targetFile = pathDestination.resolve(pathSource.relativize(file));
                     Files.copy(file, targetFile, StandardCopyOption.REPLACE_EXISTING);
                     return FileVisitResult.CONTINUE;
                 }
@@ -315,7 +324,6 @@ public class PageManager {
     public int references(final Page page, final Page pageNew, final Page pageSection, final boolean update) {
         final int[] totalReferences = {0};
 
-        final String path = page.getPath();
         final Path pathSection = Paths.get(aioWeb.getRealPathPage(pageSection.getPath()));
 
         try {

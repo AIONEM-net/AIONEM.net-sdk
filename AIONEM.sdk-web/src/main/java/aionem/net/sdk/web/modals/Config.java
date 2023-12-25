@@ -128,6 +128,7 @@ public class Config {
                 data = new Data(json);
                 mapData.put(name, data);
             }
+
         }else if(mapData.containsKey(name)) {
             data = mapData.get(name);
         }

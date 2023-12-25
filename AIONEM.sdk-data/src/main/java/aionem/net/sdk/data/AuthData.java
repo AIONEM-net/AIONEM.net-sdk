@@ -19,7 +19,7 @@ public @lombok.Data class AuthData extends Data {
     protected String code = "";
     protected String passwordHash = "";
     protected String language = "";
-    private confApp confApp;
+    private ConfApp confApp;
 
     protected void init(final String uid, final String email, final String phone, final String password, final String uidToken, final String code) {
 
@@ -51,8 +51,8 @@ public @lombok.Data class AuthData extends Data {
         return null;
     }
 
-    public confApp getConfApp() {
-        if(confApp == null) confApp = new confApp();
+    public ConfApp getConfApp() {
+        if(confApp == null) confApp = new ConfApp();
         return confApp;
     }
 

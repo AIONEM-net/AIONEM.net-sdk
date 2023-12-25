@@ -7,7 +7,7 @@ import java.util.ResourceBundle;
 
 
 @Log4j2
-public class confApp {
+public class ConfApp {
 
     private Data data;
     private ResourceBundle resourceBundle;
@@ -39,7 +39,7 @@ public class confApp {
     }
 
     public String get(final String key1, final String key2, final String defaultValue) {
-        String value = null;
+        String value = "";
         try {
             if(!UtilsText.isEmpty(key1)) {
                 if(getData().has(key1)) {
@@ -60,7 +60,7 @@ public class confApp {
             log.error("Error getting resource bundle {}", e.getMessage());
             value = defaultValue;
         }
-        return value;
+        return UtilsText.notNull(value);
     }
 
 }
