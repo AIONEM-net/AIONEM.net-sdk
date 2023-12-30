@@ -53,7 +53,10 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
                         response.setCharacterEncoding("UTF-8");
                         response.setContentType("text/html; charset=UTF-8");
 
-                        final String urlIndexQuery = requestUrl +(!requestUrl.endsWith("/") ? "/" : "")+ "index.jsp" + "?" + aioWeb.getRequestQuery();
+                        final String urlIndexQuery = requestUrl
+                                + (!requestUrl.endsWith("/") ? "/" : "")
+                                + (!requestUrl.endsWith("index.jsp") ? "index.jsp" : "")
+                                + "?" + aioWeb.getRequestQuery();
 
                         aioWeb.include(aioWeb.getContextPath("/ui.page" + (isHome ? home : "") + urlIndexQuery));
                     }
