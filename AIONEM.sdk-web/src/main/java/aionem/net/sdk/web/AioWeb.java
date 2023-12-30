@@ -1,11 +1,13 @@
 package aionem.net.sdk.web;
 
 import aionem.net.sdk.core.utils.UtilsConverter;
-import aionem.net.sdk.core.Env;
-import aionem.net.sdk.data.Data;
 import aionem.net.sdk.core.utils.UtilsNetwork;
 import aionem.net.sdk.core.utils.UtilsText;
-import aionem.net.sdk.web.modals.*;
+import aionem.net.sdk.data.Data;
+import aionem.net.sdk.web.modals.Component;
+import aionem.net.sdk.web.modals.ConfEnv;
+import aionem.net.sdk.web.modals.PageManager;
+import aionem.net.sdk.web.modals.Properties;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -14,10 +16,11 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import javax.servlet.jsp.PageContext;
-import java.io.*;
-import java.net.URI;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Locale;
 
@@ -29,7 +32,6 @@ public @Getter class AioWeb {
     protected HttpServletResponse response;
     protected PageContext pageContext;
     protected HttpSession session;
-    protected String contextPath;
 
     private PageManager pageManager;
 
@@ -54,7 +56,6 @@ public @Getter class AioWeb {
         this.response = response;
         this.pageContext = pageContext;
         this.session = request.getSession(true);
-        this.contextPath = getConfEnv().getContextPath();
         return this;
     }
 
@@ -185,9 +186,8 @@ public @Getter class AioWeb {
         return getInitParameter(name, "");
     }
 
-
     public String getInitParameter(final String name, final String defaultValue) {
-        return request != null ? getServletContext().getInitParameter(name) : defaultValue;
+        return UtilsText.notNull(getServletContext().getInitParameter(name), defaultValue);
     }
 
     public String getRealPathCurrent() {
@@ -230,7 +230,7 @@ public @Getter class AioWeb {
     }
 
     public String getContextPath() {
-        return UtilsText.notNull(contextPath, request.getContextPath());
+        return request.getContextPath();
     }
 
     public String getContextPath(final String path) {
@@ -386,6 +386,10 @@ public @Getter class AioWeb {
 
     public RequestDispatcher getRequestDispatcher(final String path) {
         return request.getRequestDispatcher(path);
+    }
+
+    public void sendRedirect(final String location) throws IOException {
+        response.sendRedirect(location);
     }
 
     public void forward(final String path) throws IOException, ServletException {

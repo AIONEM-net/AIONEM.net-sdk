@@ -46,12 +46,19 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
 
                 try {
 
-                    response.setCharacterEncoding("UTF-8");
-                    response.setContentType("text/html; charset=UTF-8");
+                    if(requestRoot.startsWith(home)) {
+                        aioWeb.sendRedirect(aioWeb.getRequestUrlQuery().substring(home.length()));
+                    }else {
 
-                    aioWeb.include(aioWeb.getContextPath("/ui.page" +(isHome ? home : "")+ requestUrl + "/index.jsp" +"?"+ aioWeb.getRequestQuery()));
+                        response.setCharacterEncoding("UTF-8");
+                        response.setContentType("text/html; charset=UTF-8");
 
-                }catch (Exception e) {
+                        final String urlIndexQuery = requestUrl +(!requestUrl.endsWith("/") ? "/" : "")+ "index.jsp" + "?" + aioWeb.getRequestQuery();
+
+                        aioWeb.include(aioWeb.getContextPath("/ui.page" + (isHome ? home : "") + urlIndexQuery));
+                    }
+
+                }catch(Exception e) {
                     aioWeb.getResponse().sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
 

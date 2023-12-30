@@ -26,10 +26,6 @@ public class ConfEnv extends Config {
         super(aioWeb);
     }
 
-    public String getContextPath() {
-        return get("contextPath", aioWeb.getContextPath());
-    }
-
     public String getSenderID() {
         return get("senderID");
     }

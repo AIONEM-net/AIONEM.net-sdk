@@ -42,6 +42,7 @@ public class UtilsText {
     public static String notNull(final Object object) {
         return notNull(object, "");
     }
+
     public static String notNull(final Object object, final String holder) {
         return object != null ? toString(object) : toString(holder);
     }
@@ -63,6 +64,7 @@ public class UtilsText {
     public static String toString(final Object object) {
         return toString(object, false);
     }
+
     public static String toString(final Object object, final boolean isLine) {
         if(object == null) return null;
         String value = object.toString();
@@ -111,6 +113,7 @@ public class UtilsText {
     public static boolean equals(final String text1, final String text2) {
         return text1 != null && text1.equals(text2);
     }
+
     public static boolean equalsIgnoreCase(final String text1, final String text2) {
         return text1 != null && text1.equalsIgnoreCase(text2);
     }
@@ -118,9 +121,11 @@ public class UtilsText {
     public static boolean contains(final String text, final String keyword) {
         return text != null && text.contains(keyword);
     }
+
     public static boolean startsWith(final String text, final String keyword) {
         return text != null && text.startsWith(keyword);
     }
+
     public static boolean endsWith(final String text, final String keyword) {
         return text != null && text.endsWith(keyword);
     }
@@ -128,6 +133,7 @@ public class UtilsText {
     public static String substring(final String text, final int beginIndex) {
         return text != null ? text.substring(beginIndex) : null;
     }
+
     public static String substring(final String text, final int beginIndex, final int endIndex) {
         return text != null ? text.substring(beginIndex, endIndex) : null;
     }
@@ -135,6 +141,7 @@ public class UtilsText {
     public static int indexOf(final String text, final String keyword) {
         return text != null ? text.indexOf(keyword) : -1;
     }
+
     public static int lastIndexOf(final String text, final String keyword) {
         return text != null ? text.lastIndexOf(keyword) : -1;
     }
@@ -145,6 +152,7 @@ public class UtilsText {
         if(text2 == null) return 1;
         return text1.compareTo(text2);
     }
+
     public static int compareToIgnoreCase(final String text1, final String text2) {
         if(text1 == null && text2 == null) return 0;
         if(text1 == null) return -1;
@@ -159,6 +167,7 @@ public class UtilsText {
     public static String join(final String... texts) {
         return join(texts, "");
     }
+
     public static String join(final String[] texts, final String separator) {
         if(texts == null) return null;
         if(texts.length == 1) return texts[0];
