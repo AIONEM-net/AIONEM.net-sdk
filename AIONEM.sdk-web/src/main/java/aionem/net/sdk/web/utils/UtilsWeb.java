@@ -39,6 +39,10 @@ public class UtilsWeb {
         return readFile(aioWeb, "/WEB-INF/ui.app/etc/", "/etc/", fileName);
     }
 
+    public static String readFileTemplateEtc(final AioWeb aioWeb, final String fileName) {
+        return readFile(aioWeb, "/WEB-INF/ui.template/etc/", "/etc/", fileName);
+    }
+
     public static ResourceBundle getResourceBundleConfig(final String fileName) {
         return UtilsResource.getResourceBundle("/config/" + fileName);
     }

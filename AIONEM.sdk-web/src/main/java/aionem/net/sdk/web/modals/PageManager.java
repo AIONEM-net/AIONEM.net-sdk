@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 public class PageManager {
 
     public static final List<String> SYSTEM_PATH_1 = List.of("/ui.system", "/ui.page", "/ui.frontend", "/ui.drive", "/META-INF", "/WEB-INF");
-    public static final List<String> SYSTEM_PATH_2 = List.of("/ui.config", "/ui.apps", "/ui.content", "/ui.template");
+    public static final List<String> SYSTEM_PATH_2 = List.of("/ui.config", "/ui.apps", "/ui.etc", "/ui.template");
     public static final List<String> SYSTEM_PATH_3 = List.of("/api", "/drive", "/assets", "/cdn");
     public static final List<String> SYSTEM_PATH = new ArrayList<>(SYSTEM_PATH_1);
     static {

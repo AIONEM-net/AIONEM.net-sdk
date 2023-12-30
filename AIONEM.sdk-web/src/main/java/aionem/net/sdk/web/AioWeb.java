@@ -187,7 +187,12 @@ public @Getter class AioWeb {
     }
 
     public String getInitParameter(final String name, final String defaultValue) {
-        return UtilsText.notNull(getServletContext().getInitParameter(name), defaultValue);
+        try {
+            return UtilsText.notNull(getServletContext().getInitParameter(name), defaultValue);
+        }catch(final Exception e) {
+            log.error("Error getting init parameter {}", e.toString());
+            return defaultValue;
+        }
     }
 
     public String getRealPathCurrent() {

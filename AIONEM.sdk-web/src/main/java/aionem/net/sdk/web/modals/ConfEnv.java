@@ -67,7 +67,7 @@ public class ConfEnv extends Config {
     }
 
     public String getInitGoogleSignInClientID() {
-        return aioWeb.getInitParameter("GoogleSignInClientID");
+        return get("GoogleSignInClientID");
     }
 
     public String getAPI_SMS_KEY() {
