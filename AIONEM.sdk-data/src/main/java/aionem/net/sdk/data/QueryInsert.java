@@ -114,17 +114,31 @@ public class QueryInsert extends Query {
         return executeInsert() > 0;
     }
 
-    public DaoRes executeInsertRes() throws SQLException {
+    public DaoRes executeInsertRes() {
         final DaoRes resInsert = new DaoRes();
-        final long dataId = executeInsert();
-        if(dataId > 0) {
-            resInsert.setSuccess(true);
-            resInsert.setId(dataId);
-        }else {
+        final long dataId;
+        try {
+            dataId = executeInsert();
+            if(dataId > 0) {
+                resInsert.setSuccess(true);
+                resInsert.setId(dataId);
+            }else {
+                resInsert.setError(getError());
+                resInsert.setException(getException());
+            }
+        } catch (Exception e) {
             resInsert.setError(getError());
-            resInsert.setException(getException());
+            resInsert.setException(e);
         }
         return resInsert;
+    }
+
+    public long executeInsert(final long defaultValue) {
+        try {
+            return executeInsert();
+        } catch (Exception e) {
+            return defaultValue;
+        }
     }
 
     public long executeInsert() throws SQLException {

@@ -71,6 +71,9 @@ public @lombok.Data class DaoRes extends Data  {
     public void setException(final Exception e) {
         this.exception = e;
         if(e != null && UtilsText.isEmpty(error)) {
+
+            log.error("\nERROR: " + e +" : "+ e.getStackTrace()[0] +"\n");
+
             if(e instanceof SQLException) {
                 this.error = "Connection failed";
             }else if(Env.IS_DEBUG_EXCEPTION) {

@@ -434,18 +434,30 @@ public class QueryUpdate extends QueryCondition {
         return getQuery();
     }
 
+    public boolean executeUpdateSuccess(final boolean defaultValue) {
+        try {
+            return executeUpdate() > 0;
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
     public boolean executeUpdateSuccess() throws SQLException {
         return executeUpdate() > 0;
     }
 
-    public DaoRes executeUpdateRes() throws SQLException {
+    public DaoRes executeUpdateRes() {
         final DaoRes resUpdate = new DaoRes();
-        final boolean isUpdated = executeUpdateSuccess();
-        if(isUpdated) {
-            resUpdate.setSuccess(true);
-        }else {
-            resUpdate.setError(getError());
-            resUpdate.setException(getException());
+        try {
+            final boolean isUpdated = executeUpdateSuccess();
+            if(isUpdated) {
+                resUpdate.setSuccess(true);
+            }else {
+                resUpdate.setError(getError());
+                resUpdate.setException(getException());
+            }
+        } catch (SQLException e) {
+            resUpdate.setException(e);
         }
         return resUpdate;
     }

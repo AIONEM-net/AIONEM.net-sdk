@@ -558,6 +558,14 @@ public class QuerySelect extends QueryCondition {
         return executeData(Data.class);
     }
 
+    public <T> T executeData(Class<T> type, final T defaultValue) {
+        try {
+            return executeData(type);
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
     public <T> T executeData(Class<T> type) throws SQLException {
         try {
             return UtilsData.adaptTo(type, executeJson());
@@ -584,12 +592,29 @@ public class QuerySelect extends QueryCondition {
         return arrayData;
     }
 
+    public Datas executeDatas(final Datas defaultValue) {
+        try {
+            return executeDatas();
+        } catch (SQLException e) {
+            return defaultValue;
+        }
+    }
+
     public Datas executeDatas() throws SQLException {
         final Datas datas = new Datas();
         for(final Data data : executeListData()) {
             datas.add(data);
         }
         return datas;
+    }
+
+    public <T> ArrayList<T> executeList(final Class<T> type, final ArrayList<T> defaultList) {
+        try {
+            return executeList(type);
+        } catch (Exception e) {
+            setException(e);
+        }
+        return defaultList;
     }
 
     public <T> ArrayList<T> executeList(final Class<T> type) throws SQLException {
@@ -676,6 +701,14 @@ public class QuerySelect extends QueryCondition {
         return listData;
     }
 
+    public long executeCount(final long defaultValue) {
+        try {
+            return executeCount();
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
     public long executeCount() throws SQLException {
         return executeCount("COUNT(*)", true);
     }
@@ -684,7 +717,15 @@ public class QuerySelect extends QueryCondition {
         return executeCount(columnLabel, false);
     }
 
-    public long executeCount(String columnLabel, boolean addCount) throws SQLException {
+    public long executeCount(String columnLabel, boolean addCount, final long defaultValue) {
+        try {
+            return executeCount(columnLabel, addCount);
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
+    public long executeCount(String columnLabel, final boolean addCount) throws SQLException {
         long count = 0;
         if(addCount) {
             count();
@@ -708,9 +749,8 @@ public class QuerySelect extends QueryCondition {
         return count;
     }
 
-    @SneakyThrows
     public long executeSum() {
-        return executeCount("SUM(#)", false);
+        return executeCount("SUM(#)", false, 0);
     }
 
     public long executeSum(final String columnLabel) throws SQLException {

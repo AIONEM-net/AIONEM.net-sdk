@@ -137,11 +137,16 @@ public class ApiRes {
 
     public void setException(final Exception e) {
         this.exception = e;
-        if(e != null && UtilsText.isEmpty(error)) {
-            if(e instanceof SQLException) {
-                this.error = "Connection failed";
-            }else if(Env.IS_DEBUG_EXCEPTION) {
-                this.error = UtilsText.notEmpty(e.getMessage(), "Something went wrong");
+        if(e != null) {
+
+            log.error("\nERROR: " + e +" : "+ e.getStackTrace()[0] +"\n");
+
+            if (UtilsText.isEmpty(error)) {
+                if (e instanceof SQLException) {
+                    this.error = "Connection failed";
+                } else if (Env.IS_DEBUG_EXCEPTION) {
+                    this.error = UtilsText.notEmpty(e.getMessage(), "Something went wrong");
+                }
             }
         }
     }
