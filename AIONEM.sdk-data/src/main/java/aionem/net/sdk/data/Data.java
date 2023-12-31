@@ -45,11 +45,11 @@ public class Data {
         init(getInstance(), UtilsJson.toJsonObject(data));
     }
 
-    public <T> T init(T t) {
-        instance = t;
+    public <T> T init(T dbInstance) {
+        instance = dbInstance;
 
-        if(t != null) {
-            for (Field field : t.getClass().getDeclaredFields()) {
+        if(dbInstance != null && !dbInstance.getClass().equals(Data.class)) {
+            for(final Field field : dbInstance.getClass().getDeclaredFields()) {
                 final int modifiers = field.getModifiers();
                 final boolean isStatic = Modifier.isStatic(modifiers);
                 final boolean isFinal = Modifier.isFinal(modifiers);
@@ -60,8 +60,8 @@ public class Data {
                     final String fieldName = field.getName();
                     final String key = col != null ? UtilsText.notEmpty(col.value(), fieldName) : fieldName;
                     try {
-                        Object value = field.get(t);
-                        if (value != null) {
+                        Object value = field.get(dbInstance);
+                        if(value != null) {
                             value = UtilsConverter.convert(value, field.getType());
                         }
                         put(key, value);
@@ -72,7 +72,7 @@ public class Data {
             }
         }
 
-        return t;
+        return dbInstance;
     }
 
     public <T> T init(T t, final boolean init) {
@@ -84,7 +84,6 @@ public class Data {
         this.values.clear();
         this.values.putAll(data.values);
         try {
-            init(dbInstance);
             return UtilsData.adaptTo(dbInstance, data.toJson());
         }catch(Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK : Data - fromData " + e +"\n");
@@ -96,7 +95,6 @@ public class Data {
         this.values.clear();
         this.values.putAll(data);
         try {
-            init(dbInstance);
             return UtilsData.adaptTo(dbInstance, UtilsJson.fromHashMap(data));
         }catch(Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK : Data - fromData " + e +"\n");
@@ -108,7 +106,6 @@ public class Data {
         this.values.clear();
         this.values.putAll(UtilsJson.toHashMap(data));
         try {
-            init(dbInstance);
             return UtilsData.adaptTo(dbInstance, data);
         }catch(Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK : Data - fromData " + e +"\n");
@@ -124,6 +121,14 @@ public class Data {
         return (T) instance;
     }
 
+    public void setValues(final Map<String, Object> values) {
+        init(getInstance(), values);
+    }
+
+    public void setValues(final Object values) {
+        init(getInstance(), values);
+    }
+
     public JsonObject toJson() {
         return toJson(getInstance());
     }
@@ -136,7 +141,7 @@ public class Data {
         final JsonObject json = UtilsJson.jsonObject();
         try {
             if(dbInstance != null && !dbInstance.getClass().equals(Data.class)) {
-                for (Field field : dbInstance.getClass().getDeclaredFields()) {
+                for(Field field : dbInstance.getClass().getDeclaredFields()) {
                     final int modifiers = field.getModifiers();
                     final boolean isStatic = Modifier.isStatic(modifiers);
                     final boolean isPrivate = Modifier.isPrivate(modifiers);
@@ -306,7 +311,7 @@ public class Data {
     }
 
     public <T> T remove(final String key) {
-        put(key, null);
+        put(key, (Object) null);
         this.values.remove(key);
         return getInstance();
     }
@@ -402,24 +407,6 @@ public class Data {
 
     public boolean equalsIgnoreCase(final Object value, final String key) {
         return equals(value, key) || UtilsText.equalsIgnoreCase(UtilsText.toString(value), get(key));
-    }
-
-    public <T> T adaptTo(Class<T> type) {
-        try {
-            return UtilsData.adaptTo(type, toJson());
-        }catch(Exception e) {
-            log.error("\nERROR: AIONEM.NET_SDK : Data - adaptTo(Class<T> type) " + e +"\n");
-            return null;
-        }
-    }
-
-    public <T> T adaptTo(T t) {
-        try {
-            return UtilsData.adaptTo(t, toJson());
-        }catch(Exception e) {
-            log.error("\nERROR: AIONEM.NET_SDK : Data - adaptTo(T t) " + e +"\n");
-            return null;
-        }
     }
 
 }

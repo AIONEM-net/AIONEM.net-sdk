@@ -1,16 +1,19 @@
 package aionem.net.sdk.web.modals;
 
-import aionem.net.sdk.data.DaoRes;
-import aionem.net.sdk.data.DataAuth;
 import aionem.net.sdk.core.Env;
+import aionem.net.sdk.core.utils.UtilsText;
+import aionem.net.sdk.data.DaoRes;
+import aionem.net.sdk.data.Data;
+import aionem.net.sdk.data.DataAuth;
 import aionem.net.sdk.data.Datas;
 import aionem.net.sdk.data.utils.UtilsDB;
-import aionem.net.sdk.data.Data;
-import aionem.net.sdk.data.utils.UtilsData;
 import aionem.net.sdk.data.utils.UtilsJson;
-import aionem.net.sdk.core.utils.UtilsText;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.http.HttpServletResponse;
@@ -24,18 +27,28 @@ import java.util.Map;
 @Getter
 public class ApiRes {
 
+    @Setter
     private int status = 200;
+    @Setter
     private boolean success = false;
+    @Setter
+    private long counts = -1;
+    @Setter
+    private long total = -1;
+    @Setter
+    private long page = -1;
+    @Setter
+    private long pages = -1;
+    @Setter
+    private long draw = -1;
+    @Setter
+    private String token = "";
+
     private String message = "";
     private String error = "";
     private Exception exception;
-    private long counts = -1;
-    private long total = -1;
-    private long page = -1;
-    private long pages = -1;
-    private long draw = -1;
-    private String token = "";
     private JsonObject data = UtilsJson.jsonObject();
+    @Setter
     private JsonArray dataArray;
 
 
@@ -107,18 +120,6 @@ public class ApiRes {
         setException(e);
     }
 
-    public void setStatus(final int status) {
-        this.status = status;
-    }
-
-    public void setSuccess(final boolean success) {
-        this.success = success;
-    }
-
-    public void setMessage(final String message) {
-        this.message = message;
-    }
-
     public void setMessage(final String... messages) {
         String separator = " : ";
         if(messages == null) message = "";
@@ -166,33 +167,9 @@ public class ApiRes {
         return exception;
     }
 
-    public void setCounts(final long counts) {
-        this.counts = counts;
-    }
-
     public void setCounts(final long counts, final long max) {
         this.counts = counts;
         this.pages = max > 0 ? (long) Math.ceil(counts / (double) max) : -1;
-    }
-
-    public void setTotal(final long total) {
-        this.total = total;
-    }
-
-    public void setPage(final long page) {
-        this.page = page;
-    }
-
-    public void setPages(final long pages) {
-        this.pages = pages;
-    }
-
-    public void setDraw(final long draw) {
-        this.draw = draw;
-    }
-
-    public void setToken(final String token) {
-        this.token = token;
     }
 
     public void setData(final Data data) {
@@ -203,21 +180,64 @@ public class ApiRes {
         this.data = dataAuth.getUserProfile();
     }
 
-    public void setData(final JsonObject jsonObject) {
-        this.data = jsonObject;
-    }
-
-    public void setDataArray(final Datas datas) {
+    public void setDatas(final Datas datas) {
         this.dataArray = datas.toJson();
     }
 
-    public void setDataArray(final JsonArray jsonArray) {
-        this.dataArray = jsonArray;
+    public void putData(final String key, final Object data) {
+        try {
+            if(data instanceof DataAuth) {
+                UtilsJson.add(this.data, key, ((DataAuth) data).getUserProfile());
+            }else if(data instanceof DaoRes) {
+                UtilsJson.add(this.data, key, ((DaoRes) data).toJson());
+            }else if(data instanceof Data) {
+                UtilsJson.add(this.data, key, ((Data) data).toJson());
+            }else if(data instanceof Datas) {
+                UtilsJson.add(this.data, key, ((Datas) data).toJson());
+            }else if(data instanceof JsonElement) {
+                UtilsJson.add(this.data, key, data);
+            }else {
+                final JsonObject value = UtilsJson.toJsonObject(data);
+                if(!value.isEmpty()) {
+                    UtilsJson.add(this.data, key, value);
+                }else {
+                    this.data.addProperty(key, UtilsText.toString(data));
+                }
+            }
+        }catch(Exception e) {
+            log.error("\nERROR: AIONEM.NET_SDK : Response - Put Data :: " + e +"\n");
+            if(Env.IS_DEBUG) setException(e);
+        }
     }
 
-    @Override
-    public String toString() {
-        return toJsonResponse().toString();
+    public void setResponse(final HttpServletResponse response) throws IOException {
+        setResponse(response, null);
+    }
+
+    public void setResponse(final HttpServletResponse response, final Data dataHeaders) throws IOException {
+        setResponse(response, dataHeaders, "application/json");
+    }
+
+    public void setResponse(final HttpServletResponse response, final Data dataHeaders, final String contentType) throws IOException {
+
+        if(dataHeaders != null) {
+            for(final Map.Entry<String, String> header : dataHeaders.getValuesString().entrySet()) {
+                response.setHeader(header.getKey(), header.getValue());
+            }
+        }
+
+        response.setStatus(HttpURLConnection.HTTP_OK);
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType(contentType);
+
+        if("application/json".equalsIgnoreCase(contentType)) {
+            final Gson gson = UtilsJson.getGsonPretty();
+            response.getWriter().write(gson.toJson(toJsonResponse()));
+        }else {
+            response.getWriter().write(getMessage());
+        }
+
+        response.getWriter().close();
     }
 
     public JsonObject toJsonResponse() {
@@ -265,74 +285,9 @@ public class ApiRes {
         return jsonResponse;
     }
 
-    public void setResponse(final HttpServletResponse response) throws IOException {
-        setResponse(response, null);
-    }
-    public void setResponse(final HttpServletResponse response, final Data dataHeaders) throws IOException {
-        setResponse(response, dataHeaders, "application/json");
-    }
-    public void setResponse(final HttpServletResponse response, final Data dataHeaders, final String contentType) throws IOException {
-
-        if(dataHeaders != null) {
-            for(final Map.Entry<String, String> header : dataHeaders.getValuesString().entrySet()) {
-                response.setHeader(header.getKey(), header.getValue());
-            }
-        }
-
-        response.setStatus(HttpURLConnection.HTTP_OK);
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType(contentType);
-
-        if("application/json".equalsIgnoreCase(contentType)) {
-            final Gson gson = UtilsJson.getGsonPretty();
-            response.getWriter().write(gson.toJson(toJsonResponse()));
-        }else {
-            response.getWriter().write(getMessage());
-        }
-
-        response.getWriter().close();
-    }
-
-    public void putData(final String key, final Object data) {
-        try {
-            if(data instanceof DataAuth) {
-                UtilsJson.add(this.data, key, ((DataAuth) data).getUserProfile());
-            }else if(data instanceof DaoRes) {
-                UtilsJson.add(this.data, key, ((DaoRes) data).toJson());
-            }else if(data instanceof Data) {
-                UtilsJson.add(this.data, key, ((Data) data).toJson());
-            }else if(data instanceof Datas) {
-                UtilsJson.add(this.data, key, ((Datas) data).toJson());
-            }else if(data instanceof JsonElement) {
-                UtilsJson.add(this.data, key, data);
-            }else {
-                final JsonObject value = UtilsJson.toJsonObject(data);
-                if(!value.isEmpty()) {
-                    UtilsJson.add(this.data, key, value);
-                }else {
-                    this.data.addProperty(key, UtilsText.toString(data));
-                }
-            }
-        }catch(Exception e) {
-            log.error("\nERROR: AIONEM.NET_SDK : Response - Put Data :: " + e +"\n");
-            if(Env.IS_DEBUG) setException(e);
-        }
-    }
-
-    public <T> T getData(final Class<T> type) {
-        try {
-            return UtilsData.adaptTo(type, data);
-        }catch(Exception ignore) {
-        }
-        return null;
-    }
-
-    public Object getDataValue(final String key) {
-        try {
-            return data.get(key);
-        }catch(Exception ignore) {
-        }
-        return null;
+    @Override
+    public String toString() {
+        return toJsonResponse().toString();
     }
 
 }

@@ -26,12 +26,13 @@ public class UtilsData {
     public static <T> T adaptTo(final Class<T> type, final JsonObject data) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException {
         return adaptTo(type, (Object) data);
     }
+
     public static <T> T adaptTo(final Class<T> type, final Object data) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
         if(type == null || data == null) return null;
         if(type.getSuperclass().isAssignableFrom(Data.class) || type.isAssignableFrom(Data.class)) {
             return type.getConstructor(data.getClass()).newInstance(data);
         }else {
-            T t = type.getConstructor().newInstance();
+            final T t = type.getConstructor().newInstance();
 
             if(data instanceof HashMap) {
                 return adaptTo(t, UtilsJson.fromHashMap((HashMap<String, Object>) data));
