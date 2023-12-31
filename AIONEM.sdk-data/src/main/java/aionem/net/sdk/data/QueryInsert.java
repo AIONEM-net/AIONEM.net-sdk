@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 
@@ -109,11 +110,11 @@ public class QueryInsert extends Query {
         return getQuery();
     }
 
-    public boolean executeInsertSuccess() {
+    public boolean executeInsertSuccess() throws SQLException {
         return executeInsert() > 0;
     }
 
-    public DaoRes executeInsertRes() {
+    public DaoRes executeInsertRes() throws SQLException {
         final DaoRes resInsert = new DaoRes();
         final long dataId = executeInsert();
         if(dataId > 0) {
@@ -126,16 +127,17 @@ public class QueryInsert extends Query {
         return resInsert;
     }
 
-    public long executeInsert() {
+    public long executeInsert() throws SQLException {
         long key = 0;
+
         try {
 
-            final PreparedStatement prepareStatement = getConnection(auth).prepareStatement(getQuery(), Statement.RETURN_GENERATED_KEYS);
+            final PreparedStatement prepareStatement = getConnection().prepareStatement(getQuery(), Statement.RETURN_GENERATED_KEYS);
             final int affectedRows = prepareStatement.executeUpdate();
 
-            if(affectedRows > 0) {
+            if (affectedRows > 0) {
                 final ResultSet generatedKeys = prepareStatement.getGeneratedKeys();
-                if(generatedKeys.next()) {
+                if (generatedKeys.next()) {
                     key = generatedKeys.getInt(1);
                 }
                 generatedKeys.close();
@@ -143,9 +145,11 @@ public class QueryInsert extends Query {
 
             prepareStatement.close();
 
-        }catch(Exception e) {
+        }catch (final SQLException e) {
             setException(e);
+            throw e;
         }
+
         return key;
     }
 
@@ -155,7 +159,11 @@ public class QueryInsert extends Query {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                key[0] = executeInsert();
+                try {
+                    key[0] = executeInsert();
+                } catch (SQLException e) {
+                    setException(e);
+                }
             }
         };
 

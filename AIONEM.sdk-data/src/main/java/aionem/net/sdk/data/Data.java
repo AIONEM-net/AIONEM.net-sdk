@@ -18,6 +18,7 @@ import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Stream;
 
 
 @Log4j2
@@ -33,15 +34,15 @@ public class Data {
     }
 
     public Data(final JsonObject values) {
-        fromData(values);
+        init(values);
     }
 
     public Data(final HashMap<String, Object> values) {
-        fromData(values);
+        init(values);
     }
 
     public Data(final Object data) {
-        fromData(UtilsJson.toJsonObject(data));
+        init(UtilsJson.toJsonObject(data));
     }
 
     public <T> T getInstance() {
@@ -84,7 +85,8 @@ public class Data {
     }
 
     public <T> T init(final T dbInstance, final Data data) {
-        fromData(data);
+        this.values.clear();
+        this.values.putAll(data.values);
         try {
             init(dbInstance);
             return UtilsData.adaptTo(dbInstance, data.toJson());
@@ -95,7 +97,8 @@ public class Data {
     }
 
     public <T> T init(final T dbInstance, final HashMap<String, Object> data) {
-        fromData(data);
+        this.values.clear();
+        this.values.putAll(data);
         try {
             init(dbInstance);
             return UtilsData.adaptTo(dbInstance, UtilsJson.fromHashMap(data));
@@ -106,7 +109,8 @@ public class Data {
     }
 
     public <T> T init(final T dbInstance, final JsonObject data) {
-        fromData(UtilsJson.toHashMap(data));
+        this.values.clear();
+        this.values.putAll(UtilsJson.toHashMap(data));
         try {
             init(dbInstance);
             return UtilsData.adaptTo(dbInstance, data);
@@ -155,27 +159,6 @@ public class Data {
             log.error("\nERROR: toJson " + e +"\n");
         }
         return json;
-    }
-
-    public Data fromData(final Data data) {
-        if(data != null) {
-            fromData(data.getValues());
-        }
-        return this;
-    }
-
-    public Data fromData(final HashMap<String, Object> data) {
-        this.values.clear();
-        this.values.putAll(data);
-        return this;
-    }
-
-    public Data fromData(final JsonObject data) {
-        return init(getInstance(), data);
-    }
-
-    public Data fromData(final Object data) {
-        return init(getInstance(), UtilsJson.toJsonObject(data));
     }
 
     public Data put(final String key, final Object... values) {
@@ -237,8 +220,19 @@ public class Data {
         return getOrLast(keys, false);
     }
 
-    public String getOr(final String... keys) {
-        return getOrLast(keys, true);
+    public String getOr(final String key, final String... keys) {
+        final String[] keys2;
+        if(keys != null && keys.length > 0) {
+            keys2 = new String[keys.length + 1];
+            keys2[0] = key;
+            for(int i = 0; i < keys.length; i++) {
+                final String key1 = keys[i];
+                keys2[i + 1] = key1;
+            }
+        }else {
+            keys2 = new String[] {key};
+        }
+        return getOrLast(keys2, true);
     }
 
     public String getOrLast(final String[] keys, final boolean isOrLast) {

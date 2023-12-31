@@ -30,22 +30,6 @@ public @lombok.Data class DataAuth extends Data {
         this.code = UtilsText.notNull(code);
     }
 
-    @Override
-    public JsonObject toJson() {
-        return super.toJson(this);
-    }
-
-    @Override
-    public DataAuth fromData(final JsonObject data) {
-        super.init(this, data);
-        return this;
-    }
-
-    @Override
-    public String toString() {
-        return toJson().toString();
-    }
-
     public JsonObject getUserProfile() {
         return null;
     }

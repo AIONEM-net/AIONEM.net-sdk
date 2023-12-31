@@ -64,6 +64,10 @@ public class UtilsJson {
         try {
             if(object instanceof JsonObject) {
                 jsonObject = (JsonObject) object;
+            }else if(object instanceof Data) {
+                jsonObject = ((Data) object).toJson();
+            }else if(object instanceof HashMap) {
+                jsonObject = fromHashMap((HashMap<String, Object>) object);
             }else {
                 final String value = UtilsText.toString(object);
                 if(!UtilsText.isEmpty(value)) {
@@ -80,6 +84,8 @@ public class UtilsJson {
         try {
             if(object instanceof JsonArray) {
                 jsonArray = (JsonArray) object;
+            }else if(object instanceof Datas) {
+                jsonArray = ((Datas) object).toJson();
             }else if(object instanceof String) {
                 jsonArray = new Gson().fromJson((String) object, JsonArray.class);
             }else {

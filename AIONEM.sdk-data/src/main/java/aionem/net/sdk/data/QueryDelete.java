@@ -2,6 +2,7 @@ package aionem.net.sdk.data;
 
 import aionem.net.sdk.core.utils.UtilsText;
 
+import java.sql.SQLException;
 import java.sql.Statement;
 
 
@@ -301,18 +302,19 @@ public class QueryDelete extends QueryCondition {
         return getQuery();
     }
 
-    public boolean executeDeleteSuccess() {
+    public boolean executeDeleteSuccess() throws SQLException {
         return executeDelete() > 0;
     }
 
-    public long executeDelete() {
-        long count = 0;
+    public long executeDelete() throws SQLException {
+        long count = -1;
         try {
-            final Statement statement = getConnection(auth).createStatement();
+            final Statement statement = getConnection().createStatement();
             count = statement.executeUpdate(getQuery());
             statement.close();
-        }catch(Exception e) {
+        }catch (final SQLException e) {
             setException(e);
+            throw e;
         }
         return count;
     }

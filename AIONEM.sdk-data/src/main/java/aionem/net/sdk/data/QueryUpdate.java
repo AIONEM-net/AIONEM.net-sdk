@@ -3,6 +3,7 @@ package aionem.net.sdk.data;
 import aionem.net.sdk.core.utils.UtilsText;
 import com.google.gson.JsonObject;
 
+import java.sql.SQLException;
 import java.sql.Statement;
 
 
@@ -433,11 +434,11 @@ public class QueryUpdate extends QueryCondition {
         return getQuery();
     }
 
-    public boolean executeUpdateSuccess() {
+    public boolean executeUpdateSuccess() throws SQLException {
         return executeUpdate() > 0;
     }
 
-    public DaoRes executeUpdateRes() {
+    public DaoRes executeUpdateRes() throws SQLException {
         final DaoRes resUpdate = new DaoRes();
         final boolean isUpdated = executeUpdateSuccess();
         if(isUpdated) {
@@ -449,14 +450,15 @@ public class QueryUpdate extends QueryCondition {
         return resUpdate;
     }
 
-    public long executeUpdate() {
+    public long executeUpdate() throws SQLException {
         long count = 0;
         try {
-            final Statement statement = getConnection(auth).createStatement();
+            final Statement statement = getConnection().createStatement();
             count = statement.executeUpdate(getQuery());
             statement.close();
-        }catch(Exception e) {
+        }catch(final SQLException e) {
             setException(e);
+            throw e;
         }
         return count;
     }

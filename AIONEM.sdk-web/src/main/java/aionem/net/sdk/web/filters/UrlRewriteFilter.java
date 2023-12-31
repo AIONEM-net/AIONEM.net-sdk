@@ -1,6 +1,5 @@
 package aionem.net.sdk.web.filters;
 
-import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.web.AioWeb;
 import aionem.net.sdk.web.modals.PageManager;
 

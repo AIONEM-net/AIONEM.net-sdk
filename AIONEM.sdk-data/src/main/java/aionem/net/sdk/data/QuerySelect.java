@@ -7,8 +7,10 @@ import aionem.net.sdk.data.utils.UtilsData;
 import aionem.net.sdk.data.utils.UtilsJson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -552,29 +554,29 @@ public class QuerySelect extends QueryCondition {
         return getQuery();
     }
 
-    public Data executeData() {
+    public Data executeData() throws SQLException {
         return executeData(Data.class);
     }
 
-    public <T> T executeData(Class<T> type) {
+    public <T> T executeData(Class<T> type) throws SQLException {
         try {
             return UtilsData.adaptTo(type, executeJson());
-        }catch(Exception e) {
+        } catch (IllegalAccessException | NoSuchMethodException | InstantiationException | InvocationTargetException e) {
             setException(e);
             return null;
         }
     }
 
-    public JsonObject executeJson() {
+    public JsonObject executeJson() throws SQLException {
         final ArrayList<Data> listData = executeListData();
         return !listData.isEmpty() ? listData.get(0).toJson() : null;
     }
 
-    public boolean executeExists() {
+    public boolean executeExists() throws SQLException {
         return !executeListData().isEmpty();
     }
 
-    public JsonArray executeJsonArray() {
+    public JsonArray executeJsonArray() throws SQLException {
         final JsonArray arrayData = UtilsJson.jsonArray();
         for(final Data data : executeListData()) {
             arrayData.add(data.toJson());
@@ -582,7 +584,7 @@ public class QuerySelect extends QueryCondition {
         return arrayData;
     }
 
-    public Datas executeDatas() {
+    public Datas executeDatas() throws SQLException {
         final Datas datas = new Datas();
         for(final Data data : executeListData()) {
             datas.add(data);
@@ -590,7 +592,7 @@ public class QuerySelect extends QueryCondition {
         return datas;
     }
 
-    public <T> ArrayList<T> executeList(final Class<T> type) {
+    public <T> ArrayList<T> executeList(final Class<T> type) throws SQLException {
         final ArrayList<T> listData = new ArrayList<>();
         for(final Data data : executeListData()) {
             try {
@@ -602,11 +604,11 @@ public class QuerySelect extends QueryCondition {
         return listData;
     }
 
-    public ArrayList<Data> executeListData() {
+    public ArrayList<Data> executeListData() throws SQLException {
         final ArrayList<Data> listData = new ArrayList<>();
         try {
 
-            final Statement statement = getConnection(auth).createStatement();
+            final Statement statement = getConnection().createStatement();
             final ResultSet resultSet = statement.executeQuery(getQuery());
 
             long index = offset;
@@ -669,26 +671,27 @@ public class QuerySelect extends QueryCondition {
 
         }catch(Exception e) {
             setException(e);
+            throw e;
         }
         return listData;
     }
 
-    public long executeCount() {
+    public long executeCount() throws SQLException {
         return executeCount("COUNT(*)", true);
     }
 
-    public long executeCount(final String columnLabel) {
+    public long executeCount(final String columnLabel) throws SQLException {
         return executeCount(columnLabel, false);
     }
 
-    public long executeCount(String columnLabel, boolean addCount) {
+    public long executeCount(String columnLabel, boolean addCount) throws SQLException {
         long count = 0;
         if(addCount) {
             count();
         }
         try {
 
-            final Statement statement = getConnection(auth).createStatement();
+            final Statement statement = getConnection().createStatement();
             final ResultSet result = statement.executeQuery(getQuery());
 
             while(result.next()) {
@@ -698,21 +701,23 @@ public class QuerySelect extends QueryCondition {
             result.close();
             statement.close();
 
-        }catch(Exception e) {
+        }catch(SQLException e) {
             setException(e);
+            throw e;
         }
         return count;
     }
 
+    @SneakyThrows
     public long executeSum() {
         return executeCount("SUM(#)", false);
     }
 
-    public long executeSum(final String columnLabel) {
+    public long executeSum(final String columnLabel) throws SQLException {
         return executeSum(columnLabel, true);
     }
 
-    public long executeSum(String columnLabel, boolean addSum) {
+    public long executeSum(String columnLabel, boolean addSum) throws SQLException {
         long sum = 0;
         if(addSum) {
             String alias = "SUM(" + columnLabel + ")";
@@ -721,7 +726,7 @@ public class QuerySelect extends QueryCondition {
         }
         try {
 
-            final Statement statement = getConnection(auth).createStatement();
+            final Statement statement = getConnection().createStatement();
             final ResultSet result = statement.executeQuery(getQuery());
 
             while(result.next()) {
@@ -731,8 +736,9 @@ public class QuerySelect extends QueryCondition {
             result.close();
             statement.close();
 
-        }catch(Exception e) {
+        }catch(SQLException e) {
             setException(e);
+            throw e;
         }
         return sum;
     }

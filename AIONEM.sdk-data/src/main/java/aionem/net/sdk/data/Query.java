@@ -9,6 +9,7 @@ import oracle.ucp.jdbc.PoolDataSourceFactory;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 
@@ -25,6 +26,7 @@ public class Query {
     protected Data params = new Data();
     private String error = "";
     private Exception exception;
+    private boolean isConnected = false;
 
     protected Query(final String table) {
         this(new DataAuth(), table);
@@ -65,8 +67,17 @@ public class Query {
         return new QueryDelete(auth, table);
     }
 
-    public Connection getConnection() {
-        return getConnection(auth);
+    public Connection getConnection() throws SQLException {
+        final Connection connection = getConnection(auth);
+        try {
+            isConnected = connection != null && !connection.isClosed();
+        } catch (SQLException e) {
+            isConnected = false;
+        }
+        if(!isConnected) {
+            throw new SQLException();
+        }
+        return connection;
     }
 
     private static Connection connection = null;

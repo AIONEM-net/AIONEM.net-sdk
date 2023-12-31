@@ -11,6 +11,7 @@ import lombok.extern.log4j.Log4j2;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.*;
@@ -22,19 +23,19 @@ import java.util.regex.Pattern;
 public class UtilsData {
 
 
-    public static <T> T adaptTo(final Class<T> type, final JsonObject data) throws Exception {
+    public static <T> T adaptTo(final Class<T> type, final JsonObject data) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException {
         return adaptTo(type, (Object) data);
     }
-    public static <T> T adaptTo(final Class<T> type, final Object data) throws Exception {
+    public static <T> T adaptTo(final Class<T> type, final Object data) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
         if(type == null || data == null) return null;
         if(type.getSuperclass().isAssignableFrom(Data.class) || type.isAssignableFrom(Data.class)) {
             return type.getConstructor(data.getClass()).newInstance(data);
         }else {
             T t = type.getConstructor().newInstance();
 
-            if(type.getSuperclass().isAssignableFrom(HashMap.class) || type.isAssignableFrom(HashMap.class)) {
+            if(data instanceof HashMap) {
                 return adaptTo(t, UtilsJson.fromHashMap((HashMap<String, Object>) data));
-            }else if(type.getSuperclass().isAssignableFrom(JsonObject.class) || type.isAssignableFrom(JsonObject.class)) {
+            }else if(data instanceof JsonObject) {
                 return adaptTo(t, (JsonObject) data);
             }else {
                 return t;
@@ -42,7 +43,7 @@ public class UtilsData {
         }
     }
 
-    public static <T> T adaptTo(final T t, final JsonObject data) throws Exception {
+    public static <T> T adaptTo(final T t, final JsonObject data) throws IllegalAccessException {
         if(t == null || data == null) return null;
         for(final Field field : t.getClass().getDeclaredFields()) {
             final int modifiers = field.getModifiers();

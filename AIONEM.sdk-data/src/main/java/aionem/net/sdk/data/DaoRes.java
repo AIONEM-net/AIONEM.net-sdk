@@ -27,7 +27,7 @@ public @lombok.Data class DaoRes extends Data  {
     }
 
     public void setData(final Data data) {
-        fromData(data);
+        init(data);
     }
 
     public void setDataArray(final JsonArray jsonArray) {
@@ -53,7 +53,7 @@ public @lombok.Data class DaoRes extends Data  {
 
     public void setResponse(final String response) {
         this.response = response;
-        fromData(response);
+        init(response);
     }
 
     public void setError(final String error) {

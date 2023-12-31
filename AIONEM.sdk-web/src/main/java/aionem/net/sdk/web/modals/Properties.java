@@ -49,7 +49,6 @@ public @Getter class Properties {
 
     public Properties init(final AioWeb aioWeb) {
         if(data == null || data.isEmpty()) {
-            System.out.println(aioWeb.getRealPathPageCurrent(Properties.PROPERTIES_JSON));
             final File file = new File(aioWeb.getRealPathPageCurrent(Properties.PROPERTIES_JSON));
             init(file);
         }
