@@ -87,7 +87,7 @@ public class UtilsWeb {
                     }
                 }
 
-                InputStream inputStream = UtilsResource.getParentResourceAsStream(AioWeb.class, fileName, folder);
+                InputStream inputStream = UtilsResource.getParentResourceAsStream(fileName, folder);
                 if(inputStream != null) {
                     return inputStream;
                 }

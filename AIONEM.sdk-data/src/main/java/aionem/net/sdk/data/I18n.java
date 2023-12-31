@@ -65,7 +65,7 @@ public class I18n {
                 this.name = name;
                 this.locale = locale == null ? getLocal() : locale;
 
-                this.data = getData(this.getClass(), name);
+                this.data = getData(name);
 
                 this.resourceBundle = UtilsResource.getResourceBundle(name, this.locale, "/ui.config/i18n", "/i18n");
             }
@@ -129,7 +129,7 @@ public class I18n {
         return value;
     }
 
-    private static <T> Data getData(Class<T> tClass, String name) {
+    private static <T> Data getData(String name) {
         Data data = null;
 
         if(!name.endsWith(".json")) name += ".json";
@@ -139,9 +139,9 @@ public class I18n {
         }
         if(data == null || data.isEmpty()) {
 
-            String json = UtilsResource.readParentResource(tClass, name, "/ui.config/i18n", "/i18n");
+            String json = UtilsResource.readParentResource(name, "/ui.config/i18n", "/i18n");
             if(UtilsText.isEmpty(json)) {
-                json = UtilsResource.readResource(tClass, name, "/ui.config/i18n", "/i18n");
+                json = UtilsResource.readResource(name, "/ui.config/i18n", "/i18n");
             }
 
             if(!UtilsText.isEmpty(json)) {

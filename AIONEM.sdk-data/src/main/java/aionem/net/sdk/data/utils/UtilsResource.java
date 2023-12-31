@@ -12,19 +12,19 @@ import java.util.ResourceBundle;
 
 public class UtilsResource {
 
-    public static <T> ClassLoader getClassLoader(final Class<T> tClass) {
+    public static <T> ClassLoader getClassLoader() {
         return UtilsResource.class.getClassLoader();
     }
 
-    public static <T> URL getResource(final Class<T> tClass, final String name) {
-        return getClassLoader(tClass).getResource(name);
+    public static <T> URL getResource(final String name) {
+        return getClassLoader().getResource(name);
     }
 
-    public static <T> InputStream getResourceAsStream(final Class<T> tClass, final String name, String... folders) {
+    public static <T> InputStream getResourceAsStream(final String name, String... folders) {
         if(folders == null || folders.length == 0) folders = new String[]{""};
         for(final String folder : folders) {
             try {
-                final URL url = getResource(tClass, folder +(!folder.endsWith("/") && !name.startsWith("/") ? "/" : "")+  name);
+                final URL url = getResource(folder +(!folder.endsWith("/") && !name.startsWith("/") ? "/" : "")+  name);
                 if (url != null) return url.openStream();
             }catch (IOException ignore) {
             }
@@ -32,15 +32,15 @@ public class UtilsResource {
         return null;
     }
 
-    public static <T> InputStream getParentResourceAsStream(final Class<T> tClass, final String name, String... folders) {
+    public static <T> InputStream getParentResourceAsStream(final String name, String... folders) {
         if(folders == null || folders.length == 0) folders = new String[]{""};
         for(final String folder : folders) {
             try {
-                final File file = getResourceParent(tClass, folder +(!folder.endsWith("/") && !name.startsWith("/") ? "/" : "")+  name);
+                final File file = getResourceParent(folder +(!folder.endsWith("/") && !name.startsWith("/") ? "/" : "")+  name);
                 if(file != null && file.exists() && file.isFile()) {
                     return new FileInputStream(file);
                 }else {
-                    InputStream inputStream = getResourceAsStream(tClass, folder +(!folder.endsWith("/") && !name.startsWith("/") ? "/" : "")+  name);
+                    InputStream inputStream = getResourceAsStream(folder +(!folder.endsWith("/") && !name.startsWith("/") ? "/" : "")+  name);
                     if(inputStream != null) {
                         return inputStream;
                     }
@@ -51,26 +51,26 @@ public class UtilsResource {
         return null;
     }
 
-    public static <T> String readResource(final Class<T> tClass, final String name, String... folders) {
-        return UtilsText.toString(getResourceAsStream(tClass, name, folders));
+    public static <T> String readResource(final String name, String... folders) {
+        return UtilsText.toString(getResourceAsStream(name, folders));
     }
 
-    public static <T> String readParentResource(final Class<T> tClass, final String name, String... folders) {
-        return UtilsText.toString(getParentResourceAsStream(tClass, name, folders));
+    public static <T> String readParentResource(final String name, String... folders) {
+        return UtilsText.toString(getParentResourceAsStream(name, folders));
     }
 
-    public static <T> File getResourceFile(final Class<T> tClass, final String name) {
-        final URL resource = getResource(tClass, name);
+    public static <T> File getResourceFile(final String name) {
+        final URL resource = getResource(name);
         return resource != null ? new File(resource.getFile()) : null;
     }
 
-    public static <T> File getResourceParent(final Class<T> tClass) {
-        final File file = getResourceFile(tClass, "");
+    public static <T> File getResourceParent() {
+        final File file = getResourceFile("");
         return file != null ? file.getParentFile() : null;
     }
 
-    public static <T> File getResourceParent(final Class<T> tClass, final String name) {
-        final File file = getResourceParent(tClass);
+    public static <T> File getResourceParent(final String name) {
+        final File file = getResourceParent();
         return file != null ? new File(file, name) : null;
     }
 

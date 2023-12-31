@@ -51,7 +51,7 @@ public class ConfApp {
             this.resourceBundle = UtilsResource.getResourceBundle(name, "/ui.config", "/config");
         }
 
-        this.data = getData(this.getClass(), name);
+        this.data = getData(name);
 
         return this;
     }
@@ -96,14 +96,14 @@ public class ConfApp {
     }
 
     public Data getBaseData() {
-        return getData(this.getClass(), getBaseName());
+        return getData(getBaseName());
     }
 
     public ResourceBundle getBaseResourceBundle() {
         return UtilsResource.getResourceBundle(getBaseName(), "/ui.config/", "/ui.config/env/", "/config/", "/config/env/", "/");
     }
 
-    private static <T> Data getData(Class<T> tClass, String name) {
+    private static <T> Data getData(String name) {
         Data data = null;
 
         if(!name.endsWith(".json")) name += ".json";
@@ -113,9 +113,9 @@ public class ConfApp {
         }
         if(data == null || data.isEmpty()) {
 
-            String json = UtilsResource.readParentResource(tClass, name, "/ui.config/", "/ui.config/env/");
+            String json = UtilsResource.readParentResource(name, "/ui.config/", "/ui.config/env/");
             if(UtilsText.isEmpty(json)) {
-                json = UtilsResource.readResource(tClass, name, "/config/", "/config/env/", "/");
+                json = UtilsResource.readResource(name, "/config/", "/config/env/", "/");
             }
 
             if(!UtilsText.isEmpty(json)) {

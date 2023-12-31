@@ -121,7 +121,7 @@ public class Config {
         if(!name.endsWith(".json")) name += ".json";
 
         if(mapData.containsKey(name)) {
-            // data = mapData.get(name);
+            data = mapData.get(name);
         }
         if(data == null || data.isEmpty()) {
 
