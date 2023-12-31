@@ -1,6 +1,7 @@
 package aionem.net.sdk.web.map;
 
 import aionem.net.sdk.core.utils.UtilsText;
+import aionem.net.sdk.web.modals.ApiResponse;
 import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.ServletException;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
 
 
 @Log4j2
@@ -153,6 +155,9 @@ public class MapServlet extends HttpServlet {
             }catch(Exception e) {
                 throw new ServletException("Error invoking method", e);
             }
+        }else {
+            final ApiResponse apiResponse = ApiResponse.withError(HttpURLConnection.HTTP_NOT_FOUND, "Api not found");
+            apiResponse.setResponse(response);
         }
 
     }
