@@ -1,5 +1,6 @@
 package aionem.net.sdk.web.modals;
 
+import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.DaoRes;
 import aionem.net.sdk.data.Data;
 import aionem.net.sdk.data.Network;
@@ -263,8 +264,33 @@ public class PageManager {
             if(!pathSource.toFile().exists()) {
                 return false;
             }
-            
-            Files.move(pathSource, pathDestination, StandardCopyOption.REPLACE_EXISTING);
+
+            Files.walkFileTree(pathSource, new SimpleFileVisitor<>() {
+
+                @Override
+                public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
+                    if (!dir.equals(pathSource)) {
+                        return FileVisitResult.SKIP_SUBTREE;
+                    }
+                    final Path targetDir = pathDestination.resolve(pathSource.relativize(dir));
+                    Files.createDirectories(targetDir);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                    final Path targetFile = pathDestination.resolve(pathSource.relativize(file));
+                    Files.copy(file, targetFile, StandardCopyOption.REPLACE_EXISTING);
+                    file.toFile().delete();
+                    return FileVisitResult.CONTINUE;
+                }
+
+            });
+
+            final Page pageNew = new Page(aioWeb, pathNew + "/" + nameNew);
+
+            references(page, pageNew, true);
+
             return true;
         } catch (IOException e) {
             log.error("Error moving page {}", e.toString());
@@ -310,6 +336,10 @@ public class PageManager {
 
             });
 
+            final Page pageNew = new Page(aioWeb, pathNew + "/" + nameNew);
+
+            references(page, pageNew, pageNew, true);
+
             return true;
         } catch (IOException e) {
             log.error("Error copying page {}", e.toString());
@@ -329,7 +359,7 @@ public class PageManager {
         try {
             Files.walkFileTree(pathSection, new SimpleFileVisitor<>() {
                 @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                     if (Files.isRegularFile(file)) {
                         final int references = references(file, page.getPath(), pageNew.getPath(), update);
                         totalReferences[0] += references;
@@ -344,16 +374,33 @@ public class PageManager {
         return totalReferences[0];
     }
 
-    private int references(final Path pathFile, final String pathOld, final String pathNew, final boolean update) throws IOException {
-        final String content = new String(Files.readAllBytes(pathFile));
-        final String updatedContent = content
-                .replaceAll(Pattern.quote("ui.page"+ pathOld +"\""), Matcher.quoteReplacement("ui.page"+ pathNew +"\""))
-                .replaceAll(Pattern.quote("ui.page"+ pathOld +"'"), Matcher.quoteReplacement("ui.page"+ pathNew +"'"));
-        int references = (content.length() - updatedContent.length()) / (pathOld.length() - pathNew.length());
+    private int references(final Path pathFile, final String pathOld, final String pathNew, final boolean update) {
+        final int[] references = new int[]{-1};
+
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+
+                final String content = UtilsText.toString(pathFile);
+
+                final String updatedContent = content.replace("ui.page"+ pathOld,"ui.page"+ pathNew);
+
+                references[0] = (content.length() - updatedContent.length()) / (pathOld.length() - pathNew.length());
+
+                if(update) {
+                    UtilsWeb.writeFile(pathFile.toFile(), updatedContent);
+                }
+
+            }
+        };
+
         if(update) {
-            UtilsWeb.writeFile(pathFile.toFile(), updatedContent);
+            new Thread(runnable).start();
+        }else {
+            runnable.run();
         }
-        return Math.abs(references);
+
+        return Math.abs(references[0]);
     }
 
 }

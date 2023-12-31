@@ -133,6 +133,7 @@ public @Data class Page {
             this.path = aioWeb.getRelativePath(path);
             this.url = aioWeb.getContextPath(path);
         }
+
     }
 
     public String getName() {
