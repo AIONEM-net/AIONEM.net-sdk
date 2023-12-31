@@ -8,7 +8,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @EqualsAndHashCode(callSuper=false)
-public @lombok.Data class AuthData extends Data {
+public @lombok.Data class DataAuth extends Data {
 
     protected String id = "";
     protected String uid = "";
@@ -36,7 +36,7 @@ public @lombok.Data class AuthData extends Data {
     }
 
     @Override
-    public AuthData fromData(final JsonObject data) {
+    public DataAuth fromData(final JsonObject data) {
         super.init(this, data);
         return this;
     }

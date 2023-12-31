@@ -1,7 +1,7 @@
 package aionem.net.sdk.web.modals;
 
 import aionem.net.sdk.data.DaoRes;
-import aionem.net.sdk.data.AuthData;
+import aionem.net.sdk.data.DataAuth;
 import aionem.net.sdk.core.Env;
 import aionem.net.sdk.data.Datas;
 import aionem.net.sdk.data.utils.UtilsDB;
@@ -21,7 +21,7 @@ import java.util.Map;
 
 @Log4j2
 @Getter
-public class ApiResponse {
+public class ApiRes {
 
     private int status = 200;
     private boolean success = false;
@@ -34,45 +34,45 @@ public class ApiResponse {
     private long pages = -1;
     private long draw = -1;
     private String token = "";
-    private JsonObject jsonData = UtilsJson.jsonObject();
-    private Object data;
+    private JsonObject data = UtilsJson.jsonObject();
+    private JsonArray dataArray;
 
 
-    public ApiResponse() {
+    public ApiRes() {
 
     }
 
-    public ApiResponse(final int status, final boolean success, final String message, final String error, final long counts, final JsonObject jsonData) {
+    public ApiRes(final int status, final boolean success, final String message, final String error, final long counts, final JsonObject jsonData) {
         this.status = status;
         this.success = success;
         this.message = message;
         this.error = error;
         this.counts = counts;
-        this.jsonData = jsonData;
+        this.data = jsonData;
     }
 
-    public ApiResponse(final int status, final boolean success, final String message, final String error, final long counts, final Object data) {
+    public ApiRes(final int status, final boolean success, final String message, final String error, final long counts, final JsonArray jsonArray) {
         this.status = status;
         this.success = success;
         this.message = message;
         this.error = error;
         this.counts = counts;
-        this.data = data;
+        this.dataArray = jsonArray;
     }
 
-    public static ApiResponse withSuccess(final int status, final String message) {
-        return new ApiResponse(status, true, message, "", -1, UtilsJson.jsonObject());
+    public static ApiRes withSuccess(final int status, final String message) {
+        return new ApiRes(status, true, message, "", -1, UtilsJson.jsonObject());
     }
 
-    public static ApiResponse withError(final int status, final String error) {
-        return new ApiResponse(status, false, "", error, -1, UtilsJson.jsonObject());
+    public static ApiRes withError(final int status, final String error) {
+        return new ApiRes(status, false, "", error, -1, UtilsJson.jsonObject());
     }
 
-    public static ApiResponse noAction(final String action) {
+    public static ApiRes noAction(final String action) {
         if(!UtilsText.isEmpty(action)) {
-            return ApiResponse.withError(400, "wrong action");
+            return ApiRes.withError(400, "wrong action");
         }else {
-            return ApiResponse.withError(400, "action required");
+            return ApiRes.withError(400, "action required");
         }
     }
 
@@ -185,17 +185,24 @@ public class ApiResponse {
         this.token = token;
     }
 
-    public void setData(final Object data) {
-        this.data = data;
-        this.jsonData = UtilsJson.toJsonObject(data);
+    public void setData(final Data data) {
+        this.data = data.toJson();
     }
 
-    public void setDataArray(final JsonArray jsonArray) {
-        setDataArray(new Datas(jsonArray));
+    public void setData(final DataAuth dataAuth) {
+        this.data = dataAuth.getUserProfile();
+    }
+
+    public void setData(final JsonObject jsonObject) {
+        this.data = jsonObject;
     }
 
     public void setDataArray(final Datas datas) {
-        this.data = datas;
+        this.dataArray = datas.toJson();
+    }
+
+    public void setDataArray(final JsonArray jsonArray) {
+        this.dataArray = jsonArray;
     }
 
     @Override
@@ -227,28 +234,12 @@ public class ApiResponse {
                     UtilsJson.add(jsonResponse, UtilsDB.PAR_DRAW, draw);
                 }
                 if(!UtilsText.isEmpty(token)) {
-                    UtilsJson.add(jsonData, "token", token);
+                    UtilsJson.add(data, "token", token);
                 }
-                if(!jsonData.isEmpty()) {
-                    jsonResponse.add("data", jsonData);
-                }else if(data != null) {
-                    if(data instanceof AuthData) {
-                        jsonResponse.add("data", ((AuthData) data).getUserProfile());
-                    }else if(data instanceof DaoRes) {
-                        jsonResponse.add("data", ((DaoRes) data).toJson());
-                    }else if(data instanceof Data) {
-                        jsonResponse.add("data", ((Data) data).toJson());
-                    }else if(data instanceof Datas) {
-                        jsonResponse.add("data", ((Datas) data).toJson());
-                    }else if(data instanceof JsonObject) {
-                        jsonResponse.add("data", (JsonObject) data);
-                    }else if(data instanceof JsonArray) {
-                        jsonResponse.add("data", (JsonArray) data);
-                    }else if(data instanceof JsonElement) {
-                        jsonResponse.add("data", (JsonElement) data);
-                    }else {
-                        jsonResponse.add("data", UtilsJson.toJson(data));
-                    }
+                if(dataArray != null) {
+                    jsonResponse.add("data", dataArray);
+                }else {
+                    jsonResponse.add("data", data);
                 }
                 UtilsJson.add(jsonResponse, "message", message);
             }else {
@@ -294,22 +285,22 @@ public class ApiResponse {
 
     public void putData(final String key, final Object data) {
         try {
-            if(data instanceof AuthData) {
-                UtilsJson.add(jsonData, key, ((AuthData) data).getUserProfile());
+            if(data instanceof DataAuth) {
+                UtilsJson.add(this.data, key, ((DataAuth) data).getUserProfile());
             }else if(data instanceof DaoRes) {
-                UtilsJson.add(jsonData, key, ((DaoRes) data).toJson());
+                UtilsJson.add(this.data, key, ((DaoRes) data).toJson());
             }else if(data instanceof Data) {
-                UtilsJson.add(jsonData, key, ((Data) data).toJson());
+                UtilsJson.add(this.data, key, ((Data) data).toJson());
             }else if(data instanceof Datas) {
-                UtilsJson.add(jsonData, key, ((Datas) data).toJson());
+                UtilsJson.add(this.data, key, ((Datas) data).toJson());
             }else if(data instanceof JsonElement) {
-                UtilsJson.add(jsonData, key, data);
+                UtilsJson.add(this.data, key, data);
             }else {
                 final JsonObject value = UtilsJson.toJsonObject(data);
                 if(!value.isEmpty()) {
-                    UtilsJson.add(jsonData, key, value);
+                    UtilsJson.add(this.data, key, value);
                 }else {
-                    this.jsonData.addProperty(key, UtilsText.toString(data));
+                    this.data.addProperty(key, UtilsText.toString(data));
                 }
             }
         }catch(Exception e) {
@@ -328,7 +319,7 @@ public class ApiResponse {
 
     public Object getDataValue(final String key) {
         try {
-            return jsonData.get(key);
+            return data.get(key);
         }catch(Exception ignore) {
         }
         return null;

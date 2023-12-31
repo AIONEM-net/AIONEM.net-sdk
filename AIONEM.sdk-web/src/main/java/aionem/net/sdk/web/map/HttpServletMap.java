@@ -1,7 +1,7 @@
 package aionem.net.sdk.web.map;
 
 import aionem.net.sdk.core.utils.UtilsText;
-import aionem.net.sdk.web.modals.ApiResponse;
+import aionem.net.sdk.web.modals.ApiRes;
 import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.ServletException;
@@ -16,7 +16,7 @@ import java.net.HttpURLConnection;
 
 @Log4j2
 @WebServlet(urlPatterns = "/api/*")
-public class MapServlet extends HttpServlet {
+public class HttpServletMap extends HttpServlet {
 
     private String urlPattern = "";
 
@@ -55,38 +55,45 @@ public class MapServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doGet(req, resp);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        final ApiRes apiRes = ApiRes.withError(HttpURLConnection.HTTP_BAD_METHOD, "HTTP method GET is not supported by this API");
+        apiRes.setResponse(response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        final ApiRes apiRes = ApiRes.withError(HttpURLConnection.HTTP_BAD_METHOD, "HTTP method POST is not supported by this API");
+        apiRes.setResponse(response);
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPut(req, resp);
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        final ApiRes apiRes = ApiRes.withError(HttpURLConnection.HTTP_BAD_METHOD, "HTTP method PUT is not supported by this API");
+        apiRes.setResponse(response);
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doDelete(req, resp);
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        final ApiRes apiRes = ApiRes.withError(HttpURLConnection.HTTP_BAD_METHOD, "HTTP method DELETE is not supported by this API");
+        apiRes.setResponse(response);
     }
 
     @Override
-    protected void doHead(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doHead(req, resp);
+    protected void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        final ApiRes apiRes = ApiRes.withError(HttpURLConnection.HTTP_BAD_METHOD, "HTTP method HEAD is not supported by this API");
+        apiRes.setResponse(response);
     }
 
     @Override
-    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doOptions(req, resp);
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        final ApiRes apiRes = ApiRes.withError(HttpURLConnection.HTTP_BAD_METHOD, "HTTP method OPTIONS is not supported by this API");
+        apiRes.setResponse(response);
     }
 
     @Override
-    protected void doTrace(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doTrace(req, resp);
+    protected void doTrace(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        final ApiRes apiRes = ApiRes.withError(HttpURLConnection.HTTP_BAD_METHOD, "HTTP method TRACE is not supported by this API");
+        apiRes.setResponse(response);
     }
 
     @Override
@@ -100,49 +107,61 @@ public class MapServlet extends HttpServlet {
             if(method.isAnnotationPresent(GetMapping.class) && request.getMethod().equals("GET")) {
                 if(isHandleRequest(method, requestURI)) {
                     methodRequest = method;
+                    break;
                 }
             }else if(method.isAnnotationPresent(PostMapping.class) && request.getMethod().equals("POST")) {
                 if(isHandleRequest(method, requestURI)) {
                     methodRequest = method;
+                    break;
                 }
             }else if(method.isAnnotationPresent(PutMapping.class) && request.getMethod().equals("PUT")) {
                 if(isHandleRequest(method, requestURI)) {
                     methodRequest = method;
+                    break;
                 }
             }else if(method.isAnnotationPresent(DeleteMapping.class) && request.getMethod().equals("DELETE")) {
                 if(isHandleRequest(method, requestURI)) {
                     methodRequest = method;
+                    break;
                 }
             }else if(method.isAnnotationPresent(HeadMapping.class) && request.getMethod().equals("HEAD")) {
                 if(isHandleRequest(method, requestURI)) {
                     methodRequest = method;
+                    break;
                 }
             }else if(method.isAnnotationPresent(OptionsMapping.class) && request.getMethod().equals("OPTIONS")) {
                 if(isHandleRequest(method, requestURI)) {
                     methodRequest = method;
+                    break;
                 }
             }else if(method.isAnnotationPresent(TraceMapping.class) && request.getMethod().equals("TRACE")) {
                 if(isHandleRequest(method, requestURI)) {
                     methodRequest = method;
+                    break;
                 }
             }else {
 
-                if(methodRequest == null) {
-                    if(method.getName().equals("doGet") && request.getMethod().equals("GET")) {
-                        isHandleRequest(method, requestURI);
-                    }else if(method.getName().equals("doPost") && request.getMethod().equals("POST")) {
-                        isHandleRequest(method, requestURI);
-                    }else if(method.getName().equals("doPut") && request.getMethod().equals("PUT")) {
-                        isHandleRequest(method, requestURI);
-                    }else if(method.getName().equals("doDelete") && request.getMethod().equals("DELETE")) {
-                        isHandleRequest(method, requestURI);
-                    }else if(method.getName().equals("doHead") && request.getMethod().equals("HEAD")) {
-                        isHandleRequest(method, requestURI);
-                    }else if(method.getName().equals("doOptions") && request.getMethod().equals("OPTIONS")) {
-                        isHandleRequest(method, requestURI);
-                    }else if(method.getName().equals("doTrace") && request.getMethod().equals("TRACE")) {
-                        isHandleRequest(method, requestURI);
-                    }
+                if (method.getName().equals("doGet") && request.getMethod().equals("GET")) {
+                    methodRequest = method;
+                    break;
+                } else if (method.getName().equals("doPost") && request.getMethod().equals("POST")) {
+                    methodRequest = method;
+                    break;
+                } else if (method.getName().equals("doPut") && request.getMethod().equals("PUT")) {
+                    methodRequest = method;
+                    break;
+                } else if (method.getName().equals("doDelete") && request.getMethod().equals("DELETE")) {
+                    methodRequest = method;
+                    break;
+                } else if (method.getName().equals("doHead") && request.getMethod().equals("HEAD")) {
+                    methodRequest = method;
+                    break;
+                } else if (method.getName().equals("doOptions") && request.getMethod().equals("OPTIONS")) {
+                    methodRequest = method;
+                    break;
+                } else if (method.getName().equals("doTrace") && request.getMethod().equals("TRACE")) {
+                    methodRequest = method;
+                    break;
                 }
 
             }
@@ -153,11 +172,12 @@ public class MapServlet extends HttpServlet {
                 methodRequest.setAccessible(true);
                 methodRequest.invoke(this, request, response);
             }catch(Exception e) {
-                throw new ServletException("Error invoking method", e);
+                final ApiRes apiRes = ApiRes.withError(HttpURLConnection.HTTP_NOT_FOUND, "API error invoking method");
+                apiRes.setResponse(response);
             }
         }else {
-            final ApiResponse apiResponse = ApiResponse.withError(HttpURLConnection.HTTP_NOT_FOUND, "Api not found");
-            apiResponse.setResponse(response);
+            final ApiRes apiRes = ApiRes.withError(HttpURLConnection.HTTP_NOT_FOUND, "API not found");
+            apiRes.setResponse(response);
         }
 
     }

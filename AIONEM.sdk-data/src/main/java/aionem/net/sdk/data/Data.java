@@ -129,9 +129,9 @@ public class Data {
     }
 
     public <T> JsonObject toJson(final T dbInstance) {
-        final JsonObject data = UtilsJson.jsonObject();
+        final JsonObject json = UtilsJson.jsonObject();
         try {
-            if(dbInstance != null) {
+            if(dbInstance != null && !dbInstance.getClass().equals(Data.class)) {
                 for (Field field : dbInstance.getClass().getDeclaredFields()) {
                     final int modifiers = field.getModifiers();
                     final boolean isStatic = Modifier.isStatic(modifiers);
@@ -145,14 +145,16 @@ public class Data {
                         if (value == null) {
                             value = this.values.get(key);
                         }
-                        UtilsJson.add(data, key, value);
+                        UtilsJson.add(json, key, value);
                     }
                 }
+            }else {
+                return UtilsJson.fromHashMap(this.values);
             }
         }catch(Exception e) {
             log.error("\nERROR: toJson " + e +"\n");
         }
-        return data;
+        return json;
     }
 
     public Data fromData(final Data data) {

@@ -62,7 +62,7 @@ public class UtilsJson {
     public static JsonObject toJsonObject(final Object object) {
         JsonObject jsonObject = new JsonObject();
         try {
-            if(object instanceof JsonElement) {
+            if(object instanceof JsonObject) {
                 jsonObject = (JsonObject) object;
             }else {
                 final String value = UtilsText.toString(object);
@@ -78,7 +78,7 @@ public class UtilsJson {
     public static JsonArray toJsonArray(final Object object) {
         JsonArray jsonArray = new JsonArray();
         try {
-            if(object instanceof JsonElement) {
+            if(object instanceof JsonArray) {
                 jsonArray = (JsonArray) object;
             }else if(object instanceof String) {
                 jsonArray = new Gson().fromJson((String) object, JsonArray.class);
@@ -99,6 +99,7 @@ public class UtilsJson {
         }
         return values;
     }
+
     public static JsonObject fromHashMap(final HashMap<String, Object> values) {
         final JsonObject jsonObject = new JsonObject();
         if(values != null) {
@@ -153,10 +154,12 @@ public class UtilsJson {
     public static String getValue(final JsonElement json, final String path) {
         return getValue(json, path, String.class);
     }
+
     public static <T> T getValue(final JsonElement json, final String path, final T defaultValue) {
         if(defaultValue == null) return null;
         return (T) getValue(json, path, defaultValue.getClass());
     }
+
     public static <T> T getValue(final JsonElement json, final String path, final Class<T> type) {
         final JsonElement value = getJson(json, path);
         final String stringValue = value != null && !value.isJsonNull() ? (value.isJsonPrimitive() ? value.getAsString() : value.toString()) : null;
@@ -166,6 +169,7 @@ public class UtilsJson {
     public static JsonObject getJsonObject(final JsonElement json, final String path) {
         return getJsonObject(json, path, null);
     }
+
     public static JsonObject getJsonObject(final JsonElement json, final String path, final JsonObject defaultJsonObject) {
         final JsonElement value = getJson(json, path);
         return value != null && value.isJsonObject() ? value.getAsJsonObject() : defaultJsonObject;
@@ -174,6 +178,7 @@ public class UtilsJson {
     public static JsonArray getJsonArray(final JsonElement json, final String path) {
         return getJsonArray(json, path, null);
     }
+
     public static JsonArray getJsonArray(final JsonElement json, final String path, final JsonArray defaultJsonArray) {
         final JsonElement value = getJson(json, path);
         return value != null && value.isJsonArray() ? value.getAsJsonArray() : defaultJsonArray;

@@ -10,7 +10,7 @@ public class QueryDelete extends QueryCondition {
     public QueryDelete(final String table) {
         super(table);
     }
-    public QueryDelete(final AuthData auth, final String table) {
+    public QueryDelete(final DataAuth auth, final String table) {
         super(auth, table);
     }
 

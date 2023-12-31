@@ -11,7 +11,7 @@ public class QueryUpdate extends QueryCondition {
     public QueryUpdate(final String table) {
         super(table);
     }
-    public QueryUpdate(final AuthData auth, final String table) {
+    public QueryUpdate(final DataAuth auth, final String table) {
         super(auth, table);
     }
 

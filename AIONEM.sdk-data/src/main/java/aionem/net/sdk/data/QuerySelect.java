@@ -22,7 +22,7 @@ public class QuerySelect extends QueryCondition {
     public QuerySelect(final String table) {
         super(table);
     }
-    public QuerySelect(final AuthData auth, final String table) {
+    public QuerySelect(final DataAuth auth, final String table) {
         super(auth, table);
     }
 

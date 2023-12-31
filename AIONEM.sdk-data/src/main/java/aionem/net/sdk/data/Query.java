@@ -16,7 +16,7 @@ import java.util.ArrayList;
 @Getter
 public class Query {
 
-    protected final AuthData auth;
+    protected final DataAuth auth;
 
     protected String table = "``";
     protected final ArrayList<String> tables = new ArrayList<>();
@@ -27,9 +27,9 @@ public class Query {
     private Exception exception;
 
     protected Query(final String table) {
-        this(new AuthData(), table);
+        this(new DataAuth(), table);
     }
-    protected Query(final AuthData auth, final String table) {
+    protected Query(final DataAuth auth, final String table) {
         this.auth = auth;
         if(table != null) {
             this.table = "`"+table+"`";
@@ -40,28 +40,28 @@ public class Query {
     public static QueryInsert insert(final String table) {
         return new QueryInsert(table);
     }
-    public static QueryInsert insert(final AuthData auth, final String table) {
+    public static QueryInsert insert(final DataAuth auth, final String table) {
         return new QueryInsert(auth, table);
     }
 
     public static QueryUpdate update(final String table) {
         return new QueryUpdate(table);
     }
-    public static QueryUpdate update(final AuthData auth, final String table) {
+    public static QueryUpdate update(final DataAuth auth, final String table) {
         return new QueryUpdate(auth, table);
     }
 
     public static QuerySelect select(final String table) {
         return new QuerySelect(table);
     }
-    public static QuerySelect select(final AuthData auth, final String table) {
+    public static QuerySelect select(final DataAuth auth, final String table) {
         return new QuerySelect(auth, table);
     }
 
     public static QueryDelete delete(final String table) {
         return new QueryDelete(table);
     }
-    public static QueryDelete delete(final AuthData auth, final String table) {
+    public static QueryDelete delete(final DataAuth auth, final String table) {
         return new QueryDelete(auth, table);
     }
 
@@ -71,7 +71,7 @@ public class Query {
 
     private static Connection connection = null;
     private static PoolDataSource poolDataSource = null;
-    public static Connection getConnection(final AuthData auth) {
+    public static Connection getConnection(final DataAuth auth) {
         if(auth == null) {
             throw new NullPointerException("Auth is null");
         }

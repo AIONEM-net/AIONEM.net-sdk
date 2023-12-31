@@ -16,7 +16,7 @@ public class QueryInsert extends Query {
     public QueryInsert(final String table) {
         super(table);
     }
-    public QueryInsert(final AuthData auth, final String table) {
+    public QueryInsert(final DataAuth auth, final String table) {
         super(auth, table);
     }
 

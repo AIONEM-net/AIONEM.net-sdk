@@ -22,7 +22,7 @@ public class QueryCondition extends Query {
         super(table);
     }
 
-    protected QueryCondition(final AuthData auth, final String table) {
+    protected QueryCondition(final DataAuth auth, final String table) {
         super(auth, table);
     }
 
