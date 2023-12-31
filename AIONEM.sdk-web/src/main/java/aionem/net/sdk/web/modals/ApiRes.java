@@ -16,6 +16,7 @@ import lombok.extern.log4j.Log4j2;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.sql.SQLException;
 import java.util.Map;
 
 
@@ -136,8 +137,12 @@ public class ApiRes {
 
     public void setException(final Exception e) {
         this.exception = e;
-        if(Env.IS_DEBUG_EXCEPTION && e != null && UtilsText.isEmpty(error)) {
-            this.error = UtilsText.notEmpty(e.getMessage(), error);
+        if(e != null && UtilsText.isEmpty(error)) {
+            if(e instanceof SQLException) {
+                this.error = "Connection failed";
+            }else if(Env.IS_DEBUG_EXCEPTION) {
+                this.error = UtilsText.notEmpty(e.getMessage(), "Something went wrong");
+            }
         }
     }
 
@@ -245,7 +250,7 @@ public class ApiRes {
             }else {
                 UtilsJson.add(jsonResponse, "error", error);
                 if(Env.IS_DEBUG_EXCEPTION && exception != null) {
-                    final String eMessage = exception.getLocalizedMessage() +" : "+ exception.getStackTrace()[0].toString();
+                    final String eMessage = exception +" : "+ exception.getStackTrace()[0].toString();
                     UtilsJson.add(jsonResponse, "exception", eMessage);
                 }
             }

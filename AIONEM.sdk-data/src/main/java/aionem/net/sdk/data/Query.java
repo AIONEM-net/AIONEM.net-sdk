@@ -71,11 +71,12 @@ public class Query {
         final Connection connection = getConnection(auth);
         try {
             isConnected = connection != null && !connection.isClosed();
+            if(!isConnected) {
+                throw new SQLException();
+            }
         } catch (SQLException e) {
             isConnected = false;
-        }
-        if(!isConnected) {
-            throw new SQLException();
+            throw e;
         }
         return connection;
     }

@@ -8,6 +8,8 @@ import com.google.gson.JsonObject;
 import lombok.EqualsAndHashCode;
 import lombok.extern.log4j.Log4j2;
 
+import java.sql.SQLException;
+
 
 @Log4j2
 @EqualsAndHashCode(callSuper=false)
@@ -68,8 +70,12 @@ public @lombok.Data class DaoRes extends Data  {
     }
     public void setException(final Exception e) {
         this.exception = e;
-        if(Env.IS_DEBUG_EXCEPTION && e != null && UtilsText.isEmpty(error)) {
-            this.error = UtilsText.notEmpty(e.getMessage(), error);
+        if(e != null && UtilsText.isEmpty(error)) {
+            if(e instanceof SQLException) {
+                this.error = "Connection failed";
+            }else if(Env.IS_DEBUG_EXCEPTION) {
+                this.error = UtilsText.notEmpty(e.getMessage(), "Something went wrong");
+            }
         }
     }
 
