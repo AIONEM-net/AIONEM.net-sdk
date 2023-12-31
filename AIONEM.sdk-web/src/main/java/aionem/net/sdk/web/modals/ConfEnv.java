@@ -1,6 +1,5 @@
 package aionem.net.sdk.web.modals;
 
-
 import aionem.net.sdk.core.Env;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.web.AioWeb;
@@ -17,6 +16,7 @@ public class ConfEnv extends Config {
         if(confEnv == null) {
             confEnv = new ConfEnv(aioWeb);
 
+            Env.ENV = confEnv.getEnv();
             Env.IS_DEBUG = confEnv.isDebug();
             Env.IS_DEBUG_EXCEPTION = confEnv.isDebugException();
         }

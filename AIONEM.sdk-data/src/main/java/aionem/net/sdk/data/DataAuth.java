@@ -34,40 +34,4 @@ public @lombok.Data class DataAuth extends Data {
         return null;
     }
 
-    public boolean isUsePoolDataSource() {
-        return false;
-    }
-
-    public String getDBDriver() {
-        return ConfApp.getInstance().getOr("db_driver", "spring.datasource.driver-class-name");
-    }
-
-    public String getDBConnection() {
-        return ConfApp.getInstance().getOr("db_connection", "");
-    }
-
-    public String getDBUrl() {
-        return ConfApp.getInstance().get("db_url", "spring.datasource.url", getDBHost() +":"+ getDBPort() +"/"+ getDBName());
-    }
-
-    public String getDBHost() {
-        return ConfApp.getInstance().get("db_host", "localhost");
-    }
-
-    public String getDBPort() {
-        return ConfApp.getInstance().get("db_port", "3306");
-    }
-
-    public String getDBName() {
-        return ConfApp.getInstance().getOr("db_name", "spring.datasource.name");
-    }
-
-    public String getDBUser() {
-        return ConfApp.getInstance().getOr("db_user", "spring.datasource.username");
-    }
-
-    public String getDBPassword() {
-        return ConfApp.getInstance().getOr("db_password", "spring.datasource.password");
-    }
-
 }

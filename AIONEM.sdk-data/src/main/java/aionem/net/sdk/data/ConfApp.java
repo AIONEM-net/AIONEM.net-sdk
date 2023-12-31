@@ -1,5 +1,6 @@
 package aionem.net.sdk.data;
 
+import aionem.net.sdk.core.Env;
 import aionem.net.sdk.core.utils.UtilsConverter;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsResource;
@@ -37,7 +38,7 @@ public class ConfApp {
         if(resourceBundleBase != null && resourceBundleBase.containsKey("env")) {
             env = UtilsConverter.convert(resourceBundleBase.getString("env"), env);
         }
-        return init(env);
+        return init(UtilsText.notEmpty(Env.ENV, env));
     }
 
     public ConfApp init(final String env) {
@@ -65,9 +66,9 @@ public class ConfApp {
         return !UtilsText.isEmpty(value) ? value : get(key2);
     }
 
-    public String get(final String key1, final String key2, final String defaultValue) {
+    public <T> T get(final String key1, final String key2, final T defaultValue) {
         final String value = get(key1);
-        return UtilsText.notEmpty(!UtilsText.isEmpty(value) ? value : get(key2, defaultValue), defaultValue);
+        return UtilsConverter.convert(has(key1) ? value : null, get(key2, defaultValue));
     }
 
     public <T> T get(final String key, final T defaultValue) {
@@ -89,6 +90,27 @@ public class ConfApp {
             }
         }
         return defaultValue;
+    }
+
+    public boolean has(final String key) {
+        if(data.has(key)) {
+            return true;
+        }else {
+            final Data baseData = getBaseData();
+            if(baseData.has(key)) {
+                return true;
+            }else {
+                if(resourceBundle != null && resourceBundle.containsKey(key)) {
+                    return true;
+                }else {
+                    final ResourceBundle resourceBundleBase = getBaseResourceBundle();
+                    if(resourceBundleBase != null && resourceBundleBase.containsKey(key)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public String getBaseName() {
@@ -130,6 +152,46 @@ public class ConfApp {
     @Override
     public String toString() {
         return data.toString();
+    }
+
+    public static boolean isUsePoolDataSource() {
+        return ConfApp.getInstance().get("db_use_pool_data_source", "spring.", false);
+    }
+
+    public static String getDBDriver() {
+        return ConfApp.getInstance().get("db_driver", "spring.datasource.driver-class-name", "com.mysql.cj.jdbc.Driver");
+    }
+
+    public static String getDBConnection() {
+        return ConfApp.getInstance().get("db_connection", "jdbc:mysql");
+    }
+
+    public static String getDBUrl() {
+        return ConfApp.getInstance().get("db_url", "spring.datasource.url", getDBHost() +":"+ getDBPort() +"/"+ getDBName());
+    }
+
+    public static String getDBConnectionUrl() {
+        return ConfApp.getDBConnection() + "://"+ ConfApp.getDBUrl();
+    }
+
+    public static String getDBHost() {
+        return ConfApp.getInstance().get("db_host", "localhost");
+    }
+
+    public static String getDBPort() {
+        return ConfApp.getInstance().get("db_port", "3306");
+    }
+
+    public static String getDBName() {
+        return ConfApp.getInstance().get("db_name", "spring.datasource.name", "");
+    }
+
+    public static String getDBUser() {
+        return ConfApp.getInstance().get("db_user", "spring.datasource.username", "root");
+    }
+
+    public static String getDBPassword() {
+        return ConfApp.getInstance().get("db_password", "spring.datasource.password", "");
     }
 
 }

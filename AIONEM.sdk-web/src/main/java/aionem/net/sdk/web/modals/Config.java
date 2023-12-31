@@ -1,5 +1,6 @@
 package aionem.net.sdk.web.modals;
 
+import aionem.net.sdk.core.Env;
 import aionem.net.sdk.core.utils.UtilsConverter;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.Data;
@@ -58,12 +59,14 @@ public class Config {
     }
 
     public String getEnv() {
-        if(aioWeb == null) return "";
-        final String envRequest = aioWeb.getHeader("A-Env");
-        final String envWebApp = aioWeb.getInitParameter("env");
-        String env = UtilsText.notEmpty(envRequest, envWebApp);
-        if(env.equalsIgnoreCase("${env}")) env = ConfEnv.ENV_LOCAL;
-        return env.toLowerCase();
+        String env = "";
+        if(aioWeb != null) {
+            final String envRequest = aioWeb.getHeader("A-Env");
+            final String envWebApp = aioWeb.getInitParameter("env");
+            env = UtilsText.notEmpty(envRequest, envWebApp);
+            if (env.equalsIgnoreCase("${env}")) env = ConfEnv.ENV_LOCAL;
+        }
+        return UtilsText.notEmpty(env, Env.ENV).toLowerCase();
     }
 
     public String get(final String key) {

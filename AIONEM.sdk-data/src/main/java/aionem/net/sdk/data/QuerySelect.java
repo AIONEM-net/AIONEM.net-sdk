@@ -7,7 +7,6 @@ import aionem.net.sdk.data.utils.UtilsData;
 import aionem.net.sdk.data.utils.UtilsJson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 
 import java.lang.reflect.InvocationTargetException;
@@ -23,9 +22,6 @@ public class QuerySelect extends QueryCondition {
 
     public QuerySelect(final String table) {
         super(table);
-    }
-    public QuerySelect(final DataAuth auth, final String table) {
-        super(auth, table);
     }
 
 

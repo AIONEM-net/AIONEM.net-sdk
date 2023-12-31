@@ -17,8 +17,6 @@ import java.util.ArrayList;
 @Getter
 public class Query {
 
-    protected final DataAuth auth;
-
     protected String table = "``";
     protected final ArrayList<String> tables = new ArrayList<>();
     protected final ArrayList<QueryColumn> columns1 = new ArrayList<>();
@@ -29,10 +27,6 @@ public class Query {
     private boolean isConnected = false;
 
     protected Query(final String table) {
-        this(new DataAuth(), table);
-    }
-    protected Query(final DataAuth auth, final String table) {
-        this.auth = auth;
         if(table != null) {
             this.table = "`"+table+"`";
             this.tables.add(this.table);
@@ -42,33 +36,21 @@ public class Query {
     public static QueryInsert insert(final String table) {
         return new QueryInsert(table);
     }
-    public static QueryInsert insert(final DataAuth auth, final String table) {
-        return new QueryInsert(auth, table);
-    }
 
     public static QueryUpdate update(final String table) {
         return new QueryUpdate(table);
-    }
-    public static QueryUpdate update(final DataAuth auth, final String table) {
-        return new QueryUpdate(auth, table);
     }
 
     public static QuerySelect select(final String table) {
         return new QuerySelect(table);
     }
-    public static QuerySelect select(final DataAuth auth, final String table) {
-        return new QuerySelect(auth, table);
-    }
 
     public static QueryDelete delete(final String table) {
         return new QueryDelete(table);
     }
-    public static QueryDelete delete(final DataAuth auth, final String table) {
-        return new QueryDelete(auth, table);
-    }
 
     public Connection getConnection() throws SQLException {
-        final Connection connection = getConnection(auth);
+        final Connection connection = getDbConnection();
         try {
             isConnected = connection != null && !connection.isClosed();
             if(!isConnected) {
@@ -83,18 +65,15 @@ public class Query {
 
     private static Connection connection = null;
     private static PoolDataSource poolDataSource = null;
-    public static Connection getConnection(final DataAuth auth) {
-        if(auth == null) {
-            throw new NullPointerException("Auth is null");
-        }
+    public static Connection getDbConnection() {
         try {
 
-            if(auth.isUsePoolDataSource() && poolDataSource == null) {
+            if(ConfApp.isUsePoolDataSource() && poolDataSource == null) {
                 poolDataSource = PoolDataSourceFactory.getPoolDataSource();
                 poolDataSource.setConnectionFactoryClassName("com.mysql.cj.jdbc.MysqlDataSource");
-                poolDataSource.setURL(auth.getDBConnection() + "://"+ auth.getDBUrl());
-                poolDataSource.setUser(auth.getDBUser());
-                poolDataSource.setPassword(auth.getPassword());
+                poolDataSource.setURL(ConfApp.getDBConnectionUrl());
+                poolDataSource.setUser(ConfApp.getDBUser());
+                poolDataSource.setPassword(ConfApp.getDBPassword());
                 poolDataSource.setInitialPoolSize(1);
                 poolDataSource.setMinPoolSize(1);
                 poolDataSource.setMaxPoolSize(1000);
@@ -102,12 +81,12 @@ public class Query {
             }
 
             if(connection == null || connection.isClosed()) {
-                Class.forName(auth.getDBDriver());
-                connection = DriverManager.getConnection(auth.getDBConnection() + "://"+ auth.getDBUrl(), auth.getDBUser(), auth.getDBPassword());
+                Class.forName(ConfApp.getDBDriver());
+                connection = DriverManager.getConnection(ConfApp.getDBConnectionUrl(), ConfApp.getDBUser(), ConfApp.getDBPassword());
             }
 
         }catch(Exception e) {
-            log.error("\nERROR: DB CONNECTION - Open ::" + e +"\n");
+            log.error("\n"+ e +" :: " + e.getStackTrace()[0] +"\n");
         }
         return connection;
     }
