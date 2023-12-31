@@ -59,8 +59,6 @@ public @Getter abstract class Component {
             properties = new Properties(aioWeb);
         }
 
-        System.out.println(properties.size() +" == "+ this.properties.size() +" : "+ instance);
-
         if(instance != null && !properties.isEmpty() && !properties.equals(this.properties)) {
 
             for(final Field field : instance.getClass().getDeclaredFields()) {
