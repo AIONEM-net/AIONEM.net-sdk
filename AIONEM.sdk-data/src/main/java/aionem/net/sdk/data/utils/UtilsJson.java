@@ -9,6 +9,7 @@ import com.google.gson.*;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,7 +75,7 @@ public class UtilsJson {
                     jsonObject = new Gson().fromJson(value, JsonObject.class);
                 }
             }
-        }catch(Exception ignore) {
+        }catch(final Exception ignore) {
         }
         return jsonObject != null && !jsonObject.isJsonNull() ? jsonObject : new JsonObject();
     }

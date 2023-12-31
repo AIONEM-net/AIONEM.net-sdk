@@ -13,10 +13,10 @@ public class ConfApp {
 
     private static final HashMap<String, Data> mapData = new HashMap<>();
 
-    @Getter
-    private String name = "application";
+    private final String name = "application";
     @Getter
     private String env = "";
+    @Getter
     private Data data = new Data();
     private ResourceBundle resourceBundle;
 
@@ -28,22 +28,22 @@ public class ConfApp {
         return confApp;
     }
 
-    public ConfApp() {
-
+    private ConfApp() {
+        init();
     }
 
-    public ConfApp(final String name) {
-        init(name, env);
+    public ConfApp init() {
+        final ResourceBundle resourceBundleBase = getBaseResourceBundle();
+        if(resourceBundleBase != null && resourceBundleBase.containsKey("env")) {
+            env = UtilsConverter.convert(resourceBundleBase.getString("env"), env);
+        }
+        return init(env);
     }
 
-    public ConfApp(final String name, final String env) {
-        init(name, env);
-    }
-
-    public void init(String name, final String env) {
-        this.name = name;
+    public ConfApp init(final String env) {
         this.env = env;
 
+        String name = this.name;
         if(!UtilsText.isEmpty(env)) {
             name = "/"+ env +"/"+ name;
             this.resourceBundle = UtilsResource.getResourceBundle(name, "/ui.config/env", "/config/env");
@@ -51,7 +51,9 @@ public class ConfApp {
             this.resourceBundle = UtilsResource.getResourceBundle(name, "/ui.config", "/config");
         }
 
-        this.data = getData(this.getClass(), !name.endsWith(".json") ? name + ".json" : name);
+        this.data = getData(this.getClass(), name);
+
+        return this;
     }
 
     public String get(final String key) {
@@ -72,9 +74,9 @@ public class ConfApp {
         if(data.has(key)) {
             return data.get(key, defaultValue);
         }else {
-            final ConfApp confBase = getBaseConfig();
-            if(confBase.data.has(key)) {
-                return getBaseConfig().get(key, defaultValue);
+            final Data baseData = getBaseData();
+            if(baseData.has(key)) {
+                return baseData.get(key, defaultValue);
             }else {
                 if(resourceBundle != null && resourceBundle.containsKey(key)) {
                     return UtilsConverter.convert(resourceBundle.getString(key), defaultValue);
@@ -90,37 +92,44 @@ public class ConfApp {
     }
 
     public String getBaseName() {
-        String name = this.name;
-        if(!name.endsWith(".json")) name += ".json";
-        if(name.contains("/")) name = name.substring(name.indexOf("/"));
         return name;
     }
 
-    public ConfApp getBaseConfig() {
-        final ConfApp dataConf = new ConfApp();
-        dataConf.data = getData(this.getClass(), getBaseName());
-        return dataConf;
+    public Data getBaseData() {
+        return getData(this.getClass(), getBaseName());
     }
 
     public ResourceBundle getBaseResourceBundle() {
-        return UtilsResource.getResourceBundle(getBaseName(), "/ui.config", "/ui.config/env", "/config", "/config/env");
+        return UtilsResource.getResourceBundle(getBaseName(), "/ui.config/", "/ui.config/env/", "/config/", "/config/env/", "/");
     }
 
-    private static <T> Data getData(Class<T> tClass, final String name) {
+    private static <T> Data getData(Class<T> tClass, String name) {
         Data data = null;
-        if(!mapData.containsKey(name) || mapData.get(name) == null) {
 
-            String json = UtilsResource.readParentResource(tClass, "/ui.config", "/config");
+        if(!name.endsWith(".json")) name += ".json";
+
+        if(mapData.containsKey(name)) {
+            data = mapData.get(name);
+        }
+        if(data == null || data.isEmpty()) {
+
+            String json = UtilsResource.readParentResource(tClass, name, "/ui.config/", "/ui.config/env/");
+            if(UtilsText.isEmpty(json)) {
+                json = UtilsResource.readResource(tClass, name, "/config/", "/config/env/", "/");
+            }
 
             if(!UtilsText.isEmpty(json)) {
                 data = new Data(json);
                 mapData.put(name, data);
             }
-
-        }else if(mapData.containsKey(name)) {
-            data = mapData.get(name);
         }
+
         return data != null ? data : new Data();
+    }
+
+    @Override
+    public String toString() {
+        return data.toString();
     }
 
 }

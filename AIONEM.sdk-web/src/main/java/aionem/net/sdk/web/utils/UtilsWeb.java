@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -16,31 +17,31 @@ import java.util.ResourceBundle;
 public class UtilsWeb {
 
     public static String readFileResource(final AioWeb aioWeb, final String fileName) {
-        return readFile(aioWeb, "/WEB-INF/classes/", "/", fileName);
+        return readFile(aioWeb, fileName, "/WEB-INF/classes/", "/");
     }
 
     public static String readFileWebInf(final AioWeb aioWeb, final String fileName) {
-        return readFile(aioWeb, "/WEB-INF/", "/", fileName);
+        return readFile(aioWeb, fileName, "/WEB-INF/", "/");
     }
 
     public static String readFileConfig(final AioWeb aioWeb, final String fileName) {
-        return readFile(aioWeb, "/WEB-INF/ui.config/", "/config/", fileName);
+        return readFile(aioWeb, fileName, "/WEB-INF/ui.config/", "/ui.config/", "/config/");
     }
 
     public static String readFileEnv(final AioWeb aioWeb, final String fileName) {
-        return readFile(aioWeb, "/WEB-INF/ui.config/env/", "/config/env/", fileName);
+        return readFile(aioWeb, fileName, "/WEB-INF/ui.config/env/", "/ui.config/env/", "/config/env/");
     }
 
     public static String readFileI18n(final AioWeb aioWeb, final String fileName) {
-        return readFile(aioWeb, "/WEB-INF/ui.config/i18n/", "/config/i18n/", fileName);
+        return readFile(aioWeb, fileName, "/WEB-INF/ui.config/i18n/", "/ui.config/i18n/", "/config/i18n/");
     }
 
     public static String readFileEtc(final AioWeb aioWeb, final String fileName) {
-        return readFile(aioWeb, "/WEB-INF/ui.app/etc/", "/etc/", fileName);
+        return readFile(aioWeb, fileName, "/WEB-INF/ui.app/etc/", "/ui.apps/etc/", "/etc/");
     }
 
     public static String readFileTemplateEtc(final AioWeb aioWeb, final String fileName) {
-        return readFile(aioWeb, "/WEB-INF/ui.template/etc/", "/etc/", fileName);
+        return readFile(aioWeb, fileName, "/WEB-INF/ui.template/etc/", "/ui.template/etc/", "/etc/");
     }
 
     public static ResourceBundle getResourceBundleConfig(final String fileName) {
@@ -63,8 +64,8 @@ public class UtilsWeb {
         return UtilsResource.getResourceBundle("/etc/" + fileName);
     }
 
-    public static String readFile(final AioWeb aioWeb, final String folder1, final String folder2, final String fileName) {
-        final InputStream inputStream = readStream(aioWeb, folder1, folder2, fileName);
+    public static String readFile(final AioWeb aioWeb, final String fileName, final String... folders) {
+        final InputStream inputStream = readStream(aioWeb, fileName, folders);
         if(inputStream != null) {
             return UtilsText.toString(inputStream);
         }else  {
@@ -72,28 +73,28 @@ public class UtilsWeb {
         }
     }
 
-    public static InputStream readStream(AioWeb aioWeb, final String folder1, final String folder2, final String fileName) {
+    public static InputStream readStream(AioWeb aioWeb, final String fileName, String... folders) {
         try {
-            if(aioWeb != null) {
-                final File file = new File(aioWeb.getRealPathRoot(folder1 + fileName));
-                if(file.exists() && !file.isDirectory()) {
-                    return new FileInputStream(file);
-                }
-            }
 
-            if(aioWeb == null) aioWeb = new AioWeb();
-            InputStream inputStream = aioWeb.getResourceAsStream(folder1 + fileName);
-            if(inputStream != null) {
-                return inputStream;
-            }else {
-                inputStream = aioWeb.getResourceAsStream(folder2 + fileName);
+            if(folders == null || folders.length == 0) folders = new String[]{""};
+
+            for(final String folder : folders) {
+
+                if(aioWeb != null) {
+                    File file = new File(aioWeb.getRealPathRoot(folder + fileName));
+                    if (file.exists() && file.isFile()) {
+                        return new FileInputStream(file);
+                    }
+                }
+
+                InputStream inputStream = UtilsResource.getParentResourceAsStream(AioWeb.class, fileName, folder);
                 if(inputStream != null) {
                     return inputStream;
                 }
             }
 
         }catch(Exception e) {
-            log.error("\nERROR: - readFile ::" + e + folder1 + fileName +"\n");
+            log.error("\nERROR: - readFile ::" + e + Arrays.toString(folders) + fileName +"\n");
         }
         return null;
     }

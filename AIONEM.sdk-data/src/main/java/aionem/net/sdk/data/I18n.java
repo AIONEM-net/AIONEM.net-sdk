@@ -5,6 +5,7 @@ import aionem.net.sdk.data.utils.UtilsResource;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -12,63 +13,61 @@ import java.util.ResourceBundle;
 @Log4j2
 public class I18n {
 
-    public static final String DEFAULT_LANGUAGE = "en";
+    private static final HashMap<String, Data> mapData = new HashMap<>();
 
     @Getter
-    private String baseName;
+    private String name = "en";
     @Getter
-    private Data data;
-
+    private Data data = new Data();
     private ResourceBundle resourceBundle;
     private Locale locale;
 
     public I18n() {
-        init("");
+        init(name);
     }
 
-    public I18n(final String baseName) {
-        init(baseName);
+    public I18n(final String name) {
+        init(name);
     }
 
     public I18n(final Locale locale) {
         init(locale);
     }
 
-    public I18n(final String baseName, final Locale locale) {
-        init(baseName, locale);
+    public I18n(final String name, final Locale locale) {
+        init(name, locale);
     }
 
-    public I18n(final String baseName, final I18n I18n1) {
-        init(baseName, I18n1);
+    public I18n(final String name, final I18n I18n1) {
+        init(name, I18n1);
     }
 
-    public I18n init(final String baseName) {
-        return init(baseName, locale);
+    public I18n init(final String name) {
+        return init(name, locale);
     }
 
     public I18n init(final Locale locale) {
-        return init(baseName, locale);
+        return init(name, locale);
     }
 
-    public I18n init(final String baseName, final I18n I18n1) {
-        return init(baseName, I18n1.getLocal());
+    public I18n init(final String name, final I18n I18n1) {
+        return init(name, I18n1.getLocal());
     }
 
-    public I18n init(String baseName, final Locale locale) {
+    public I18n init(String name, final Locale locale) {
         try {
 
-            if(UtilsText.isEmpty(baseName)) {
-                baseName = locale != null ? locale.getLanguage() : DEFAULT_LANGUAGE;
+            if(UtilsText.isEmpty(name)) {
+                name = locale != null ? locale.getLanguage() : this.name;
             }
 
-            if(!baseName.equals(this.baseName)) {
-                this.baseName = baseName;
+            if(!name.equals(this.name)) {
+                this.name = name;
                 this.locale = locale == null ? getLocal() : locale;
 
-                final String json = UtilsResource.readParentResource(this.getClass(), baseName + ".json", "/ui.config/i18n", "/i18n");
-                this.data = new Data(json);
+                this.data = getData(this.getClass(), name);
 
-                this.resourceBundle = UtilsResource.getResourceBundle(baseName, this.locale, "/ui.config/i18n", "/i18n");
+                this.resourceBundle = UtilsResource.getResourceBundle(name, this.locale, "/ui.config/i18n", "/i18n");
             }
 
         }catch(Exception e) {
@@ -81,10 +80,6 @@ public class I18n {
         return get(key, key);
     }
 
-    public String get(final String key, final String defaultValue) {
-        return get(key, defaultValue, true);
-    }
-
     public String get(final String key1, final String key2, final int size) {
         if(size == 1) {
             return get(key1);
@@ -93,11 +88,7 @@ public class I18n {
         }
     }
 
-    public String get(final String key, final boolean isI18n1) {
-        return get(key, key, isI18n1);
-    }
-
-    public String get(final String key, final String defaultValue, final boolean isI18n1) {
+    public String get(final String key, final String defaultValue) {
         if(UtilsText.isEmpty(key)) return UtilsText.notEmpty(defaultValue, "");
 
         String value = "";
@@ -138,11 +129,40 @@ public class I18n {
         return value;
     }
 
+    private static <T> Data getData(Class<T> tClass, String name) {
+        Data data = null;
+
+        if(!name.endsWith(".json")) name += ".json";
+
+        if(mapData.containsKey(name)) {
+            data = mapData.get(name);
+        }
+        if(data == null || data.isEmpty()) {
+
+            String json = UtilsResource.readParentResource(tClass, name, "/ui.config/i18n", "/i18n");
+            if(UtilsText.isEmpty(json)) {
+                json = UtilsResource.readResource(tClass, name, "/ui.config/i18n", "/i18n");
+            }
+
+            if(!UtilsText.isEmpty(json)) {
+                data = new Data(json);
+                mapData.put(name, data);
+            }
+        }
+
+        return data != null ? data : new Data();
+    }
+    
     public Locale getLocal() {
         if(locale == null) {
             locale = Locale.getDefault();
         }
         return locale;
+    }
+
+    @Override
+    public String toString() {
+        return data.toString();
     }
 
 }

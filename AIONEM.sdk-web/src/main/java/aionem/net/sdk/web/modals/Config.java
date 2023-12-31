@@ -3,10 +3,12 @@ package aionem.net.sdk.web.modals;
 import aionem.net.sdk.core.utils.UtilsConverter;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.Data;
+import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.AioWeb;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.Getter;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
@@ -22,7 +24,7 @@ public class Config {
     protected AioWeb aioWeb;
 
     public Config() {
-
+        init(aioWeb, name);
     }
 
     public Config(final AioWeb aioWeb) {
@@ -52,12 +54,12 @@ public class Config {
             }
         }
 
-        this.data = getData(aioWeb, !name.endsWith(".json") ? name + ".json" : name);
+        this.data = getData(name);
     }
 
     public String getEnv() {
         if(aioWeb == null) return "";
-        final String envRequest = aioWeb.getRequest().getHeader("A-Env");
+        final String envRequest = aioWeb.getHeader("A-Env");
         final String envWebApp = aioWeb.getInitParameter("env");
         String env = UtilsText.notEmpty(envRequest, envWebApp);
         if(env.equalsIgnoreCase("${env}")) env = ConfEnv.ENV_LOCAL;
@@ -77,9 +79,9 @@ public class Config {
         if(data.has(key)) {
             return data.get(key, defaultValue);
         }else {
-            final Config configBase = getBaseConfig();
-            if(configBase.data.has(key)) {
-                return getBaseConfig().get(key, defaultValue);
+            final Data baseData = getBaseData();
+            if(baseData.has(key)) {
+                return baseData.get(key, defaultValue);
             }else {
                 if(resourceBundle != null && resourceBundle.containsKey(key)) {
                     return UtilsConverter.convert(resourceBundle.getString(key), defaultValue);
@@ -96,27 +98,35 @@ public class Config {
 
     public String getBaseName() {
         String name = this.name;
-        if(!name.endsWith(".json")) name += ".json";
-        if(name.contains("/")) name = name.substring(name.indexOf("/"));
+        if(name.endsWith(".json")) name = name.substring(".json".length());
+        if(name.endsWith(".properties")) name = name.substring(".properties".length());
         return name;
     }
 
-    public Config getBaseConfig() {
-        final Config dataConfig = new Config();
-        dataConfig.data = getData(aioWeb, getBaseName());
-        return dataConfig;
+    public Data getBaseData() {
+        return getData(getBaseName());
     }
 
     public ResourceBundle getBaseResourceBundle() {
         return UtilsWeb.getResourceBundleConfig(getBaseName());
     }
 
-    private static Data getData(final AioWeb aioWeb, final String name) {
+    private Data getData(String name) {
+        return getData(aioWeb, name);
+    }
+
+    private static Data getData(final AioWeb aioWeb, String name) {
         Data data = null;
-        if(!mapData.containsKey(name) || mapData.get(name) == null) {
+
+        if(!name.endsWith(".json")) name += ".json";
+
+        if(mapData.containsKey(name)) {
+            // data = mapData.get(name);
+        }
+        if(data == null || data.isEmpty()) {
 
             String json = UtilsWeb.readFileEnv(aioWeb, name);
-            if(json == null) {
+            if(UtilsText.isEmpty(json)) {
                 json = UtilsWeb.readFileConfig(aioWeb, name);
             }
 
@@ -124,11 +134,14 @@ public class Config {
                 data = new Data(json);
                 mapData.put(name, data);
             }
-
-        }else if(mapData.containsKey(name)) {
-            data = mapData.get(name);
         }
+
         return data != null ? data : new Data();
+    }
+
+    @Override
+    public String toString() {
+        return data.toString();
     }
 
 }

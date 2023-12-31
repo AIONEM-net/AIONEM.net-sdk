@@ -13,18 +13,21 @@ import java.util.ResourceBundle;
 public class UtilsResource {
 
     public static <T> ClassLoader getClassLoader(final Class<T> tClass) {
-        return tClass.getClassLoader();
+        return UtilsResource.class.getClassLoader();
     }
 
     public static <T> URL getResource(final Class<T> tClass, final String name) {
         return getClassLoader(tClass).getResource(name);
     }
 
-    public static <T> InputStream getResourceAsStream(final Class<T> tClass, final String name) {
-        final URL url = getResource(tClass, name);
-        try {
-            if (url != null) return url.openStream();
-        }catch (IOException ignore) {
+    public static <T> InputStream getResourceAsStream(final Class<T> tClass, final String name, String... folders) {
+        if(folders == null || folders.length == 0) folders = new String[]{""};
+        for(final String folder : folders) {
+            try {
+                final URL url = getResource(tClass, folder +(!folder.endsWith("/") && !name.startsWith("/") ? "/" : "")+  name);
+                if (url != null) return url.openStream();
+            }catch (IOException ignore) {
+            }
         }
         return null;
     }
@@ -33,17 +36,23 @@ public class UtilsResource {
         if(folders == null || folders.length == 0) folders = new String[]{""};
         for(final String folder : folders) {
             try {
-                final File file = getResourceParent(tClass, folder +"/"+  name);
-                if(file != null && file.exists() && !file.isDirectory()) {
+                final File file = getResourceParent(tClass, folder +(!folder.endsWith("/") && !name.startsWith("/") ? "/" : "")+  name);
+                if(file != null && file.exists() && file.isFile()) {
                     return new FileInputStream(file);
                 }else {
-                    return getResourceAsStream(tClass, folder +"/"+  name);
+                    InputStream inputStream = getResourceAsStream(tClass, folder +(!folder.endsWith("/") && !name.startsWith("/") ? "/" : "")+  name);
+                    if(inputStream != null) {
+                        return inputStream;
+                    }
                 }
-
             }catch (IOException ignore) {
             }
         }
         return null;
+    }
+
+    public static <T> String readResource(final Class<T> tClass, final String name, String... folders) {
+        return UtilsText.toString(getResourceAsStream(tClass, name, folders));
     }
 
     public static <T> String readParentResource(final Class<T> tClass, final String name, String... folders) {
@@ -74,9 +83,9 @@ public class UtilsResource {
         for(final String folder : folders) {
             try {
                 if (locale != null) {
-                    return ResourceBundle.getBundle(folder +"/"+  name, locale);
+                    return ResourceBundle.getBundle(folder +(!folder.endsWith("/") && !name.startsWith("/") ? "/" : "")+  name, locale);
                 } else {
-                    return ResourceBundle.getBundle(folder +"/"+  name);
+                    return ResourceBundle.getBundle(folder +(!folder.endsWith("/") && !name.startsWith("/") ? "/" : "")+  name);
                 }
             } catch (Exception ignore) {
             }

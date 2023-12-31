@@ -363,6 +363,10 @@ public @Getter class AioWeb {
         return resource != null ? new File(resource.getFile()) : null;
     }
 
+    public File getResourceFolder() {
+        return getResourceFile("");
+    }
+
     public File getResourceParent() {
         final File file = getResourceFile("");
         return file != null ? file.getParentFile() : null;

@@ -10,6 +10,7 @@ import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -73,12 +74,16 @@ public class UtilsText {
             if(!(object instanceof String || object instanceof Character || object instanceof StringBuilder ||
                     object instanceof Integer || object instanceof Long || object instanceof Double || object instanceof Boolean)) {
 
-                if(object instanceof File) {
-                    value = Files.readString(((File) object).toPath());
+                if(object instanceof Path) {
+                    final Path path = (Path) object;
+                    value = path.toFile().exists() && path.toFile().isFile() ? Files.readString(path) : "";
+                }else if(object instanceof File) {
+                    final File file = (File) object;
+                    value = file.exists() && file.isFile() ? Files.readString(file.toPath()) : "";
                 }else if(object instanceof HttpURLConnection) {
-                        value = toString(((HttpURLConnection) object).getInputStream());
+                    value = toString(((HttpURLConnection) object).getInputStream());
                 }else if(object instanceof InputStream) {
-                        value = toString(new BufferedReader(new InputStreamReader((InputStream) object, StandardCharsets.UTF_8)));
+                    value = toString(new BufferedReader(new InputStreamReader((InputStream) object, StandardCharsets.UTF_8)));
                 }else if(object instanceof BufferedReader) {
                     final StringBuilder response = new StringBuilder();
                     final BufferedReader bufferedReader = (BufferedReader) object;

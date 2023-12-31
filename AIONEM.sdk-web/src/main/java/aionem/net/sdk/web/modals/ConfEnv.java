@@ -23,6 +23,10 @@ public class ConfEnv extends Config {
         return confEnv;
     }
 
+    public ConfEnv() {
+        super();
+    }
+
     public ConfEnv(final AioWeb aioWeb) {
         super(aioWeb);
     }

@@ -34,19 +34,15 @@ public class Data {
     }
 
     public Data(final JsonObject values) {
-        init(values);
+        init(getInstance(), values);
     }
 
     public Data(final HashMap<String, Object> values) {
-        init(values);
+        init(getInstance(), values);
     }
 
     public Data(final Object data) {
-        init(UtilsJson.toJsonObject(data));
-    }
-
-    public <T> T getInstance() {
-        return (T) instance;
+        init(getInstance(), UtilsJson.toJsonObject(data));
     }
 
     public <T> T init(T t) {
@@ -69,7 +65,7 @@ public class Data {
                             value = UtilsConverter.convert(value, field.getType());
                         }
                         put(key, value);
-                    } catch (Exception e) {
+                    }catch(Exception e) {
                         log.error("\nERROR: Data - init " + e + "\n");
                     }
                 }
@@ -122,6 +118,10 @@ public class Data {
 
     public <T> T init(final T dbInstance, final Object data) {
         return init(dbInstance, UtilsJson.toJsonObject(data));
+    }
+
+    public <T> T getInstance() {
+        return (T) instance;
     }
 
     public JsonObject toJson() {
