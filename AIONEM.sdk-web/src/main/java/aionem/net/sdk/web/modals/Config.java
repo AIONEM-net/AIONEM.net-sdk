@@ -59,8 +59,8 @@ public class Config {
     }
 
     public String getEnv() {
-        String env = "";
-        if(aioWeb != null) {
+        String env = Env.ENV;
+        if(UtilsText.isEmpty(env) && aioWeb != null) {
             final String envRequest = aioWeb.getHeader("A-Env");
             final String envWebApp = aioWeb.getInitParameter("env");
             env = UtilsText.notEmpty(envRequest, envWebApp);

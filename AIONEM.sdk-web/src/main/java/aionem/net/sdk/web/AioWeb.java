@@ -194,7 +194,7 @@ public @Getter class AioWeb {
         try {
             return UtilsText.notNull(getServletContext().getInitParameter(name), defaultValue);
         }catch(final Exception e) {
-            log.error("Error getting init parameter {}", e.toString());
+            log.error("Error getting init parameter {} {}", name, e.toString());
             return defaultValue;
         }
     }
@@ -244,14 +244,14 @@ public @Getter class AioWeb {
 
     public String getServletPage() {
         final String requestRoot = getRequestRoot();
-        final String home = getInitParameter("home", "/en");
-        final String sites = getInitParameter("sites", "/en");
+        final String home = getConfEnv().get("home", "/en");
+        final String sites = getConfEnv().get("sites", "/en");
         final boolean isHome = UtilsText.isEmpty(requestRoot) || !sites.contains(requestRoot);
         return (isHome ? home : "") + request.getServletPath().replace("/index.jsp", "");
     }
 
     public String getHome() {
-        return getInitParameter("home", "/en");
+        return getConfEnv().get("home", "/en");
     }
 
     public boolean isUnderHome() {
