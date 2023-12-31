@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 @Getter
 public class Data {
 
-    private Object instance = this;
+    private Object instance = null;
 
     private final LinkedHashMap<String, Object> values = new LinkedHashMap<>();
 
@@ -34,15 +34,15 @@ public class Data {
     }
 
     public Data(final JsonObject values) {
-        init(getInstance(), values);
+        init(instance, values);
     }
 
     public Data(final HashMap<String, Object> values) {
-        init(getInstance(), values);
+        init(instance, values);
     }
 
     public Data(final Object data) {
-        init(getInstance(), UtilsJson.toJsonObject(data));
+        init(instance, UtilsJson.toJsonObject(data));
     }
 
     public <T> T init(T dbInstance) {
@@ -118,19 +118,19 @@ public class Data {
     }
 
     public <T> T getInstance() {
-        return (T) instance;
+        return instance != null ? (T) instance : (T) this;
     }
 
     public void setValues(final Map<String, Object> values) {
-        init(getInstance(), values);
+        init(instance, values);
     }
 
     public void setValues(final Object values) {
-        init(getInstance(), values);
+        init(instance, values);
     }
 
     public JsonObject toJson() {
-        return toJson(getInstance());
+        return toJson(instance);
     }
 
     public JsonObject toJsonAll() {
@@ -177,37 +177,39 @@ public class Data {
     public Data put(final String key, final Object value) {
         this.values.put(key, value);
         try {
-            final Field field = getInstance().getClass().getDeclaredField(key);
-            final int modifiers = field.getModifiers();
-            final boolean isStatic = Modifier.isStatic(modifiers);
-            final boolean isPrivate = Modifier.isPrivate(modifiers);
-            if(!isStatic && !isPrivate) {
-                field.setAccessible(true);
-                if(value != null) {
+            if(instance != null) {
+                final Field field = instance.getClass().getDeclaredField(key);
+                final int modifiers = field.getModifiers();
+                final boolean isStatic = Modifier.isStatic(modifiers);
+                final boolean isPrivate = Modifier.isPrivate(modifiers);
+                if(!isStatic && !isPrivate) {
+                    field.setAccessible(true);
+                    if(value != null) {
 
-                    final Object defaultValue = field.get(getInstance());
-                    final Class<?> fieldType = field.getType();
+                        final Object defaultValue = field.get(instance);
+                        final Class<?> fieldType = field.getType();
 
-                    if(String.class.isAssignableFrom(fieldType)) {
-                        field.set(getInstance(), UtilsText.toString(value));
-                    }else if(Integer.class.isAssignableFrom(fieldType)) {
-                        field.set(getInstance(), UtilsParse.toNumber(value, (Integer) defaultValue));
-                    }else if(Double.class.isAssignableFrom(fieldType)) {
-                        field.set(getInstance(), UtilsParse.toNumber(value, (Double) defaultValue));
-                    }else if(Long.class.isAssignableFrom(fieldType)) {
-                        field.set(getInstance(), UtilsParse.toNumber(value, (Long) defaultValue));
-                    }else if(Boolean.class.isAssignableFrom(fieldType)) {
-                        field.set(getInstance(), UtilsParse.toBoolean(value, (Boolean) defaultValue));
+                        if(String.class.isAssignableFrom(fieldType)) {
+                            field.set(instance, UtilsText.toString(value));
+                        }else if(Integer.class.isAssignableFrom(fieldType)) {
+                            field.set(instance, UtilsParse.toNumber(value, (Integer) defaultValue));
+                        }else if(Double.class.isAssignableFrom(fieldType)) {
+                            field.set(instance, UtilsParse.toNumber(value, (Double) defaultValue));
+                        }else if(Long.class.isAssignableFrom(fieldType)) {
+                            field.set(instance, UtilsParse.toNumber(value, (Long) defaultValue));
+                        }else if(Boolean.class.isAssignableFrom(fieldType)) {
+                            field.set(instance, UtilsParse.toBoolean(value, (Boolean) defaultValue));
+                        }else {
+                            field.set(instance, value);
+                        }
+
                     }else {
-                        field.set(getInstance(), value);
+                        final Object defaultInstance = instance.getClass().newInstance();
+                        final Field defaultField = defaultInstance.getClass().getDeclaredField(key);
+                        defaultField.setAccessible(true);
+                        final Object defaultValue = defaultField.get(defaultInstance);
+                        defaultField.set(instance, defaultValue);
                     }
-
-                }else {
-                    final Object defaultInstance = getInstance().getClass().newInstance();
-                    final Field defaultField = defaultInstance.getClass().getDeclaredField(key);
-                    defaultField.setAccessible(true);
-                    final Object defaultValue = defaultField.get(defaultInstance);
-                    defaultField.set(getInstance(), defaultValue);
                 }
             }
         } catch (NoSuchFieldException ignore) {
@@ -220,7 +222,7 @@ public class Data {
     public String get(final String key1, final String key2) {
         return getOrLast(new String[] {key1, key2}, false);
     }
-    
+
     public String get(final String... keys) {
         return getOrLast(keys, false);
     }

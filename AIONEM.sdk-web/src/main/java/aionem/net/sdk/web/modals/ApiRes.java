@@ -189,7 +189,7 @@ public class ApiRes {
             if(data instanceof DataAuth) {
                 UtilsJson.add(this.data, key, ((DataAuth) data).getUserProfile());
             }else if(data instanceof DaoRes) {
-                UtilsJson.add(this.data, key, ((DaoRes) data).toJson());
+                UtilsJson.add(this.data, key, ((DaoRes) data).getData());
             }else if(data instanceof Data) {
                 UtilsJson.add(this.data, key, ((Data) data).toJson());
             }else if(data instanceof Datas) {

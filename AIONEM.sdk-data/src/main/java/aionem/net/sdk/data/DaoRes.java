@@ -4,6 +4,7 @@ import aionem.net.sdk.core.Env;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsJson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.EqualsAndHashCode;
 import lombok.extern.log4j.Log4j2;
@@ -91,22 +92,8 @@ public @lombok.Data class DaoRes extends Data  {
         return exception;
     }
 
-    public JsonObject toJson() {
-        final JsonObject jsonDao = UtilsJson.jsonObject();
-        jsonDao.addProperty("id", id);
-        jsonDao.addProperty("status", status);
-        jsonDao.addProperty("success", success);
-        jsonDao.addProperty("response", response);
-        jsonDao.addProperty("error", error);
-        jsonDao.addProperty("exception", exception != null ? exception.getMessage() : "");
-        jsonDao.add("data", super.toJson());
-        jsonDao.add("data", datas.toJson());
-        return jsonDao;
-    }
-
-    @Override
-    public String toString() {
-        return toJson().toString();
+    public JsonElement getData() {
+        return !datas.isEmpty() ? datas.toJson() : toJson();
     }
 
 }
