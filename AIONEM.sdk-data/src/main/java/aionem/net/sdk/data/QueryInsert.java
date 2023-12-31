@@ -80,7 +80,7 @@ public class QueryInsert extends Query {
     }
 
     public String getQuery() {
-        query = " INSERT INTO " + table;
+        String query = " INSERT INTO " + table;
         final StringBuilder columns = new StringBuilder(" (");
         final StringBuilder values = new StringBuilder(" VALUES (");
         for(int i = 0; i < columns1.size(); i++) {

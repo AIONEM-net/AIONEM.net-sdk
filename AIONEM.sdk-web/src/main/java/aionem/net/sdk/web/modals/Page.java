@@ -81,9 +81,8 @@ public @Data class Page {
                 .replace("-", " ")
                 .replace("_", " ")
                 .replace("//", "");
-        final int index = title.lastIndexOf("/");
-        if(index >= 0) {
-            title = title.substring(index + 1);
+        if(title.contains("/")) {
+            title = title.substring(title.lastIndexOf("/") + 1);
         }
         title = UtilsText.capitalizeFirstLetter(title);
         setTitles(title);

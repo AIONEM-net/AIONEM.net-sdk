@@ -24,7 +24,7 @@ import java.util.*;
 @Getter
 public class Data {
 
-    private Object instance;
+    private Object instance = this;
 
     private final LinkedHashMap<String, Object> values = new LinkedHashMap<>();
 

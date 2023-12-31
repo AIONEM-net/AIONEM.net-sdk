@@ -19,7 +19,6 @@ public class Query {
     protected final AuthData auth;
 
     protected String table = "``";
-    protected String query = "";
     protected final ArrayList<String> tables = new ArrayList<>();
     protected final ArrayList<QueryColumn> columns1 = new ArrayList<>();
     protected final ArrayList<QueryColumn> columns2 = new ArrayList<>();

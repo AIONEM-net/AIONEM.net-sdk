@@ -392,7 +392,7 @@ public class QueryUpdate extends QueryCondition {
     }
 
     public String getQuery() {
-        query = " UPDATE " + tables.get(0);
+        String query = " UPDATE " + tables.get(0);
 
         query += join;
 

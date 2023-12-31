@@ -509,7 +509,7 @@ public class QuerySelect extends QueryCondition {
     }
 
     public String getQuery() {
-        query = " SELECT";
+        String query = " SELECT";
         if(isDistinct) {
             query += " DISTINCT";
         }

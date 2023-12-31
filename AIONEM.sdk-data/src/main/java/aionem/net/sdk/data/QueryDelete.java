@@ -274,7 +274,7 @@ public class QueryDelete extends QueryCondition {
     }
 
     public String getQuery() {
-        query = " DELETE FROM " + table + " WHERE";
+        String query = " DELETE FROM " + table + " WHERE";
         for(int i = 0; i < columns1.size(); i++) {
             final QueryColumn columnValue = columns1.get(i);
             String column = columnValue.getColumn();
