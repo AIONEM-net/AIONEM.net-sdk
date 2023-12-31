@@ -98,6 +98,10 @@ public @Getter class AioWeb {
         return request.getAttribute(name);
     }
 
+    public void removeAttribute(final String name) {
+        request.removeAttribute(name);
+    }
+
     public <T> T getPageAttribute(final String name, final Object defaultValue) {
         return (T) UtilsConverter.convert(getPageAttribute(name), defaultValue);
     }
@@ -219,6 +223,10 @@ public @Getter class AioWeb {
         return getRealPathRoot("/ui.page"+ (!UtilsText.isEmpty(path) ? "/" + path : ""));
     }
 
+    public String getRealPathPageCurrent(final String path) {
+        return getRealPathRoot("/ui.page"+ getServletPage() + (!UtilsText.isEmpty(path) ? "/" + path : ""));
+    }
+
     public String getRealPathRoot() {
         return getRealPathRoot("");
     }
@@ -232,6 +240,22 @@ public @Getter class AioWeb {
 
     public String getServletPath() {
         return request.getServletPath().replace("/index.jsp", "");
+    }
+
+    public String getServletPage() {
+        final String requestRoot = getRequestRoot();
+        final String home = getInitParameter("home", "/en");
+        final String sites = getInitParameter("sites", "/en");
+        final boolean isHome = UtilsText.isEmpty(requestRoot) || !sites.contains(requestRoot);
+        return (isHome ? home : "") + request.getServletPath().replace("/index.jsp", "");
+    }
+
+    public String getHome() {
+        return getInitParameter("home", "/en");
+    }
+
+    public boolean isUnderHome() {
+        return getRequestRoot().startsWith(getHome());
     }
 
     public String getContextPath() {

@@ -22,64 +22,100 @@ public @Getter class Properties {
     public Properties() {
         init(new Data());
     }
+
     public Properties(final Data data) {
         init(data);
     }
+
     public Properties(final File fileProperties) {
-        init(new Data(fileProperties));
+        init(fileProperties);
     }
-    public Properties(final HttpServletRequest request, final Class<?> type) {
-        this(request, AioWeb.name(type));
+
+    public Properties(final AioWeb aioWeb) {
+        init(aioWeb);
     }
-    public Properties(final HttpServletRequest request, final String propertiesKey) {
-        init(request, propertiesKey);
+
+    public Properties(final AioWeb aioWeb, final Class<?> type) {
+        init(aioWeb, AioWeb.name(type));
+    }
+
+    public Properties(final AioWeb aioWeb, final String propertiesKey) {
+        init(aioWeb, propertiesKey);
+    }
+
+    public Properties init(final File fileProperties) {
+        return init(new Data(fileProperties));
+    }
+
+    public Properties init(final AioWeb aioWeb) {
+        if(data == null || data.isEmpty()) {
+            System.out.println(aioWeb.getRealPathPageCurrent(Properties.PROPERTIES_JSON));
+            final File file = new File(aioWeb.getRealPathPageCurrent(Properties.PROPERTIES_JSON));
+            init(file);
+        }
+        return this;
     }
 
     public Properties init(final Data data) {
         this.data = data != null ? data : new Data();
         return this;
     }
-    public Properties init(final HttpServletRequest request, final Class<?> type) {
-        return init(request, AioWeb.name(type));
-    }
-    public Properties init(final HttpServletRequest request, final String propertiesKey) {
-        final Object properties = request.getAttribute(propertiesKey);
-        data = new Data(properties);
-        request.removeAttribute(propertiesKey);
-        return this;
+
+    public Properties init(final AioWeb aioWeb, final Class<?> type) {
+        return init(aioWeb, AioWeb.name(type));
     }
 
+    public Properties init(final AioWeb aioWeb, final String propertiesKey) {
+        final Object properties = aioWeb.getAttribute(propertiesKey);
+        if(properties != null) {
+            data = new Data(properties);
+        }else {
+            init(aioWeb);
+        }
+        aioWeb.removeAttribute(propertiesKey);
+        return this;
+    }
 
     public String get(final String key1, final String key2) {
         return data.get(key1, key2);
     }
+
     public String get(final String... keys) {
         return data.get(keys);
     }
+
     public String getOr(final String... keys) {
         return getOrLast(keys, true);
     }
+
     public String getOrLast(final String[] keys, final boolean isOrLast) {
         return data.getOrLast(keys, isOrLast);
     }
+
     public boolean getBoolean(final String key) {
         return data.get(key, false);
     }
+
     public Object getObject(final String key) {
         return data.get(key);
     }
+
     public <T> T get(final String key, final T defaultValue) {
         return this.data.get(key, defaultValue);
     }
+
     public <T> T get(final String key, final Class<T> type) {
         return this.data.get(key, type);
     }
+
     public Data getChild(final String key) {
         return data.getChild(key);
     }
+
     public Datas getChildren() {
         return data.getChildren();
     }
+
     public Datas getChildren(final String key) {
         return data.getChildren(key);
     }
@@ -87,12 +123,15 @@ public @Getter class Properties {
     public boolean has(final String key) {
         return data.has(key);
     }
+
     public boolean isEmpty(final String key) {
         return data.isEmpty(key);
     }
+
     public boolean equals2(final String key, final Object... values) {
         return data.equals2(key, values);
     }
+
     public boolean equalsIgnoreCase2(final String key, final Object... values) {
         return data.equalsIgnoreCase2(key, values);
     }
@@ -100,6 +139,7 @@ public @Getter class Properties {
     public int size() {
         return data.size();
     }
+
     public boolean isEmpty() {
         return data.isEmpty();
     }
@@ -117,8 +157,8 @@ public @Getter class Properties {
         return null;
     }
 
-    public static <T> T adapt(final HttpServletRequest request, final Class<T> type) {
-        final Properties properties = new Properties(request, type);
+    public static <T> T adapt(final AioWeb aioWeb, final Class<T> type) {
+        final Properties properties = new Properties(aioWeb, type);
         return properties.adapt(type);
     }
 

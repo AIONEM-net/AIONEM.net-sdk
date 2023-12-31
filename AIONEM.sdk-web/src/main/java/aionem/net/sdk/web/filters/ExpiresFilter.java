@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 
@@ -27,7 +28,7 @@ public class ExpiresFilter implements Filter {
     protected static final StringManager sm = StringManager.getManager("org.apache.catalina.filters");
     private ExpiresConfiguration defaultExpiresConfiguration;
     private int[] excludedResponseStatusCodes = new int[]{304};
-    private Map<String, ExpiresConfiguration> expiresConfigurationByContentType = new LinkedHashMap();
+    private final Map<String, ExpiresConfiguration> expiresConfigurationByContentType = new LinkedHashMap<>();
 
     protected static int[] commaDelimitedListToIntArray(String commaDelimitedInts) {
         String[] intsAsStrings = commaDelimitedListToStringArray(commaDelimitedInts);
@@ -47,7 +48,7 @@ public class ExpiresFilter implements Filter {
     }
 
     protected static String[] commaDelimitedListToStringArray(String commaDelimitedStrings) {
-        return commaDelimitedStrings != null && commaDelimitedStrings.length() != 0 ? commaSeparatedValuesPattern.split(commaDelimitedStrings) : new String[0];
+        return commaDelimitedStrings != null && !commaDelimitedStrings.isEmpty() ? commaSeparatedValuesPattern.split(commaDelimitedStrings) : new String[0];
     }
 
     protected static boolean contains(String str, String searchStr) {
@@ -76,7 +77,7 @@ public class ExpiresFilter implements Filter {
     }
 
     protected static boolean isEmpty(String str) {
-        return str == null || str.length() == 0;
+        return str == null || str.isEmpty();
     }
 
     protected static boolean isNotEmpty(String str) {
@@ -127,21 +128,9 @@ public class ExpiresFilter implements Filter {
 
     }
 
-    public ExpiresConfiguration getDefaultExpiresConfiguration() {
-        return this.defaultExpiresConfiguration;
-    }
-
-    public String getExcludedResponseStatusCodes() {
-        return intsToCommaDelimitedString(this.excludedResponseStatusCodes);
-    }
-
-    public int[] getExcludedResponseStatusCodesAsInts() {
-        return this.excludedResponseStatusCodes;
-    }
-
     protected Date getExpirationDate(XHttpServletResponse response) {
         String contentType = response.getContentType();
-        ExpiresConfiguration configuration = (ExpiresConfiguration)this.expiresConfigurationByContentType.get(contentType);
+        ExpiresConfiguration configuration = this.expiresConfigurationByContentType.get(contentType);
         Date result;
         if (configuration != null) {
             result = this.getExpirationDate(configuration, response);
@@ -218,18 +207,11 @@ public class ExpiresFilter implements Filter {
                 throw new IllegalStateException(sm.getString("expiresFilter.unsupportedStartingPoint", new Object[]{configuration.getStartingPoint()}));
         }
 
-        Iterator i$ = configuration.getDurations().iterator();
-
-        while(i$.hasNext()) {
-            Duration duration = (Duration)i$.next();
-            calendar.add(duration.getUnit().getCalendardField(), duration.getAmount());
+        for(Duration duration : configuration.getDurations()) {
+            calendar.add(duration.getUnit().getCalendarField(), duration.getAmount());
         }
 
         return calendar.getTime();
-    }
-
-    public Map<String, ExpiresConfiguration> getExpiresConfigurationByContentType() {
-        return this.expiresConfigurationByContentType;
     }
 
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -245,8 +227,7 @@ public class ExpiresFilter implements Filter {
                     ExpiresConfiguration expiresConfiguration = this.parseExpiresConfiguration(value);
                     this.expiresConfigurationByContentType.put(contentType, expiresConfiguration);
                 } else if (name.equalsIgnoreCase("ExpiresDefault")) {
-                    ExpiresConfiguration expiresConfiguration = this.parseExpiresConfiguration(value);
-                    this.defaultExpiresConfiguration = expiresConfiguration;
+                    this.defaultExpiresConfiguration = this.parseExpiresConfiguration(value);
                 } else if (name.equalsIgnoreCase("ExpiresExcludedResponseStatusCodes")) {
                     this.excludedResponseStatusCodes = commaDelimitedListToIntArray(value);
                 } else {
@@ -264,19 +245,15 @@ public class ExpiresFilter implements Filter {
         boolean expirationHeaderHasBeenSet = response.containsHeader("Expires") || contains(response.getCacheControlHeader(), "max-age");
         if (expirationHeaderHasBeenSet) {
             if (log.isDebugEnabled()) {
-                log.debug(sm.getString("expiresFilter.expirationHeaderAlreadyDefined", new Object[]{request.getRequestURI(), response.getStatus(), response.getContentType()}));
+                log.debug(sm.getString("expiresFilter.expirationHeaderAlreadyDefined", request.getRequestURI(), response.getStatus(), response.getContentType()));
             }
 
             return false;
         } else {
-            int[] arr$ = this.excludedResponseStatusCodes;
-            int len$ = arr$.length;
-
-            for(int i$ = 0; i$ < len$; ++i$) {
-                int skippedStatusCode = arr$[i$];
+            for(int skippedStatusCode : this.excludedResponseStatusCodes) {
                 if (response.getStatus() == skippedStatusCode) {
                     if (log.isDebugEnabled()) {
-                        log.debug(sm.getString("expiresFilter.skippedStatusCode", new Object[]{request.getRequestURI(), response.getStatus(), response.getContentType()}));
+                        log.debug(sm.getString("expiresFilter.skippedStatusCode", request.getRequestURI(), response.getStatus(), response.getContentType()));
                     }
 
                     return false;
@@ -292,11 +269,11 @@ public class ExpiresFilter implements Filter {
             Date expirationDate = this.getExpirationDate(response);
             if (expirationDate == null) {
                 if (log.isDebugEnabled()) {
-                    log.debug(sm.getString("expiresFilter.noExpirationConfigured", new Object[]{request.getRequestURI(), response.getStatus(), response.getContentType()}));
+                    log.debug(sm.getString("expiresFilter.noExpirationConfigured", request.getRequestURI(), response.getStatus(), response.getContentType()));
                 }
             } else {
                 if (log.isDebugEnabled()) {
-                    log.debug(sm.getString("expiresFilter.setExpirationDate", new Object[]{request.getRequestURI(), response.getStatus(), response.getContentType(), expirationDate}));
+                    log.debug(sm.getString("expiresFilter.setExpirationDate", request.getRequestURI(), response.getStatus(), response.getContentType(), expirationDate));
                 }
 
                 String maxAgeDirective = "max-age=" + (expirationDate.getTime() - System.currentTimeMillis()) / 1000L;
@@ -353,7 +330,7 @@ public class ExpiresFilter implements Filter {
             }
         }
 
-        List<Duration> durations = new ArrayList();
+        List<Duration> durations = new ArrayList<>();
 
         while(currentToken != null) {
             int amount;
@@ -410,18 +387,6 @@ public class ExpiresFilter implements Filter {
         return new ExpiresConfiguration(startingPoint, durations);
     }
 
-    public void setDefaultExpiresConfiguration(ExpiresConfiguration defaultExpiresConfiguration) {
-        this.defaultExpiresConfiguration = defaultExpiresConfiguration;
-    }
-
-    public void setExcludedResponseStatusCodes(int[] excludedResponseStatusCodes) {
-        this.excludedResponseStatusCodes = excludedResponseStatusCodes;
-    }
-
-    public void setExpiresConfigurationByContentType(Map<String, ExpiresConfiguration> expiresConfigurationByContentType) {
-        this.expiresConfigurationByContentType = expiresConfigurationByContentType;
-    }
-
     @Override
     public void destroy() {
 
@@ -431,6 +396,7 @@ public class ExpiresFilter implements Filter {
         return this.getClass().getSimpleName() + "[excludedResponseStatusCode=[" + intsToCommaDelimitedString(this.excludedResponseStatusCodes) + "], default=" + this.defaultExpiresConfiguration + ", byType=" + this.expiresConfigurationByContentType + "]";
     }
 
+    @Getter
     protected static class Duration {
         protected final int amount;
         protected final DurationUnit unit;
@@ -440,19 +406,12 @@ public class ExpiresFilter implements Filter {
             this.unit = unit;
         }
 
-        public int getAmount() {
-            return this.amount;
-        }
-
-        public DurationUnit getUnit() {
-            return this.unit;
-        }
-
         public String toString() {
             return this.amount + " " + this.unit;
         }
     }
 
+    @Getter
     protected static enum DurationUnit {
         DAY(6),
         HOUR(10),
@@ -462,17 +421,14 @@ public class ExpiresFilter implements Filter {
         WEEK(3),
         YEAR(1);
 
-        private final int calendardField;
+        private final int calendarField;
 
-        private DurationUnit(int calendardField) {
-            this.calendardField = calendardField;
-        }
-
-        public int getCalendardField() {
-            return this.calendardField;
+        DurationUnit(int calendarField) {
+            this.calendarField = calendarField;
         }
     }
 
+    @Getter
     protected static class ExpiresConfiguration {
         private final List<Duration> durations;
         private final StartingPoint startingPoint;
@@ -482,24 +438,16 @@ public class ExpiresFilter implements Filter {
             this.durations = durations;
         }
 
-        public List<Duration> getDurations() {
-            return this.durations;
-        }
-
-        public StartingPoint getStartingPoint() {
-            return this.startingPoint;
-        }
-
         public String toString() {
             return "ExpiresConfiguration[startingPoint=" + this.startingPoint + ", duration=" + this.durations + "]";
         }
     }
 
-    protected static enum StartingPoint {
+    protected enum StartingPoint {
         ACCESS_TIME,
         LAST_MODIFICATION_TIME;
 
-        private StartingPoint() {
+        StartingPoint() {
         }
     }
 
@@ -970,14 +918,14 @@ public class ExpiresFilter implements Filter {
             return locale;
         }
 
-        private static final Map<String, Map> managers = new Hashtable();
+        private static final Map<String, Map> managers = new Hashtable<>();
 
 
-        public static final StringManager getManager(String packageName) {
+        public static StringManager getManager(String packageName) {
             return getManager(packageName, Locale.getDefault());
         }
 
-        public static final synchronized StringManager getManager(
+        public static synchronized StringManager getManager(
                 String packageName, Locale locale) {
 
             Map<Locale, StringManager> map = managers.get(packageName);

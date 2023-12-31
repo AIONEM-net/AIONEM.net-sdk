@@ -2,6 +2,7 @@ package aionem.net.sdk.web.modals;
 
 
 import aionem.net.sdk.core.Env;
+import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.web.AioWeb;
 
 public class ConfEnv extends Config {
@@ -88,6 +89,11 @@ public class ConfEnv extends Config {
 
     public boolean isEnvLocal() {
         return ENV_LOCAL.equalsIgnoreCase(getEnv());
+    }
+
+    public boolean isEnvLocalOrNone() {
+        final String env = getEnv();
+        return UtilsText.isEmpty(env) || ENV_LOCAL.equalsIgnoreCase(env);
     }
 
     public boolean isDebug() {

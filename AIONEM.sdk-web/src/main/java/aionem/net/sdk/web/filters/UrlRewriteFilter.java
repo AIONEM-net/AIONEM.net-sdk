@@ -38,27 +38,21 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
 
             if(requestUrl.lastIndexOf(".") < 0) {
 
-                final String requestRoot = aioWeb.getRequestRoot();
-
-                final String home = aioWeb.getInitParameter("home", "/en");
-                final String sites = aioWeb.getInitParameter("sites", "/en");
-                final boolean isHome = UtilsText.isEmpty(requestRoot) || !sites.contains(requestRoot);
-
                 try {
 
-                    if(requestRoot.startsWith(home)) {
-                        aioWeb.sendRedirect(aioWeb.getRequestUrlQuery().substring(home.length()));
+                    if(aioWeb.isUnderHome()) {
+                        aioWeb.sendRedirect(aioWeb.getRequestUrlQuery().substring(aioWeb.getHome().length()));
                     }else {
 
                         response.setCharacterEncoding("UTF-8");
                         response.setContentType("text/html; charset=UTF-8");
 
-                        final String urlIndexQuery = requestUrl
+                        final String urlIndexQuery = aioWeb.getServletPage()
                                 + (!requestUrl.endsWith("/") ? "/" : "")
                                 + (!requestUrl.endsWith("index.jsp") ? "index.jsp" : "")
                                 + "?" + aioWeb.getRequestQuery();
 
-                        aioWeb.include(aioWeb.getContextPath("/ui.page" + (isHome ? home : "") + urlIndexQuery));
+                        aioWeb.include(aioWeb.getContextPath("/ui.page" + urlIndexQuery));
                     }
 
                 }catch(Exception e) {

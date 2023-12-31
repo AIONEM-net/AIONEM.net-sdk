@@ -55,18 +55,13 @@ public @Getter abstract class Component {
         this.aioWeb = aioWeb;
         boolean isNew = false;
 
-        if(properties == null) {
-            properties = new Properties();
-        }
-        if(properties.isEmpty()) {
-            final File file = new File(aioWeb.getRealPathCurrent(Properties.PROPERTIES_JSON));
-            final Data data = new Data(file);
-            properties.init(data);
+        if(properties == null || properties.isEmpty()) {
+            properties = new Properties(aioWeb);
         }
 
         System.out.println(properties.size() +" == "+ this.properties.size() +" : "+ instance);
 
-        if(!properties.isEmpty() && !properties.equals(this.properties)) {
+        if(instance != null && !properties.isEmpty() && !properties.equals(this.properties)) {
 
             for(final Field field : instance.getClass().getDeclaredFields()) {
                 final int modifiers = field.getModifiers();
