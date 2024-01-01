@@ -149,4 +149,13 @@ public class Config {
         return data.toString();
     }
 
+    public void invalidate() {
+        mapData.remove(getName());
+        mapData.remove(getBaseName());
+    }
+
+    public static void invalidateAll() {
+        mapData.clear();
+    }
+
 }

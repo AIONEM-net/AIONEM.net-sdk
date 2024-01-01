@@ -215,12 +215,24 @@ public @Getter class AioWeb {
         return getRealPathRoot("/WEB-INF"+ (!UtilsText.isEmpty(path) ? "/" + path : ""));
     }
 
+    public File getRealFileWebInf(final String path) {
+        return new File(getRealPathWebInf(path));
+    }
+
     public String getRealPathPage() {
         return getRealPathRoot("/ui.page");
     }
 
     public String getRealPathPage(final String path) {
         return getRealPathRoot("/ui.page"+ (!UtilsText.isEmpty(path) ? "/" + path : ""));
+    }
+
+    public String getRealPathDrive() {
+        return getRealPathRoot("/ui.drive");
+    }
+
+    public String getRealPathDrive(final String path) {
+        return getRealPathRoot("/ui.drive"+ (!UtilsText.isEmpty(path) ? "/" + path : ""));
     }
 
     public String getRealPathPageCurrent(final String path) {
@@ -236,6 +248,14 @@ public @Getter class AioWeb {
         realPath = realPath.replace("//", "/");
         if(realPath.endsWith("/")) realPath = realPath.substring(0, realPath.length()-1);
         return realPath;
+    }
+
+    public File getRealFileRoot() {
+        return new File(getRealPathRoot());
+    }
+
+    public File getRealFileRoot(final String path) {
+        return new File(getRealPathRoot(path));
     }
 
     public String getServletPath() {

@@ -1,27 +1,21 @@
 package aionem.net.sdk.web.dao;
 
-import aionem.net.sdk.data.DaoRes;
 import aionem.net.sdk.core.utils.UtilsText;
+import aionem.net.sdk.data.DaoRes;
 import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.modals.Resource;
+import aionem.net.sdk.web.utils.UtilsDrive;
 import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.http.Part;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 
 
 @Log4j2
 public class DriveManager {
-
-    public static final String DRIVE_API_PATH = "/ui.drive/uploads/";
-    public static final String DRIVE_FILE = "file";
-    public static final String DRIVE_FILE_URL = "url";
-    public static final String DRIVE_FILE_PATH = "path";
-    public static final String DRIVE_FILE_NAME = "name";
-    public static final String DRIVE_FILE_SIZE = "size";
-    public static final String DRIVE_FILE_EXTENSION = "extension";
 
     private final AioWeb aioWeb;
 
@@ -83,18 +77,18 @@ public class DriveManager {
 
             if(fileStream != null) {
 
-                String fileExtension = getFileExtension(uploadName);
+                String fileExtension = UtilsDrive.getFileExtension(uploadName);
 
                 if(UtilsText.isEmpty(fileExtension)) {
-                    fileExtension = getFileExtension(fileName);
+                    fileExtension = UtilsDrive.getFileExtension(fileName);
                     uploadName = uploadName + (!uploadName.endsWith(".") ? "." : "") + fileExtension;
                 }
 
-                final String fileFolder = getFileFolder(fileExtension);
+                final String fileFolder = UtilsDrive.getFileFolder(fileExtension);
                 final String filePath = fileFolder +"/" + uploadName;
-                final String fileUrl = aioWeb.getContextPath(DRIVE_API_PATH) +"/"+ filePath;
+                final String fileUrl = aioWeb.getContextPath(UtilsDrive.DRIVE_API_PATH) +"/"+ filePath;
 
-                final File fileDirectory = new File(aioWeb.getRealPathRoot(DRIVE_API_PATH +"/"+ fileFolder));
+                final File fileDirectory = new File(aioWeb.getRealPathRoot(UtilsDrive.DRIVE_API_PATH +"/"+ fileFolder));
 
                 final boolean isDirectory;
                 if(!fileDirectory.exists()) {
@@ -119,12 +113,12 @@ public class DriveManager {
 
                     resUpload.setSuccess(true);
 
-                    resUpload.put(DRIVE_FILE, fileName);
-                    resUpload.put(DRIVE_FILE_NAME, uploadName);
-                    resUpload.put(DRIVE_FILE_PATH, filePath);
-                    resUpload.put(DRIVE_FILE_URL, fileUrl);
-                    resUpload.put(DRIVE_FILE_SIZE, fileSize);
-                    resUpload.put(DRIVE_FILE_EXTENSION, fileExtension);
+                    resUpload.put(UtilsDrive.DRIVE_FILE, fileName);
+                    resUpload.put(UtilsDrive.DRIVE_FILE_NAME, uploadName);
+                    resUpload.put(UtilsDrive.DRIVE_FILE_PATH, filePath);
+                    resUpload.put(UtilsDrive.DRIVE_FILE_URL, fileUrl);
+                    resUpload.put(UtilsDrive.DRIVE_FILE_SIZE, fileSize);
+                    resUpload.put(UtilsDrive.DRIVE_FILE_EXTENSION, fileExtension);
 
                 }else {
                     resUpload.setError("Directory doesn't exist");
@@ -141,72 +135,52 @@ public class DriveManager {
         return resUpload;
     }
 
-    public static String generateFileName(final String db, final long id, final String extension) {
-        return generateFileName(db, UtilsText.toString(id), extension);
+    public File getFolder() {
+        return getFile("");
     }
 
-    public static String generateFileName(final String db, final String id, final String extension) {
-        return db +"-"+ id +"."+ extension;
+    public File getFile(final String path) {
+        return aioWeb.getRealFileRoot("/ui.drive" +"/" + path);
     }
 
-    public static String getFileExtension(final String fileName) {
-        String fileExtension = "";
-        final int lastIndex = fileName.lastIndexOf(".");
-        if(lastIndex > 0 && lastIndex < fileName.length() - 1) {
-            fileExtension = fileName.substring(lastIndex + 1);
-        }
-        return fileExtension;
+    public ArrayList<File> getFiles() {
+        return getFiles("");
     }
 
-    public static String getFileFolder(final String fileExtension) {
-        String fileFolder = "others";
-
-        if(!UtilsText.isEmpty(fileExtension)) {
-
-            switch (fileExtension.toLowerCase()) {
-
-                // Images
-                case "png":
-                case "jpg":
-                case "jpeg":
-                case "gif":
-                case "bmp":
-                    fileFolder = "images";
-                    break;
-
-                // Videos
-                case "mp4":
-                case "avi":
-                case "mov":
-                case "mkv":
-                case "wmv":
-                    fileFolder = "videos";
-                    break;
-
-                // Documents
-                case "doc":
-                case "docx":
-                case "pdf":
-                case "txt":
-                case "rtf":
-                    fileFolder = "documents";
-                    break;
-
-                // Compressed
-                case "zip":
-                case "rar":
-                case "7z":
-                case "gz":
-                case "tar":
-                    fileFolder = "compressed";
-                    break;
-
-                default:
-                    fileFolder = "others";
+    public ArrayList<File> getFiles(final String path) {
+        final ArrayList<File> listFiles = new ArrayList<>();
+        final File[] files = getFile(path).listFiles();
+        if(files != null) {
+            for(final File file : files) {
+                if(file.exists()) {
+                    listFiles.add(file);
+                }
             }
         }
+        return listFiles;
+    }
 
-        return fileFolder;
+    public int references(final Resource resource, final Resource resourceNew, final boolean update) {
+        final int[] totalReferences = {0};
+
+        final Path pathSection = Paths.get(aioWeb.getRealPathPage());
+
+        try {
+            Files.walkFileTree(pathSection, new SimpleFileVisitor<>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                    if (Files.isRegularFile(file)) {
+                        final int references = ResourceResolver.references(file, "ui.drive"+ resource.getPath(), "ui.drive"+ resourceNew.getPath(), update);
+                        totalReferences[0] += references;
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            log.error("Error updating references: {}", e.toString());
+        }
+
+        return totalReferences[0];
     }
 
 }

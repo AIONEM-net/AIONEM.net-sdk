@@ -165,4 +165,12 @@ public class I18n {
         return data.toString();
     }
 
+    public void invalidate() {
+        mapData.remove(getName());
+    }
+
+    public static void invalidateAll() {
+        mapData.clear();
+    }
+
 }

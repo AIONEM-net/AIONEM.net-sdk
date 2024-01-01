@@ -1,6 +1,5 @@
 package aionem.net.sdk.web.dao;
 
-import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.DaoRes;
 import aionem.net.sdk.data.Data;
 import aionem.net.sdk.data.Network;
@@ -19,8 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 @Log4j2
@@ -365,7 +362,7 @@ public class PageManager {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                     if (Files.isRegularFile(file)) {
-                        final int references = references(file, page.getPath(), pageNew.getPath(), update);
+                        final int references = ResourceResolver.references(file, "ui.page"+ page.getPath(), "ui.page"+ pageNew.getPath(), update);
                         totalReferences[0] += references;
                     }
                     return FileVisitResult.CONTINUE;
@@ -376,35 +373,6 @@ public class PageManager {
         }
 
         return totalReferences[0];
-    }
-
-    private int references(final Path pathFile, final String pathOld, final String pathNew, final boolean update) {
-        final int[] references = new int[]{-1};
-
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-
-                final String content = UtilsText.toString(pathFile);
-
-                final String updatedContent = content.replace("ui.page"+ pathOld,"ui.page"+ pathNew);
-
-                references[0] = (content.length() - updatedContent.length()) / (pathOld.length() - pathNew.length());
-
-                if(update) {
-                    UtilsWeb.writeFile(pathFile.toFile(), updatedContent);
-                }
-
-            }
-        };
-
-        if(update) {
-            new Thread(runnable).start();
-        }else {
-            runnable.run();
-        }
-
-        return Math.abs(references[0]);
     }
 
 }
