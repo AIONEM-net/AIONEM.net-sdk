@@ -2,16 +2,12 @@ package aionem.net.sdk.core.utils;
 
 import lombok.extern.log4j.Log4j2;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -75,11 +71,10 @@ public class UtilsText {
                     object instanceof Integer || object instanceof Long || object instanceof Double || object instanceof Boolean)) {
 
                 if(object instanceof Path) {
-                    final Path path = (Path) object;
-                    value = path.toFile().exists() && path.toFile().isFile() ? Files.readString(path) : "";
+                    value = toString(((Path) object).toFile());
                 }else if(object instanceof File) {
                     final File file = (File) object;
-                    value = file.exists() && file.isFile() ? Files.readString(file.toPath()) : "";
+                    value = file.exists() && file.isFile() ? toString(new FileInputStream(file)) : "";
                 }else if(object instanceof HttpURLConnection) {
                     value = toString(((HttpURLConnection) object).getInputStream());
                 }else if(object instanceof InputStream) {

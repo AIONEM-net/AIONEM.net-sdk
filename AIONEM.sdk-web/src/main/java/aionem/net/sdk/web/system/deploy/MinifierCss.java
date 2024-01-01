@@ -21,6 +21,7 @@ public class MinifierCss {
     public static DaoRes minifySave(String pathInOut) {
         return minifySave(pathInOut, pathInOut);
     }
+
     public static DaoRes minifySave(String pathIn, String pathOut) {
 
         final DaoRes resMinify = new DaoRes();
@@ -56,30 +57,40 @@ public class MinifierCss {
 
             final File file = new File(aioWeb.getRealPathRoot(listFileCss.get(i)));
 
-            String css = UtilsText.toString(file);
+            if(file.exists() && file.isFile()) {
 
-            if(!file.getName().equals("min.css")) {
-                css = minifyFile(file);
-            }
+                String css = UtilsText.toString(file);
 
-            if(isSave) {
-                UtilsWeb.writeFile(file, css);
-            }
+                if (!file.getName().equals("min.css")) {
+                    css = minify(css);
+                }
 
-            css = css
-                    .replace("(/ui.frontend", "("+ uiFrontend)
-                    .replace("\"/ui.frontend", "\""+ uiFrontend)
-                    .replace("'/ui.frontend", "'"+ uiFrontend)
-                    .replace("`/ui.frontend", "`"+ uiFrontend)
-                    .replace("../", "");
+                if (isSave) {
+                    UtilsWeb.writeFile(file, css);
+                    file.delete();
+                }
 
-            if(!UtilsText.isEmpty(css)) {
-                builderCss.append(i > 0 ? "\n" : "").append(css);
+                css = css
+                        .replace("(/ui.frontend", "(" + uiFrontend)
+                        .replace("\"/ui.frontend", "\"" + uiFrontend)
+                        .replace("'/ui.frontend", "'" + uiFrontend)
+                        .replace("`/ui.frontend", "`" + uiFrontend)
+                        .replace("../", "");
+
+                if (!UtilsText.isEmpty(css)) {
+                    builderCss.append(i > 0 ? "\n" : "").append(css);
+                }
+
             }
 
         }
         if(isSave) {
-            UtilsWeb.writeFile(fileCss, builderCss.toString());
+            final boolean isMinified = UtilsWeb.writeFile(fileCss, builderCss.toString());
+            // fileCssJsp.delete();
+            // update templates: replace /css.jsp" = /.css"
+            new File(fileFolder, "css").delete();
+
+            log.error("\nAioWeb::Minify CSS {} : {}", "ui.frontend/"+ fileFolder.getName(), isMinified);
         }
 
         if(isSave) {
@@ -93,27 +104,26 @@ public class MinifierCss {
 
             final ArrayList<File> listFiles = UtilsWeb.findFiles(fileFolder, filterCss);
 
-            for(int i = 0; i < listFiles.size(); i++) {
-
-                final File file = listFiles.get(i);
+            for(final File file : listFiles) {
 
                 if(file.isFile()) {
 
                     String css = UtilsText.toString(file);
 
                     if(!file.getName().equals("min.css")) {
-                        css = minifyFile(file);
+                        css = minify(css);
                     }
 
                     UtilsWeb.writeFile(file, css);
                 }
             }
+
         }
 
         return builderCss.toString();
     }
 
-    public static String minifyFile(File file) {
+    public static String minifyFile(final File file) {
         return minify(UtilsText.toString(file));
     }
 
@@ -124,7 +134,7 @@ public class MinifierCss {
             int k, j, n;
             char curr;
 
-            StringBuilder sb = new StringBuilder(css);
+            final StringBuilder sb = new StringBuilder(css);
 
             n = 0;
             while((n = sb.indexOf("/*", n)) != -1) {
@@ -139,7 +149,7 @@ public class MinifierCss {
                 sb.delete(n, k + 2);
             }
 
-            List<JspMinifierCssUtils.Selector> selectors = new ArrayList<>();
+            final List<JspMinifierCssUtils.Selector> selectors = new ArrayList<>();
             n = 0;
             j = 0;
             for (int i = 0; i < sb.length(); i++) {
@@ -161,7 +171,7 @@ public class MinifierCss {
                 }
             }
 
-            StringBuilder cssBuilder = new StringBuilder();
+            final StringBuilder cssBuilder = new StringBuilder();
             for(JspMinifierCssUtils.Selector selector : selectors) {
                 cssBuilder.append(selector.toString());
             }

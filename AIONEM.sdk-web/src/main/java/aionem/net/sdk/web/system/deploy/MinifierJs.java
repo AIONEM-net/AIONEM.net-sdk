@@ -6,6 +6,7 @@ import aionem.net.sdk.web.AioWeb;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.*;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -15,12 +16,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+@Log4j2
 public class MinifierJs {
 
 
     public static DaoRes minifySave(final String pathInOut) throws Exception {
         return minifySave(pathInOut, pathInOut);
     }
+
     public static DaoRes minifySave(final String inputFilePath, final String outputFilePath) throws Exception {
 
         final DaoRes resMinify = new DaoRes();
@@ -56,29 +59,40 @@ public class MinifierJs {
 
             final File file = new File(aioWeb.getRealPathRoot(listFileJs.get(i)));
 
-            String js = UtilsText.toString(file, true);
+            if(file.exists() && file.isFile()) {
 
-            if(!file.getName().equals("min.js")) {
-                // js = minifyFile(file);
+                String js = UtilsText.toString(file, true);
+
+                if(!file.getName().equals("min.js")) {
+                    js = minify(js);
+                }
+
+                if(isSave) {
+                    UtilsWeb.writeFile(file, js);
+                    file.delete();
+                }
+
+                js = js
+                        .replace("(/ui.frontend", "(" + uiFrontend)
+                        .replace("\"/ui.frontend", "\"" + uiFrontend)
+                        .replace("'/ui.frontend", "'" + uiFrontend)
+                        .replace("`/ui.frontend", "`" + uiFrontend)
+                        .replace("../", "");
+
+                if (!UtilsText.isEmpty(js)) {
+                    builderJs.append(i > 0 ? "\n" : "").append(js);
+                }
+
             }
 
-            if(isSave) {
-                UtilsWeb.writeFile(file, js);
-            }
-
-            js = js
-                    .replace("(/ui.frontend", "("+ uiFrontend)
-                    .replace("\"/ui.frontend", "\""+ uiFrontend)
-                    .replace("'/ui.frontend", "'"+ uiFrontend)
-                    .replace("`/ui.frontend", "`"+ uiFrontend)
-                    .replace("../", "");
-
-            if(!UtilsText.isEmpty(js)) {
-                builderJs.append(i > 0 ? "\n" : "").append(js);
-            }
         }
         if(isSave) {
-            UtilsWeb.writeFile(fileJs, builderJs.toString());
+            final boolean isMinified = UtilsWeb.writeFile(fileJs, builderJs.toString());
+            // fileJsJsp.delete();
+            // update templates: replace /js.jsp" = /.js"
+            new File(fileFolder, "js").delete();
+
+            log.error("\nAioWeb::Minify JS {} : {}", "ui.frontend/"+ fileFolder.getName(), isMinified);
         }
 
         if(isSave) {
@@ -92,14 +106,13 @@ public class MinifierJs {
 
             final ArrayList<File> listFiles = UtilsWeb.findFiles(fileFolder, filterJs);
 
-            for(int i = 0; i < listFiles.size(); i++) {
-                File file = listFiles.get(i);
-                if(file.isFile()) {
+            for (File file : listFiles) {
+                if (file.isFile()) {
 
                     String js = UtilsText.toString(file, true);
 
-                    if(!file.getName().equals("min.js")) {
-                        // js = minifyFile(file);
+                    if (!file.getName().equals("min.js")) {
+                        js = minify(js);
                     }
 
                     UtilsWeb.writeFile(file, js);
@@ -115,6 +128,7 @@ public class MinifierJs {
     }
 
     public static String minify(String js) {
+        if(true) return js;
 
         final Compiler compiler = new Compiler();
         compiler.disableThreads();

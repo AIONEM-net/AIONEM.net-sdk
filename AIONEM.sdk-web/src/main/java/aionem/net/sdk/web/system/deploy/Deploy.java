@@ -1,5 +1,6 @@
 package aionem.net.sdk.web.system.deploy;
 
+import aionem.net.sdk.core.Env;
 import aionem.net.sdk.data.Data;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsData;
@@ -26,11 +27,18 @@ public class Deploy {
 
         if(isUpdatedEnv) {
 
-            final ArrayList<File> listFilePagesCache = new PageManager(aioWeb).getListFilePagesAll("/ui.page/en", "/ui.page/it", "/ui.page/rw", "/ui.page/dev", "/ui.page/auth/login", "/ui.page/auth/register");
-
-            final boolean isMinified = minify(aioWeb);
+            final ArrayList<File> listFilePagesCache = new PageManager(aioWeb).getListFilePagesAll(
+                    "/en",
+                    "/it",
+                    "/rw",
+                    "/dev",
+                    "/auth/login",
+                    "/auth/register"
+            );
 
             final boolean isCachedAll = cacheAll(aioWeb, env, listFilePagesCache);
+
+            final boolean isMinified = minify(aioWeb);
 
             if(isMinified && isCachedAll) {
 
@@ -60,23 +68,29 @@ public class Deploy {
 
         if(fileUiFrontend.isDirectory()) {
 
-            for(final File file : fileUiFrontend.listFiles()) {
+            File[] files = fileUiFrontend.listFiles();
 
-                if(file.isDirectory()) {
+            if(files != null) {
 
-                    final String css = MinifierCss.minifyFolder(aioWeb, file, true);
-                    final String js = MinifierJs.minifyFolder(aioWeb, file, true);
+                for (final File file : files) {
 
-                    UtilsWeb.writeFile(new File(file, ".css"), css);
-                    UtilsWeb.writeFile(new File(file, ".js"), js);
+                    if(file.isDirectory()) {
 
-                }else {
-                    if(file.getName().endsWith(".css")) {
-                        MinifierCss.minifyFile(file);
+                        final String css = MinifierCss.minifyFolder(aioWeb, file, true);
+                        final String js = MinifierJs.minifyFolder(aioWeb, file, true);
 
-                    }else if(file.getName().equals(".js")) {
-                        MinifierJs.minifyFile(file);
+                        UtilsWeb.writeFile(new File(file, ".css"), css);
+                        UtilsWeb.writeFile(new File(file, ".js"), js);
+
+                    }else {
+                        if (file.getName().endsWith(".css")) {
+                            MinifierCss.minifyFile(file);
+
+                        } else if (file.getName().equals(".js")) {
+                            MinifierJs.minifyFile(file);
+                        }
                     }
+
                 }
 
             }
@@ -90,17 +104,17 @@ public class Deploy {
 
         boolean isCachedAll = true;
 
-        final String rootPagePath = aioWeb.getRealPathRoot();
+        final String rootPagePath = aioWeb.getRealPathPage();
 
-        for(int i = 0; i < listFilePagesAll.size(); i++) {
-            final File filePage = listFilePagesAll.get(i);
+        for(final File filePage : listFilePagesAll) {
             final String pagePath = filePage.getAbsolutePath().substring(rootPagePath.length() + 1);
             final Page page = new Page(aioWeb, pagePath);
 
             if(new File(filePage, "index.jsp").exists()) {
                 final boolean isCached = aioWeb.getPageManager().cache(env, page);
-                boolean isDeleted = false;
-                if(isCached) {
+                boolean isDeleted = true;
+                if (isCached) {
+                    isDeleted = new File(filePage, "content.jsp").delete();
                     isDeleted = new File(filePage, "properties.json").delete();
                     isDeleted = isDeleted || new File(filePage, "index.jsp").delete();
                 }
@@ -130,6 +144,10 @@ public class Deploy {
 
             isUpdated = UtilsWeb.writeFile(fileWebXml, webXmlNew);
 
+            if(isUpdated) {
+                Env.ENV = env;
+            }
+
         } catch (Exception e) {
             log.error("ERROR: AIONEM.net - JSP - WebApp : UpdateEnv :: {}", e.getMessage());
         }
@@ -149,6 +167,7 @@ public class Deploy {
 
         return isBuiltWar ? fileWar : null;
     }
+
     public static boolean buildWar(final File fileWebFolder, final File fileWar) {
 
         boolean isBuilt = false;
@@ -167,8 +186,12 @@ public class Deploy {
                 final FileOutputStream fileOutputStream = new FileOutputStream(fileWar);
                 final ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
 
-                for (final File file : fileWebFolder.listFiles()) {
-                    createWar(file, file.getName(), zipOutputStream);
+                final File[] files = fileWebFolder.listFiles();
+
+                if(files != null) {
+                    for (final File file : files) {
+                        createWar(file, file.getName(), zipOutputStream);
+                    }
                 }
 
                 zipOutputStream.close();
@@ -191,8 +214,10 @@ public class Deploy {
             zipOutputStream.putNextEntry(new ZipEntry(path));
             zipOutputStream.closeEntry();
             final File[] children = file.listFiles();
-            for (final File fileChild : children) {
-                createWar(fileChild, path + fileChild.getName(), zipOutputStream);
+            if(children != null) {
+                for (final File fileChild : children) {
+                    createWar(fileChild, path + fileChild.getName(), zipOutputStream);
+                }
             }
             return;
         }

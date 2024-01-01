@@ -39,7 +39,13 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
 
                 try {
 
-                    if(aioWeb.isUnderHome()) {
+                    System.out.println(aioWeb.getRequestUrl());
+
+                    if(aioWeb.isRoot()) {
+                        aioWeb.include(aioWeb.getContextPath("/ui.page/"+ "?" + aioWeb.getRequestQuery()));
+                    }else if(aioWeb.isHome()) {
+                        aioWeb.sendRedirect("/"+ aioWeb.getRequestQuery(true));
+                    }else if(aioWeb.isUnderHome()) {
                         aioWeb.sendRedirect(aioWeb.getRequestUrlQuery().substring(aioWeb.getHome().length()));
                     }else {
 
@@ -48,7 +54,6 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
 
                         final String urlIndexQuery = aioWeb.getServletPage()
                                 + (!requestUrl.endsWith("/") ? "/" : "")
-                                + (!requestUrl.endsWith("index.jsp") ? "index.jsp" : "")
                                 + "?" + aioWeb.getRequestQuery();
 
                         aioWeb.include(aioWeb.getContextPath("/ui.page" + urlIndexQuery));

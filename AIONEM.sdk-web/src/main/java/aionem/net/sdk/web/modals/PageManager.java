@@ -232,6 +232,8 @@ public class PageManager {
             isCached = UtilsWeb.writeFile(realPath +"/"+ "index.html", html);
         }
 
+        log.error("\nAioWeb::Cache {} : {} : {}", env, uri, isCached);
+
         return isCached;
     }
 

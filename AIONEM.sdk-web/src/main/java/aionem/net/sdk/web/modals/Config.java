@@ -58,13 +58,17 @@ public class Config {
 
     public String getEnv() {
         String env = Env.ENV;
-        if(UtilsText.isEmpty(env) && aioWeb != null) {
+        if(aioWeb != null) {
             final String envRequest = aioWeb.getHeader("A-Env");
-            final String envWebApp = aioWeb.getInitParameter("env");
-            env = UtilsText.notEmpty(envRequest, envWebApp);
-            if (env.equalsIgnoreCase("${env}")) env = ConfEnv.ENV_LOCAL;
+            env = UtilsText.notEmpty(envRequest, env);
+            if(UtilsText.isEmpty(env)) {
+                final String envWebApp = aioWeb.getInitParameter("env");
+                env = UtilsText.notEmpty(envRequest, envWebApp);
+                if (env.equalsIgnoreCase("${env}")) env = ConfEnv.ENV_LOCAL;
+            }
         }
-        return UtilsText.notEmpty(env, Env.ENV).toLowerCase();
+        env = UtilsText.notEmpty(env, Env.ENV).toLowerCase();
+        return env;
     }
 
     public String get(final String key) {

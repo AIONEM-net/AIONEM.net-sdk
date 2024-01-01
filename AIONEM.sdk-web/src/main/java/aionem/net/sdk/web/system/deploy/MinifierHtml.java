@@ -64,7 +64,7 @@ public class MinifierHtml {
         return htmlBuilder.toString();
     }
 
-    public static String minifyFile(File file) {
+    public static String minifyFile(final File file) {
         return minify(UtilsText.toString(file));
     }
 
@@ -76,6 +76,8 @@ public class MinifierHtml {
             html = compressor.compress(html);
 
             html = html
+                    .replace("/ui.page", "")
+
                     .replace("background-image: unset;", "")
                     .replace("--fontSize1: unset;", "")
                     .replace("--fontSize2: unset;", "")

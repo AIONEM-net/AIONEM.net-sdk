@@ -216,7 +216,7 @@ public @Getter class AioWeb {
     }
 
     public String getRealPathPage() {
-        return getRealPathWebInf("");
+        return getRealPathRoot("/ui.page");
     }
 
     public String getRealPathPage(final String path) {
@@ -252,6 +252,15 @@ public @Getter class AioWeb {
 
     public String getHome() {
         return getConfEnv().get("home", "/en");
+    }
+
+    public boolean isRoot() {
+        final String requestRoot = getRequestRoot();
+        return UtilsText.isEmpty(requestRoot) || requestRoot.equals("/");
+    }
+
+    public boolean isHome() {
+        return isRoot() || getRequestUrl().equalsIgnoreCase(getHome());
     }
 
     public boolean isUnderHome() {
@@ -310,7 +319,12 @@ public @Getter class AioWeb {
     }
 
     public String getRequestQuery() {
-        return UtilsText.notNull(request.getQueryString());
+        return getRequestQuery(false);
+    }
+
+    public String getRequestQuery(final boolean questionMark) {
+        final String queryString = request.getQueryString();
+        return UtilsText.notEmptyUse(queryString, (questionMark ? "?" : "") + queryString);
     }
 
     public String getRequestUrlQuery() {
