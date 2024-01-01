@@ -59,7 +59,7 @@ public @Data class Page {
         this.navTitle = title;
         this.pageTitle = title;
         this.icon = icon;
-        setPath(aioWeb, path);
+        init(aioWeb, path);
     }
 
     public void init(final AioWeb aioWeb) {
@@ -72,8 +72,16 @@ public @Data class Page {
     }
 
     public void init(final AioWeb aioWeb, final String path, final Properties properties) {
-        this.properties = properties;
-        setPath(aioWeb, path);
+        init(properties);
+
+        if(UtilsText.isEmpty(path)) {
+            this.path = aioWeb.getServletPath();
+            this.url = aioWeb.getContextServletPath();
+        }else {
+            this.path = aioWeb.getRelativePath(path);
+            this.url = aioWeb.getContextPath(path);
+        }
+
         String title = this.path
                 .replace("/index.jsp", "")
                 .replace("/index.html", "")
@@ -89,14 +97,7 @@ public @Data class Page {
         setTitles(title);
     }
 
-    public void setTitles(final String title) {
-        this.title = title;
-        this.subTitle = title;
-        this.navTitle = title;
-        this.pageTitle = title;
-    }
-
-    public void from(final Page page) {
+    public void init(final Page page) {
         if(isRoot || UtilsText.isEmpty(this.title)) {
             this.title = page.getTitle();
             this.navTitle = page.getNavTitle();
@@ -109,32 +110,32 @@ public @Data class Page {
         }
     }
 
-    public void from(final Properties properties) {
-        if(isRoot || UtilsText.isEmpty(this.title)) {
-            this.title = properties.get("title");
-            this.navTitle = properties.get("navTitle");
-            this.pageTitle = properties.get("pageTitle");
-            this.brandSlug = properties.get("brandSlug");
-            this.path = properties.get("path");
-            this.url = properties.get("url");
-            this.icon = properties.get("icon");
+    public void init(final Properties properties) {
+        if(properties != null && !properties.isEmpty()) {
             this.properties = properties;
-        }
-    }
-
-    public void setPath(final AioWeb aioWeb) {
-        setPath(aioWeb, "");
-    }
-
-    public void setPath(final AioWeb aioWeb, final String path) {
-        if(UtilsText.isEmpty(path)) {
-            this.path = aioWeb.getServletPath();
-            this.url = aioWeb.getContextServletPath();
+            this.title = properties.get("title", title);
+            this.navTitle = properties.get("navTitle", navTitle);
+            this.pageTitle = properties.get("pageTitle", pageTitle);
+            this.brandSlug = properties.get("brandSlug", brandSlug);
+            this.headline = properties.get("headline", headline);
+            this.description = properties.get("description", description);
+            this.url = properties.get("url", url);
+            this.redirect = properties.get("redirect", redirect);
+            this.icon = properties.get("icon", icon);
+            this.template = properties.get("template", template);
+            this.resourceType = properties.get("resourceType", resourceType);
+            this.isRoot = properties.get("icon", isRoot);
+            this.properties = properties;
         }else {
-            this.path = aioWeb.getRelativePath(path);
-            this.url = aioWeb.getContextPath(path);
+            this.properties = new Properties();
         }
+    }
 
+    private void setTitles(final String title) {
+        this.title = UtilsText.notEmpty(this.title, title);
+        this.subTitle = UtilsText.notEmpty(this.subTitle, title);
+        this.navTitle = UtilsText.notEmpty(this.navTitle, title);
+        this.pageTitle = UtilsText.notEmpty(this.pageTitle, title);
     }
 
     public String getName() {

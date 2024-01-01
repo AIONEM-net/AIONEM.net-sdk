@@ -14,6 +14,7 @@ public class ConfApp {
 
     private static final HashMap<String, Data> mapData = new HashMap<>();
 
+    @Getter
     private final String name = "application";
     @Getter
     private String env = "";
@@ -113,16 +114,12 @@ public class ConfApp {
         return false;
     }
 
-    public String getBaseName() {
-        return name;
-    }
-
     public Data getBaseData() {
-        return getData(getBaseName());
+        return getData(getName());
     }
 
     public ResourceBundle getBaseResourceBundle() {
-        return UtilsResource.getResourceBundle(getBaseName(), "/ui.config/", "/ui.config/env/", "/config/", "/config/env/", "/");
+        return UtilsResource.getResourceBundle(getName(), "/ui.config/", "/ui.config/env/", "/config/", "/config/env/", "/");
     }
 
     private static <T> Data getData(String name) {
@@ -192,6 +189,14 @@ public class ConfApp {
 
     public static String getDBPassword() {
         return ConfApp.getInstance().get("db_password", "spring.datasource.password", "");
+    }
+
+    public void invalidate() {
+        mapData.remove(getName());
+    }
+
+    public static void invalidateAll() {
+        mapData.clear();
     }
 
 }
