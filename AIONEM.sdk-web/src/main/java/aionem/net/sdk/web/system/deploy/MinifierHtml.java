@@ -17,12 +17,13 @@ public class MinifierHtml {
     public static DaoRes minifySave(final String pathIn) {
         return minifySave(pathIn, pathIn);
     }
+
     public static DaoRes minifySave(final String inputFilePath, final String outputFilePath) {
 
         final DaoRes resMinify = new DaoRes();
 
         final File fileIn = new File(inputFilePath);
-        final String html = minify(UtilsText.toString(fileIn));
+        final String html = minify(UtilsText.toString(fileIn, false));
 
         final File fileOut = new File(outputFilePath);
         final boolean isSaved = UtilsWeb.writeFile(fileOut, html);
@@ -65,7 +66,7 @@ public class MinifierHtml {
     }
 
     public static String minifyFile(final File file) {
-        return minify(UtilsText.toString(file));
+        return minify(UtilsText.toString(file, false));
     }
 
     public static String minify(String html) {

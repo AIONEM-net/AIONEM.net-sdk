@@ -20,16 +20,16 @@ import java.util.regex.Pattern;
 public class MinifierJs {
 
 
-    public static DaoRes minifySave(final String pathInOut) throws Exception {
+    public static DaoRes minifySave(final String pathInOut) {
         return minifySave(pathInOut, pathInOut);
     }
 
-    public static DaoRes minifySave(final String inputFilePath, final String outputFilePath) throws Exception {
+    public static DaoRes minifySave(final String inputFilePath, final String outputFilePath) {
 
         final DaoRes resMinify = new DaoRes();
 
         final File fileIn = new File(inputFilePath);
-        final String html = minify(UtilsText.toString(fileIn));
+        final String html = minify(UtilsText.toString(fileIn, true));
 
         final File fileOut = new File(outputFilePath);
         final boolean isSaved = UtilsWeb.writeFile(fileOut, html);
@@ -49,12 +49,14 @@ public class MinifierJs {
         final File fileJsJsp = new File(fileFolder, "js.jsp");
         final Pattern pattern = Pattern.compile("(/ui\\.frontend[^\"']*\\.js)\"");
 
-        final Matcher matcher = pattern.matcher(UtilsText.toString(fileJsJsp));
+        final Matcher matcher = pattern.matcher(UtilsText.toString(fileJsJsp, true));
 
         final ArrayList<String> listFileJs = new ArrayList<>();
         while(matcher.find()) {
             listFileJs.add(matcher.group(1));
         }
+
+        int n = 0;
         for(int i = 0; i < listFileJs.size(); i++) {
 
             final File file = new File(aioWeb.getRealPathRoot(listFileJs.get(i)));
@@ -79,14 +81,15 @@ public class MinifierJs {
                         .replace("`/ui.frontend", "`" + uiFrontend)
                         .replace("../", "");
 
-                if (!UtilsText.isEmpty(js)) {
+                if(!UtilsText.isEmpty(js)) {
                     builderJs.append(i > 0 ? "\n" : "").append(js);
                 }
 
+                n++;
             }
 
         }
-        if(isSave) {
+        if(isSave && n > 0) {
             final boolean isMinified = UtilsWeb.writeFile(fileJs, builderJs.toString());
             // fileJsJsp.delete();
             // update templates: replace /js.jsp" = /.js"
@@ -124,7 +127,7 @@ public class MinifierJs {
     }
 
     public static String minifyFile(File file) {
-        return minify(UtilsText.toString(file));
+        return minify(UtilsText.toString(file, true));
     }
 
     public static String minify(String js) {

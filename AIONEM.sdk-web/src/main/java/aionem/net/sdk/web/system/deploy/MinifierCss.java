@@ -27,7 +27,7 @@ public class MinifierCss {
         final DaoRes resMinify = new DaoRes();
 
         final File fileIn = new File(pathIn);
-        final String css = minify(UtilsText.toString(fileIn));
+        final String css = minify(UtilsText.toString(fileIn, false));
 
         final File fileOut = new File(pathOut);
         final boolean isSaved = UtilsWeb.writeFile(fileOut, css);
@@ -47,19 +47,21 @@ public class MinifierCss {
         final File fileCssJsp = new File(fileFolder, "css.jsp");
         final Pattern pattern = Pattern.compile("(/ui\\.frontend[^\"']*\\.css)\"");
 
-        final Matcher matcher = pattern.matcher(UtilsText.toString(fileCssJsp));
+        final Matcher matcher = pattern.matcher(UtilsText.toString(fileCssJsp, false));
 
         final ArrayList<String> listFileCss = new ArrayList<>();
         while(matcher.find()) {
             listFileCss.add(matcher.group(1));
         }
+
+        int n = 0;
         for(int i = 0; i < listFileCss.size(); i++) {
 
             final File file = new File(aioWeb.getRealPathRoot(listFileCss.get(i)));
 
             if(file.exists() && file.isFile()) {
 
-                String css = UtilsText.toString(file);
+                String css = UtilsText.toString(file, false);
 
                 if (!file.getName().equals("min.css")) {
                     css = minify(css);
@@ -81,10 +83,11 @@ public class MinifierCss {
                     builderCss.append(i > 0 ? "\n" : "").append(css);
                 }
 
+                n++;
             }
 
         }
-        if(isSave) {
+        if(isSave && n > 0) {
             final boolean isMinified = UtilsWeb.writeFile(fileCss, builderCss.toString());
             // fileCssJsp.delete();
             // update templates: replace /css.jsp" = /.css"
@@ -108,7 +111,7 @@ public class MinifierCss {
 
                 if(file.isFile()) {
 
-                    String css = UtilsText.toString(file);
+                    String css = UtilsText.toString(file, false);
 
                     if(!file.getName().equals("min.css")) {
                         css = minify(css);
@@ -124,7 +127,7 @@ public class MinifierCss {
     }
 
     public static String minifyFile(final File file) {
-        return minify(UtilsText.toString(file));
+        return minify(UtilsText.toString(file, false));
     }
 
     public static String minify(String css) {

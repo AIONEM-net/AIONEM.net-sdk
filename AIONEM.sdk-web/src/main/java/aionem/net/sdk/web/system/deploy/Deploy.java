@@ -6,7 +6,7 @@ import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsData;
 import aionem.net.sdk.web.AioWeb;
 import aionem.net.sdk.web.modals.Page;
-import aionem.net.sdk.web.modals.PageManager;
+import aionem.net.sdk.web.dao.PageManager;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.extern.log4j.Log4j2;
 

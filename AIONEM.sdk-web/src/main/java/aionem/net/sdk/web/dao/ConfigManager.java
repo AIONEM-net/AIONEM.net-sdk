@@ -1,4 +1,4 @@
-package aionem.net.sdk.web.modals;
+package aionem.net.sdk.web.dao;
 
 import aionem.net.sdk.web.AioWeb;
 

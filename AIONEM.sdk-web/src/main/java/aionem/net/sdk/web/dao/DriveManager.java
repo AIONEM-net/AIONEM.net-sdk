@@ -1,4 +1,4 @@
-package aionem.net.sdk.web.modals;
+package aionem.net.sdk.web.dao;
 
 import aionem.net.sdk.data.DaoRes;
 import aionem.net.sdk.core.utils.UtilsText;

@@ -59,7 +59,7 @@ public class UtilsText {
     }
 
     public static String toString(final Object object) {
-        return toString(object, false);
+        return toString(object, true);
     }
 
     public static String toString(final Object object, final boolean isLine) {

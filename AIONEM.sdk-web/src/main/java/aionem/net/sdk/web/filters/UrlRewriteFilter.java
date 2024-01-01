@@ -1,7 +1,7 @@
 package aionem.net.sdk.web.filters;
 
 import aionem.net.sdk.web.AioWeb;
-import aionem.net.sdk.web.modals.PageManager;
+import aionem.net.sdk.web.dao.PageManager;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -38,8 +38,6 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
             if(requestUrl.lastIndexOf(".") < 0) {
 
                 try {
-
-                    System.out.println(aioWeb.getRequestUrl());
 
                     if(aioWeb.isRoot()) {
                         aioWeb.include(aioWeb.getContextPath("/ui.page/"+ "?" + aioWeb.getRequestQuery()));

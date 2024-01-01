@@ -6,7 +6,7 @@ import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.Data;
 import aionem.net.sdk.web.modals.Component;
 import aionem.net.sdk.web.modals.ConfEnv;
-import aionem.net.sdk.web.modals.PageManager;
+import aionem.net.sdk.web.dao.PageManager;
 import aionem.net.sdk.web.modals.Properties;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.Getter;
