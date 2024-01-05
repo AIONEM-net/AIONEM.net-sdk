@@ -1,5 +1,6 @@
 package aionem.net.sdk.web.dao;
 
+import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.AioWeb;
 import aionem.net.sdk.web.utils.UtilsWeb;
 
@@ -10,18 +11,15 @@ import java.util.ArrayList;
 
 public class ConfigManager {
 
-    private final AioWeb aioWeb;
-
-    public ConfigManager(final AioWeb aioWeb) {
-        this.aioWeb = aioWeb;
+    public ConfigManager() {
     }
 
     public ArrayList<File> getListFoldersConfig() {
         final ArrayList<File> folder = new ArrayList<>();
 
-        final File folder1 = aioWeb.getRealFileWebInf("/ui.config/env");
-        final File folder2 = aioWeb.getResourceFile("/config");
-        final File folder3 = aioWeb.getResourceFile("/");
+        final File folder1 = ResourceResolver.getRealFileWebInf("/ui.config/env");
+        final File folder2 = UtilsResource.getResourceFile("/config");
+        final File folder3 = UtilsResource.getResourceFile("/");
 
         if(folder1 != null && folder1.exists() && folder1.isDirectory()) folder.add(folder1);
         if(folder2 != null && folder2.exists() && folder2.isDirectory()) folder.add(folder2);

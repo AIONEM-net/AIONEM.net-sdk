@@ -35,14 +35,6 @@ public @Getter class Properties {
         init(aioWeb);
     }
 
-    public Properties(final AioWeb aioWeb, final Class<?> type) {
-        init(aioWeb, AioWeb.name(type));
-    }
-
-    public Properties(final AioWeb aioWeb, final String propertiesKey) {
-        init(aioWeb, propertiesKey);
-    }
-
     public Properties init(final File fileProperties) {
         return init(new Data(fileProperties));
     }
@@ -57,21 +49,6 @@ public @Getter class Properties {
 
     public Properties init(final Data data) {
         this.data = data != null ? data : new Data();
-        return this;
-    }
-
-    public Properties init(final AioWeb aioWeb, final Class<?> type) {
-        return init(aioWeb, AioWeb.name(type));
-    }
-
-    public Properties init(final AioWeb aioWeb, final String propertiesKey) {
-        final Object properties = aioWeb.getAttribute(propertiesKey);
-        if(properties != null) {
-            data = new Data(properties);
-        }else {
-            init(aioWeb);
-        }
-        aioWeb.removeAttribute(propertiesKey);
         return this;
     }
 
@@ -141,24 +118,6 @@ public @Getter class Properties {
 
     public boolean isEmpty() {
         return data.isEmpty();
-    }
-
-    public <T> T adapt(final Class<T> type) {
-        try {
-            if(type.getSuperclass().isAssignableFrom(Data.class) || type.isAssignableFrom(Data.class)) {
-                return type.getConstructor(this.data.getClass()).newInstance(this.data);
-            }else {
-                return type.getConstructor().newInstance();
-            }
-        }catch(Exception e) {
-            log.error("\nERROR: DB JspProperties - Adapt ::" + e +"\n");
-        }
-        return null;
-    }
-
-    public static <T> T adapt(final AioWeb aioWeb, final Class<T> type) {
-        final Properties properties = new Properties(aioWeb, type);
-        return properties.adapt(type);
     }
 
     @Override

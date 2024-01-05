@@ -1,15 +1,14 @@
 package aionem.net.sdk.web.modals;
 
+import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.Data;
 import aionem.net.sdk.data.Datas;
-import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.web.AioWeb;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
@@ -17,7 +16,7 @@ import java.lang.reflect.Modifier;
 @Log4j2
 public @Getter abstract class Component {
 
-    private AioWeb aioWeb;
+    protected AioWeb aioWeb;
     protected Properties properties;
     private volatile Object instance;
 
@@ -25,39 +24,23 @@ public @Getter abstract class Component {
         properties = new Properties();
     }
 
-    protected Component(final Object instance, final AioWeb aioWeb) {
-        init(instance, aioWeb, new Properties());
-    }
-
-    public Component(final AioWeb aioWeb, final Properties properties) {
-        init(this, aioWeb, properties);
-    }
-
-    public <T> T init(T instance) {
+    public <T> T init(final T instance) {
         this.instance = instance;
         return instance;
     }
 
-    public <T> T init(final AioWeb aioWeb) {
-        return (T) init(instance, aioWeb, new Properties());
-    }
-
     public <T> T init(T instance, final AioWeb aioWeb) {
-        return init(instance, aioWeb, new Properties());
+        return init(instance, aioWeb, new Properties(aioWeb));
     }
 
-    public <T> T init(final AioWeb aioWeb, Properties properties) {
+    public <T> T init(final AioWeb aioWeb, final Properties properties) {
         return (T) init(instance, aioWeb, properties);
     }
 
-    public <T> T init(T instance, final AioWeb aioWeb, Properties properties) {
+    public <T> T init(final T instance, final AioWeb aioWeb, final Properties properties) {
         this.instance = instance;
         this.aioWeb = aioWeb;
         boolean isNew = false;
-
-        if(properties == null || properties.isEmpty()) {
-            properties = new Properties(aioWeb);
-        }
 
         if(instance != null && !properties.isEmpty() && !properties.equals(this.properties)) {
 
@@ -117,7 +100,7 @@ public @Getter abstract class Component {
     }
 
     public Object getObject(final String key) {
-        return properties.get(key);
+        return properties.getObject(key);
     }
 
     public Data getChild(final String key) {

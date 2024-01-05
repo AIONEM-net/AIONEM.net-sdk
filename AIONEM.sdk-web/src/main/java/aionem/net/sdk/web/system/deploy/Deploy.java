@@ -1,17 +1,20 @@
 package aionem.net.sdk.web.system.deploy;
 
-import aionem.net.sdk.core.Env;
 import aionem.net.sdk.data.Data;
-import aionem.net.sdk.core.utils.UtilsText;
-import aionem.net.sdk.data.utils.UtilsData;
-import aionem.net.sdk.web.AioWeb;
-import aionem.net.sdk.web.modals.Page;
+import aionem.net.sdk.data.utils.UtilsJson;
+import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.dao.PageManager;
+import aionem.net.sdk.web.dao.ResourceResolver;
+import aionem.net.sdk.web.modals.Page;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -19,15 +22,15 @@ import java.util.zip.ZipOutputStream;
 @Log4j2
 public class Deploy {
 
-    public static boolean deployWar(final AioWeb aioWeb, final String env, final String warFileName) {
+    public static boolean deployWar(final String env, final String warFileName) {
 
         boolean isDeployedWar = false;
 
-        final boolean isUpdatedEnv = updateEnv(aioWeb, env);
+        final boolean isUpdatedEnv = updateEnv(env);
 
         if(isUpdatedEnv) {
 
-            final ArrayList<File> listFilePagesCache = new PageManager(aioWeb).getListFilePagesAll(
+            final ArrayList<File> listFilePagesCache = new PageManager().getListFilePagesAll(
                     "/en",
                     "/it",
                     "/rw",
@@ -36,18 +39,18 @@ public class Deploy {
                     "/auth/register"
             );
 
-            final boolean isCachedAll = cacheAll(aioWeb, env, listFilePagesCache);
+            final boolean isCachedAll = cacheAll(listFilePagesCache);
 
-            final boolean isMinified = minify(aioWeb);
+            final boolean isMinified = minify();
 
             if(isMinified && isCachedAll) {
 
-                final File fileWar = buildWar(aioWeb, warFileName);
+                final File fileWar = buildWar(warFileName);
                 final boolean isBuiltWar = fileWar != null && fileWar.exists();
 
                 if(isBuiltWar) {
 
-                    final boolean isUploadedWar = uploadWar(aioWeb, fileWar);
+                    final boolean isUploadedWar = uploadWar(fileWar);
 
                     if(isUploadedWar) {
                         isDeployedWar = true;
@@ -60,11 +63,11 @@ public class Deploy {
         return isDeployedWar;
     }
 
-    public static boolean minify(final AioWeb aioWeb) {
+    public static boolean minify() {
 
         boolean isMinified = true;
 
-        final File fileUiFrontend = new File(aioWeb.getRealPathRoot("/ui.frontend"));
+        final File fileUiFrontend = new File(UtilsResource.getRealPathRoot("/ui.frontend"));
 
         if(fileUiFrontend.isDirectory()) {
 
@@ -76,8 +79,8 @@ public class Deploy {
 
                     if(file.isDirectory()) {
 
-                        final String css = MinifierCss.minifyFolder(aioWeb, file, true);
-                        final String js = MinifierJs.minifyFolder(aioWeb, file, true);
+                        final String css = MinifierCss.minifyFolder(file, true);
+                        final String js = MinifierJs.minifyFolder(file, true);
 
                         UtilsWeb.writeFile(new File(file, ".css"), css);
                         UtilsWeb.writeFile(new File(file, ".js"), js);
@@ -100,23 +103,23 @@ public class Deploy {
         return isMinified;
     }
 
-    public static boolean cacheAll(final AioWeb aioWeb, String env, final ArrayList<File> listFilePagesAll) {
+    public static boolean cacheAll(final ArrayList<File> listFilePagesAll) {
 
         boolean isCachedAll = true;
 
-        final String rootPagePath = aioWeb.getRealPathPage();
+        final String rootPagePath = ResourceResolver.getRealPathPage();
 
         for(final File filePage : listFilePagesAll) {
             final String pagePath = filePage.getAbsolutePath().substring(rootPagePath.length() + 1);
-            final Page page = new Page(aioWeb, pagePath);
+            final Page page = new Page(pagePath);
 
             if(new File(filePage, "index.jsp").exists()) {
-                final boolean isCached = aioWeb.getPageManager().cache(env, page);
+                final boolean isCached = new PageManager().cache(page);
                 boolean isDeleted = true;
                 if (isCached) {
-                    isDeleted = new File(filePage, "content.jsp").delete();
-                    isDeleted = new File(filePage, "properties.json").delete();
-                    isDeleted = isDeleted || new File(filePage, "index.jsp").delete();
+                    final boolean isDeleted1 = new File(filePage, "content.jsp").delete();
+                    final boolean isDeleted2 = new File(filePage, "properties.json").delete();
+                    isDeleted = isDeleted1 || isDeleted2 || new File(filePage, "index.jsp").delete();
                 }
                 if(!isCached || !isDeleted) {
                     isCachedAll = false;
@@ -129,35 +132,54 @@ public class Deploy {
         return isCachedAll;
     }
 
-    public static boolean updateEnv(final AioWeb aioWeb, final String env) {
+    public static boolean updateEnv(final String env) {
 
         boolean isUpdated = false;
+        int n = 0;
 
         try {
 
-            final File fileWebXml = new File(aioWeb.getRealPathWebInf("web.xml"));
-            final String webXml = UtilsText.toString(fileWebXml, true);
+            final File fileConfEnv1 = new File(ResourceResolver.getRealPathWebInf("ui.config/application.json"));
+            final File fileConfEnv2 = UtilsResource.getResourceFile("application.json");
 
-            final String webXmlNew = UtilsData.replaceVariables(webXml, new Data()
-                    .put("env", env)
-            );
+            final ArrayList<File> listFileConfig = new ArrayList<>();
+            listFileConfig.add(fileConfEnv1);
+            listFileConfig.add(fileConfEnv2);
 
-            isUpdated = UtilsWeb.writeFile(fileWebXml, webXmlNew);
+            for(final File fileConfEnv : listFileConfig) {
+                if(fileConfEnv.exists() && fileConfEnv.isFile()) {
+                    final Data data = new Data(fileConfEnv);
+                    data.put("env", env);
+                    isUpdated = UtilsWeb.writeFile(fileConfEnv, UtilsJson.prettyPrint(data.toJson()));
+                    n++;
+                }
+            }
 
-            if(isUpdated) {
-                Env.ENV = env;
+            final ArrayList<String> listResourceBundles = new ArrayList<>();
+            listResourceBundles.add("application");
+
+            for(final String resourceName : listResourceBundles) {
+
+                final ResourceBundle resourceBundle = UtilsResource.getResourceBundle(resourceName);
+
+                if(resourceBundle != null) {
+                    final Data data = new Data(resourceBundle);
+                    data.put("env", env);
+                    isUpdated = UtilsWeb.writeFile(UtilsResource.getResourceFile(resourceName + ".properties"), data.toResourceBundleString());
+                    n++;
+                }
             }
 
         } catch (Exception e) {
             log.error("ERROR: AIONEM.net - JSP - WebApp : UpdateEnv :: {}", e.getMessage());
         }
 
-        return isUpdated;
+        return isUpdated || n > 0;
     }
 
-    public static File buildWar(final AioWeb aioWeb, final String warFileName) {
+    public static File buildWar(final String warFileName) {
 
-        final String webFileFolder = aioWeb.getRealPathRoot();
+        final String webFileFolder = UtilsResource.getRealPathRoot();
         final File fileWebFolder = new File(webFileFolder);
 
         final String warFilePath = fileWebFolder.getParent() + "/" + (warFileName);
@@ -235,7 +257,7 @@ public class Deploy {
         fileInputStream.close();
     }
 
-    public static boolean uploadWar(final AioWeb aioWeb, final File fileWar) {
+    public static boolean uploadWar(final File fileWar) {
 
         boolean isUploaded = false;
 

@@ -2,7 +2,9 @@ package aionem.net.sdk.web.system.deploy;
 
 import aionem.net.sdk.data.DaoRes;
 import aionem.net.sdk.core.utils.UtilsText;
+import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.modals.ConfEnv;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.extern.log4j.Log4j2;
 
@@ -37,11 +39,11 @@ public class MinifierCss {
         return resMinify;
     }
 
-    public static String minifyFolder(final AioWeb aioWeb, final File fileFolder, final boolean isSave) {
+    public static String minifyFolder(final File fileFolder, final boolean isSave) {
 
         final StringBuilder builderCss = new StringBuilder();
 
-        final String uiFrontend = aioWeb.getContextPath("/ui.frontend");
+        final String uiFrontend = ConfEnv.getInstance().getContextPath("/ui.frontend");
 
         final File fileCss = new File(fileFolder, ".css");
         final File fileCssJsp = new File(fileFolder, "css.jsp");
@@ -57,7 +59,7 @@ public class MinifierCss {
         int n = 0;
         for(int i = 0; i < listFileCss.size(); i++) {
 
-            final File file = new File(aioWeb.getRealPathRoot(listFileCss.get(i)));
+            final File file = new File(UtilsResource.getRealPathRoot(listFileCss.get(i)));
 
             if(file.exists() && file.isFile()) {
 

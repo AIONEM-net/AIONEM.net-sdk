@@ -2,8 +2,11 @@ package aionem.net.sdk.web.dao;
 
 
 import aionem.net.sdk.core.utils.UtilsText;
+import aionem.net.sdk.data.utils.UtilsResource;
+import aionem.net.sdk.web.modals.ConfEnv;
 import aionem.net.sdk.web.utils.UtilsWeb;
 
+import java.io.File;
 import java.nio.file.Path;
 
 public class ResourceResolver {
@@ -36,4 +39,33 @@ public class ResourceResolver {
 
         return Math.abs(references[0]);
     }
+
+    public static String getRealPathWebInf() {
+        return getRealPathWebInf("");
+    }
+
+    public static String getRealPathWebInf(final String path) {
+        return UtilsResource.getRealPathRoot("/WEB-INF"+ (!UtilsText.isEmpty(path) ? "/" + path : ""));
+    }
+
+    public static File getRealFileWebInf(final String path) {
+        return new File(getRealPathWebInf(path));
+    }
+
+    public static String getRealPathPage() {
+        return UtilsResource.getRealPathRoot("/ui.page");
+    }
+
+    public static String getRealPathDrive() {
+        return UtilsResource.getRealPathRoot("/ui.drive");
+    }
+
+    public static String getRealPathDrive(final String path) {
+        return UtilsResource.getRealPathRoot("/ui.drive"+ (!UtilsText.isEmpty(path) ? "/" + path : ""));
+    }
+
+    public static String getRealPathPage(final String path) {
+        return UtilsResource.getRealPathRoot("/ui.page"+ (!UtilsText.isEmpty(path) || path.equals("/") ? path : ConfEnv.getHome()));
+    }
+
 }

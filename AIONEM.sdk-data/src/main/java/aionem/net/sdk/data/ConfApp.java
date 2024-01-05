@@ -1,6 +1,5 @@
 package aionem.net.sdk.data;
 
-import aionem.net.sdk.core.Env;
 import aionem.net.sdk.core.utils.UtilsConverter;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsResource;
@@ -35,17 +34,10 @@ public class ConfApp {
     }
 
     public ConfApp init() {
-        final ResourceBundle resourceBundleBase = getBaseResourceBundle();
-        if(resourceBundleBase != null && resourceBundleBase.containsKey("env")) {
-            env = UtilsConverter.convert(resourceBundleBase.getString("env"), env);
-        }
-        return init(UtilsText.notEmpty(Env.ENV, env));
-    }
-
-    public ConfApp init(final String env) {
-        this.env = env;
-
         String name = this.name;
+
+        final String env = getEnv();
+
         if(!UtilsText.isEmpty(env)) {
             name = "/"+ env +"/"+ name;
             this.resourceBundle = UtilsResource.getResourceBundle(name, "/ui.config/env", "/config/env");
@@ -56,6 +48,11 @@ public class ConfApp {
         this.data = getData(name);
 
         return this;
+    }
+
+    public String getEnv() {
+        env = !UtilsText.isEmpty(env) ? env : get("env");
+        return env;
     }
 
     public String get(final String key) {
@@ -132,7 +129,7 @@ public class ConfApp {
         }
         if(data == null || data.isEmpty()) {
 
-            String json = UtilsResource.readParentResource(name, "/ui.config/", "/ui.config/env/");
+            String json = UtilsResource.readResourceOrParent(name, "/ui.config/", "/ui.config/env/");
             if(UtilsText.isEmpty(json)) {
                 json = UtilsResource.readResource(name, "/config/", "/config/env/", "/");
             }
@@ -193,10 +190,13 @@ public class ConfApp {
 
     public void invalidate() {
         mapData.remove(getName());
+        this.env = "";
+        init();
     }
 
     public static void invalidateAll() {
         mapData.clear();
+        getInstance().invalidate();
     }
 
 }

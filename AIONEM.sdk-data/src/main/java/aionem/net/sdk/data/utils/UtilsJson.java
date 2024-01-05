@@ -9,9 +9,9 @@ import com.google.gson.*;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 
 @Log4j2
@@ -30,6 +30,10 @@ public class UtilsJson {
         final GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setPrettyPrinting();
         return gsonBuilder.create();
+    }
+
+    public static String prettyPrint(final JsonElement jsonElement) {
+        return getGsonPretty().toJson(jsonElement);
     }
 
     public static boolean isJson(final Object object) {
@@ -69,6 +73,8 @@ public class UtilsJson {
                 jsonObject = ((Data) object).toJson();
             }else if(object instanceof HashMap) {
                 jsonObject = fromHashMap((HashMap<String, Object>) object);
+            }else if(object instanceof ResourceBundle) {
+                jsonObject = fromResourceBundle((ResourceBundle) object);
             }else {
                 final String value = UtilsText.toString(object);
                 if(!UtilsText.isEmpty(value)) {
@@ -107,11 +113,22 @@ public class UtilsJson {
         return values;
     }
 
-    public static JsonObject fromHashMap(final HashMap<String, Object> values) {
+    public static JsonObject fromHashMap(final HashMap<String, Object> hashMap) {
         final JsonObject jsonObject = new JsonObject();
-        if(values != null) {
-            for(final String key : values.keySet()) {
-                final Object value = values.get(key);
+        if(hashMap != null) {
+            for(final String key : hashMap.keySet()) {
+                final Object value = hashMap.get(key);
+                add(jsonObject, key, value);
+            }
+        }
+        return jsonObject;
+    }
+
+    public static JsonObject fromResourceBundle(final ResourceBundle resourceBundle) {
+        final JsonObject jsonObject = new JsonObject();
+        if(resourceBundle != null) {
+            for(final String key : resourceBundle.keySet()) {
+                final Object value = resourceBundle.getString(key);
                 add(jsonObject, key, value);
             }
         }

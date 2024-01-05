@@ -1,10 +1,8 @@
 package aionem.net.sdk.web.modals;
 
-import aionem.net.sdk.core.Env;
 import aionem.net.sdk.core.utils.UtilsConverter;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.Data;
-import aionem.net.sdk.web.AioWeb;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.Getter;
 
@@ -20,29 +18,24 @@ public class Config {
     private String name = "application";
     private Data data = new Data();
     private ResourceBundle resourceBundle;
-    protected AioWeb aioWeb;
 
     public Config() {
-        init(aioWeb, name);
-    }
-
-    public Config(final AioWeb aioWeb) {
-        this.init(aioWeb, name);
+        init();
     }
 
     public Config(final String name) {
-        init(aioWeb, name);
+        init(name);
     }
 
-    public Config(final AioWeb aioWeb, final String name) {
-        init(aioWeb, name);
+    public void init() {
+        init(name);
     }
 
-    public void init(final AioWeb aioWeb, String name) {
-        this.aioWeb = aioWeb;
+    public void init(String name) {
         this.name = name;
         
         final String env = getEnv();
+
         if(!UtilsText.isEmpty(env)) {
             name = env +"/"+ name;
             this.resourceBundle = UtilsWeb.getResourceBundleEnv(name);
@@ -57,18 +50,7 @@ public class Config {
     }
 
     public String getEnv() {
-        String env = Env.ENV;
-        if(aioWeb != null) {
-            final String envRequest = aioWeb.getHeader("A-Env");
-            env = UtilsText.notEmpty(envRequest, env);
-            if(UtilsText.isEmpty(env)) {
-                final String envWebApp = aioWeb.getInitParameter("env");
-                env = UtilsText.notEmpty(envRequest, envWebApp);
-                if (env.equalsIgnoreCase("${env}")) env = ConfEnv.ENV_LOCAL;
-            }
-        }
-        env = UtilsText.notEmpty(env, Env.ENV).toLowerCase();
-        return env;
+        return ConfEnv.getInstance().getEnv();
     }
 
     public String get(final String key) {
@@ -116,11 +98,7 @@ public class Config {
         return UtilsWeb.getResourceBundleConfig(getBaseName());
     }
 
-    private Data getData(String name) {
-        return getData(aioWeb, name);
-    }
-
-    private static Data getData(final AioWeb aioWeb, String name) {
+    private static Data getData(String name) {
         Data data = null;
 
         if(!name.endsWith(".json")) name += ".json";
@@ -130,9 +108,9 @@ public class Config {
         }
         if(data == null || data.isEmpty()) {
 
-            String json = UtilsWeb.readFileEnv(aioWeb, name);
+            String json = UtilsWeb.readFileEnv(name);
             if(UtilsText.isEmpty(json)) {
-                json = UtilsWeb.readFileConfig(aioWeb, name);
+                json = UtilsWeb.readFileConfig(name);
             }
 
             if(!UtilsText.isEmpty(json)) {
@@ -152,10 +130,12 @@ public class Config {
     public void invalidate() {
         mapData.remove(getName());
         mapData.remove(getBaseName());
+        init();
     }
 
     public static void invalidateAll() {
         mapData.clear();
+        ConfEnv.getInstance().invalidate();
     }
 
 }

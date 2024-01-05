@@ -139,7 +139,7 @@ public class I18n {
         }
         if(data == null || data.isEmpty()) {
 
-            String json = UtilsResource.readParentResource(name, "/ui.config/i18n", "/i18n");
+            String json = UtilsResource.readResourceOrParent(name, "/ui.config/i18n", "/i18n");
             if(UtilsText.isEmpty(json)) {
                 json = UtilsResource.readResource(name, "/ui.config/i18n", "/i18n");
             }

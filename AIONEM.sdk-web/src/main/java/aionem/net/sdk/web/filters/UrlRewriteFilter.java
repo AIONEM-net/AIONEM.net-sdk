@@ -1,7 +1,9 @@
 package aionem.net.sdk.web.filters;
 
+import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.AioWeb;
 import aionem.net.sdk.web.dao.PageManager;
+import aionem.net.sdk.web.modals.ConfEnv;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -22,7 +24,7 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
         final AioWeb aioWeb = new AioWeb(request, response);
 
-        final String requestUrl = aioWeb.getRequestUrl();
+        final String requestUrl = aioWeb.getRequestPath();
 
         boolean isSystemPath = false;
         for(final String systemPath: PageManager.SYSTEM_PATH) {
@@ -30,7 +32,7 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
             if(isSystemPath) break;
         }
 
-        if(!aioWeb.isHostMatch() && !aioWeb.isLocal()) {
+        if(!aioWeb.isHostMatch() && !aioWeb.isRemoteLocal()) {
             final String urlQuery = aioWeb.getRequestUrlQuery();
             aioWeb.getRedirect(aioWeb.getConfEnv().getUrl(urlQuery));
         }else if(!isSystemPath) {
@@ -40,11 +42,11 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
                 try {
 
                     if(aioWeb.isRoot()) {
-                        aioWeb.include(aioWeb.getContextPath("/ui.page/"+ "?" + aioWeb.getRequestQuery()));
+                        aioWeb.include(aioWeb.getContextPath("/ui.page/"+ ConfEnv.getHome() +"/?"+ aioWeb.getRequestQuery()));
                     }else if(aioWeb.isHome()) {
                         aioWeb.sendRedirect("/"+ aioWeb.getRequestQuery(true));
                     }else if(aioWeb.isUnderHome()) {
-                        aioWeb.sendRedirect(aioWeb.getRequestUrlQuery().substring(aioWeb.getHome().length()));
+                        aioWeb.sendRedirect(aioWeb.getRequestUrlQuery().substring(ConfEnv.getHome().length()));
                     }else {
 
                         response.setCharacterEncoding("UTF-8");
@@ -52,7 +54,7 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
 
                         final String urlIndexQuery = aioWeb.getServletPage()
                                 + (!requestUrl.endsWith("/") ? "/" : "")
-                                + "?" + aioWeb.getRequestQuery();
+                                +"?"+ aioWeb.getRequestQuery();
 
                         aioWeb.include(aioWeb.getContextPath("/ui.page" + urlIndexQuery));
                     }
@@ -63,7 +65,7 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
 
             }else {
 
-                final String filePath = aioWeb.getRealPathRoot("/ui.frontend" + requestUrl);
+                final String filePath = UtilsResource.getRealPathRoot("/ui.frontend" + requestUrl);
                 final Path file = Path.of(filePath);
 
                 if(Files.exists(file)) {

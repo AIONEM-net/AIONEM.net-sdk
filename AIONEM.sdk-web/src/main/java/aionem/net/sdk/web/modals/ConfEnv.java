@@ -2,7 +2,6 @@ package aionem.net.sdk.web.modals;
 
 import aionem.net.sdk.core.Env;
 import aionem.net.sdk.core.utils.UtilsText;
-import aionem.net.sdk.web.AioWeb;
 
 public class ConfEnv extends Config {
 
@@ -11,12 +10,13 @@ public class ConfEnv extends Config {
     public static final String ENV_DEV = "dev";
     public static final String ENV_LOCAL = "local";
 
-    private static ConfEnv confEnv;
-    public static ConfEnv getInstance(final AioWeb aioWeb) {
-        if(confEnv == null) {
-            confEnv = new ConfEnv(aioWeb);
+    private String env = "";
 
-            Env.ENV = confEnv.getEnv();
+    private static ConfEnv confEnv;
+    public static ConfEnv getInstance() {
+        if(confEnv == null) {
+            confEnv = new ConfEnv();
+
             Env.IS_DEBUG = confEnv.isDebug();
             Env.IS_DEBUG_EXCEPTION = confEnv.isDebugException();
         }
@@ -27,8 +27,28 @@ public class ConfEnv extends Config {
         super();
     }
 
-    public ConfEnv(final AioWeb aioWeb) {
-        super(aioWeb);
+    public String getEnv() {
+        env = !UtilsText.isEmpty(env) ? env : get("env");
+        return env;
+    }
+
+    public static String getHome() {
+        return UtilsText.notEmpty(getInstance().get("home"), "/en");
+    }
+
+    public static String getSites() {
+        return UtilsText.notEmpty(getInstance().get("sites"), getHome());
+    }
+
+    public String getContextPath() {
+        return get("contextPath", "/");
+    }
+
+    public String getContextPath(final String path) {
+        String contextPath = getContextPath() +"/"+ path;
+        contextPath = contextPath.replace("//", "/");
+        if(contextPath.endsWith("/")) contextPath = contextPath.substring(0, contextPath.length()-1);
+        return contextPath;
     }
 
     public String getSenderID() {
@@ -36,15 +56,17 @@ public class ConfEnv extends Config {
     }
 
     public String getDomain() {
-        return get("domain");
+        final String domain = get("domain");
+        return !UtilsText.isEmpty(domain) ? domain : (isEnvLocal() ? "127.0.0.1" : "");
     }
 
     public String getUrl() {
-        return get("url");
+        final String url = get("url");
+        return !UtilsText.isEmpty(url) ? url : getDomain();
     }
 
     public String getUrl(final String path) {
-        return getUrl() + aioWeb.getContextPath(path);
+        return getUrl() + getContextPath(path);
     }
 
     public String getHost() {
@@ -106,6 +128,12 @@ public class ConfEnv extends Config {
 
     public boolean isDebugException() {
         return get("debug_exception", Env.IS_DEBUG_EXCEPTION);
+    }
+
+    @Override
+    public void invalidate() {
+        this.env = "";
+        super.invalidate();
     }
 
 }

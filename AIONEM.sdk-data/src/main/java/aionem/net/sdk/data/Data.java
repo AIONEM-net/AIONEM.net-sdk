@@ -11,14 +11,10 @@ import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.File;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.Stream;
 
 
 @Log4j2
@@ -338,7 +334,7 @@ public class Data {
         return this.values.keySet();
     }
 
-    public String toLines() {
+    public String toHtmlLines() {
         final StringBuilder lines = new StringBuilder();
         for(final String key : this.values.keySet()) {
             final Object value = this.values.get(key);
@@ -354,6 +350,18 @@ public class Data {
             final String key = UtilsNetwork.encodeUrl(entry.getKey());
             final String value = UtilsNetwork.encodeUrl(UtilsText.toString(entry.getValue()));
             lines.append(i > 0 ? "&" : "").append(key).append("=").append(value);
+            i++;
+        }
+        return lines.toString();
+    }
+
+    public String toResourceBundleString() {
+        final StringBuilder lines = new StringBuilder();
+        int i = 0;
+        for(final Map.Entry<String, Object> entry : this.values.entrySet()) {
+            final String key = UtilsNetwork.encodeUrl(entry.getKey());
+            final String value = UtilsNetwork.encodeUrl(UtilsText.toString(entry.getValue()));
+            lines.append(i > 0 ? "\n" : "").append(key).append("=").append(value);
             i++;
         }
         return lines.toString();

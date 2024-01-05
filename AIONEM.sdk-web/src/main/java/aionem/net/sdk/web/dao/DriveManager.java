@@ -2,7 +2,8 @@ package aionem.net.sdk.web.dao;
 
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.DaoRes;
-import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.data.utils.UtilsResource;
+import aionem.net.sdk.web.modals.ConfEnv;
 import aionem.net.sdk.web.modals.Resource;
 import aionem.net.sdk.web.utils.UtilsDrive;
 import lombok.extern.log4j.Log4j2;
@@ -17,10 +18,8 @@ import java.util.ArrayList;
 @Log4j2
 public class DriveManager {
 
-    private final AioWeb aioWeb;
+    public DriveManager() {
 
-    public DriveManager(final AioWeb aioWeb) {
-        this.aioWeb = aioWeb;
     }
 
     public DaoRes uploadFile(final Part filePart, String uploadName) {
@@ -86,9 +85,9 @@ public class DriveManager {
 
                 final String fileFolder = UtilsDrive.getFileFolder(fileExtension);
                 final String filePath = fileFolder +"/" + uploadName;
-                final String fileUrl = aioWeb.getContextPath(UtilsDrive.DRIVE_API_PATH) +"/"+ filePath;
+                final String fileUrl = ConfEnv.getInstance().getContextPath(UtilsDrive.DRIVE_API_PATH) +"/"+ filePath;
 
-                final File fileDirectory = new File(aioWeb.getRealPathRoot(UtilsDrive.DRIVE_API_PATH +"/"+ fileFolder));
+                final File fileDirectory = new File(UtilsResource.getRealPathRoot(UtilsDrive.DRIVE_API_PATH +"/"+ fileFolder));
 
                 final boolean isDirectory;
                 if(!fileDirectory.exists()) {
@@ -140,7 +139,7 @@ public class DriveManager {
     }
 
     public File getFile(final String path) {
-        return aioWeb.getRealFileRoot("/ui.drive" +"/" + path);
+        return UtilsResource.getRealFileRoot("/ui.drive" +"/" + path);
     }
 
     public ArrayList<File> getFiles() {
@@ -163,7 +162,7 @@ public class DriveManager {
     public int references(final Resource resource, final Resource resourceNew, final boolean update) {
         final int[] totalReferences = {0};
 
-        final Path pathSection = Paths.get(aioWeb.getRealPathPage());
+        final Path pathSection = Paths.get(ResourceResolver.getRealPathPage());
 
         try {
             Files.walkFileTree(pathSection, new SimpleFileVisitor<>() {

@@ -1,8 +1,10 @@
 package aionem.net.sdk.web.modals;
 
 import aionem.net.sdk.core.utils.UtilsText;
+import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.AioWeb;
 import aionem.net.sdk.web.dao.PageManager;
+import aionem.net.sdk.web.dao.ResourceResolver;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
@@ -26,8 +28,9 @@ public @Data class Page {
     private String redirect = "";
     private String icon = "";
     private String language = "";
-    private String template = "";
+    private String template = "page";
     private String resourceType = "";
+    private int order = 0;
     private boolean isRoot = false;
     private boolean isSeo = true;
     private boolean pwa = true;
@@ -45,41 +48,40 @@ public @Data class Page {
         init(aioWeb);
     }
 
-    public Page(final AioWeb aioWeb, final String path) {
-        init(aioWeb, path);
+    public Page(final String path) {
+        init(path);
     }
 
-    public Page(final AioWeb aioWeb, final String path, final Properties properties) {
-        init(aioWeb, path, properties);
+    public Page(final String path, final Properties properties) {
+        init(path, properties);
     }
 
-    public Page(final AioWeb aioWeb, final String title, final String path, final String icon) {
+    public Page(final String title, final String path, final String icon) {
         this.title = title;
         this.subTitle = title;
         this.navTitle = title;
         this.pageTitle = title;
         this.icon = icon;
-        init(aioWeb, path);
+        init(path);
     }
 
     public void init(final AioWeb aioWeb) {
-        init(aioWeb, this.path);
+        this.path = aioWeb.getServletPage();
+        this.url = aioWeb.getContextServletPage();
+        init(this.path);
     }
 
-    public void init(final AioWeb aioWeb, final String path) {
-        final File filePage = new File(aioWeb.getRealPathPage(path));
-        init(aioWeb, path, new Properties(new File(filePage, "properties.json")));
+    public void init(final String path) {
+        final File filePage = new File(ResourceResolver.getRealPathPage(path));
+        init(path, new Properties(new File(filePage, "properties.json")));
     }
 
-    public void init(final AioWeb aioWeb, final String path, final Properties properties) {
+    public void init(final String path, final Properties properties) {
         init(properties);
 
-        if(UtilsText.isEmpty(path)) {
-            this.path = aioWeb.getServletPath();
-            this.url = aioWeb.getContextServletPath();
-        }else {
-            this.path = aioWeb.getRelativePath(path);
-            this.url = aioWeb.getContextPath(path);
+        if(!UtilsText.isEmpty(path) && !path.equals("/")) {
+            this.path = UtilsResource.getRelativePath(path);
+            this.url = ConfEnv.getInstance().getContextPath(path);
         }
 
         String title = this.path
@@ -124,8 +126,8 @@ public @Data class Page {
             this.icon = properties.get("icon", icon);
             this.template = properties.get("template", template);
             this.resourceType = properties.get("resourceType", resourceType);
-            this.isRoot = properties.get("icon", isRoot);
-            this.properties = properties;
+            this.isRoot = properties.get("isRoot", isRoot);
+            this.order = properties.get("order", order);
         }else {
             this.properties = new Properties();
         }
@@ -158,8 +160,20 @@ public @Data class Page {
         }
     }
 
-    public ArrayList<Page> listChildren(final AioWeb aioWeb) {
-        return new PageManager(aioWeb).getListPages(this);
+    public String getContent() {
+        return "/ui.page"+ path +"/" + "content.jsp";
+    }
+
+    public String getTemplate() {
+        return UtilsText.notEmpty(template, "page");
+    }
+
+    public String getTemplatePath() {
+        return "/WEB-INF/ui.template/"+ getTemplate() +"/.jsp";
+    }
+
+    public ArrayList<Page> listChildren() {
+        return new PageManager().getListPages(this);
     }
 
     public boolean isAuthAllow(final boolean isAdmins, final boolean isUsers, final boolean isAuths) {
@@ -167,6 +181,20 @@ public @Data class Page {
         if(isUsers && !authAllowUser) return false;
         if(isAdmins && !authAllowAdmin) return false;
         return true;
+    }
+
+    private boolean exists() {
+        final File file = getFile();
+        return file != null && file.exists();
+    }
+
+    private File getFile() {
+        return UtilsResource.getResourceFileRoot("/ui.page" + path);
+    }
+
+    public File getParent() {
+        final File file = getFile();
+        return file != null && file.exists() ? file.getParentFile() : null;
     }
 
     @Override

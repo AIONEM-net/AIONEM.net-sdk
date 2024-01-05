@@ -3,11 +3,9 @@ package aionem.net.sdk.web;
 import aionem.net.sdk.core.utils.UtilsConverter;
 import aionem.net.sdk.core.utils.UtilsNetwork;
 import aionem.net.sdk.core.utils.UtilsText;
-import aionem.net.sdk.data.Data;
-import aionem.net.sdk.web.modals.Component;
+import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.modals.ConfEnv;
 import aionem.net.sdk.web.dao.PageManager;
-import aionem.net.sdk.web.modals.Properties;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -32,8 +30,6 @@ public @Getter class AioWeb {
     protected HttpServletResponse response;
     protected PageContext pageContext;
     protected HttpSession session;
-
-    private PageManager pageManager;
 
     public AioWeb() {
 
@@ -60,38 +56,15 @@ public @Getter class AioWeb {
     }
 
     public ConfEnv getConfEnv() {
-        return ConfEnv.getInstance(this);
+        return ConfEnv.getInstance();
     }
 
     public PageManager getPageManager() {
-        if(pageManager == null) {
-            pageManager = new PageManager(this);
-        }
-        return pageManager;
+        return PageManager.getInstance();
     }
 
     public boolean isPublishMode() {
         return true;
-    }
-
-    public void setAttribute(final Object value) {
-        setAttribute(Properties.PROPERTIES, value);
-    }
-
-    public void setAttribute(final Data data) {
-        setAttribute(name(data.getClass()), data.toString());
-    }
-
-    public void setAttribute(final String name, Object value) {
-        request.setAttribute(name, value);
-    }
-
-    public <T> T getAttribute(final String name, final Object defaultValue) {
-        return (T) UtilsConverter.convert(getPageAttribute(name), defaultValue);
-    }
-
-    public <T> T getAttribute(final String name, final Class<T> type) {
-        return UtilsConverter.convert(getPageAttribute(name), type);
     }
 
     public Object getAttribute(final String name) {
@@ -100,30 +73,6 @@ public @Getter class AioWeb {
 
     public void removeAttribute(final String name) {
         request.removeAttribute(name);
-    }
-
-    public <T> T getPageAttribute(final String name, final Object defaultValue) {
-        return (T) UtilsConverter.convert(getPageAttribute(name), defaultValue);
-    }
-
-    public <T> T getPageAttribute(final String name, final Class<T> type) {
-        return UtilsConverter.convert(getPageAttribute(name), type);
-    }
-
-    public Object getPageAttribute(final String name) {
-        return pageContext.getAttribute(name, PageContext.PAGE_SCOPE);
-    }
-
-    public <T> T getApplicationAttribute(final String name, final Object defaultValue) {
-        return (T) UtilsConverter.convert(getApplicationAttribute(name), defaultValue);
-    }
-
-    public <T> T getApplicationAttribute(final String name, final Class<T> type) {
-        return UtilsConverter.convert(getApplicationAttribute(name), type);
-    }
-
-    public Object getApplicationAttribute(final String name) {
-        return pageContext.getAttribute(name, PageContext.APPLICATION_SCOPE);
     }
 
     public <T> T getSessionAttribute(final String name, final Object defaultValue) {
@@ -138,44 +87,8 @@ public @Getter class AioWeb {
         return session.getAttribute(name);
     }
 
-    public static String name(final Component component) {
-        return name(component.getClass());
-    }
-
     public static String name(final Class<?> type) {
         return type.getPackageName() +"."+ type.getName();
-    }
-
-    public String value(final Component component) {
-        return value(component.getProperties(), component.getClass());
-    }
-
-    public String value(final Component component, final Class<?> type) {
-        return value(component.getProperties(), type);
-    }
-
-    public String value(final Component component, final String name) {
-        return value(component.getProperties(), name);
-    }
-
-    public String value(final Properties properties, final Class<?> type) {
-        return value(properties.getData(), type);
-    }
-
-    public String value(final Properties properties, final String name) {
-        return value(properties.getData(), name);
-    }
-
-    public String value(final Data data, final Class<?> type) {
-        return value(data, name(type));
-    }
-
-    public String value(final Object data, final String name) {
-        if(!Properties.PROPERTIES.equals(name)) {
-            request.setAttribute(name, data);
-        }
-        request.setAttribute(Properties.PROPERTIES, data);
-        return data.toString();
     }
 
     public ServletContext getServletContext() {
@@ -204,58 +117,11 @@ public @Getter class AioWeb {
     }
 
     public String getRealPathCurrent(final String path) {
-        return getRealPathRoot(getServletPath()) + (!UtilsText.isEmpty(path) ? "/" + path : "");
-    }
-
-    public String getRealPathWebInf() {
-        return getRealPathWebInf("");
-    }
-
-    public String getRealPathWebInf(final String path) {
-        return getRealPathRoot("/WEB-INF"+ (!UtilsText.isEmpty(path) ? "/" + path : ""));
-    }
-
-    public File getRealFileWebInf(final String path) {
-        return new File(getRealPathWebInf(path));
-    }
-
-    public String getRealPathPage() {
-        return getRealPathRoot("/ui.page");
-    }
-
-    public String getRealPathPage(final String path) {
-        return getRealPathRoot("/ui.page"+ (!UtilsText.isEmpty(path) ? "/" + path : ""));
-    }
-
-    public String getRealPathDrive() {
-        return getRealPathRoot("/ui.drive");
-    }
-
-    public String getRealPathDrive(final String path) {
-        return getRealPathRoot("/ui.drive"+ (!UtilsText.isEmpty(path) ? "/" + path : ""));
+        return UtilsResource.getRealPathRoot(getServletPath()) + (!UtilsText.isEmpty(path) ? "/" + path : "");
     }
 
     public String getRealPathPageCurrent(final String path) {
-        return getRealPathRoot("/ui.page"+ getServletPage() + (!UtilsText.isEmpty(path) ? "/" + path : ""));
-    }
-
-    public String getRealPathRoot() {
-        return getRealPathRoot("");
-    }
-
-    public String getRealPathRoot(final String path) {
-        String realPath = getServletContext().getRealPath(path);
-        realPath = realPath.replace("//", "/");
-        if(realPath.endsWith("/")) realPath = realPath.substring(0, realPath.length()-1);
-        return realPath;
-    }
-
-    public File getRealFileRoot() {
-        return new File(getRealPathRoot());
-    }
-
-    public File getRealFileRoot(final String path) {
-        return new File(getRealPathRoot(path));
+        return UtilsResource.getRealPathRoot("/ui.page"+ getServletPage() + (!UtilsText.isEmpty(path) ? "/" + path : ""));
     }
 
     public String getServletPath() {
@@ -264,14 +130,17 @@ public @Getter class AioWeb {
 
     public String getServletPage() {
         final String requestRoot = getRequestRoot();
-        final String home = getConfEnv().get("home", "/en");
-        final String sites = getConfEnv().get("sites", "/en");
-        final boolean isHome = UtilsText.isEmpty(requestRoot) || !sites.contains(requestRoot);
-        return (isHome ? home : "") + request.getServletPath().replace("/index.jsp", "");
+        final String sites = getSites();
+        final boolean needHome = isUnderHome() || !sites.contains(requestRoot);
+        return (needHome ? getHome() : "") + request.getServletPath().replace("/index.jsp", "");
     }
 
     public String getHome() {
         return getConfEnv().get("home", "/en");
+    }
+
+    public String getSites() {
+        return getConfEnv().get("sites", getHome());
     }
 
     public boolean isRoot() {
@@ -280,11 +149,11 @@ public @Getter class AioWeb {
     }
 
     public boolean isHome() {
-        return isRoot() || getRequestUrl().equalsIgnoreCase(getHome());
+        return isRoot() || getRequestPath().equalsIgnoreCase(ConfEnv.getHome());
     }
 
     public boolean isUnderHome() {
-        return getRequestRoot().startsWith(getHome());
+        return getRequestRoot().startsWith(ConfEnv.getHome());
     }
 
     public String getContextPath() {
@@ -297,44 +166,31 @@ public @Getter class AioWeb {
         if(contextPath.endsWith("/")) contextPath = contextPath.substring(0, contextPath.length()-1);
         return contextPath;
     }
+
     public String getContextServletPath() {
         return getContextPath() + getServletPath();
     }
 
-    public String getRelativePath(String path) {
-        final String realPathRoot = getRealPathRoot();
-        if(!path.startsWith("/")) path = "/" + path;
-        if(path.startsWith(realPathRoot)) {
-            path = path.substring(realPathRoot.length());
-        }
-        return path;
+    public String getContextServletPage() {
+        return getContextPath() + getServletPage();
     }
 
     public String getRequestURI() {
         return request.getRequestURI();
     }
 
-    public String getDomain() {
-        final String domain = isLocal() ? "127.0.0.1" : getConfEnv().getDomain();
-        return (request.isSecure() ? "https" : "http") +"://"+ domain +":"+ getServerPort();
-    }
-
-    public String getURI() {
-        return getURI(getRequestURI());
-    }
-
-    public String getURI(final String uri) {
-        return getDomain() + uri;
-    }
-
     public String getRequestUrl() {
+        return getConfEnv().getUrl(getRequestURI());
+    }
+
+    public String getRequestPath() {
         final String contextPath = getContextPath();
         final String requestURI = getRequestURI();
         return requestURI.substring(contextPath.length());
     }
 
     public String getRequestRoot() {
-        String[] paths = getRequestUrl().split("/");
+        String[] paths = getRequestPath().split("/");
         return "/" + (paths.length > 0 ? paths[1] : "");
     }
 
@@ -349,7 +205,7 @@ public @Getter class AioWeb {
 
     public String getRequestUrlQuery() {
         final String query = getRequestQuery();
-        return getRequestUrl() + UtilsText.notEmptyUse(query, "?"+ query);
+        return getRequestPath() + UtilsText.notEmptyUse(query, "?"+ query);
     }
 
     public String getContextUrlQuery() {
@@ -378,45 +234,6 @@ public @Getter class AioWeb {
 
     public int getServerPort() {
         return request.getServerPort();
-    }
-
-    public ClassLoader getClassLoader() {
-        return getClass().getClassLoader();
-    }
-
-    public InputStream getResourceAsStream(final String name) {
-        return getClassLoader().getResourceAsStream(name);
-    }
-
-    public URL getResource(final String name) {
-        return getClassLoader().getResource(name);
-    }
-
-    public File getResourceFile(final String name) {
-        final URL resource = getResource(name);
-        return resource != null ? new File(resource.getFile()) : null;
-    }
-
-    public File getResourceFolder() {
-        return getResourceFile("");
-    }
-
-    public File getResourceParent() {
-        final File file = getResourceFile("");
-        return file != null ? file.getParentFile() : null;
-    }
-
-    public File getResourceParent(final String name) {
-        final File file = getResourceParent();
-        return file != null ? new File(file, name) : null;
-    }
-
-    public PrintWriter getWriter() throws IOException {
-        return response.getWriter();
-    }
-
-    public String readFile(final String fileName) {
-        return UtilsWeb.readFileResource(this, fileName);
     }
 
     public String getHeader(final String name) {
@@ -471,7 +288,7 @@ public @Getter class AioWeb {
         return getConfEnv().getHost().equalsIgnoreCase(getRemoteHost());
     }
 
-    public boolean isLocal() {
+    public boolean isRemoteLocal() {
         final String remoteHost = request.getRemoteHost();
         return "0:0:0:0:0:0:0:1".equalsIgnoreCase(remoteHost) || "127.0.0.1".equalsIgnoreCase(remoteHost) || "localhost".equalsIgnoreCase(remoteHost);
     }

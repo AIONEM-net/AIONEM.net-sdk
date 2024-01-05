@@ -2,7 +2,9 @@ package aionem.net.sdk.web.system.deploy;
 
 import aionem.net.sdk.data.DaoRes;
 import aionem.net.sdk.core.utils.UtilsText;
+import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.modals.ConfEnv;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.*;
@@ -39,11 +41,11 @@ public class MinifierJs {
         return resMinify;
     }
 
-    public static String minifyFolder(final AioWeb aioWeb, final File fileFolder, final boolean isSave) {
+    public static String minifyFolder(final File fileFolder, final boolean isSave) {
 
         final StringBuilder builderJs = new StringBuilder();
 
-        final String uiFrontend = aioWeb.getContextPath("/ui.frontend");
+        final String uiFrontend = ConfEnv.getInstance().getContextPath("/ui.frontend");
 
         final File fileJs = new File(fileFolder, ".js");
         final File fileJsJsp = new File(fileFolder, "js.jsp");
@@ -59,7 +61,7 @@ public class MinifierJs {
         int n = 0;
         for(int i = 0; i < listFileJs.size(); i++) {
 
-            final File file = new File(aioWeb.getRealPathRoot(listFileJs.get(i)));
+            final File file = new File(UtilsResource.getRealPathRoot(listFileJs.get(i)));
 
             if(file.exists() && file.isFile()) {
 

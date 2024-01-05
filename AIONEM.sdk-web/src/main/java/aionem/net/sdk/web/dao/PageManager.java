@@ -4,6 +4,7 @@ import aionem.net.sdk.data.DaoRes;
 import aionem.net.sdk.data.Data;
 import aionem.net.sdk.data.Network;
 import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.modals.ConfEnv;
 import aionem.net.sdk.web.modals.Page;
 import aionem.net.sdk.web.modals.Properties;
 import aionem.net.sdk.web.system.deploy.MinifierHtml;
@@ -32,18 +33,20 @@ public class PageManager {
         SYSTEM_PATH.addAll(SYSTEM_PATH_3);
     }
 
-    private final AioWeb aioWeb;
-
-    public PageManager(final AioWeb aioWeb) {
-        this.aioWeb = aioWeb;
+    private static PageManager pageManager;
+    public static PageManager getInstance() {
+        if(pageManager == null) {
+            pageManager = new PageManager();
+        }
+        return pageManager;
     }
 
-    public Page getPage() {
-        return new Page(aioWeb);
+    public PageManager() {
+
     }
 
     public Page getPageRoot() {
-        return new Page(aioWeb, "/");
+        return new Page("/");
     }
 
     public ArrayList<Page> getListPagesRoot() {
@@ -53,12 +56,12 @@ public class PageManager {
 
     public ArrayList<Page> getListPages(final Page pageParent) {
         final ArrayList<Page> listPages = new ArrayList<>();
-        final String rootPagePath = aioWeb.getRealPathPage();
-        final File filePageParent = new File(aioWeb.getRealPathPage(pageParent.getPath()));
+        final String rootPagePath = ResourceResolver.getRealPathPage();
+        final File filePageParent = new File(ResourceResolver.getRealPathPage(pageParent.getPath()));
 
         for(final File filePage : getListFilePages(filePageParent)) {
             final String pagePath = filePage.getAbsolutePath().substring(rootPagePath.length());
-            final Page page = new Page(aioWeb, pagePath, new Properties(new File(filePage, "properties.json")));
+            final Page page = new Page(pagePath, new Properties(new File(filePage, Properties.PROPERTIES_JSON)));
             if(!pageParent.equals(page)) {
                 listPages.add(page);
             }
@@ -68,11 +71,11 @@ public class PageManager {
 
     public ArrayList<Page> getListPagesAll() {
         final ArrayList<Page> listPages = new ArrayList<>();
-        final String rootPagePath = aioWeb.getRealPathPage();
+        final String rootPagePath = ResourceResolver.getRealPathPage();
 
         for(final File filePage : getListFilePagesAll()) {
             final String pagePath = filePage.getAbsolutePath().substring(rootPagePath.length());
-            final Page page = new Page(aioWeb, pagePath);
+            final Page page = new Page(pagePath);
             listPages.add(page);
         }
         return listPages;
@@ -87,7 +90,7 @@ public class PageManager {
     }
 
     public ArrayList<File> getListFilePages(final int level) {
-        final String realPathRoot = aioWeb.getRealPathPage();
+        final String realPathRoot = ResourceResolver.getRealPathPage();
         final ArrayList<File> listFilePages = new ArrayList<>();
         final File fileRoot = new File(realPathRoot);
         if(fileRoot.isDirectory()) {
@@ -107,7 +110,7 @@ public class PageManager {
     public ArrayList<File> getListFilePages(final String... pagePaths) {
         final File[] filePages = new File[pagePaths.length];
         for(int i = 0; i < pagePaths.length; i++) {
-            filePages[i] = new File(aioWeb.getRealPathPage(pagePaths[i]));
+            filePages[i] = new File(ResourceResolver.getRealPathPage(pagePaths[i]));
         }
         return getListFilePages(filePages);
     }
@@ -135,7 +138,7 @@ public class PageManager {
     public ArrayList<File> getListFilePagesAll(final String... paths) {
         final File[] filePages = new File[paths.length];
         for(int i = 0; i < paths.length; i++) {
-            filePages[i] = new File(aioWeb.getRealPathPage(paths[i]));
+            filePages[i] = new File(ResourceResolver.getRealPathPage(paths[i]));
         }
         return getListFilePagesAll(filePages);
     }
@@ -181,14 +184,14 @@ public class PageManager {
         return listFilePages;
     }
 
-    public void cache(final boolean enabled) {
+    public void cache(final AioWeb aioWeb, final boolean enabled) {
         if(enabled) {
             final long twoDaysInSeconds = 2*24*60*60;
             final long expiresTimeInSeconds = twoDaysInSeconds + (System.currentTimeMillis() / 1000);
             aioWeb.getResponse().setHeader("Cache-Control", "max-age=" + twoDaysInSeconds);
             aioWeb.getResponse().setDateHeader("Expires", expiresTimeInSeconds * 1000);
 
-            checkToCache();
+            checkToCache(aioWeb);
 
         }else {
             aioWeb.getResponse().setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -197,32 +200,25 @@ public class PageManager {
         }
     }
 
-    public void checkToCache() {
+    public void checkToCache(final AioWeb aioWeb) {
         final boolean isCaching = "true".equalsIgnoreCase(aioWeb.getHeader("A-Caching"));
-        if(!isCaching && !aioWeb.isLocal()) {
-            cache(aioWeb.getURI(), aioWeb.getRealPathCurrent());
+        if(!isCaching && !aioWeb.isRemoteLocal()) {
+            cache(aioWeb.getRequestUrl(), aioWeb.getRealPathCurrent());
         }
     }
 
     public boolean cache(final Page page) {
-        return cache("", page);
-    }
-
-    public boolean cache(final String env, final Page page) {
-        return cache(env, aioWeb.getURI(page.getUrl()), aioWeb.getRealPathPage(page.getPath()));
+        final String url = ConfEnv.getInstance().getUrl(page.getUrl());
+        final String realPath = ResourceResolver.getRealPathPage(page.getPath());
+        return cache(url, realPath);
     }
 
     public boolean cache(final String uri, final String realPath) {
-        return cache("", uri, realPath);
-    }
-
-    public boolean cache(final String env, final String uri, final String realPath) {
         boolean isCached = false;
 
         final DaoRes resCache = new Network.Get(uri)
                 .setDataHeaders(new Data()
                         .put("A-Caching", "true")
-                        .put("A-Env", env)
                 )
                 .get();
 
@@ -231,7 +227,7 @@ public class PageManager {
             isCached = UtilsWeb.writeFile(realPath +"/"+ "index.html", html);
         }
 
-        log.error("\nAioWeb::Cache {} : {} : {}", env, uri, isCached);
+        log.error("\nCache {} : {}", uri, isCached);
 
         return isCached;
     }
@@ -239,7 +235,7 @@ public class PageManager {
     public ArrayList<String> invalidateCache() {
         final ArrayList<String> listPathPaths = new ArrayList<>();
         final List<File> listFilePages = getListFilePagesAll();
-        final String rootPagePath = aioWeb.getRealPathPage();
+        final String rootPagePath = ResourceResolver.getRealPathPage();
         for(final File filePage : listFilePages) {
             final File filePageHtml = new File(filePage, "index.html");
             if(filePageHtml.exists()) {
@@ -259,8 +255,8 @@ public class PageManager {
 
     public boolean move(final Page page, final String pathNew, final String nameNew) {
         try {
-            final Path pathSource = Paths.get(aioWeb.getRealPathPage(page.getPath()));
-            final Path pathDestination = Paths.get(aioWeb.getRealPathPage(pathNew + "/" + nameNew));
+            final Path pathSource = Paths.get(ResourceResolver.getRealPathPage(page.getPath()));
+            final Path pathDestination = Paths.get(ResourceResolver.getRealPathPage(pathNew + "/" + nameNew));
 
             if(!pathSource.toFile().exists()) {
                 return false;
@@ -288,7 +284,7 @@ public class PageManager {
 
             });
 
-            final Page pageNew = new Page(aioWeb, pathNew + "/" + nameNew);
+            final Page pageNew = new Page(pathNew + "/" + nameNew);
 
             references(page, pageNew, true);
 
@@ -309,8 +305,8 @@ public class PageManager {
 
     public boolean copy(final Page page, final String pathNew, final String nameNew, final boolean excludeChildren) {
         try {
-            final Path pathSource = Paths.get(aioWeb.getRealPathPage(page.getPath()));
-            final Path pathDestination = Paths.get(aioWeb.getRealPathPage(pathNew + "/" + nameNew));
+            final Path pathSource = Paths.get(ResourceResolver.getRealPathPage(page.getPath()));
+            final Path pathDestination = Paths.get(ResourceResolver.getRealPathPage(pathNew + "/" + nameNew));
 
             if(!pathSource.toFile().exists()) {
               return false;  
@@ -337,7 +333,7 @@ public class PageManager {
 
             });
 
-            final Page pageNew = new Page(aioWeb, pathNew + "/" + nameNew);
+            final Page pageNew = new Page(pathNew + "/" + nameNew);
 
             references(page, pageNew, pageNew, true);
 
@@ -355,7 +351,7 @@ public class PageManager {
     public int references(final Page page, final Page pageNew, final Page pageSection, final boolean update) {
         final int[] totalReferences = {0};
 
-        final Path pathSection = Paths.get(aioWeb.getRealPathPage(pageSection.getPath()));
+        final Path pathSection = Paths.get(ResourceResolver.getRealPathPage(pageSection.getPath()));
 
         try {
             Files.walkFileTree(pathSection, new SimpleFileVisitor<>() {

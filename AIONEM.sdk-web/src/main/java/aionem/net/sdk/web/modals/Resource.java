@@ -8,19 +8,16 @@ import java.io.File;
 
 public class Resource {
 
-    private final AioWeb aioWeb;
     private final File file;
     @Getter
     private final String path;
 
-    public Resource(final AioWeb aioWeb, final File file) {
-        this.aioWeb = aioWeb;
+    public Resource(final File file) {
         this.file = file;
         this.path = file.getAbsolutePath();
     }
 
-    public Resource(final AioWeb aioWeb, final String path) {
-        this.aioWeb = aioWeb;
+    public Resource(final String path) {
         this.file = new File(path);
         this.path = path;
     }
