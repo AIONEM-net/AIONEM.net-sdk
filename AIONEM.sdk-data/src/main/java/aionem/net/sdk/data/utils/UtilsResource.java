@@ -28,6 +28,14 @@ public class UtilsResource {
         return ROOT_PATH + (!UtilsText.isEmpty(path) ? "/" + path : "") + path;
     }
 
+    public static String getRealPathParent() {
+        return getRealPathParent("");
+    }
+
+    public static String getRealPathParent(final String path) {
+        return getResourceFileParent(path).getPath();
+    }
+
     public static String getRelativePath(String path) {
         final String realPathRoot = getRealPathRoot();
         if(!path.startsWith("/")) path = "/" + path;
@@ -152,4 +160,5 @@ public class UtilsResource {
     public static File getRealFileRoot(final String path) {
         return new File(getRealPathRoot(path));
     }
+
 }

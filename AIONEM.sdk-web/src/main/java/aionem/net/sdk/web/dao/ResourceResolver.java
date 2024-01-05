@@ -45,7 +45,7 @@ public class ResourceResolver {
     }
 
     public static String getRealPathWebInf(final String path) {
-        return UtilsResource.getRealPathRoot("/WEB-INF"+ (!UtilsText.isEmpty(path) ? "/" + path : ""));
+        return UtilsResource.getRealPathParent(path);
     }
 
     public static File getRealFileWebInf(final String path) {

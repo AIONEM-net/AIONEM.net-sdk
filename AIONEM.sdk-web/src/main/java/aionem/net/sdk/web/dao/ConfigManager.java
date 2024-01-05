@@ -19,7 +19,7 @@ public class ConfigManager {
 
         final File folder1 = ResourceResolver.getRealFileWebInf("/ui.config/env");
         final File folder2 = UtilsResource.getResourceFile("/config");
-        final File folder3 = UtilsResource.getResourceFile("/");
+        final File folder3 = UtilsResource.getResourceFolder();
 
         if(folder1 != null && folder1.exists() && folder1.isDirectory()) folder.add(folder1);
         if(folder2 != null && folder2.exists() && folder2.isDirectory()) folder.add(folder2);
