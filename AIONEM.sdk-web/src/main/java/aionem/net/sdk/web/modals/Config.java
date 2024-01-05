@@ -32,8 +32,14 @@ public class Config {
     }
 
     public void init(String name) {
-        this.name = name;
-        
+
+        if(getClass().isAnnotationPresent(Conf.class)) {
+            final Conf webServlet = getClass().getAnnotation(Conf.class);
+            this.name = webServlet.value();
+        }else {
+            this.name = name;
+        }
+
         final String env = getEnv();
 
         if(!UtilsText.isEmpty(env)) {
