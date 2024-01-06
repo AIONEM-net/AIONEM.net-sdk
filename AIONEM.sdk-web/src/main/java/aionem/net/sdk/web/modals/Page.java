@@ -139,6 +139,10 @@ public @Data class Page {
         return properties.get("isRoot", false);
     }
 
+    public boolean isHideInNav() {
+        return properties.get("isHideInNav", true);
+    }
+
     public boolean isSeo() {
         return properties.get("isSeo", true);
     }
