@@ -19,13 +19,13 @@ public class I18nManager {
 
         final ArrayList<File> listI18nFolders = new ArrayList<>();
 
-        final File folder1 = ResourceResolver.getRealFileWebInf("/ui.config/i18n");
+        final File folder1 = ResourceResolver.getRealFileWebInf("/ui.config/i18n").getFile();
         final File folder2 = UtilsResource.getResourceFile("/config/i18n");
         final File folder3 = UtilsResource.getResourceFile("/i18n");
 
-        if(folder1 != null && folder1.exists() && folder1.isDirectory()) listI18nFolders.add(folder1);
-        if(folder2 != null && folder2.exists() && folder2.isDirectory()) listI18nFolders.add(folder2);
-        if(folder3 != null && folder3.exists() && folder3.isDirectory()) listI18nFolders.add(folder3);
+        if(folder1.exists() && folder1.isDirectory()) listI18nFolders.add(folder1);
+        if(folder2.exists() && folder2.isDirectory()) listI18nFolders.add(folder2);
+        if(folder3.exists() && folder3.isDirectory()) listI18nFolders.add(folder3);
 
         return listI18nFolders;
     }

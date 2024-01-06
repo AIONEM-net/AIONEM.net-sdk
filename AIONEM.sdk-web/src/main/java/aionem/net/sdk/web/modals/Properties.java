@@ -27,6 +27,10 @@ public @Getter class Properties {
         init(data);
     }
 
+    public Properties(final Resource resourceProperties) {
+        init(resourceProperties);
+    }
+
     public Properties(final File fileProperties) {
         init(fileProperties);
     }
@@ -37,6 +41,10 @@ public @Getter class Properties {
 
     public Properties init(final File fileProperties) {
         return init(new Data(fileProperties));
+    }
+
+    public Properties init(final Resource resourceProperties) {
+        return init(new Data(resourceProperties.getFile()));
     }
 
     public Properties init(final AioWeb aioWeb) {

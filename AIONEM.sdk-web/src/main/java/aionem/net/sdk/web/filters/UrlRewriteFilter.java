@@ -42,11 +42,11 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
                 try {
 
                     if(aioWeb.isRoot()) {
-                        aioWeb.include(aioWeb.getContextPath("/ui.page/"+ ConfEnv.getHome() +"/?"+ aioWeb.getRequestQuery()));
+                        aioWeb.include(aioWeb.getContextPath("/ui.page/"+ ConfEnv.getInstance().getHome() +"/?"+ aioWeb.getRequestQuery()));
                     }else if(aioWeb.isHome()) {
                         aioWeb.sendRedirect("/"+ aioWeb.getRequestQuery(true));
                     }else if(aioWeb.isUnderHome()) {
-                        aioWeb.sendRedirect(aioWeb.getRequestUrlQuery().substring(ConfEnv.getHome().length()));
+                        aioWeb.sendRedirect(aioWeb.getRequestUrlQuery().substring(ConfEnv.getInstance().getHome().length()));
                     }else {
 
                         response.setCharacterEncoding("UTF-8");
@@ -60,7 +60,7 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
                     }
 
                 }catch(Exception e) {
-                    aioWeb.getResponse().sendError(HttpServletResponse.SC_NOT_FOUND);
+                    aioWeb.getResponse().sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 }
 
             }else {

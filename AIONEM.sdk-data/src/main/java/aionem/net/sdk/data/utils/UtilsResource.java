@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+
 public class UtilsResource {
 
     private static String ROOT_PATH = "";
@@ -20,12 +21,9 @@ public class UtilsResource {
 
     public static String getRealPathRoot(final String path) {
         if(UtilsText.isEmpty(ROOT_PATH)) {
-            final File file = getResourceFolderRoot();
-            if(file != null) {
-                ROOT_PATH = file.getPath();
-            }
+            ROOT_PATH = getResourceFolderRoot().getPath();
         }
-        return ROOT_PATH + (!UtilsText.isEmpty(path) ? "/" + path : "") + path;
+        return ROOT_PATH + (!UtilsText.isEmpty(path) ? "/" : "") + path;
     }
 
     public static String getRealPathParent() {
@@ -50,7 +48,7 @@ public class UtilsResource {
         for(final String folder : folders) {
             try {
                 final File file = getResourceFile(folder +(!folder.endsWith("/") && !name.startsWith("/") ? "/" : "")+  name);
-                if(file != null && file.exists() && file.isFile()) {
+                if(file.exists() && file.isFile()) {
                     return new FileInputStream(file);
                 }
             }catch (IOException ignore) {
@@ -64,7 +62,7 @@ public class UtilsResource {
         for(final String folder : folders) {
             try {
                 final File file = getResourceFileParent(folder +(!folder.endsWith("/") && !name.startsWith("/") ? "/" : "")+  name);
-                if(file != null && file.exists() && file.isFile()) {
+                if(file.exists() && file.isFile()) {
                     return new FileInputStream(file);
                 }else {
                     InputStream inputStream = getResourceStream(folder +(!folder.endsWith("/") && !name.startsWith("/") ? "/" : "")+  name);
@@ -83,7 +81,7 @@ public class UtilsResource {
         for(final String folder : folders) {
             try {
                 final File file = getResourceFileParent(folder +(!folder.endsWith("/") && !name.startsWith("/") ? "/" : "")+  name);
-                if(file != null && file.exists() && file.isFile()) {
+                if(file.exists() && file.isFile()) {
                     return new FileInputStream(file);
                 }else {
                     InputStream inputStream = getResourceStreamOrParent(folder +(!folder.endsWith("/") && !name.startsWith("/") ? "/" : "")+  name);
@@ -113,29 +111,25 @@ public class UtilsResource {
         return getResourceFile("");
     }
 
-    public static <T> File getResourceFile(final String name) {
+    public static File getResourceFile(final String name) {
         final URL resource = UtilsResource.class.getClassLoader().getResource(name);
-        return resource != null ? new File(resource.getFile()) : null;
+        return resource != null ? new File(resource.getFile()) : new File(name);
     }
 
     public static File getResourceFolderParent() {
-        final File file = getResourceFile("");
-        return file != null ? file.getParentFile() : null;
+        return getResourceFolder().getParentFile();
     }
 
     public static <T> File getResourceFileParent(final String name) {
-        final File file = getResourceFolderParent();
-        return file != null ? new File(file, name) : null;
+        return new File(getResourceFolderParent(), name);
     }
 
     public static <T> File getResourceFolderRoot() {
-        final File file = getResourceFileParent("");
-        return file != null ? file.getParentFile() : null;
+        return getResourceFolderParent().getParentFile();
     }
 
     public static <T> File getResourceFileRoot(final String name) {
-        final File file = getResourceFolderRoot();
-        return file != null ? new File(file, name) : null;
+        return new File(getResourceFolderRoot(), name);
     }
 
     public static ResourceBundle getResourceBundle(final String name, String... folders) {

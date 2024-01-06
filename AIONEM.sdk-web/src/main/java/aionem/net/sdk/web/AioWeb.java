@@ -149,11 +149,11 @@ public @Getter class AioWeb {
     }
 
     public boolean isHome() {
-        return isRoot() || getRequestPath().equalsIgnoreCase(ConfEnv.getHome());
+        return isRoot() || getRequestPath().equalsIgnoreCase(ConfEnv.getInstance().getHome());
     }
 
     public boolean isUnderHome() {
-        return getRequestRoot().startsWith(ConfEnv.getHome());
+        return getRequestRoot().startsWith(ConfEnv.getInstance().getHome());
     }
 
     public String getContextPath() {

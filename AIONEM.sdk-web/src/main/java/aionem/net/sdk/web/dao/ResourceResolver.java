@@ -4,6 +4,7 @@ package aionem.net.sdk.web.dao;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.modals.ConfEnv;
+import aionem.net.sdk.web.modals.Resource;
 import aionem.net.sdk.web.utils.UtilsWeb;
 
 import java.io.File;
@@ -48,8 +49,8 @@ public class ResourceResolver {
         return UtilsResource.getRealPathParent(path);
     }
 
-    public static File getRealFileWebInf(final String path) {
-        return new File(getRealPathWebInf(path));
+    public static Resource getRealFileWebInf(final String path) {
+        return new Resource(getRealPathWebInf(path));
     }
 
     public static String getRealPathPage() {
@@ -65,7 +66,11 @@ public class ResourceResolver {
     }
 
     public static String getRealPathPage(final String path) {
-        return UtilsResource.getRealPathRoot("/ui.page"+ (!UtilsText.isEmpty(path) || path.equals("/") ? path : ConfEnv.getHome()));
+        return UtilsResource.getRealPathRoot("/ui.page"+ (!UtilsText.isEmpty(path) && !path.equals("/") ? path : ConfEnv.getInstance().getHome()));
+    }
+
+    public static Resource getFilePage(final String path) {
+        return new Resource(getRealPathPage(path));
     }
 
 }

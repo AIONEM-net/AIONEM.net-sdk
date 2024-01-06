@@ -32,12 +32,12 @@ public class ConfEnv extends Config {
         return env;
     }
 
-    public static String getHome() {
-        return UtilsText.notEmpty(getInstance().get("home"), "/en");
+    public String getHome() {
+        return UtilsText.notEmpty(get("home"), "/en");
     }
 
-    public static String getSites() {
-        return UtilsText.notEmpty(getInstance().get("sites"), getHome());
+    public String getSites() {
+        return UtilsText.notEmpty(get("sites"), getHome());
     }
 
     public String getContextPath() {
