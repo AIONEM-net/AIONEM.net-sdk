@@ -51,9 +51,9 @@ public class PageManager {
 
     public Page getHomePage(final Page page) {
         Page homePage = page;
-        while(homePage != null && page.exists()) {
-            homePage = page.getParent();
-        }
+//        while(homePage != null && page.exists()) {
+//            homePage = page.getParent();
+//        }
         return homePage;
     }
 

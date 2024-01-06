@@ -64,6 +64,10 @@ public @Getter class AioWeb {
         return request != null ? request.getAttribute(name) : null;
     }
 
+    public void setRequestAttribute(final String name, final Object value) {
+        if(request != null) request.setAttribute(name, value);
+    }
+
     public void removeRequestAttribute(final String name) {
         if(request != null) request.removeAttribute(name);
     }
@@ -72,12 +76,20 @@ public @Getter class AioWeb {
         return pageContext != null ? pageContext.getAttribute(name, PageContext.PAGE_SCOPE) : null;
     }
 
+    public void setPageAttribute(final String name, final Object value) {
+        if(pageContext != null) pageContext.setAttribute(name, value, PageContext.PAGE_SCOPE);
+    }
+
     public void removePageAttribute(final String name) {
         if(pageContext != null) pageContext.removeAttribute(name, PageContext.PAGE_SCOPE);
     }
 
     public Object getApplicationAttribute(final String name) {
         return pageContext != null ? pageContext.getAttribute(name, PageContext.APPLICATION_SCOPE) : null;
+    }
+
+    public void setApplicationAttribute(final String name, final Object value) {
+        if(pageContext != null) pageContext.setAttribute(name, value, PageContext.APPLICATION_SCOPE);
     }
 
     public void removeApplicationAttribute(final String name) {
@@ -212,6 +224,19 @@ public @Getter class AioWeb {
         return getContextPath(getRequestUrlQuery());
     }
 
+    public boolean isSystemPath() {
+        return isSystemPath(getRequestPath());
+    }
+
+    public boolean isSystemPath(final String requestUrl) {
+        boolean isSystemPath = false;
+        for(final String systemPath: PageManager.SYSTEM_PATH) {
+            isSystemPath = requestUrl.startsWith(systemPath);
+            if(isSystemPath) break;
+        }
+        return isSystemPath;
+    }
+
     public String getProtocol() {
         return request.getProtocol();
     }
@@ -238,6 +263,10 @@ public @Getter class AioWeb {
 
     public String getHeader(final String name) {
         return request.getHeader(name);
+    }
+
+    public void setHeader(final String name, final String value) {
+        response.setHeader(name, value);
     }
 
     public String getLanguage() {
@@ -274,6 +303,10 @@ public @Getter class AioWeb {
 
     public void sendRedirect(final String location) throws IOException {
         response.sendRedirect(location);
+    }
+
+    public void sendError(final int error) throws IOException {
+        response.sendError(error);
     }
 
     public void forward(final String path) throws IOException, ServletException {

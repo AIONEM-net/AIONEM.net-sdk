@@ -26,11 +26,7 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
 
         final String requestUrl = aioWeb.getRequestPath();
 
-        boolean isSystemPath = false;
-        for(final String systemPath: PageManager.SYSTEM_PATH) {
-            isSystemPath = requestUrl.startsWith(systemPath);
-            if(isSystemPath) break;
-        }
+        boolean isSystemPath = aioWeb.isSystemPath(requestUrl);
 
         if(!aioWeb.isHostMatch() && !aioWeb.isRemoteLocal()) {
             final String urlQuery = aioWeb.getRequestUrlQuery();
@@ -42,11 +38,14 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
                 try {
 
                     if(aioWeb.isRoot()) {
-                        aioWeb.include(aioWeb.getContextPath("/ui.page/"+ ConfEnv.getInstance().getHome() +"/?"+ aioWeb.getRequestQuery()));
+                        final String urlIndexQuery = ConfEnv.getInstance().getHome() +"/?"+ aioWeb.getRequestQuery();
+                        aioWeb.include(aioWeb.getContextPath("/ui.page/"+ urlIndexQuery));
                     }else if(aioWeb.isHome()) {
-                        aioWeb.sendRedirect("/"+ aioWeb.getRequestQuery(true));
+                        final String url = "/"+ aioWeb.getRequestQuery(true);
+                        aioWeb.sendRedirect(url);
                     }else if(aioWeb.isUnderHome()) {
-                        aioWeb.sendRedirect(aioWeb.getRequestUrlQuery().substring(ConfEnv.getInstance().getHome().length()));
+                        final String url = aioWeb.getRequestUrlQuery().substring(ConfEnv.getInstance().getHome().length());
+                        aioWeb.sendRedirect(url);
                     }else {
 
                         response.setCharacterEncoding("UTF-8");
@@ -60,7 +59,7 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
                     }
 
                 }catch(Exception e) {
-                    aioWeb.getResponse().sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    aioWeb.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 }
 
             }else {
@@ -74,7 +73,7 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
 
                     response.setContentType("text/plain");
                     response.setContentLength((int) Files.size(file));
-                    aioWeb.getResponse().setHeader("Content-Disposition", "inline; filename=\"" + fileName + "\"");
+                    aioWeb.setHeader("Content-Disposition", "inline; filename=\"" + fileName + "\"");
 
                     try( final InputStream inputStream = Files.newInputStream(file);
                          final OutputStream outputStream = response.getOutputStream()) {
@@ -87,7 +86,7 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
                     }
 
                 }else {
-                    aioWeb.getResponse().sendError(HttpServletResponse.SC_NOT_FOUND);
+                    aioWeb.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
 
             }

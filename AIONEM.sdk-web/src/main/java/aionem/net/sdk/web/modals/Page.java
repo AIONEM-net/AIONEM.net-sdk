@@ -14,8 +14,8 @@ import java.util.Objects;
 @Log4j2
 public @lombok.Data class Page {
 
-    private String path = "";
-    private String url = "";
+    private String path = "/";
+    private String url = "/";
     private String name = "";
     private Properties properties = new Properties();
 
@@ -220,7 +220,7 @@ public @lombok.Data class Page {
     }
 
     public Page getParent() {
-        Resource resourceParent = getResource().getParent();
+        final Resource resourceParent = getResource().getParent();
         return new Page(resourceParent);
     }
 
