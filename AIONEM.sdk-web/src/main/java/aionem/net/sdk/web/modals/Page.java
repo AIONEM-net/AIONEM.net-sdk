@@ -1,6 +1,7 @@
 package aionem.net.sdk.web.modals;
 
 import aionem.net.sdk.core.utils.UtilsText;
+import aionem.net.sdk.data.Data;
 import aionem.net.sdk.web.AioWeb;
 import aionem.net.sdk.web.dao.PageManager;
 import aionem.net.sdk.web.dao.ResourceResolver;
@@ -82,6 +83,10 @@ public @lombok.Data class Page {
         return properties.getOr("subTitle", "");
     }
 
+    public String getMenuTitle() {
+        return properties.getOr("navTitle", "pageTitle", "title", "");
+    }
+
     public String getNavTitle() {
         return properties.getOr("navTitle", "pageTitle", "title", "");
     }
@@ -131,7 +136,7 @@ public @lombok.Data class Page {
     }
 
     public int getOrder() {
-        return properties.get("resourceType", 0);
+        return properties.get("order", 0);
     }
 
     public boolean isRoot() {
@@ -214,7 +219,14 @@ public @lombok.Data class Page {
     }
 
     public ArrayList<Properties> getContents() {
-        return properties.getChildren("content");
+        final ArrayList<Properties> listContents = properties.getChildren("content");
+        if(listContents.isEmpty() || (listContents.size() == 1 && UtilsText.isEmpty(listContents.get(0).getResourceType()))) {
+            final Properties properties = new Properties(new Data()
+                    .put("resourceType", getContent())
+            );
+            listContents.add(properties);
+        }
+        return listContents;
     }
 
     public boolean cache() {
