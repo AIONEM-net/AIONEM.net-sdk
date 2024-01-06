@@ -4,7 +4,6 @@ import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.web.AioWeb;
 import aionem.net.sdk.web.dao.PageManager;
 import aionem.net.sdk.web.dao.ResourceResolver;
-import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ import java.util.Objects;
 
 
 @Log4j2
-public @Data class Page {
+public @lombok.Data class Page {
 
     private String path = "";
     private String url = "";
@@ -151,6 +150,10 @@ public @Data class Page {
         return properties.get("pwa", true);
     }
 
+    public boolean isCache() {
+        return properties.get("isCache", true);
+    }
+
     public boolean isAuthAllow() {
         return properties.get("isAuthAllow", true);
     }
@@ -208,6 +211,14 @@ public @Data class Page {
 
     public Resource getParent() {
         return getResource().getParent();
+    }
+
+    public ArrayList<Properties> getContents() {
+        return properties.getChildren("content");
+    }
+
+    public boolean cache() {
+        return PageManager.getInstance().cache(this);
     }
 
     @Override

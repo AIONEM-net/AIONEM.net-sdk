@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 
 
 @Log4j2
@@ -103,15 +104,15 @@ public @Getter abstract class Component {
         return properties.getObject(key);
     }
 
-    public Data getChild(final String key) {
+    public Properties getChild(final String key) {
         return properties.getChild(key);
     }
 
-    public Datas getChildren() {
+    public ArrayList<Properties> getChildren() {
         return properties.getChildren();
     }
 
-    public Datas getChildren(final String key) {
+    public ArrayList<Properties> getChildren(final String key) {
         return properties.getChildren(key);
     }
 

@@ -191,7 +191,7 @@ public class PageManager {
             aioWeb.getResponse().setHeader("Cache-Control", "max-age=" + twoDaysInSeconds);
             aioWeb.getResponse().setDateHeader("Expires", expiresTimeInSeconds * 1000);
 
-            checkToCache(aioWeb);
+            cache(aioWeb);
 
         }else {
             aioWeb.getResponse().setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -200,7 +200,7 @@ public class PageManager {
         }
     }
 
-    public void checkToCache(final AioWeb aioWeb) {
+    public void cache(final AioWeb aioWeb) {
         final boolean isCaching = "true".equalsIgnoreCase(aioWeb.getHeader("A-Caching"));
         if(!isCaching && !aioWeb.isRemoteLocal()) {
             cache(aioWeb.getRequestUrl(), aioWeb.getRealPathCurrent());

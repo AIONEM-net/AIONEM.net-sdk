@@ -292,9 +292,10 @@ public class Data {
     }
 
     public Datas getChildren(final String key) {
+        if(UtilsText.isEmpty(key)) return getChildren();
         final Datas datas = new Datas();
-        for(final JsonElement jsonElement : UtilsJson.toJsonArray(get(key))) {
-            datas.add(new Data(jsonElement));
+        for(final Map.Entry<String, JsonElement> jsonElement : UtilsJson.toJsonObject(get(key)).entrySet()) {
+            datas.add(new Data(jsonElement.getValue()));
         }
         return datas;
     }

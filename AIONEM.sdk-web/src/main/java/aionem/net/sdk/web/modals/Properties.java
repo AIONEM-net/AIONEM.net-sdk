@@ -1,23 +1,21 @@
 package aionem.net.sdk.web.modals;
 
 import aionem.net.sdk.data.Data;
-import aionem.net.sdk.data.Datas;
 import aionem.net.sdk.web.AioWeb;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Objects;
 
 
 @Log4j2
 public @Getter class Properties {
 
-    private Data data;
-
-    public static final String PROPERTIES = "$_properties";
     public static final String PROPERTIES_JSON = "properties.json";
+
+    private Data data;
 
     public Properties() {
         init(new Data());
@@ -92,16 +90,20 @@ public @Getter class Properties {
         return this.data.get(key, type);
     }
 
-    public Data getChild(final String key) {
-        return data.getChild(key);
+    public Properties getChild(final String key) {
+        return new Properties(data.getChild(key));
     }
 
-    public Datas getChildren() {
-        return data.getChildren();
+    public ArrayList<Properties> getChildren() {
+        return getChildren("");
     }
 
-    public Datas getChildren(final String key) {
-        return data.getChildren(key);
+    public ArrayList<Properties> getChildren(final String key) {
+        final ArrayList<Properties> listContents = new ArrayList<>();
+        for(final Data dataProperty : data.getChildren(key)) {
+            listContents.add(new Properties(dataProperty));
+        }
+        return listContents;
     }
 
     public boolean has(final String key) {
@@ -126,6 +128,10 @@ public @Getter class Properties {
 
     public boolean isEmpty() {
         return data.isEmpty();
+    }
+
+    public String getResourceType() {
+        return get("resourceType");
     }
 
     @Override
