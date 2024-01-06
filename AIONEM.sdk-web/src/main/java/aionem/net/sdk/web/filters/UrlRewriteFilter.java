@@ -22,6 +22,7 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
 
     @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
+
         final AioWeb aioWeb = new AioWeb(request, response);
 
         final String requestUrl = aioWeb.getRequestPath();
@@ -38,6 +39,7 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
                 try {
 
                     if(aioWeb.isRoot()) {
+                        aioWeb.setup();
                         final String urlIndexQuery = ConfEnv.getInstance().getHome() +"/?"+ aioWeb.getRequestQuery();
                         aioWeb.include(aioWeb.getContextPath("/ui.page/"+ urlIndexQuery));
                     }else if(aioWeb.isHome()) {
@@ -47,6 +49,8 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
                         final String url = aioWeb.getRequestUrlQuery().substring(ConfEnv.getInstance().getHome().length());
                         aioWeb.sendRedirect(url);
                     }else {
+
+                        aioWeb.setup();
 
                         response.setCharacterEncoding("UTF-8");
                         response.setContentType("text/html; charset=UTF-8");

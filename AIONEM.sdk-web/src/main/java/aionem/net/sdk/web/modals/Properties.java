@@ -2,6 +2,7 @@ package aionem.net.sdk.web.modals;
 
 import aionem.net.sdk.data.Data;
 import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.dao.ResourceResolver;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -48,6 +49,7 @@ public @Getter class Properties {
     public Properties init(final AioWeb aioWeb) {
         if(data == null || data.isEmpty()) {
             final File file = new File(aioWeb.getRealPathPageCurrent(Properties.PROPERTIES_JSON));
+            System.out.println(file);
             init(file);
         }
         return this;

@@ -3,9 +3,14 @@ package aionem.net.sdk.web;
 import aionem.net.sdk.core.utils.UtilsConverter;
 import aionem.net.sdk.core.utils.UtilsNetwork;
 import aionem.net.sdk.core.utils.UtilsText;
+import aionem.net.sdk.data.I18n;
 import aionem.net.sdk.data.utils.UtilsResource;
+import aionem.net.sdk.web.dao.ResourceResolver;
 import aionem.net.sdk.web.modals.ConfEnv;
 import aionem.net.sdk.web.dao.PageManager;
+import aionem.net.sdk.web.modals.Page;
+import aionem.net.sdk.web.modals.Properties;
+import aionem.net.sdk.web.modals.Resource;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -39,6 +44,10 @@ public @Getter class AioWeb {
         init(request, response);
     }
 
+    public AioWeb(final HttpServletRequest request, final HttpServletResponse response, final PageContext pageContext) {
+        init(request, response, pageContext);
+    }
+
     public AioWeb init(final HttpServletRequest request, final HttpServletResponse response) {
         return init(request, response, null);
     }
@@ -49,6 +58,15 @@ public @Getter class AioWeb {
         this.pageContext = pageContext;
         this.servletContext = request.getServletContext();
         this.session = request.getSession(true);
+        return this;
+    }
+
+    public AioWeb setup() {
+        setRequestAttribute("aioWeb", this);
+        getProperties();
+        getI18n();
+        getCurrentPage();
+        getHomePage();
         return this;
     }
 
@@ -64,6 +82,20 @@ public @Getter class AioWeb {
         return request != null ? request.getAttribute(name) : null;
     }
 
+    public <T> T getRequestAttribute(final String name, final Object defaultValue) {
+        return getRequestAttribute(name, defaultValue, false);
+    }
+
+    public <T> T getRequestAttribute(final String name, final Object defaultValue, final boolean create) {
+        final Object value = getRequestAttribute(name);
+        if(value == null && create) setRequestAttribute(name, defaultValue);
+        return (T) UtilsConverter.convert(value, defaultValue);
+    }
+
+    public <T> T getRequestAttribute(final String name, final Class<T> type) {
+        return UtilsConverter.convert(getRequestAttribute(name), type);
+    }
+
     public void setRequestAttribute(final String name, final Object value) {
         if(request != null) request.setAttribute(name, value);
     }
@@ -76,6 +108,20 @@ public @Getter class AioWeb {
         return pageContext != null ? pageContext.getAttribute(name, PageContext.PAGE_SCOPE) : null;
     }
 
+    public <T> T getPageAttribute(final String name, final Object defaultValue) {
+        return getPageAttribute(name, defaultValue, false);
+    }
+
+    public <T> T getPageAttribute(final String name, final Object defaultValue, final boolean create) {
+        final Object value = getPageAttribute(name);
+        if(value == null) setPageAttribute(name, defaultValue);
+        return (T) UtilsConverter.convert(value, defaultValue);
+    }
+
+    public <T> T getPageAttribute(final String name, final Class<T> type) {
+        return UtilsConverter.convert(getPageAttribute(name), type);
+    }
+
     public void setPageAttribute(final String name, final Object value) {
         if(pageContext != null) pageContext.setAttribute(name, value, PageContext.PAGE_SCOPE);
     }
@@ -85,27 +131,51 @@ public @Getter class AioWeb {
     }
 
     public Object getApplicationAttribute(final String name) {
-        return pageContext != null ? pageContext.getAttribute(name, PageContext.APPLICATION_SCOPE) : null;
+        return getServletContext() != null ? getServletContext().getAttribute(name) : null;
+    }
+
+    public <T> T getApplicationAttribute(final String name, final Object defaultValue) {
+        return getApplicationAttribute(name, defaultValue, false);
+    }
+
+    public <T> T getApplicationAttribute(final String name, final Object defaultValue, final boolean create) {
+        final Object value = getApplicationAttribute(name);
+        if(value == null && create) setApplicationAttribute(name, defaultValue);
+        return (T) UtilsConverter.convert(value, defaultValue);
+    }
+
+    public <T> T getApplicationAttribute(final String name, final Class<T> type) {
+        return UtilsConverter.convert(getApplicationAttribute(name), type);
     }
 
     public void setApplicationAttribute(final String name, final Object value) {
-        if(pageContext != null) pageContext.setAttribute(name, value, PageContext.APPLICATION_SCOPE);
+        if(getServletContext() != null) getServletContext().setAttribute(name, value);
     }
 
     public void removeApplicationAttribute(final String name) {
-        if(pageContext != null) pageContext.getAttribute(name, PageContext.APPLICATION_SCOPE);
+        if(getServletContext() != null) getServletContext().getAttribute(name);
+    }
+
+    public Object getSessionAttribute(final String name) {
+        return session != null ? session.getAttribute(name) : null;
     }
 
     public <T> T getSessionAttribute(final String name, final Object defaultValue) {
-        return (T) UtilsConverter.convert(getSessionAttribute(name), defaultValue);
+        return getSessionAttribute(name, defaultValue, false);
+    }
+
+    public <T> T getSessionAttribute(final String name, final Object defaultValue, final boolean create) {
+        final Object value = getSessionAttribute(name);
+        if(value == null && create) setSessionAttribute(name, defaultValue);
+        return (T) UtilsConverter.convert(value, defaultValue);
     }
 
     public <T> T getSessionAttribute(final String name, final Class<T> type) {
         return UtilsConverter.convert(getSessionAttribute(name), type);
     }
 
-    public Object getSessionAttribute(final String name) {
-        return session != null ? session.getAttribute(name) : null;
+    public void setSessionAttribute(final String name, final Object value) {
+        if(session != null) session.setAttribute(name, value);
     }
 
     public void removeSessionAttribute(final String name) {
@@ -141,9 +211,7 @@ public @Getter class AioWeb {
     }
 
     public String getServletPage() {
-        final String requestRoot = getRequestRoot();
-        final String sites = getSites();
-        final boolean needHome = isUnderHome() || !sites.contains(requestRoot);
+        final boolean needHome = !isSite() || isUnderHome() || isRoot();
         return (needHome ? getHome() : "") + request.getServletPath().replace("/index.jsp", "");
     }
 
@@ -162,6 +230,10 @@ public @Getter class AioWeb {
 
     public boolean isHome() {
         return isRoot() || getRequestPath().equalsIgnoreCase(ConfEnv.getInstance().getHome());
+    }
+
+    public boolean isSite() {
+        return getSites().contains(getRequestRoot());
     }
 
     public boolean isUnderHome() {
@@ -235,6 +307,26 @@ public @Getter class AioWeb {
             if(isSystemPath) break;
         }
         return isSystemPath;
+    }
+
+    public I18n getI18n() {
+        final I18n i18n = getApplicationAttribute("i18n", I18n.class);
+        return i18n != null ? i18n : getApplicationAttribute("i18n", new I18n(getLocale()), true);
+    }
+
+    public Page getHomePage() {
+        final Page homePage = getRequestAttribute("homePage", Page.class);
+        return homePage != null ? homePage : getRequestAttribute("homePage", getPageManager().getHomePage(getCurrentPage()), true);
+    }
+
+    public Page getCurrentPage() {
+        final Page currentPage = getRequestAttribute("currentPage", Page.class);
+        return currentPage != null ? currentPage : getRequestAttribute("currentPage", new Page(this), true);
+    }
+
+    public Properties getProperties() {
+        final Properties properties = getRequestAttribute("properties", Properties.class);
+        return properties != null ? properties : getRequestAttribute("properties", new Properties(this), true);
     }
 
     public String getProtocol() {

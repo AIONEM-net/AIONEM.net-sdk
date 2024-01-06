@@ -41,7 +41,7 @@ public @lombok.Data class Page {
     public void init(final AioWeb aioWeb) {
         this.path = aioWeb.getServletPage();
         this.url = aioWeb.getContextServletPage();
-        init(this.path);
+        init(this.path, aioWeb.getProperties());
     }
 
     public void init(final String path) {

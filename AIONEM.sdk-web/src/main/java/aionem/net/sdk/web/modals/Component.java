@@ -34,6 +34,10 @@ public @Getter abstract class Component {
         return init(instance, aioWeb, new Properties(aioWeb));
     }
 
+    public <T> T init(final AioWeb aioWeb) {
+        return (T) init(instance, aioWeb, aioWeb.getProperties());
+    }
+
     public <T> T init(final AioWeb aioWeb, final Properties properties) {
         return (T) init(instance, aioWeb, properties);
     }
