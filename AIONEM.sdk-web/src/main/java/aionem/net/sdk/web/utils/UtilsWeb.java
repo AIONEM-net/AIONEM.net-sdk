@@ -36,11 +36,7 @@ public class UtilsWeb {
     }
 
     public static String readFileEtc(final String fileName) {
-        return readFile(fileName, "/WEB-INF/ui.app/etc/", "/ui.apps/etc/", "/etc/");
-    }
-
-    public static String readFileTemplateEtc(final String fileName) {
-        return readFile(fileName, "/WEB-INF/ui.template/etc/", "/ui.template/etc/", "/etc/");
+        return readFile(fileName, "/WEB-INF/ui.config/etc/", "/ui.config/etc/", "/etc/");
     }
 
     public static ResourceBundle getResourceBundleConfig(final String fileName) {
