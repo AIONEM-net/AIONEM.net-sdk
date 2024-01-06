@@ -16,7 +16,6 @@ public @lombok.Data class Page {
 
     private String path = "/";
     private String url = "/";
-    private String name = "";
     private Properties properties = new Properties();
 
     public Page() {
@@ -52,27 +51,23 @@ public @lombok.Data class Page {
     }
 
     public void init(final Resource resourcePage) {
-        final String realPathPage = ResourceResolver.getRealPathPage(resourcePage.getPath());
-        init(realPathPage, new Properties(resourcePage.child(Properties.PROPERTIES_JSON)));
+        init(resourcePage.getPath(), new Properties(resourcePage.child(Properties.PROPERTIES_JSON)));
     }
 
     public void init(final String path, final Properties properties) {
-        init(properties);
+
+        if(properties != null && !properties.isEmpty()) {
+            this.properties = properties;
+        }else {
+            this.properties = new Properties();
+        }
 
         if(UtilsText.isEmpty(path) || path.equals("/")) {
             this.path = ConfEnv.getInstance().getHome();
             this.url = ConfEnv.getInstance().getContextPath(this.path);
         }else {
-            this.path = path;
+            this.path = path.startsWith("/ui.page") ? path.substring("/ui.page".length()) : path;
             this.url = ConfEnv.getInstance().getContextPath(this.path);
-        }
-    }
-
-    public void init(final Properties properties) {
-        if(properties != null && !properties.isEmpty()) {
-            this.properties = properties;
-        }else {
-            this.properties = new Properties();
         }
     }
 
@@ -110,14 +105,6 @@ public @lombok.Data class Page {
 
     public String getDescription() {
         return properties.getOr("description", "");
-    }
-
-    public String getPath() {
-        return properties.getOr("path", "");
-    }
-
-    public String getUrl() {
-        return properties.getOr("url", "");
     }
 
     public String getRedirect() {
@@ -213,6 +200,15 @@ public @lombok.Data class Page {
 
     public boolean exists() {
         return getResource().exists();
+    }
+
+    public boolean isRootPath() {
+        final String path = getPath();
+        return UtilsText.isEmpty(path) || path.equals("/");
+    }
+
+    public boolean hasParent() {
+        return !isRootPath();
     }
 
     public Resource getResource() {

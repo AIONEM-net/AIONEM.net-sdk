@@ -85,9 +85,9 @@ public class DriveManager {
 
                 final String fileFolder = UtilsDrive.getFileFolder(fileExtension);
                 final String filePath = fileFolder +"/" + uploadName;
-                final String fileUrl = ConfEnv.getInstance().getContextPath(UtilsDrive.DRIVE_API_PATH) +"/"+ filePath;
+                final String fileUrl = ConfEnv.getInstance().getContextPath(PageManager.DRIVE_PATH_UPLOADS) +"/"+ filePath;
 
-                final File fileDirectory = new File(UtilsResource.getRealPathRoot(UtilsDrive.DRIVE_API_PATH +"/"+ fileFolder));
+                final File fileDirectory = new File(UtilsResource.getRealPathRoot(PageManager.DRIVE_PATH_UPLOADS +"/"+ fileFolder));
 
                 final boolean isDirectory;
                 if(!fileDirectory.exists()) {

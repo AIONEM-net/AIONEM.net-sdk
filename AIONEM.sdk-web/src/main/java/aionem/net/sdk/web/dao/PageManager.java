@@ -28,6 +28,8 @@ public class PageManager {
     public static final List<String> SYSTEM_PATH_2 = List.of("/ui.config", "/ui.apps", "/ui.etc", "/ui.template");
     public static final List<String> SYSTEM_PATH_3 = List.of("/api", "/drive", "/assets", "/cdn");
     public static final List<String> SYSTEM_PATH = new ArrayList<>(SYSTEM_PATH_1);
+    public static final String DRIVE_PATH_UPLOADS = "/ui.drive/uploads/";
+
     static {
         SYSTEM_PATH.addAll(SYSTEM_PATH_2);
         SYSTEM_PATH.addAll(SYSTEM_PATH_3);
@@ -51,9 +53,9 @@ public class PageManager {
 
     public Page getHomePage(final Page page) {
         Page homePage = page;
-//        while(homePage != null && page.exists()) {
-//            homePage = page.getParent();
-//        }
+        while(homePage != null && !homePage.isRoot() && homePage.hasParent()) {
+            homePage = homePage.getParent();
+        }
         return homePage;
     }
 

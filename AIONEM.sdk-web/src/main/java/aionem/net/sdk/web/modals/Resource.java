@@ -1,5 +1,6 @@
 package aionem.net.sdk.web.modals;
 
+import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsResource;
 import lombok.Getter;
 
@@ -36,10 +37,6 @@ public class Resource {
         return path;
     }
 
-    public Resource getParent() {
-        return new Resource(file.getParentFile());
-    }
-
     public Resource child(final String name) {
         return new Resource(new File(file, name));
     }
@@ -55,6 +52,14 @@ public class Resource {
         return children;
     }
 
+    public Resource getParent() {
+        return hasParent() ? new Resource(file.getParentFile()) : null;
+    }
+
+    public boolean hasParent() {
+        return !isRootPath();
+    }
+
     public boolean exists() {
         return file.exists();
     }
@@ -67,36 +72,41 @@ public class Resource {
         return file.isDirectory();
     }
 
+    public boolean isRootPath() {
+        final String path = getPath();
+        return UtilsText.isEmpty(path) || path.equals("/");
+    }
+
     public boolean isPage() {
-        return file.isDirectory();
+        return getPath().startsWith("/ui.page");
     }
 
     public boolean isDrive() {
-        return file.isDirectory();
+        return getPath().startsWith("/ui.drive");
     }
 
     public boolean isFrontend() {
-        return file.isDirectory();
+        return getPath().startsWith("/ui.frontend");
     }
 
     public boolean isConfig() {
-        return file.isDirectory();
+        return getPath().startsWith("/WEB-INF/ui.config");
     }
 
     public boolean isApps() {
-        return file.isDirectory();
+        return getPath().startsWith("/WEB-INF/ui.apps");
     }
 
     public boolean isTemplate() {
-        return file.isDirectory();
+        return getPath().startsWith("/WEB-INF/ui.template");
     }
 
     public boolean isEtc() {
-        return file.isDirectory();
+        return getPath().startsWith("/WEB-INF/ui.config/etc");
     }
 
     public boolean isSystem() {
-        return file.isDirectory();
+        return getPath().startsWith("/ui.system");
     }
 
     @Override

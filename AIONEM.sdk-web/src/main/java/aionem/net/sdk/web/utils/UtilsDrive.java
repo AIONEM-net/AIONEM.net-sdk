@@ -2,9 +2,9 @@ package aionem.net.sdk.web.utils;
 
 import aionem.net.sdk.core.utils.UtilsText;
 
+
 public class UtilsDrive {
 
-    public static final String DRIVE_API_PATH = "/ui.drive/uploads/";
     public static final String DRIVE_FILE = "file";
     public static final String DRIVE_FILE_URL = "url";
     public static final String DRIVE_FILE_PATH = "path";

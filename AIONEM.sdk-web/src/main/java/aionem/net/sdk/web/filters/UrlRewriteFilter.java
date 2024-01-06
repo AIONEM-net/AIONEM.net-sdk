@@ -30,7 +30,7 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
 
         if(!aioWeb.isHostMatch() && !aioWeb.isRemoteLocal()) {
             final String urlQuery = aioWeb.getRequestUrlQuery();
-            aioWeb.getRedirect(aioWeb.getConfEnv().getUrl(urlQuery));
+            aioWeb.sendRedirect(aioWeb.getConfEnv().getUrl(urlQuery));
         }else if(!isSystemPath) {
 
             if(requestUrl.lastIndexOf(".") < 0) {
@@ -94,6 +94,7 @@ public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewri
         }else {
             super.doFilter(request, response, chain);
         }
+
     }
 
 }
