@@ -69,6 +69,9 @@ public @lombok.Data class Page {
             this.path = path.startsWith("/ui.page") ? path.substring("/ui.page".length()) : path;
             this.url = ConfEnv.getInstance().getContextPath(this.path);
         }
+
+        if(!this.path.startsWith("/")) this.path = "/" + this.path;
+        if(!this.url.startsWith("/")) this.url = "/" + this.url;
     }
 
     public String getName() {
@@ -80,19 +83,23 @@ public @lombok.Data class Page {
     }
 
     public String getSubTitle() {
-        return properties.getOr("subTitle", "");
+        final String subTitle = properties.get("subTitle");
+        return !UtilsText.isEmpty(subTitle) ? subTitle : getTitle();
     }
 
     public String getMenuTitle() {
-        return properties.getOr("navTitle", "pageTitle", "title", "");
+        final String navTitle = getNavTitle();
+        return !UtilsText.isEmpty(navTitle) ? navTitle : getPageTitle();
     }
 
     public String getNavTitle() {
-        return properties.getOr("navTitle", "pageTitle", "title", "");
+        final String navTitle = properties.get("navTitle");
+        return !UtilsText.isEmpty(navTitle) ? navTitle : getPageTitle();
     }
 
     public String getPageTitle() {
-        return properties.getOr("pageTitle", "navTitle", "title", "");
+        final String pageTitle = properties.get("pageTitle");
+        return !UtilsText.isEmpty(pageTitle) ? pageTitle : getTitle();
     }
 
     public String getBrandSlug() {

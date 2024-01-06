@@ -6,6 +6,7 @@ import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.dao.PageManager;
 import aionem.net.sdk.web.dao.ResourceResolver;
 import aionem.net.sdk.web.modals.Page;
+import aionem.net.sdk.web.modals.Resource;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.extern.log4j.Log4j2;
 
@@ -30,7 +31,7 @@ public class Deploy {
 
         if(isUpdatedEnv) {
 
-            final ArrayList<File> listFilePagesCache = new PageManager().getListFilePagesAll(
+            final ArrayList<Resource> listFilePagesCache = new PageManager().getListFilePagesAll(
                     "/en",
                     "/it",
                     "/rw",
@@ -103,23 +104,23 @@ public class Deploy {
         return isMinified;
     }
 
-    public static boolean cacheAll(final ArrayList<File> listFilePagesAll) {
+    public static boolean cacheAll(final ArrayList<Resource> listFilePagesAll) {
 
         boolean isCachedAll = true;
 
         final String rootPagePath = ResourceResolver.getRealPathPage();
 
-        for(final File filePage : listFilePagesAll) {
-            final String pagePath = filePage.getAbsolutePath().substring(rootPagePath.length() + 1);
+        for(final Resource filePage : listFilePagesAll) {
+            final String pagePath = filePage.getRealPath().substring(rootPagePath.length() + 1);
             final Page page = new Page(pagePath);
 
-            if(new File(filePage, "index.jsp").exists()) {
+            if(new Resource(filePage, "index.jsp").exists()) {
                 final boolean isCached = new PageManager().cache(page);
                 boolean isDeleted = true;
                 if (isCached) {
-                    final boolean isDeleted1 = new File(filePage, "content.jsp").delete();
-                    final boolean isDeleted2 = new File(filePage, "properties.json").delete();
-                    isDeleted = isDeleted1 || isDeleted2 || new File(filePage, "index.jsp").delete();
+                    final boolean isDeleted1 = new Resource(filePage, "content.jsp").delete();
+                    final boolean isDeleted2 = new Resource(filePage, "properties.json").delete();
+                    isDeleted = isDeleted1 || isDeleted2 || new Resource(filePage, "index.jsp").delete();
                 }
                 if(!isCached || !isDeleted) {
                     isCachedAll = false;

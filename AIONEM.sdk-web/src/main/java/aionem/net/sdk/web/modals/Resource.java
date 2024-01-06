@@ -25,6 +25,10 @@ public class Resource {
         this.file = new File(path);
     }
 
+    public Resource(final Resource resource, final String child) {
+        this(resource.child(child).file);
+    }
+
     public String getName() {
         return file.getName();
     }
@@ -58,6 +62,10 @@ public class Resource {
 
     public boolean hasParent() {
         return !isRootPath();
+    }
+
+    public boolean delete() {
+        return file.delete();
     }
 
     public boolean exists() {

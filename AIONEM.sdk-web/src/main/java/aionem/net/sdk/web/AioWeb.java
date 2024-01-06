@@ -5,12 +5,10 @@ import aionem.net.sdk.core.utils.UtilsNetwork;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.I18n;
 import aionem.net.sdk.data.utils.UtilsResource;
-import aionem.net.sdk.web.dao.ResourceResolver;
-import aionem.net.sdk.web.modals.ConfEnv;
 import aionem.net.sdk.web.dao.PageManager;
+import aionem.net.sdk.web.modals.ConfEnv;
 import aionem.net.sdk.web.modals.Page;
 import aionem.net.sdk.web.modals.Properties;
-import aionem.net.sdk.web.modals.Resource;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -31,10 +29,6 @@ public @Getter class AioWeb {
     protected PageContext pageContext;
     protected ServletContext servletContext;
     protected HttpSession session;
-
-    public AioWeb() {
-
-    }
 
     public AioWeb(final ServletRequest request, final ServletResponse response) {
         init((HttpServletRequest) request, (HttpServletResponse) response);
