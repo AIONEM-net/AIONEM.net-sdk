@@ -6,7 +6,6 @@ import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.modals.ConfEnv;
 import aionem.net.sdk.web.dao.PageManager;
-import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -15,11 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.net.URL;
 import java.util.Locale;
 
 
@@ -29,6 +24,7 @@ public @Getter class AioWeb {
     protected HttpServletRequest request;
     protected HttpServletResponse response;
     protected PageContext pageContext;
+    protected ServletContext servletContext;
     protected HttpSession session;
 
     public AioWeb() {
@@ -51,6 +47,7 @@ public @Getter class AioWeb {
         this.request = request;
         this.response = response;
         this.pageContext = pageContext;
+        this.servletContext = request.getServletContext();
         this.session = request.getSession(true);
         return this;
     }
@@ -63,16 +60,28 @@ public @Getter class AioWeb {
         return PageManager.getInstance();
     }
 
-    public boolean isPublishMode() {
-        return true;
+    public Object getRequestAttribute(final String name) {
+        return request != null ? request.getAttribute(name) : null;
     }
 
-    public Object getAttribute(final String name) {
-        return request.getAttribute(name);
+    public void removeRequestAttribute(final String name) {
+        if(request != null) request.removeAttribute(name);
     }
 
-    public void removeAttribute(final String name) {
-        request.removeAttribute(name);
+    public Object getPageAttribute(final String name) {
+        return pageContext != null ? pageContext.getAttribute(name, PageContext.PAGE_SCOPE) : null;
+    }
+
+    public void removePageAttribute(final String name) {
+        if(pageContext != null) pageContext.removeAttribute(name, PageContext.PAGE_SCOPE);
+    }
+
+    public Object getApplicationAttribute(final String name) {
+        return pageContext != null ? pageContext.getAttribute(name, PageContext.APPLICATION_SCOPE) : null;
+    }
+
+    public void removeApplicationAttribute(final String name) {
+        if(pageContext != null) pageContext.getAttribute(name, PageContext.APPLICATION_SCOPE);
     }
 
     public <T> T getSessionAttribute(final String name, final Object defaultValue) {
@@ -84,15 +93,11 @@ public @Getter class AioWeb {
     }
 
     public Object getSessionAttribute(final String name) {
-        return session.getAttribute(name);
+        return session != null ? session.getAttribute(name) : null;
     }
 
-    public static String name(final Class<?> type) {
-        return type.getPackageName() +"."+ type.getName();
-    }
-
-    public ServletContext getServletContext() {
-        return request.getServletContext();
+    public void removeSessionAttribute(final String name) {
+        if(session != null) session.removeAttribute(name);
     }
 
     public String getParameter(final String name) {
@@ -104,12 +109,7 @@ public @Getter class AioWeb {
     }
 
     public String getInitParameter(final String name, final String defaultValue) {
-        try {
-            return UtilsText.notNull(getServletContext().getInitParameter(name), defaultValue);
-        }catch(final Exception e) {
-            log.error("Error getting init parameter {} {}", name, e.toString());
-            return defaultValue;
-        }
+        return servletContext != null ? UtilsText.notNull(servletContext.getInitParameter(name), defaultValue) : defaultValue;
     }
 
     public String getRealPathCurrent() {
@@ -248,7 +248,7 @@ public @Getter class AioWeb {
         return new Locale(getLanguage());
     }
 
-    public boolean isDisabledMode() {
+    public boolean isPublishMode() {
         return !isEditMode();
     }
 

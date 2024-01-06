@@ -35,8 +35,8 @@ public @lombok.Data class Page {
         init(path, properties);
     }
 
-    public Page(final String title, final String path, final String icon) {
-        init(path);
+    public Page(final Resource resourcePage) {
+        init(resourcePage);
     }
 
     public void init(final AioWeb aioWeb) {
@@ -49,6 +49,11 @@ public @lombok.Data class Page {
         final String realPathPage = ResourceResolver.getRealPathPage(path);
         final Resource resourcePage = new Resource(realPathPage);
         init(path, new Properties(resourcePage.child(Properties.PROPERTIES_JSON)));
+    }
+
+    public void init(final Resource resourcePage) {
+        final String realPathPage = ResourceResolver.getRealPathPage(resourcePage.getPath());
+        init(realPathPage, new Properties(resourcePage.child(Properties.PROPERTIES_JSON)));
     }
 
     public void init(final String path, final Properties properties) {
@@ -206,7 +211,7 @@ public @lombok.Data class Page {
         return true;
     }
 
-    private boolean exists() {
+    public boolean exists() {
         return getResource().exists();
     }
 
@@ -214,8 +219,9 @@ public @lombok.Data class Page {
         return ResourceResolver.getFilePage(path);
     }
 
-    public Resource getParent() {
-        return getResource().getParent();
+    public Page getParent() {
+        Resource resourceParent = getResource().getParent();
+        return new Page(resourceParent);
     }
 
     public ArrayList<Properties> getContents() {

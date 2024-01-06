@@ -49,6 +49,14 @@ public class PageManager {
         return new Page("/");
     }
 
+    public Page getHomePage(final Page page) {
+        Page homePage = page;
+        while(homePage != null && page.exists()) {
+            homePage = page.getParent();
+        }
+        return homePage;
+    }
+
     public ArrayList<Page> getListPagesRoot() {
         final Page pageItem = getPageRoot();
         return getListPages(pageItem);

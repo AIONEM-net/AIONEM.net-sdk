@@ -25,12 +25,4 @@ public @Getter class CmpPage extends Component {
         
     }
 
-    public String getBody() {
-        if(getAioWeb().getPageContext() != null) {
-            return getAioWeb().getPageContext().getRequest().getParameter("$_body");
-        }else {
-            return getAioWeb().getParameter("$_body");
-        }
-    }
-
 }
