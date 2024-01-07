@@ -173,6 +173,7 @@ public class PageManager {
     private ArrayList<Resource> getListFilePages(final Resource filePage, final ArrayList<Resource> listFilePages, final int level) {
         final ArrayList<Resource> files = filePage.children();
         if(files != null) {
+            boolean hasProperties = false;
             boolean hasHtml = false;
             boolean hasJsp = false;
             files.sort(Comparator.comparing(Resource::getName));
@@ -185,14 +186,16 @@ public class PageManager {
                     }
                 }else {
                     final String fileName = file.getName();
-                    if(fileName.equalsIgnoreCase("index.html")) {
+                    if(fileName.equalsIgnoreCase(Properties.PROPERTIES_JSON)) {
+                        hasProperties = true;
+                    }else if(fileName.equalsIgnoreCase("index.html")) {
                         hasHtml = true;
                     }else if(fileName.equalsIgnoreCase("index.jsp")) {
                         hasJsp = true;
                     }
                 }
             }
-            if(hasHtml || hasJsp) {
+            if(hasProperties || hasHtml || hasJsp) {
                 listFilePages.add(filePage);
             }
         }

@@ -3,6 +3,7 @@ package aionem.net.sdk.web.system.dao;
 import aionem.net.sdk.data.beans.Data;
 import aionem.net.sdk.data.utils.UtilsJson;
 import aionem.net.sdk.data.utils.UtilsResource;
+import aionem.net.sdk.web.beans.Properties;
 import aionem.net.sdk.web.dao.PageManager;
 import aionem.net.sdk.web.dao.ResourceResolver;
 import aionem.net.sdk.web.beans.Page;
@@ -114,12 +115,12 @@ public class DaoSysDeploy {
             final String pagePath = filePage.getRealPath().substring(rootPagePath.length() + 1);
             final Page page = new Page(pagePath);
 
-            if(new Resource(filePage, "index.jsp").exists()) {
+            if(new Resource(filePage, Properties.PROPERTIES_JSON).exists()) {
                 final boolean isCached = new PageManager().cache(page);
                 boolean isDeleted = true;
                 if (isCached) {
                     final boolean isDeleted1 = new Resource(filePage, "content.jsp").delete();
-                    final boolean isDeleted2 = new Resource(filePage, "properties.json").delete();
+                    final boolean isDeleted2 = new Resource(filePage, Properties.PROPERTIES_JSON).delete();
                     isDeleted = isDeleted1 || isDeleted2 || new Resource(filePage, "index.jsp").delete();
                 }
                 if(!isCached || !isDeleted) {
