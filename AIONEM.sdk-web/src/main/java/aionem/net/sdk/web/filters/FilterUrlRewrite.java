@@ -12,8 +12,9 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +29,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
         final String requestPath = aioWeb.getRequestURI();
 
+        final boolean isUiPage = !requestPath.contains(".");
         final boolean isSystemPath = aioWeb.isSystemPath(requestPath);
 
         if(!aioWeb.isHostMatch() && !aioWeb.isRemoteLocal()) {
@@ -35,7 +37,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
             final String urlQuery = aioWeb.getRequestUrlQuery();
             aioWeb.sendRedirect(aioWeb.getConfEnv().getUrl(urlQuery));
 
-        }else if(!isSystemPath) {
+        }else if(isUiPage && !isSystemPath) {
 
             try {
 
@@ -69,10 +71,14 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
                 final String url = requestPath.substring("/ui.page".length());
                 aioWeb.sendRedirect(url);
-                return;
 
+                return;
             }else if (requestPath.startsWith("/ui.drive")) {
-                super.doFilter(request, response, chain);
+
+                final String filePath = UtilsResource.getRealPathRoot(requestPath);
+                final Resource resource = new Resource(filePath);
+                responseFile(aioWeb, resource);
+
                 return;
             }else if (requestPath.startsWith("/ui.frontend")) {
                 super.doFilter(request, response, chain);
@@ -148,22 +154,32 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
         }else {
             aioWeb.setup();
-            aioWeb.include("/WEB-INF/ui.template/.jsp");
+            aioWeb.include(aioWeb.getCurrentPage().getTemplatePath());
         }
 
     }
 
     private void responseFile(final AioWeb aioWeb, final Resource resource) throws IOException {
 
-        if(resource.exists() && !resource.isFolder()) {
+        final Resource resourceFile;
+        if(resource.exists() && resource.isFolder()) {
+            resourceFile = resource.child("file");
+        }else {
+            resourceFile = resource;
+        }
+
+        System.out.println(resource);
+        System.out.println(resourceFile);
+
+        if(resourceFile.exists() && resourceFile.isFile()) {
 
             final String fileName = resource.getName();
 
             aioWeb.getResponse().setContentType("text/plain");
-            aioWeb.getResponse().setContentLength((int) resource.getSize());
+            aioWeb.getResponse().setContentLength((int) resourceFile.getSize());
             aioWeb.setHeader("Content-Disposition", "inline; filename=\"" + fileName + "\"");
 
-            try( final InputStream inputStream = resource.getInputStream();
+            try( final InputStream inputStream = resourceFile.getInputStream();
                  final OutputStream outputStream = aioWeb.getResponse().getOutputStream()) {
 
                 final byte[] buffer = new byte[4096];
