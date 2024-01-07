@@ -19,7 +19,6 @@ import java.nio.file.Path;
 
 public class FilterUrlRewrite extends UrlRewriteFilter {
 
-
     @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
 
