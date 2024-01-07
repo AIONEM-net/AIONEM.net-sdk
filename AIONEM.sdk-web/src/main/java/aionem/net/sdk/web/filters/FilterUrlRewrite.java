@@ -38,6 +38,9 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
                 try {
 
+                    aioWeb.getResponse().setCharacterEncoding("UTF-8");
+                    aioWeb.getResponse().setContentType("text/html; charset=UTF-8");
+
                     if(aioWeb.isRoot()) {
                         aioWeb.setup();
                         final String urlIndexQuery = ConfEnv.getInstance().getHome() +"/?"+ aioWeb.getRequestQuery();
@@ -51,9 +54,6 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                     }else {
 
                         aioWeb.setup();
-
-                        response.setCharacterEncoding("UTF-8");
-                        response.setContentType("text/html; charset=UTF-8");
 
                         final String urlIndexQuery = aioWeb.getServletPage()
                                 + (!requestUrl.endsWith("/") ? "/" : "")
