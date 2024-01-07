@@ -12,9 +12,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import javax.servlet.http.HttpServletResponseWrapper;
+import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -155,8 +154,6 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
     }
 
     private void responseFile(final AioWeb aioWeb, final Resource resource) throws IOException {
-
-        System.out.println(resource.getRealPath());
 
         if(resource.exists() && !resource.isFolder()) {
 
