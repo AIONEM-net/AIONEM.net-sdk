@@ -4,11 +4,11 @@ import aionem.net.sdk.data.DaoRes;
 import aionem.net.sdk.data.Data;
 import aionem.net.sdk.data.Network;
 import aionem.net.sdk.web.AioWeb;
-import aionem.net.sdk.web.modals.ConfEnv;
-import aionem.net.sdk.web.modals.Page;
-import aionem.net.sdk.web.modals.Properties;
-import aionem.net.sdk.web.modals.Resource;
-import aionem.net.sdk.web.system.deploy.MinifierHtml;
+import aionem.net.sdk.web.beans.ConfEnv;
+import aionem.net.sdk.web.beans.Page;
+import aionem.net.sdk.web.beans.Properties;
+import aionem.net.sdk.web.beans.Resource;
+import aionem.net.sdk.web.system.dao.DaoSysMinifierHtml;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.extern.log4j.Log4j2;
 
@@ -245,7 +245,7 @@ public class PageManager {
                 .get();
 
         if(resCache.isSuccess() && resCache.hasResponse()) {
-            final String html = MinifierHtml.minify(resCache.getResponse());
+            final String html = DaoSysMinifierHtml.minify(resCache.getResponse());
             isCached = UtilsWeb.writeFile(realPath +"/"+ "index.html", html);
         }
 

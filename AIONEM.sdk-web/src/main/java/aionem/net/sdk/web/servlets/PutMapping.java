@@ -1,4 +1,4 @@
-package aionem.net.sdk.web.map;
+package aionem.net.sdk.web.servlets;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,6 +8,8 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DeleteMapping {
+public @interface PutMapping {
+
     String value() default "";
+
 }

@@ -15,7 +15,7 @@ import lombok.extern.log4j.Log4j2;
 
 
 @Log4j2
-public class ExpiresFilter implements Filter {
+public class FilterExpires implements Filter {
 
     private static final Pattern commaSeparatedValuesPattern = Pattern.compile("\\s*,\\s*");
     private static final String HEADER_CACHE_CONTROL = "Cache-Control";
@@ -300,20 +300,20 @@ public class ExpiresFilter implements Filter {
         StartingPoint startingPoint;
         if (!"access".equalsIgnoreCase(currentToken) && !"now".equalsIgnoreCase(currentToken)) {
             if ("modification".equalsIgnoreCase(currentToken)) {
-                startingPoint = ExpiresFilter.StartingPoint.LAST_MODIFICATION_TIME;
+                startingPoint = FilterExpires.StartingPoint.LAST_MODIFICATION_TIME;
             } else if (!tokenizer.hasMoreTokens() && startsWithIgnoreCase(currentToken, "a")) {
-                startingPoint = ExpiresFilter.StartingPoint.ACCESS_TIME;
+                startingPoint = FilterExpires.StartingPoint.ACCESS_TIME;
                 tokenizer = new StringTokenizer(currentToken.substring(1) + " seconds", " ");
             } else {
                 if (tokenizer.hasMoreTokens() || !startsWithIgnoreCase(currentToken, "m")) {
                     throw new IllegalStateException(sm.getString("expiresFilter.startingPointInvalid", new Object[]{currentToken, line}));
                 }
 
-                startingPoint = ExpiresFilter.StartingPoint.LAST_MODIFICATION_TIME;
+                startingPoint = FilterExpires.StartingPoint.LAST_MODIFICATION_TIME;
                 tokenizer = new StringTokenizer(currentToken.substring(1) + " seconds", " ");
             }
         } else {
-            startingPoint = ExpiresFilter.StartingPoint.ACCESS_TIME;
+            startingPoint = FilterExpires.StartingPoint.ACCESS_TIME;
         }
 
         try {
@@ -348,7 +348,7 @@ public class ExpiresFilter implements Filter {
 
             DurationUnit durationUnit;
             if ("years".equalsIgnoreCase(currentToken)) {
-                durationUnit = ExpiresFilter.DurationUnit.YEAR;
+                durationUnit = FilterExpires.DurationUnit.YEAR;
             } else if (!"month".equalsIgnoreCase(currentToken) && !"months".equalsIgnoreCase(currentToken)) {
                 if (!"week".equalsIgnoreCase(currentToken) && !"weeks".equalsIgnoreCase(currentToken)) {
                     if (!"day".equalsIgnoreCase(currentToken) && !"days".equalsIgnoreCase(currentToken)) {
@@ -358,21 +358,21 @@ public class ExpiresFilter implements Filter {
                                     throw new IllegalStateException(sm.getString("Invalid duration unit (years|months|weeks|days|hours|minutes|seconds) '{}' in directive '{}'", new Object[]{currentToken, line}));
                                 }
 
-                                durationUnit = ExpiresFilter.DurationUnit.SECOND;
+                                durationUnit = FilterExpires.DurationUnit.SECOND;
                             } else {
-                                durationUnit = ExpiresFilter.DurationUnit.MINUTE;
+                                durationUnit = FilterExpires.DurationUnit.MINUTE;
                             }
                         } else {
-                            durationUnit = ExpiresFilter.DurationUnit.HOUR;
+                            durationUnit = FilterExpires.DurationUnit.HOUR;
                         }
                     } else {
-                        durationUnit = ExpiresFilter.DurationUnit.DAY;
+                        durationUnit = FilterExpires.DurationUnit.DAY;
                     }
                 } else {
-                    durationUnit = ExpiresFilter.DurationUnit.WEEK;
+                    durationUnit = FilterExpires.DurationUnit.WEEK;
                 }
             } else {
-                durationUnit = ExpiresFilter.DurationUnit.MONTH;
+                durationUnit = FilterExpires.DurationUnit.MONTH;
             }
 
             Duration duration = new Duration(amount, durationUnit);
@@ -492,7 +492,7 @@ public class ExpiresFilter implements Filter {
 
         public ServletOutputStream getOutputStream() throws IOException {
             if (this.servletOutputStream == null) {
-                this.servletOutputStream = ExpiresFilter.this.new XServletOutputStream(super.getOutputStream(), this.request, this);
+                this.servletOutputStream = FilterExpires.this.new XServletOutputStream(super.getOutputStream(), this.request, this);
             }
 
             return this.servletOutputStream;
@@ -500,7 +500,7 @@ public class ExpiresFilter implements Filter {
 
         public PrintWriter getWriter() throws IOException {
             if (this.printWriter == null) {
-                this.printWriter = ExpiresFilter.this.new XPrintWriter(super.getWriter(), this.request, this);
+                this.printWriter = FilterExpires.this.new XPrintWriter(super.getWriter(), this.request, this);
             }
 
             return this.printWriter;
@@ -578,7 +578,7 @@ public class ExpiresFilter implements Filter {
         private void fireBeforeWriteResponseBodyEvent() {
             if (!this.response.isWriteResponseBodyStarted()) {
                 this.response.setWriteResponseBodyStarted(true);
-                ExpiresFilter.this.onBeforeWriteResponseBody(this.request, this.response);
+                FilterExpires.this.onBeforeWriteResponseBody(this.request, this.response);
             }
 
         }
@@ -738,7 +738,7 @@ public class ExpiresFilter implements Filter {
         private void fireOnBeforeWriteResponseBodyEvent() {
             if (!this.response.isWriteResponseBodyStarted()) {
                 this.response.setWriteResponseBodyStarted(true);
-                ExpiresFilter.this.onBeforeWriteResponseBody(this.request, this.response);
+                FilterExpires.this.onBeforeWriteResponseBody(this.request, this.response);
             }
 
         }

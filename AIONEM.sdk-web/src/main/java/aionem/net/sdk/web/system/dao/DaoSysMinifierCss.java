@@ -1,10 +1,9 @@
-package aionem.net.sdk.web.system.deploy;
+package aionem.net.sdk.web.system.dao;
 
 import aionem.net.sdk.data.DaoRes;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsResource;
-import aionem.net.sdk.web.AioWeb;
-import aionem.net.sdk.web.modals.ConfEnv;
+import aionem.net.sdk.web.beans.ConfEnv;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.extern.log4j.Log4j2;
 
@@ -17,7 +16,7 @@ import java.util.regex.Pattern;
 
 
 @Log4j2
-public class MinifierCss {
+public class DaoSysMinifierCss {
 
 
     public static DaoRes minifySave(String pathInOut) {

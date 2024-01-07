@@ -1,7 +1,8 @@
-package aionem.net.sdk.web.modals;
+package aionem.net.sdk.web.beans;
 
 import aionem.net.sdk.core.Env;
 import aionem.net.sdk.core.utils.UtilsText;
+
 
 public class ConfEnv extends Config {
 

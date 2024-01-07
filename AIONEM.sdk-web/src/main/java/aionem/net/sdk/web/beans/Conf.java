@@ -1,4 +1,4 @@
-package aionem.net.sdk.web.modals;
+package aionem.net.sdk.web.beans;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

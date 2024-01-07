@@ -2,8 +2,8 @@ package aionem.net.sdk.web.filters;
 
 import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.AioWeb;
-import aionem.net.sdk.web.dao.PageManager;
-import aionem.net.sdk.web.modals.ConfEnv;
+import aionem.net.sdk.web.beans.ConfEnv;
+import org.tuckey.web.filters.urlrewrite.UrlRewriteFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -17,7 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 
-public class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.UrlRewriteFilter {
+public class FilterUrlRewrite extends UrlRewriteFilter {
 
 
     @Override

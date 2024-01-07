@@ -1,6 +1,8 @@
 package aionem.net.sdk.web.modals;
 
 import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.beans.Page;
+import aionem.net.sdk.web.beans.Properties;
 import aionem.net.sdk.web.dao.PageManager;
 import lombok.Getter;
 
@@ -26,7 +28,6 @@ public class CmpMenu extends Component {
 
     @Override
     protected void init() {
-
 
     }
 

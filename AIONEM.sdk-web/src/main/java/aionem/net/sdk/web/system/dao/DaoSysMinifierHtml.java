@@ -1,4 +1,4 @@
-package aionem.net.sdk.web.system.deploy;
+package aionem.net.sdk.web.system.dao;
 
 import aionem.net.sdk.data.DaoRes;
 import aionem.net.sdk.core.utils.UtilsText;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 
 @Log4j2
-public class MinifierHtml {
+public class DaoSysMinifierHtml {
 
     public static DaoRes minifySave(final String pathIn) {
         return minifySave(pathIn, pathIn);

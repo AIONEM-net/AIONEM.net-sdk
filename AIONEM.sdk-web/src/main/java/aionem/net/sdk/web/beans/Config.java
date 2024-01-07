@@ -1,4 +1,4 @@
-package aionem.net.sdk.web.modals;
+package aionem.net.sdk.web.beans;
 
 import aionem.net.sdk.core.utils.UtilsConverter;
 import aionem.net.sdk.core.utils.UtilsText;

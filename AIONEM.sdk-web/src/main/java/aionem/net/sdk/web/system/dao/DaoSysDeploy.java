@@ -1,12 +1,12 @@
-package aionem.net.sdk.web.system.deploy;
+package aionem.net.sdk.web.system.dao;
 
 import aionem.net.sdk.data.Data;
 import aionem.net.sdk.data.utils.UtilsJson;
 import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.dao.PageManager;
 import aionem.net.sdk.web.dao.ResourceResolver;
-import aionem.net.sdk.web.modals.Page;
-import aionem.net.sdk.web.modals.Resource;
+import aionem.net.sdk.web.beans.Page;
+import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.extern.log4j.Log4j2;
 
@@ -21,7 +21,7 @@ import java.util.zip.ZipOutputStream;
 
 
 @Log4j2
-public class Deploy {
+public class DaoSysDeploy {
 
     public static boolean deployWar(final String env, final String warFileName) {
 
@@ -80,18 +80,18 @@ public class Deploy {
 
                     if(file.isDirectory()) {
 
-                        final String css = MinifierCss.minifyFolder(file, true);
-                        final String js = MinifierJs.minifyFolder(file, true);
+                        final String css = DaoSysMinifierCss.minifyFolder(file, true);
+                        final String js = DaoSysMinifierJs.minifyFolder(file, true);
 
                         UtilsWeb.writeFile(new File(file, ".css"), css);
                         UtilsWeb.writeFile(new File(file, ".js"), js);
 
                     }else {
                         if (file.getName().endsWith(".css")) {
-                            MinifierCss.minifyFile(file);
+                            DaoSysMinifierCss.minifyFile(file);
 
                         } else if (file.getName().equals(".js")) {
-                            MinifierJs.minifyFile(file);
+                            DaoSysMinifierJs.minifyFile(file);
                         }
                     }
 

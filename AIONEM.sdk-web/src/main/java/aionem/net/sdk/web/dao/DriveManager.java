@@ -3,8 +3,8 @@ package aionem.net.sdk.web.dao;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.DaoRes;
 import aionem.net.sdk.data.utils.UtilsResource;
-import aionem.net.sdk.web.modals.ConfEnv;
-import aionem.net.sdk.web.modals.Resource;
+import aionem.net.sdk.web.beans.ConfEnv;
+import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.utils.UtilsDrive;
 import lombok.extern.log4j.Log4j2;
 

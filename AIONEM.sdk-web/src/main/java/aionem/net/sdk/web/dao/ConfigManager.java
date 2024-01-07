@@ -1,8 +1,6 @@
 package aionem.net.sdk.web.dao;
 
 import aionem.net.sdk.data.utils.UtilsResource;
-import aionem.net.sdk.web.AioWeb;
-import aionem.net.sdk.web.modals.Resource;
 import aionem.net.sdk.web.utils.UtilsWeb;
 
 import java.io.File;
@@ -13,6 +11,7 @@ import java.util.ArrayList;
 public class ConfigManager {
 
     public ConfigManager() {
+
     }
 
     public ArrayList<File> getListFoldersConfig() {

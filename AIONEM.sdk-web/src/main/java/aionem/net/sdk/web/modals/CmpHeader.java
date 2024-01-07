@@ -1,6 +1,7 @@
 package aionem.net.sdk.web.modals;
 
 import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.beans.Properties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

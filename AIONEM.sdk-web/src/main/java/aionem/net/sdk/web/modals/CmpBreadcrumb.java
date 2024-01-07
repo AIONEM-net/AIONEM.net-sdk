@@ -2,6 +2,8 @@ package aionem.net.sdk.web.modals;
 
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.beans.Page;
+import aionem.net.sdk.web.beans.Properties;
 import lombok.Getter;
 
 import java.util.ArrayList;

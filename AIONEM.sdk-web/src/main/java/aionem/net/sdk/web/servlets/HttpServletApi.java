@@ -1,4 +1,4 @@
-package aionem.net.sdk.web.map;
+package aionem.net.sdk.web.servlets;
 
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.web.modals.ApiRes;
@@ -16,7 +16,7 @@ import java.net.HttpURLConnection;
 
 @Log4j2
 @WebServlet(urlPatterns = "/api/*")
-public class HttpServletMap extends HttpServlet {
+public class HttpServletApi extends HttpServlet {
 
     private String urlPattern = "";
 

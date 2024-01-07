@@ -3,11 +3,10 @@ package aionem.net.sdk.web.dao;
 
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsResource;
-import aionem.net.sdk.web.modals.ConfEnv;
-import aionem.net.sdk.web.modals.Resource;
+import aionem.net.sdk.web.beans.ConfEnv;
+import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.utils.UtilsWeb;
 
-import java.io.File;
 import java.nio.file.Path;
 
 public class ResourceResolver {
