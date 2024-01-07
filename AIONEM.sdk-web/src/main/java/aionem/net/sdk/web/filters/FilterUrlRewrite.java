@@ -46,20 +46,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                 if(aioWeb.isRoot()) {
 
                     final String pathPage = ConfEnv.getInstance().getHome();
-
-                    if(new Resource(ResourceResolver.getRealPathPage(pathPage) +"/index.html").exists()) {
-
-                        final String urlIndexQuery = pathPage
-                                + (!pathPage.endsWith("/") ? "/" : "")
-                                + "index.html"
-                                +"?"+ aioWeb.getRequestQuery();
-
-                        aioWeb.include("/ui.page" + urlIndexQuery);
-
-                    }else {
-                        aioWeb.setup();
-                        aioWeb.include("/WEB-INF/ui.template/.jsp");
-                    }
+                    responsePage(aioWeb, pathPage);
 
                 }else if(aioWeb.isHome()) {
                     final String url = "/"+ aioWeb.getRequestQuery(true);
@@ -70,21 +57,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                 }else {
 
                     final String pathPage = aioWeb.getServletPage();
-
-                    if(new Resource(ResourceResolver.getRealPathPage(pathPage) +"/index.html").exists()) {
-
-                        final String urlIndexQuery = pathPage
-                                + (!pathPage.endsWith("/") ? "/" : "")
-                                + "index.html"
-                                +"?"+ aioWeb.getRequestQuery();
-
-                        aioWeb.include("/ui.page" + urlIndexQuery);
-
-                    }else {
-                        aioWeb.setup();
-                        aioWeb.include("/WEB-INF/ui.template/.jsp");
-                    }
-
+                    responsePage(aioWeb, pathPage);
                 }
 
             }catch(Exception e) {
@@ -123,7 +96,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                 final String filePath = UtilsResource.getRealPathRoot(path);
                 final Resource resource = new Resource(filePath);
 
-                responseResource(aioWeb, resource);
+                responseFile(aioWeb, resource);
                 return;
             }
 
@@ -138,7 +111,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                 final String filePath = UtilsResource.getRealPathRoot(path);
                 final Resource resource = new Resource(filePath);
 
-                responseResource(aioWeb, resource);
+                responseFile(aioWeb, resource);
                 return;
             }
 
@@ -152,18 +125,36 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                 final String filePath = UtilsResource.getRealPathRoot(path);
                 final Resource resource = new Resource(filePath);
 
-                responseResource(aioWeb, resource);
+                responseFile(aioWeb, resource);
                 return;
             }
 
             final String filePath = UtilsResource.getRealPathRoot("/ui.frontend" + requestPath);
             final Resource resource = new Resource(filePath);
-            responseResource(aioWeb, resource);
+            responseFile(aioWeb, resource);
         }
 
     }
 
-    private void responseResource(final AioWeb aioWeb, final Resource resource) throws IOException {
+    private void responsePage(final AioWeb aioWeb, final String pathPage) throws ServletException, IOException {
+
+        if(new Resource(ResourceResolver.getRealPathPage(pathPage) +"/index.html").exists()) {
+
+            final String urlIndexQuery = pathPage
+                    + (!pathPage.endsWith("/") ? "/" : "")
+                    + "index.html"
+                    +"?"+ aioWeb.getRequestQuery();
+
+            aioWeb.include("/ui.page" + urlIndexQuery);
+
+        }else {
+            aioWeb.setup();
+            aioWeb.include("/WEB-INF/ui.template/.jsp");
+        }
+
+    }
+
+    private void responseFile(final AioWeb aioWeb, final Resource resource) throws IOException {
 
         System.out.println(resource.getRealPath());
 
