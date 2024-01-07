@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 
-@WebServlet(value={"/ui.system/test/*"}, name="ServletSysUi", description="Ui.System • AIONEM.net - Ui Servlet")
+@WebServlet(value={"/ui.system/test"}, name="ServletSysUi", description="Ui.System • AIONEM.net - Ui Servlet")
 public class ServletSysUi extends HttpServlet {
 
     @Override

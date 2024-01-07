@@ -37,92 +37,34 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
         }else if(!isSystemPath) {
 
-            final boolean hasExtension = requestPath.lastIndexOf(".") > 0;
-            final boolean isFile = hasExtension && (requestPath.startsWith("/drive") || requestPath.startsWith("/assets") || requestPath.startsWith("/cdn"));
+            try {
 
-            System.out.println(requestPath);
-            System.out.println(hasExtension +" "+ isFile);
+                aioWeb.getResponse().setCharacterEncoding("UTF-8");
+                aioWeb.getResponse().setContentType("text/html; charset=UTF-8");
 
-            if(!isFile) {
+                if(aioWeb.isRoot()) {
+                    aioWeb.setup();
+                    final String urlIndexQuery = ConfEnv.getInstance().getHome() +"/?"+ aioWeb.getRequestQuery();
+                    aioWeb.include("/ui.page/"+ urlIndexQuery);
+                }else if(aioWeb.isHome()) {
+                    final String url = "/"+ aioWeb.getRequestQuery(true);
+                    aioWeb.sendRedirect(url);
+                }else if(aioWeb.isUnderHome()) {
+                    final String url = aioWeb.getRequestUrlQuery().substring(ConfEnv.getInstance().getHome().length());
+                    aioWeb.sendRedirect(url);
+                }else {
 
-                try {
+                    aioWeb.setup();
 
-                    aioWeb.getResponse().setCharacterEncoding("UTF-8");
-                    aioWeb.getResponse().setContentType("text/html; charset=UTF-8");
+                    final String urlIndexQuery = aioWeb.getServletPage()
+                            + (!requestPath.endsWith("/") ? "/" : "")
+                            +"?"+ aioWeb.getRequestQuery();
 
-                    if(aioWeb.isRoot()) {
-                        aioWeb.setup();
-                        final String urlIndexQuery = ConfEnv.getInstance().getHome() +"/?"+ aioWeb.getRequestQuery();
-                        aioWeb.include("/ui.page/"+ urlIndexQuery);
-                    }else if(aioWeb.isHome()) {
-                        final String url = "/"+ aioWeb.getRequestQuery(true);
-                        aioWeb.sendRedirect(url);
-                    }else if(aioWeb.isUnderHome()) {
-                        final String url = aioWeb.getRequestUrlQuery().substring(ConfEnv.getInstance().getHome().length());
-                        aioWeb.sendRedirect(url);
-                    }else {
-
-                        aioWeb.setup();
-
-                        final String urlIndexQuery = aioWeb.getServletPage()
-                                + (!requestPath.endsWith("/") ? "/" : "")
-                                +"?"+ aioWeb.getRequestQuery();
-
-                        aioWeb.include("/ui.page" + urlIndexQuery);
-                    }
-
-                }catch(Exception e) {
-                    aioWeb.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    aioWeb.include("/ui.page" + urlIndexQuery);
                 }
 
-            }else {
-
-                Pattern pattern = Pattern.compile("^/drive/(.+)$");
-                Matcher matcher = pattern.matcher(requestPath);
-                if(matcher.matches()) {
-
-                    final String group1 = matcher.group(1);
-
-                    final String path =  "/ui.drive/" + group1;
-                    final String filePath = UtilsResource.getRealPathRoot(path);
-                    final Resource resource = new Resource(filePath);
-
-                    responseResource(aioWeb, resource);
-                    return;
-                }
-
-                pattern = Pattern.compile("^/assets/([^/]+)/(.+)$");
-                matcher = pattern.matcher(requestPath);
-                if(matcher.matches()) {
-
-                    final String group1 = matcher.group(1);
-                    final String group2 = matcher.group(2);
-
-                    final String path =  "/ui.frontend/" + group1 + "/resources/" + group2;
-                    final String filePath = UtilsResource.getRealPathRoot(path);
-                    final Resource resource = new Resource(filePath);
-
-                    responseResource(aioWeb, resource);
-                    return;
-                }
-
-                pattern = Pattern.compile("^/cdn/(.+)$");
-                matcher = pattern.matcher(requestPath);
-                if(matcher.matches()) {
-
-                    final String group1 = matcher.group(1);
-
-                    final String path =  "/ui.frontend/" + group1;
-                    final String filePath = UtilsResource.getRealPathRoot(path);
-                    final Resource resource = new Resource(filePath);
-
-                    responseResource(aioWeb, resource);
-                    return;
-                }
-
-                final String filePath = UtilsResource.getRealPathRoot("/ui.frontend" + requestPath);
-                final Resource resource = new Resource(filePath);
-                responseResource(aioWeb, resource);
+            }catch(Exception e) {
+                aioWeb.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
 
         }else {
@@ -131,16 +73,68 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
                 final String url = requestPath.substring("/ui.page".length());
                 aioWeb.sendRedirect(url);
+                return;
 
-            }else if(requestPath.startsWith("/ui.drive")) {
+            }else if (requestPath.startsWith("/ui.drive")) {
                 super.doFilter(request, response, chain);
-            }else if(requestPath.startsWith("/ui.frontend")) {
+                return;
+            }else if (requestPath.startsWith("/ui.frontend")) {
                 super.doFilter(request, response, chain);
-            }else if(requestPath.startsWith("/ui.system")) {
+                return;
+            }else if (requestPath.startsWith("/ui.system")) {
                 super.doFilter(request, response, chain);
-            }else {
+                return;
+            }else if(requestPath.startsWith("/api")) {
                 super.doFilter(request, response, chain);
+                return;
             }
+
+            Pattern pattern = Pattern.compile("^/drive/(.+)$");
+            Matcher matcher = pattern.matcher(requestPath);
+            if (matcher.matches()) {
+
+                final String group1 = matcher.group(1);
+
+                final String path = "/ui.drive/" + group1;
+                final String filePath = UtilsResource.getRealPathRoot(path);
+                final Resource resource = new Resource(filePath);
+
+                responseResource(aioWeb, resource);
+                return;
+            }
+
+            pattern = Pattern.compile("^/assets/([^/]+)/(.+)$");
+            matcher = pattern.matcher(requestPath);
+            if (matcher.matches()) {
+
+                final String group1 = matcher.group(1);
+                final String group2 = matcher.group(2);
+
+                final String path = "/ui.frontend/" + group1 + "/resources/" + group2;
+                final String filePath = UtilsResource.getRealPathRoot(path);
+                final Resource resource = new Resource(filePath);
+
+                responseResource(aioWeb, resource);
+                return;
+            }
+
+            pattern = Pattern.compile("^/cdn/(.+)$");
+            matcher = pattern.matcher(requestPath);
+            if (matcher.matches()) {
+
+                final String group1 = matcher.group(1);
+
+                final String path = "/ui.frontend/" + group1;
+                final String filePath = UtilsResource.getRealPathRoot(path);
+                final Resource resource = new Resource(filePath);
+
+                responseResource(aioWeb, resource);
+                return;
+            }
+
+            final String filePath = UtilsResource.getRealPathRoot("/ui.frontend" + requestPath);
+            final Resource resource = new Resource(filePath);
+            responseResource(aioWeb, resource);
         }
 
     }
