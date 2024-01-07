@@ -4,6 +4,7 @@ import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.AioWeb;
 import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.config.ConfEnv;
+import aionem.net.sdk.web.dao.ResourceResolver;
 import org.tuckey.web.filters.urlrewrite.UrlRewriteFilter;
 
 import javax.servlet.FilterChain;
@@ -43,9 +44,23 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                 aioWeb.getResponse().setContentType("text/html; charset=UTF-8");
 
                 if(aioWeb.isRoot()) {
-                    aioWeb.setup();
-                    final String urlIndexQuery = ConfEnv.getInstance().getHome() +"/?"+ aioWeb.getRequestQuery();
-                    aioWeb.include("/ui.page/"+ urlIndexQuery);
+
+                    final String pathPage = ConfEnv.getInstance().getHome();
+
+                    if(new Resource(ResourceResolver.getRealPathPage(pathPage) +"/index.html").exists()) {
+
+                        final String urlIndexQuery = pathPage
+                                + (!pathPage.endsWith("/") ? "/" : "")
+                                + "index.html"
+                                +"?"+ aioWeb.getRequestQuery();
+
+                        aioWeb.include("/ui.page" + urlIndexQuery);
+
+                    }else {
+                        aioWeb.setup();
+                        aioWeb.include("/WEB-INF/ui.template/.jsp");
+                    }
+
                 }else if(aioWeb.isHome()) {
                     final String url = "/"+ aioWeb.getRequestQuery(true);
                     aioWeb.sendRedirect(url);
@@ -54,13 +69,22 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                     aioWeb.sendRedirect(url);
                 }else {
 
-                    aioWeb.setup();
+                    final String pathPage = aioWeb.getServletPage();
 
-                    final String urlIndexQuery = aioWeb.getServletPage()
-                            + (!requestPath.endsWith("/") ? "/" : "")
-                            +"?"+ aioWeb.getRequestQuery();
+                    if(new Resource(ResourceResolver.getRealPathPage(pathPage) +"/index.html").exists()) {
 
-                    aioWeb.include("/ui.page" + urlIndexQuery);
+                        final String urlIndexQuery = pathPage
+                                + (!pathPage.endsWith("/") ? "/" : "")
+                                + "index.html"
+                                +"?"+ aioWeb.getRequestQuery();
+
+                        aioWeb.include("/ui.page" + urlIndexQuery);
+
+                    }else {
+                        aioWeb.setup();
+                        aioWeb.include("/WEB-INF/ui.template/.jsp");
+                    }
+
                 }
 
             }catch(Exception e) {
