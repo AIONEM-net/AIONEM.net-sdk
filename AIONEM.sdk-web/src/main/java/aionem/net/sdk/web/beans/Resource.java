@@ -3,26 +3,33 @@ package aionem.net.sdk.web.beans;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsResource;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 
-import java.io.File;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Objects;
 
 
 @Getter
+@Log4j2
 public class Resource {
 
     private final File file;
     private final String path;
+    private final Path filePath;
 
     public Resource(final File file) {
         this.file = file;
         this.path = file.getAbsolutePath();
+        this.filePath = Path.of(path);
     }
 
     public Resource(final String path) {
         this.path = path;
         this.file = new File(path);
+        this.filePath = Path.of(path);
     }
 
     public Resource(final Resource resource, final String child) {
@@ -39,6 +46,15 @@ public class Resource {
 
     public String getRealPath() {
         return path;
+    }
+
+    public long getSize() {
+        try {
+            return Files.size(filePath);
+        } catch (IOException e) {
+            log.error("\nError: failed to get size of file");
+            return -1;
+        }
     }
 
     public Resource child(final String name) {
@@ -62,6 +78,15 @@ public class Resource {
 
     public boolean hasParent() {
         return !isRootPath();
+    }
+
+    public InputStream getInputStream() {
+        try {
+            return new FileInputStream(file);
+        } catch (final FileNotFoundException e) {
+            log.error("\nError: file does not exist");
+            return null;
+        }
     }
 
     public boolean delete() {

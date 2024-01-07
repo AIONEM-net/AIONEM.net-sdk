@@ -223,7 +223,7 @@ public @Getter class AioWeb {
     }
 
     public boolean isHome() {
-        return isRoot() || getRequestPath().equalsIgnoreCase(ConfEnv.getInstance().getHome());
+        return isRoot() || getRequestURI().equalsIgnoreCase(ConfEnv.getInstance().getHome());
     }
 
     public boolean isSite() {
@@ -235,22 +235,15 @@ public @Getter class AioWeb {
     }
 
     public String getContextPath() {
-        return request.getContextPath();
-    }
-
-    public String getContextPath(final String path) {
-        String contextPath = getContextPath() +"/"+ path;
-        contextPath = contextPath.replace("//", "/");
-        if(contextPath.endsWith("/")) contextPath = contextPath.substring(0, contextPath.length()-1);
-        return contextPath;
+        return ("");
     }
 
     public String getContextServletPath() {
-        return getContextPath() + getServletPath();
+        return getServletPath();
     }
 
     public String getContextServletPage() {
-        return getContextPath() + getServletPage();
+        return getServletPage();
     }
 
     public String getRequestURI() {
@@ -261,14 +254,8 @@ public @Getter class AioWeb {
         return getConfEnv().getUrl(getRequestURI());
     }
 
-    public String getRequestPath() {
-        final String contextPath = getContextPath();
-        final String requestURI = getRequestURI();
-        return requestURI.substring(contextPath.length());
-    }
-
     public String getRequestRoot() {
-        String[] paths = getRequestPath().split("/");
+        String[] paths = getRequestURI().split("/");
         return "/" + (paths.length > 0 ? paths[1] : "");
     }
 
@@ -283,15 +270,15 @@ public @Getter class AioWeb {
 
     public String getRequestUrlQuery() {
         final String query = getRequestQuery();
-        return getRequestPath() + UtilsText.notEmptyUse(query, "?"+ query);
+        return getRequestURI() + UtilsText.notEmptyUse(query, "?"+ query);
     }
 
-    public String getContextUrlQuery() {
-        return getContextPath(getRequestUrlQuery());
+    public String getUrlQuery() {
+        return getRequestUrlQuery();
     }
 
     public boolean isSystemPath() {
-        return isSystemPath(getRequestPath());
+        return isSystemPath(getRequestURI());
     }
 
     public boolean isSystemPath(final String requestUrl) {
@@ -376,9 +363,9 @@ public @Getter class AioWeb {
     }
 
     public String getRedirect(final String location, boolean isRedirect) {
-        String url = location.startsWith("http") ? location : getContextPath(location);
+        String url = location;
         if(isRedirect) {
-            url = UtilsNetwork.addParameter(url, "redirect", getContextUrlQuery());
+            url = UtilsNetwork.addParameter(url, "redirect", getUrlQuery());
         }
         return url;
     }

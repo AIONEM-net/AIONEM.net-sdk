@@ -1,24 +1,19 @@
-package aionem.net.sdk.web.system.servlets;
-
-import aionem.net.sdk.web.servlets.HttpServletApi;
-import aionem.net.sdk.web.system.dao.DaoSysDeploy;
+package aionem.net.sdk.web.system.ui;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
 
-@WebServlet(value={"/api/ui.system/deploy/*"}, name="ServletSysDeploy", description="Ui.System • AIONEM.net - Deploy Servlet")
-public class ServletSysDeploy extends HttpServletApi {
-
+@WebServlet(value={"/ui.system/test/*"}, name="ServletSysUi", description="Ui.System • AIONEM.net - Ui Servlet")
+public class ServletSysUi extends HttpServlet {
 
     @Override
-    protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-
-        final boolean isDeployWar = DaoSysDeploy.deployWar("prod", "aionem.net.war");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         response.setContentType("text/html;charset=UTF-8");
         final PrintWriter out = response.getWriter();
@@ -28,8 +23,6 @@ public class ServletSysDeploy extends HttpServletApi {
         out.println("<title>Ui.System • AIONEM.net</title>");
         out.println("</head>");
         out.println("<body>");
-
-        out.println("<br>" +"DeployWar PROD: "+ isDeployWar);
 
         out.println("</body>");
         out.println("</html>");

@@ -30,7 +30,7 @@ public class ServletSysTest extends HttpServletApi {
 
         out.println("<html>");
         out.println("<head>");
-        out.println("<title>Your Servlet</title>");
+        out.println("<title>Ui.System • AIONEM.net</title>");
         out.println("</head>");
         out.println("<body>");
 
