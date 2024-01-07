@@ -1,4 +1,4 @@
-package aionem.net.sdk.web.beans;
+package aionem.net.sdk.web.config;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

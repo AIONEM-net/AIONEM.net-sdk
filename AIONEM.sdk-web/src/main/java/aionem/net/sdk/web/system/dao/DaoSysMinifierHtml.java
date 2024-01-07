@@ -1,6 +1,6 @@
 package aionem.net.sdk.web.system.dao;
 
-import aionem.net.sdk.data.DaoRes;
+import aionem.net.sdk.data.beans.DaoRes;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;

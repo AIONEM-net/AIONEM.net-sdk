@@ -1,4 +1,4 @@
-package aionem.net.sdk.data;
+package aionem.net.sdk.data.query;
 
 import aionem.net.sdk.core.utils.UtilsText;
 import lombok.Getter;

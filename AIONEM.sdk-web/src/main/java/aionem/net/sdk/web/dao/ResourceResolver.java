@@ -3,7 +3,7 @@ package aionem.net.sdk.web.dao;
 
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsResource;
-import aionem.net.sdk.web.beans.ConfEnv;
+import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.utils.UtilsWeb;
 

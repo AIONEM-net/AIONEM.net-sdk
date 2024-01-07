@@ -1,9 +1,10 @@
-package aionem.net.sdk.data;
+package aionem.net.sdk.data.beans;
 
 import aionem.net.sdk.core.utils.UtilsConverter;
 import aionem.net.sdk.core.utils.UtilsNetwork;
 import aionem.net.sdk.core.utils.UtilsParse;
 import aionem.net.sdk.core.utils.UtilsText;
+import aionem.net.sdk.data.query.Col;
 import aionem.net.sdk.data.utils.UtilsData;
 import aionem.net.sdk.data.utils.UtilsJson;
 import com.google.gson.JsonElement;

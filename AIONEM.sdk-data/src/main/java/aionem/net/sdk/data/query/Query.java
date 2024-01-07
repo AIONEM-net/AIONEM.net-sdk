@@ -1,7 +1,9 @@
-package aionem.net.sdk.data;
+package aionem.net.sdk.data.query;
 
 import aionem.net.sdk.core.Env;
 import aionem.net.sdk.core.utils.UtilsText;
+import aionem.net.sdk.data.beans.Data;
+import aionem.net.sdk.data.config.ConfApp;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import oracle.ucp.jdbc.PoolDataSource;

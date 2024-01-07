@@ -2,18 +2,15 @@ package aionem.net.sdk.data.utils;
 
 import aionem.net.sdk.core.utils.UtilsConverter;
 import aionem.net.sdk.core.utils.UtilsText;
-import aionem.net.sdk.data.Col;
-import aionem.net.sdk.data.Data;
-import aionem.net.sdk.data.Datas;
+import aionem.net.sdk.data.query.Col;
+import aionem.net.sdk.data.beans.Data;
+import aionem.net.sdk.data.beans.Datas;
 import com.google.gson.JsonObject;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.File;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.net.URL;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

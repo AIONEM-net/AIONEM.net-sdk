@@ -1,4 +1,4 @@
-package aionem.net.sdk.data;
+package aionem.net.sdk.data.beans;
 
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsJson;

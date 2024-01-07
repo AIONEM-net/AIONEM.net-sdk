@@ -1,5 +1,7 @@
-package aionem.net.sdk.data;
+package aionem.net.sdk.data.query;
 
+import aionem.net.sdk.data.beans.Data;
+import aionem.net.sdk.data.beans.Datas;
 import aionem.net.sdk.data.utils.UtilsDB;
 import aionem.net.sdk.core.utils.UtilsParse;
 import aionem.net.sdk.core.utils.UtilsText;

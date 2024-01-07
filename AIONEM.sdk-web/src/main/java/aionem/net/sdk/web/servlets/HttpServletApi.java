@@ -1,7 +1,7 @@
 package aionem.net.sdk.web.servlets;
 
 import aionem.net.sdk.core.utils.UtilsText;
-import aionem.net.sdk.web.modals.ApiRes;
+import aionem.net.sdk.web.beans.ApiRes;
 import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.ServletException;

@@ -1,6 +1,6 @@
 package aionem.net.sdk.web.system.dao;
 
-import aionem.net.sdk.data.Data;
+import aionem.net.sdk.data.beans.Data;
 import aionem.net.sdk.data.utils.UtilsJson;
 import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.dao.PageManager;

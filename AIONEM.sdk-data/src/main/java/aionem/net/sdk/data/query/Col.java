@@ -1,4 +1,4 @@
-package aionem.net.sdk.data;
+package aionem.net.sdk.data.query;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

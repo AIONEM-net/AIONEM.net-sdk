@@ -1,6 +1,6 @@
 package aionem.net.sdk.web.utils;
 
-import aionem.net.sdk.data.Data;
+import aionem.net.sdk.data.beans.Data;
 import aionem.net.sdk.core.utils.UtilsText;
 import lombok.extern.log4j.Log4j2;
 

@@ -1,6 +1,8 @@
-package aionem.net.sdk.data;
+package aionem.net.sdk.data.query;
 
 import aionem.net.sdk.core.utils.UtilsText;
+import aionem.net.sdk.data.beans.DaoRes;
+import aionem.net.sdk.data.beans.Data;
 import com.google.gson.JsonObject;
 
 import java.sql.SQLException;

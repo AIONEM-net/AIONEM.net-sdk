@@ -2,7 +2,7 @@ package aionem.net.sdk.web.filters;
 
 import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.AioWeb;
-import aionem.net.sdk.web.beans.ConfEnv;
+import aionem.net.sdk.web.config.ConfEnv;
 import org.tuckey.web.filters.urlrewrite.UrlRewriteFilter;
 
 import javax.servlet.FilterChain;

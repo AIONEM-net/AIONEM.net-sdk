@@ -1,4 +1,4 @@
-package aionem.net.sdk.web.beans;
+package aionem.net.sdk.web.config;
 
 import aionem.net.sdk.core.Env;
 import aionem.net.sdk.core.utils.UtilsText;

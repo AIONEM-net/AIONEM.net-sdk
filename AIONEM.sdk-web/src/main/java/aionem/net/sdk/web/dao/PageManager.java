@@ -1,10 +1,10 @@
 package aionem.net.sdk.web.dao;
 
-import aionem.net.sdk.data.DaoRes;
-import aionem.net.sdk.data.Data;
-import aionem.net.sdk.data.Network;
+import aionem.net.sdk.data.beans.DaoRes;
+import aionem.net.sdk.data.beans.Data;
+import aionem.net.sdk.data.dao.Network;
 import aionem.net.sdk.web.AioWeb;
-import aionem.net.sdk.web.beans.ConfEnv;
+import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.beans.Page;
 import aionem.net.sdk.web.beans.Properties;
 import aionem.net.sdk.web.beans.Resource;

@@ -1,8 +1,10 @@
-package aionem.net.sdk.web.beans;
+package aionem.net.sdk.web.config;
 
 import aionem.net.sdk.core.utils.UtilsConverter;
 import aionem.net.sdk.core.utils.UtilsText;
-import aionem.net.sdk.data.Data;
+import aionem.net.sdk.data.beans.Data;
+import aionem.net.sdk.web.config.Conf;
+import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.Getter;
 

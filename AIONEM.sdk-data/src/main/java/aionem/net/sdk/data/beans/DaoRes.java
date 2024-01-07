@@ -1,8 +1,7 @@
-package aionem.net.sdk.data;
+package aionem.net.sdk.data.beans;
 
 import aionem.net.sdk.core.Env;
 import aionem.net.sdk.core.utils.UtilsText;
-import aionem.net.sdk.data.utils.UtilsJson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -14,7 +13,7 @@ import java.sql.SQLException;
 
 @Log4j2
 @EqualsAndHashCode(callSuper=false)
-public @lombok.Data class DaoRes extends Data  {
+public @lombok.Data class DaoRes extends Data {
 
     private long id = -1;
     private int status = -1;

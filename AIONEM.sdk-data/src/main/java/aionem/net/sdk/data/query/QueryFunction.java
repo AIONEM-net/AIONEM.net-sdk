@@ -1,4 +1,4 @@
-package aionem.net.sdk.data;
+package aionem.net.sdk.data.query;
 
 
 public class QueryFunction {

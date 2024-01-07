@@ -1,8 +1,9 @@
 package aionem.net.sdk.web.beans;
 
 import aionem.net.sdk.core.utils.UtilsText;
-import aionem.net.sdk.data.Data;
+import aionem.net.sdk.data.beans.Data;
 import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.dao.PageManager;
 import aionem.net.sdk.web.dao.ResourceResolver;
 import lombok.extern.log4j.Log4j2;
