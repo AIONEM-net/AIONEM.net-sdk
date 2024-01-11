@@ -168,9 +168,6 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
             resourceFile = resource;
         }
 
-        System.out.println(resource);
-        System.out.println(resourceFile);
-
         if(resourceFile.exists() && resourceFile.isFile()) {
 
             final String fileName = resource.getName();

@@ -1,10 +1,12 @@
 package aionem.net.sdk.web.beans;
 
+import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.beans.Data;
 import aionem.net.sdk.web.AioWeb;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -13,6 +15,7 @@ import java.util.Objects;
 @Log4j2
 public @Getter class Properties {
 
+    public static final String PROPERTIES = "$_properties";
     public static final String PROPERTIES_JSON = "properties.json";
 
     private Data data;
@@ -29,16 +32,12 @@ public @Getter class Properties {
         init(resourceProperties);
     }
 
-    public Properties(final File fileProperties) {
-        init(fileProperties);
-    }
-
     public Properties(final AioWeb aioWeb) {
         init(aioWeb);
     }
 
-    public Properties init(final File fileProperties) {
-        return init(new Data(fileProperties));
+    public Properties(final HttpServletRequest request) {
+        init(request);
     }
 
     public Properties init(final Resource resourceProperties) {
@@ -47,8 +46,16 @@ public @Getter class Properties {
 
     public Properties init(final AioWeb aioWeb) {
         if(data == null || data.isEmpty()) {
-            final File file = new File(aioWeb.getRealPathPageCurrent(Properties.PROPERTIES_JSON));
-            init(file);
+            final Resource resource = new Resource(aioWeb.getRealPathPageCurrent(Properties.PROPERTIES_JSON));
+            init(resource);
+        }
+        return this;
+    }
+
+    public Properties init(final HttpServletRequest request) {
+        if(data == null || data.isEmpty()) {
+            final String properties = request.getParameter(PROPERTIES);
+            init(new Data(properties));
         }
         return this;
     }
@@ -131,7 +138,16 @@ public @Getter class Properties {
     }
 
     public String getResourceType() {
-        return get("resourceType");
+        final String resourceType = get("resourceType");
+        if(UtilsText.isEmpty(resourceType)) return "";
+        if(resourceType.startsWith("/WEB-INF/")) {
+            return resourceType;
+        }else if(resourceType.startsWith("/ui.page")) {
+            return resourceType;
+        }else if(resourceType.startsWith("ui.apps")) {
+            return "/WEB-INF/"+ resourceType + (!resourceType.endsWith(".jsp") ? "/.jsp" : "");
+        }
+        return "/WEB-INF/ui.apps/"+ resourceType + (!resourceType.endsWith(".jsp") ? "/.jsp" : "");
     }
 
     @Override
