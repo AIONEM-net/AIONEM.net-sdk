@@ -16,7 +16,7 @@ import java.util.Objects;
 public @Getter class Properties {
 
     public static final String PROPERTIES = "$_properties";
-    public static final String PROPERTIES_JSON = "properties.json";
+    public static final String PROPERTIES_JSON = ".json";
 
     private Data data;
 

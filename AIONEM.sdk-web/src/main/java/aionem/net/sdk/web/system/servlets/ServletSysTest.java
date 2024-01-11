@@ -4,6 +4,7 @@ import aionem.net.sdk.data.beans.DataAuth;
 import aionem.net.sdk.data.config.ConfApp;
 import aionem.net.sdk.data.dao.I18n;
 import aionem.net.sdk.web.beans.Page;
+import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.config.Config;
 import aionem.net.sdk.web.dao.*;
@@ -125,6 +126,9 @@ public class ServletSysTest extends HttpServletApi {
         // Output for PageManager
         PageManager pageManager = new PageManager();
         out.println("<div>" + "pageManager -> " + ResourceResolver.getRealPathPage() + "</div>");
+        for (Resource resource : pageManager.getListFilePagesAll()) {
+            out.println("<div>" + "Resource file -> " + resource + "</div>");
+        }
         out.println("<div>---------------------------------------------</div>");
 
 
