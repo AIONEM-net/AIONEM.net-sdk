@@ -3,6 +3,7 @@ package aionem.net.sdk.web.system.dao;
 import aionem.net.sdk.data.beans.DaoRes;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsResource;
+import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.extern.log4j.Log4j2;
@@ -27,28 +28,28 @@ public class DaoSysMinifierCss {
 
         final DaoRes resMinify = new DaoRes();
 
-        final File fileIn = new File(pathIn);
-        final String css = minify(UtilsText.toString(fileIn, false));
+        final Resource fileIn = new Resource(pathIn);
+        final String css = minify(fileIn.readContent(false));
 
-        final File fileOut = new File(pathOut);
-        final boolean isSaved = UtilsWeb.writeFile(fileOut, css);
+        final Resource fileOut = new Resource(pathOut);
+        final boolean isSaved = UtilsWeb.writeResource(fileOut, css);
 
         resMinify.setSuccess(isSaved);
 
         return resMinify;
     }
 
-    public static String minifyFolder(final File fileFolder, final boolean isSave) {
+    public static String minifyFolder(final Resource fileFolder, final boolean isSave) {
 
         final StringBuilder builderCss = new StringBuilder();
 
         final String uiFrontend = ConfEnv.getInstance().getContextPath("/ui.frontend");
 
-        final File fileCss = new File(fileFolder, ".css");
-        final File fileCssJsp = new File(fileFolder, "css.jsp");
+        final Resource fileCss = new Resource(fileFolder, ".css");
+        final Resource fileCssJsp = new Resource(fileFolder, "css.jsp");
         final Pattern pattern = Pattern.compile("(/ui\\.frontend[^\"']*\\.css)\"");
 
-        final Matcher matcher = pattern.matcher(UtilsText.toString(fileCssJsp, false));
+        final Matcher matcher = pattern.matcher(fileCssJsp.readContent(false));
 
         final ArrayList<String> listFileCss = new ArrayList<>();
         while(matcher.find()) {
@@ -58,18 +59,18 @@ public class DaoSysMinifierCss {
         int n = 0;
         for(int i = 0; i < listFileCss.size(); i++) {
 
-            final File file = new File(UtilsResource.getRealPathRoot(listFileCss.get(i)));
+            final Resource file = new Resource(UtilsResource.getRealPathRoot(listFileCss.get(i)));
 
             if(file.exists() && file.isFile()) {
 
-                String css = UtilsText.toString(file, false);
+                String css = file.readContent(false);
 
                 if (!file.getName().equals("min.css")) {
                     css = minify(css);
                 }
 
                 if (isSave) {
-                    UtilsWeb.writeFile(file, css);
+                    UtilsWeb.writeResource(file, css);
                     file.delete();
                 }
 
@@ -89,10 +90,10 @@ public class DaoSysMinifierCss {
 
         }
         if(isSave && n > 0) {
-            final boolean isMinified = UtilsWeb.writeFile(fileCss, builderCss.toString());
+            final boolean isMinified = UtilsWeb.writeResource(fileCss, builderCss.toString());
             // fileCssJsp.delete();
             // update templates: replace /css.jsp" = /.css"
-            new File(fileFolder, "css").delete();
+            new Resource(fileFolder, "css").delete();
 
             log.error("\nAioWeb::Minify CSS {} : {}", "ui.frontend/"+ fileFolder.getName(), isMinified);
         }
@@ -106,19 +107,19 @@ public class DaoSysMinifierCss {
                 }
             };
 
-            final ArrayList<File> listFiles = UtilsWeb.findFiles(fileFolder, filterCss);
+            final ArrayList<Resource> listFiles = UtilsWeb.findResources(fileFolder, filterCss);
 
-            for(final File file : listFiles) {
+            for(final Resource file : listFiles) {
 
                 if(file.isFile()) {
 
-                    String css = UtilsText.toString(file, false);
+                    String css = file.readContent(false);
 
                     if(!file.getName().equals("min.css")) {
                         css = minify(css);
                     }
 
-                    UtilsWeb.writeFile(file, css);
+                    UtilsWeb.writeResource(file, css);
                 }
             }
 
@@ -127,8 +128,8 @@ public class DaoSysMinifierCss {
         return builderCss.toString();
     }
 
-    public static String minifyFile(final File file) {
-        return minify(UtilsText.toString(file, false));
+    public static String minifyFile(final Resource file) {
+        return minify(file.readContent(false));
     }
 
     public static String minify(String css) {

@@ -14,7 +14,6 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -124,7 +123,7 @@ public class ServletSysTest extends HttpServletApi {
         // Output for PageManager
         PageManager pageManager = new PageManager();
         out.println("<div>" + "pageManager -> " + ResourceResolver.getRealPathPage() + "</div>");
-        for (Resource resource : pageManager.getListFilePagesAll()) {
+        for (Resource resource : pageManager.getListResourcePagesAll()) {
             out.println("<div>" + "Resource file -> " + resource + "</div>");
         }
         out.println("<div>---------------------------------------------</div>");
@@ -132,10 +131,10 @@ public class ServletSysTest extends HttpServletApi {
 
         // Output for I18nManager
         final I18nManager i18nManager = new I18nManager();
-        for (File folderI18n : i18nManager.getListFoldersI18n()) {
+        for (Resource folderI18n : i18nManager.getListFolders()) {
             out.println("<div>" + "I18n folder -> " + folderI18n.getPath() + "</div>");
         }
-        for (File fileI18n : i18nManager.getListI18nFiles()) {
+        for (Resource fileI18n : i18nManager.getListI18n()) {
             out.println("<div>" + "I18n file -> " + fileI18n.getPath() + "</div>");
         }
         out.println("<div>---------------------------------------------</div>");
@@ -143,10 +142,10 @@ public class ServletSysTest extends HttpServletApi {
 
         // Output for ConfigManager
         final ConfigManager configManager = new ConfigManager();
-        for (File folderConfig : configManager.getListFoldersConfig()) {
+        for (Resource folderConfig : configManager.getListFolders()) {
             out.println("<div>" + "Config folder -> " + folderConfig.getPath() + "</div>");
         }
-        for (File fileConfig : configManager.getListFilesConfig()) {
+        for (Resource fileConfig : configManager.getListConfigs()) {
             out.println("<div>" + "Config file -> " + fileConfig.getPath() + "</div>");
         }
         out.println("<div>---------------------------------------------</div>");
@@ -155,13 +154,13 @@ public class ServletSysTest extends HttpServletApi {
         // Output for DriveManager
         final DriveManager driveManager = new DriveManager();
         out.println("<div>" + "Drive -> " + driveManager.getFolder() + "</div>");
-        for (File file : driveManager.getFiles()) {
+        for (Resource file : driveManager.getFiles()) {
             out.println("<div>" + "Drive files -> " + file.getPath() + "</div>");
         }
-        for (File file : driveManager.getFiles("uploads")) {
+        for (Resource file : driveManager.getFiles("uploads")) {
             out.println("<div>" + "Drive uploads -> " + file.getPath() + "</div>");
         }
-        for (File file : driveManager.getFiles("uploads/images")) {
+        for (Resource file : driveManager.getFiles("uploads/images")) {
             out.println("<div>" + "Drive images -> " + file.getPath() + "</div>");
         }
 

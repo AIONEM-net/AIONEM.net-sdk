@@ -1,6 +1,7 @@
 package aionem.net.sdk.web.dao;
 
 import aionem.net.sdk.data.utils.UtilsResource;
+import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.utils.UtilsWeb;
 
 import java.io.File;
@@ -14,34 +15,34 @@ public class ConfigManager {
 
     }
 
-    public ArrayList<File> getListFoldersConfig() {
-        final ArrayList<File> folder = new ArrayList<>();
+    public ArrayList<Resource> getListFolders() {
+        final ArrayList<Resource> folder = new ArrayList<>();
 
         final File folder1 = ResourceResolver.getRealFileWebInf("/ui.config/env").getFile();
         final File folder2 = UtilsResource.getResourceFile("/config");
         final File folder3 = UtilsResource.getResourceFolder();
 
-        if(folder1.exists() && folder1.isDirectory()) folder.add(folder1);
-        if(folder2.exists() && folder2.isDirectory()) folder.add(folder2);
-        if(folder3.exists() && folder3.isDirectory()) folder.add(folder3);
+        if(folder1.exists() && folder1.isDirectory()) folder.add(new Resource(folder1));
+        if(folder2.exists() && folder2.isDirectory()) folder.add(new Resource(folder2));
+        if(folder3.exists() && folder3.isDirectory()) folder.add(new Resource(folder3));
 
         return folder;
     }
 
-    public ArrayList<File> getListFilesConfig() {
+    public ArrayList<Resource> getListConfigs() {
 
-        final ArrayList<File> listFilesConfig = new ArrayList<>();
+        final ArrayList<Resource> listConfigs = new ArrayList<>();
 
-        listFilesConfig.addAll(listFilesConfigJson());
+        listConfigs.addAll(listConfigJson());
 
-        listFilesConfig.addAll(listFilesConfigProperties());
+        listConfigs.addAll(listConfigProperties());
 
-        return listFilesConfig;
+        return listConfigs;
     }
 
-    public ArrayList<File> listFilesConfigJson() {
+    public ArrayList<Resource> listConfigJson() {
 
-        final ArrayList<File> listFilesConfig = new ArrayList<>();
+        final ArrayList<Resource> listConfigs = new ArrayList<>();
 
         final FilenameFilter filterJson = new FilenameFilter() {
             @Override
@@ -50,16 +51,16 @@ public class ConfigManager {
             }
         };
 
-        for(final File folderConfig : getListFoldersConfig()) {
-            listFilesConfig.addAll(UtilsWeb.findFiles(folderConfig, filterJson));
+        for(final Resource folderConfig : getListFolders()) {
+            listConfigs.addAll(UtilsWeb.findResources(folderConfig, filterJson));
         }
 
-        return listFilesConfig;
+        return listConfigs;
     }
 
-    public ArrayList<File> listFilesConfigProperties() {
+    public ArrayList<Resource> listConfigProperties() {
 
-        final ArrayList<File> listFilesConfig = new ArrayList<>();
+        final ArrayList<Resource> listConfigs = new ArrayList<>();
 
         final FilenameFilter filterProperties = new FilenameFilter() {
             @Override
@@ -68,11 +69,11 @@ public class ConfigManager {
             }
         };
 
-        for(final File folderConfig : getListFoldersConfig()) {
-            listFilesConfig.addAll(UtilsWeb.findFiles(folderConfig, filterProperties));
+        for(final Resource folderConfig : getListFolders()) {
+            listConfigs.addAll(UtilsWeb.findResources(folderConfig, filterProperties));
         }
 
-        return listFilesConfig;
+        return listConfigs;
     }
 
 }

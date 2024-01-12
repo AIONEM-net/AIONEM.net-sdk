@@ -134,26 +134,23 @@ public class DriveManager {
         return resUpload;
     }
 
-    public File getFolder() {
+    public Resource getFolder() {
         return getFile("");
     }
 
-    public File getFile(final String path) {
-        return UtilsResource.getRealFileRoot("/ui.drive" +"/" + path);
+    public Resource getFile(final String path) {
+        return new Resource(UtilsResource.getRealFileRoot("/ui.drive" +"/" + path));
     }
 
-    public ArrayList<File> getFiles() {
+    public ArrayList<Resource> getFiles() {
         return getFiles("");
     }
 
-    public ArrayList<File> getFiles(final String path) {
-        final ArrayList<File> listFiles = new ArrayList<>();
-        final File[] files = getFile(path).listFiles();
-        if(files != null) {
-            for(final File file : files) {
-                if(file.exists()) {
-                    listFiles.add(file);
-                }
+    public ArrayList<Resource> getFiles(final String path) {
+        final ArrayList<Resource> listFiles = new ArrayList<>();
+        for(final Resource file : getFile(path).children()) {
+            if(file.exists()) {
+                listFiles.add(file);
             }
         }
         return listFiles;

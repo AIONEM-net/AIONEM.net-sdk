@@ -3,6 +3,7 @@ package aionem.net.sdk.web.system.dao;
 import aionem.net.sdk.data.beans.DaoRes;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsResource;
+import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import com.google.javascript.jscomp.Compiler;
@@ -29,28 +30,28 @@ public class DaoSysMinifierJs {
 
         final DaoRes resMinify = new DaoRes();
 
-        final File fileIn = new File(inputFilePath);
-        final String html = minify(UtilsText.toString(fileIn, true));
+        final Resource fileIn = new Resource(inputFilePath);
+        final String html = minify(fileIn.readContent(true));
 
-        final File fileOut = new File(outputFilePath);
-        final boolean isSaved = UtilsWeb.writeFile(fileOut, html);
+        final Resource fileOut = new Resource(outputFilePath);
+        final boolean isSaved = UtilsWeb.writeResource(fileOut, html);
 
         resMinify.setSuccess(isSaved);
 
         return resMinify;
     }
 
-    public static String minifyFolder(final File fileFolder, final boolean isSave) {
+    public static String minifyFolder(final Resource fileFolder, final boolean isSave) {
 
         final StringBuilder builderJs = new StringBuilder();
 
         final String uiFrontend = ConfEnv.getInstance().getContextPath("/ui.frontend");
 
-        final File fileJs = new File(fileFolder, ".js");
-        final File fileJsJsp = new File(fileFolder, "js.jsp");
+        final Resource fileJs = new Resource(fileFolder, ".js");
+        final Resource fileJsJsp = new Resource(fileFolder, "js.jsp");
         final Pattern pattern = Pattern.compile("(/ui\\.frontend[^\"']*\\.js)\"");
 
-        final Matcher matcher = pattern.matcher(UtilsText.toString(fileJsJsp, true));
+        final Matcher matcher = pattern.matcher(fileJsJsp.readContent(true));
 
         final ArrayList<String> listFileJs = new ArrayList<>();
         while(matcher.find()) {
@@ -60,18 +61,18 @@ public class DaoSysMinifierJs {
         int n = 0;
         for(int i = 0; i < listFileJs.size(); i++) {
 
-            final File file = new File(UtilsResource.getRealPathRoot(listFileJs.get(i)));
+            final Resource file = new Resource(UtilsResource.getRealPathRoot(listFileJs.get(i)));
 
             if(file.exists() && file.isFile()) {
 
-                String js = UtilsText.toString(file, true);
+                String js = file.readContent(true);
 
                 if(!file.getName().equals("min.js")) {
                     js = minify(js);
                 }
 
                 if(isSave) {
-                    UtilsWeb.writeFile(file, js);
+                    UtilsWeb.writeResource(file, js);
                     file.delete();
                 }
 
@@ -91,10 +92,10 @@ public class DaoSysMinifierJs {
 
         }
         if(isSave && n > 0) {
-            final boolean isMinified = UtilsWeb.writeFile(fileJs, builderJs.toString());
+            final boolean isMinified = UtilsWeb.writeResource(fileJs, builderJs.toString());
             // fileJsJsp.delete();
             // update templates: replace /js.jsp" = /.js"
-            new File(fileFolder, "js").delete();
+            new Resource(fileFolder, "js").delete();
 
             log.error("\nAioWeb::Minify JS {} : {}", "ui.frontend/"+ fileFolder.getName(), isMinified);
         }
@@ -108,18 +109,18 @@ public class DaoSysMinifierJs {
                 }
             };
 
-            final ArrayList<File> listFiles = UtilsWeb.findFiles(fileFolder, filterJs);
+            final ArrayList<Resource> listFiles = UtilsWeb.findResources(fileFolder, filterJs);
 
-            for (File file : listFiles) {
+            for (Resource file : listFiles) {
                 if (file.isFile()) {
 
-                    String js = UtilsText.toString(file, true);
+                    String js = file.readContent(true);
 
                     if (!file.getName().equals("min.js")) {
                         js = minify(js);
                     }
 
-                    UtilsWeb.writeFile(file, js);
+                    UtilsWeb.writeResource(file, js);
                 }
             }
         }
@@ -127,8 +128,8 @@ public class DaoSysMinifierJs {
         return builderJs.toString();
     }
 
-    public static String minifyFile(File file) {
-        return minify(UtilsText.toString(file, true));
+    public static String minifyFile(Resource file) {
+        return minify(file.readContent(true));
     }
 
     public static String minify(String js) {

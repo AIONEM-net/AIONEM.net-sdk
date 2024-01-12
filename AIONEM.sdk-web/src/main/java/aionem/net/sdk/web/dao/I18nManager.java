@@ -1,7 +1,7 @@
 package aionem.net.sdk.web.dao;
 
 import aionem.net.sdk.data.utils.UtilsResource;
-import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.utils.UtilsWeb;
 
 import java.io.File;
@@ -15,35 +15,35 @@ public class I18nManager {
 
     }
 
-    public ArrayList<File> getListFoldersI18n() {
+    public ArrayList<Resource> getListFolders() {
 
-        final ArrayList<File> listI18nFolders = new ArrayList<>();
+        final ArrayList<Resource> listI18nFolders = new ArrayList<>();
 
         final File folder1 = ResourceResolver.getRealFileWebInf("/ui.config/i18n").getFile();
         final File folder2 = UtilsResource.getResourceFile("/config/i18n");
         final File folder3 = UtilsResource.getResourceFile("/i18n");
 
-        if(folder1.exists() && folder1.isDirectory()) listI18nFolders.add(folder1);
-        if(folder2.exists() && folder2.isDirectory()) listI18nFolders.add(folder2);
-        if(folder3.exists() && folder3.isDirectory()) listI18nFolders.add(folder3);
+        if(folder1.exists() && folder1.isDirectory()) listI18nFolders.add(new Resource(folder1));
+        if(folder2.exists() && folder2.isDirectory()) listI18nFolders.add(new Resource(folder2));
+        if(folder3.exists() && folder3.isDirectory()) listI18nFolders.add(new Resource(folder3));
 
         return listI18nFolders;
     }
 
-    public ArrayList<File> getListI18nFiles() {
+    public ArrayList<Resource> getListI18n() {
 
-        final ArrayList<File> filesI18n = new ArrayList<>();
+        final ArrayList<Resource> filesI18n = new ArrayList<>();
 
-        filesI18n.addAll(getListI18nFilesJson());
+        filesI18n.addAll(getListI18nJson());
 
-        filesI18n.addAll(getListI18nFilesProperties());
+        filesI18n.addAll(getListI18nProperties());
 
         return filesI18n;
     }
 
-    public ArrayList<File> getListI18nFilesJson() {
+    public ArrayList<Resource> getListI18nJson() {
 
-        final ArrayList<File> filesI18n = new ArrayList<>();
+        final ArrayList<Resource> filesI18n = new ArrayList<>();
 
         final FilenameFilter filterJson = new FilenameFilter() {
             @Override
@@ -52,16 +52,16 @@ public class I18nManager {
             }
         };
 
-        for(final File folderI18n : getListFoldersI18n()) {
-            filesI18n.addAll(UtilsWeb.findFiles(folderI18n, filterJson));
+        for(final Resource folderI18n : getListFolders()) {
+            filesI18n.addAll(UtilsWeb.findResources(folderI18n, filterJson));
         }
 
         return filesI18n;
     }
 
-    public ArrayList<File> getListI18nFilesProperties() {
+    public ArrayList<Resource> getListI18nProperties() {
 
-        final ArrayList<File> filesI18n = new ArrayList<>();
+        final ArrayList<Resource> filesI18n = new ArrayList<>();
 
         final FilenameFilter filterProperties = new FilenameFilter() {
             @Override
@@ -70,8 +70,8 @@ public class I18nManager {
             }
         };
 
-        for(final File folderI18n : getListFoldersI18n()) {
-            filesI18n.addAll(UtilsWeb.findFiles(folderI18n, filterProperties));
+        for(final Resource folderI18n : getListFolders()) {
+            filesI18n.addAll(UtilsWeb.findResources(folderI18n, filterProperties));
         }
 
         return filesI18n;

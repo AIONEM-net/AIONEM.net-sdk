@@ -2,6 +2,7 @@ package aionem.net.sdk.web.utils;
 
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsResource;
+import aionem.net.sdk.web.beans.Resource;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.*;
@@ -15,52 +16,52 @@ import java.util.ResourceBundle;
 @Log4j2
 public class UtilsWeb {
 
-    public static String readFileResource(final String fileName) {
-        return readFile(fileName, "/WEB-INF/classes/", "/");
+    public static String readResource(final String name) {
+        return readResource(name, "/WEB-INF/classes/", "/");
     }
 
-    public static String readFileWebInf(final String fileName) {
-        return readFile(fileName, "/WEB-INF/", "/");
+    public static String readResourceWebInf(final String name) {
+        return readResource(name, "/WEB-INF/", "/");
     }
 
-    public static String readFileConfig(final String fileName) {
-        return readFile(fileName, "/WEB-INF/ui.config/", "/ui.config/", "/config/");
+    public static String readResourceConfig(final String name) {
+        return readResource(name, "/WEB-INF/ui.config/", "/ui.config/", "/config/");
     }
 
-    public static String readFileEnv(final String fileName) {
-        return readFile(fileName, "/WEB-INF/ui.config/env/", "/ui.config/env/", "/config/env/");
+    public static String readResourceEnv(final String name) {
+        return readResource(name, "/WEB-INF/ui.config/env/", "/ui.config/env/", "/config/env/");
     }
 
-    public static String readFileI18n(final String fileName) {
-        return readFile(fileName, "/WEB-INF/ui.config/i18n/", "/ui.config/i18n/", "/config/i18n/");
+    public static String readResourceI18n(final String name) {
+        return readResource(name, "/WEB-INF/ui.config/i18n/", "/ui.config/i18n/", "/config/i18n/");
     }
 
-    public static String readFileEtc(final String fileName) {
-        return readFile(fileName, "/WEB-INF/ui.config/etc/", "/ui.config/etc/", "/etc/");
+    public static String readResourceEtc(final String name) {
+        return readResource(name, "/WEB-INF/ui.config/etc/", "/ui.config/etc/", "/etc/");
     }
 
-    public static ResourceBundle getResourceBundleConfig(final String fileName) {
-        return UtilsResource.getResourceBundle("/config/" + fileName);
+    public static ResourceBundle getResourceBundleConfig(final String name) {
+        return UtilsResource.getResourceBundle("/config/" + name);
     }
 
-    public static ResourceBundle getResourceBundleEnv(final String fileName) {
-        return UtilsResource.getResourceBundle("/config/env/" + fileName);
+    public static ResourceBundle getResourceBundleEnv(final String name) {
+        return UtilsResource.getResourceBundle("/config/env/" + name);
     }
 
-    public static ResourceBundle getResourceBundleI18n(final String fileName) {
-        return UtilsResource.getResourceBundle("/config/i18n/" + fileName);
+    public static ResourceBundle getResourceBundleI18n(final String name) {
+        return UtilsResource.getResourceBundle("/config/i18n/" + name);
     }
 
-    public static ResourceBundle getResourceBundleI18n(final String fileName, final Locale locale) {
-        return UtilsResource.getResourceBundle("/config/i18n/" + fileName, locale);
+    public static ResourceBundle getResourceBundleI18n(final String name, final Locale locale) {
+        return UtilsResource.getResourceBundle("/config/i18n/" + name, locale);
     }
 
-    public static ResourceBundle getResourceBundleEtc(final String fileName) {
-        return UtilsResource.getResourceBundle("/etc/" + fileName);
+    public static ResourceBundle getResourceBundleEtc(final String name) {
+        return UtilsResource.getResourceBundle("/etc/" + name);
     }
 
-    public static String readFile(final String fileName, final String... folders) {
-        final InputStream inputStream = readStream(fileName, folders);
+    public static String readResource(final String name, final String... folders) {
+        final InputStream inputStream = getResourceStream(name, folders);
         if(inputStream != null) {
             return UtilsText.toString(inputStream);
         }else  {
@@ -68,37 +69,37 @@ public class UtilsWeb {
         }
     }
 
-    public static InputStream readStream(final String fileName, String... folders) {
+    public static InputStream getResourceStream(final String name, String... folders) {
         try {
 
             if(folders == null || folders.length == 0) folders = new String[]{""};
 
             for(final String folder : folders) {
 
-                File file = new File(UtilsResource.getRealPathRoot(folder + fileName));
-                if (file.exists() && file.isFile()) {
-                    return new FileInputStream(file);
+                Resource resource = new Resource(UtilsResource.getRealPathRoot(folder + name));
+                if (resource.exists() && resource.isFile()) {
+                    return resource.getInputStream();
                 }
 
-                InputStream inputStream = UtilsResource.getResourceStreamOrParent(fileName, folder);
+                InputStream inputStream = UtilsResource.getResourceStreamOrParent(name, folder);
                 if(inputStream != null) {
                     return inputStream;
                 }
             }
 
         }catch(Exception e) {
-            log.error("\nERROR: - readFile ::" + e + Arrays.toString(folders) + fileName +"\n");
+            log.error("\nERROR: - readStream ::" + e + Arrays.toString(folders) + name +"\n");
         }
         return null;
     }
 
-    public static boolean writeFile(final String realPath, final String contents) {
-        return writeFile(new File(realPath), contents);
+    public static boolean writeResource(final String realPath, final String contents) {
+        return writeResource(new Resource(realPath), contents);
     }
 
-    public static boolean writeFile(final File file, final String contents) {
+    public static boolean writeResource(final Resource resource, final String contents) {
         boolean isWritten = false;
-        try(final FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8)) {
+        try(final FileWriter fileWriter = new FileWriter(resource.getFile(), StandardCharsets.UTF_8)) {
             fileWriter.write(contents);
             isWritten = true;
         } catch (Exception e) {
@@ -107,26 +108,23 @@ public class UtilsWeb {
         return isWritten;
     }
 
-    public static ArrayList<File> findFiles(final File fileFolder, final FilenameFilter filenameFilter) {
+    public static ArrayList<Resource> findResources(final Resource resourceFolder, final FilenameFilter filenameFilter) {
 
-        final ArrayList<File> listFiles = new ArrayList<>();
+        final ArrayList<Resource> listResources = new ArrayList<>();
 
-        if(fileFolder.isDirectory()) {
-            final File[] files = fileFolder.listFiles();
-            if(files != null) {
-                for(final File file : files) {
-                    if(file.isDirectory()) {
-                        listFiles.addAll(findFiles(file, filenameFilter));
-                    } else {
-                        if(filenameFilter.accept(fileFolder, file.getName())) {
-                            listFiles.add(file);
-                        }
+        if(resourceFolder.isFolder()) {
+            for(final Resource resource : resourceFolder.children()) {
+                if(resource.isFolder()) {
+                    listResources.addAll(findResources(resource, filenameFilter));
+                } else {
+                    if(filenameFilter.accept(resourceFolder.getFile(), resource.getName())) {
+                        listResources.add(resource);
                     }
                 }
             }
         }
 
-        return listFiles;
+        return listResources;
     }
 
 }

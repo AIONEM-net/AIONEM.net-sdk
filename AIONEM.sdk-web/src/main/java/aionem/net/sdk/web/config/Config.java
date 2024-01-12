@@ -3,8 +3,6 @@ package aionem.net.sdk.web.config;
 import aionem.net.sdk.core.utils.UtilsConverter;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.beans.Data;
-import aionem.net.sdk.web.config.Conf;
-import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.Getter;
 
@@ -116,9 +114,9 @@ public class Config {
         }
         if(data == null || data.isEmpty()) {
 
-            String json = UtilsWeb.readFileEnv(name);
+            String json = UtilsWeb.readResourceEnv(name);
             if(UtilsText.isEmpty(json)) {
-                json = UtilsWeb.readFileConfig(name);
+                json = UtilsWeb.readResourceConfig(name);
             }
 
             if(!UtilsText.isEmpty(json)) {

@@ -201,7 +201,7 @@ public class Data {
                         }
 
                     }else {
-                        final Object defaultInstance = instance.getClass().newInstance();
+                        final Object defaultInstance = instance.getClass().getDeclaredConstructor().newInstance();
                         final Field defaultField = defaultInstance.getClass().getDeclaredField(key);
                         defaultField.setAccessible(true);
                         final Object defaultValue = defaultField.get(defaultInstance);

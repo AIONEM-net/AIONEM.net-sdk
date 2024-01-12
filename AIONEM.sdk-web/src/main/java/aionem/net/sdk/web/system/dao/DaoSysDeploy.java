@@ -3,15 +3,14 @@ package aionem.net.sdk.web.system.dao;
 import aionem.net.sdk.data.beans.Data;
 import aionem.net.sdk.data.utils.UtilsJson;
 import aionem.net.sdk.data.utils.UtilsResource;
+import aionem.net.sdk.web.beans.Page;
 import aionem.net.sdk.web.beans.Properties;
+import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.dao.PageManager;
 import aionem.net.sdk.web.dao.ResourceResolver;
-import aionem.net.sdk.web.beans.Page;
-import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,7 +31,7 @@ public class DaoSysDeploy {
 
         if(isUpdatedEnv) {
 
-            final ArrayList<Resource> listFilePagesCache = new PageManager().getListFilePagesAll(
+            final ArrayList<Resource> listFilePagesCache = new PageManager().getListResourcePagesAll(
                     "/en",
                     "/it",
                     "/rw",
@@ -47,7 +46,7 @@ public class DaoSysDeploy {
 
             if(isMinified && isCachedAll) {
 
-                final File fileWar = buildWar(warFileName);
+                final Resource fileWar = buildWar(warFileName);
                 final boolean isBuiltWar = fileWar != null && fileWar.exists();
 
                 if(isBuiltWar) {
@@ -69,33 +68,27 @@ public class DaoSysDeploy {
 
         boolean isMinified = true;
 
-        final File fileUiFrontend = new File(UtilsResource.getRealPathRoot("/ui.frontend"));
+        final Resource fileUiFrontend = new Resource(UtilsResource.getRealPathRoot("/ui.frontend"));
 
-        if(fileUiFrontend.isDirectory()) {
+        if(fileUiFrontend.isFolder()) {
 
-            File[] files = fileUiFrontend.listFiles();
+            for (final Resource file : fileUiFrontend.children()) {
 
-            if(files != null) {
+                if(file.isFolder()) {
 
-                for (final File file : files) {
+                    final String css = DaoSysMinifierCss.minifyFolder(file, true);
+                    final String js = DaoSysMinifierJs.minifyFolder(file, true);
 
-                    if(file.isDirectory()) {
+                    UtilsWeb.writeResource(new Resource(file, ".css"), css);
+                    UtilsWeb.writeResource(new Resource(file, ".js"), js);
 
-                        final String css = DaoSysMinifierCss.minifyFolder(file, true);
-                        final String js = DaoSysMinifierJs.minifyFolder(file, true);
+                }else {
+                    if (file.getName().endsWith(".css")) {
+                        DaoSysMinifierCss.minifyFile(file);
 
-                        UtilsWeb.writeFile(new File(file, ".css"), css);
-                        UtilsWeb.writeFile(new File(file, ".js"), js);
-
-                    }else {
-                        if (file.getName().endsWith(".css")) {
-                            DaoSysMinifierCss.minifyFile(file);
-
-                        } else if (file.getName().equals(".js")) {
-                            DaoSysMinifierJs.minifyFile(file);
-                        }
+                    } else if (file.getName().equals(".js")) {
+                        DaoSysMinifierJs.minifyFile(file);
                     }
-
                 }
 
             }
@@ -141,18 +134,18 @@ public class DaoSysDeploy {
 
         try {
 
-            final File fileConfEnv1 = new File(ResourceResolver.getRealPathWebInf("ui.config/application.json"));
-            final File fileConfEnv2 = UtilsResource.getResourceFile("application.json");
+            final Resource fileConfEnv1 = new Resource(ResourceResolver.getRealPathWebInf("ui.config/application.json"));
+            final Resource fileConfEnv2 = new Resource(UtilsResource.getResourceFile("application.json"));
 
-            final ArrayList<File> listFileConfig = new ArrayList<>();
+            final ArrayList<Resource> listFileConfig = new ArrayList<>();
             listFileConfig.add(fileConfEnv1);
             listFileConfig.add(fileConfEnv2);
 
-            for(final File fileConfEnv : listFileConfig) {
+            for(final Resource fileConfEnv : listFileConfig) {
                 if(fileConfEnv.exists() && fileConfEnv.isFile()) {
                     final Data data = new Data(fileConfEnv);
                     data.put("env", env);
-                    isUpdated = UtilsWeb.writeFile(fileConfEnv, UtilsJson.prettyPrint(data.toJson()));
+                    isUpdated = UtilsWeb.writeResource(fileConfEnv, UtilsJson.prettyPrint(data.toJson()));
                     n++;
                 }
             }
@@ -167,7 +160,7 @@ public class DaoSysDeploy {
                 if(resourceBundle != null) {
                     final Data data = new Data(resourceBundle);
                     data.put("env", env);
-                    isUpdated = UtilsWeb.writeFile(UtilsResource.getResourceFile(resourceName + ".properties"), data.toResourceBundleString());
+                    isUpdated = UtilsWeb.writeResource(new Resource(UtilsResource.getResourceFile(resourceName + ".properties")), data.toResourceBundleString());
                     n++;
                 }
             }
@@ -179,20 +172,20 @@ public class DaoSysDeploy {
         return isUpdated || n > 0;
     }
 
-    public static File buildWar(final String warFileName) {
+    public static Resource buildWar(final String warFileName) {
 
         final String webFileFolder = UtilsResource.getRealPathRoot();
-        final File fileWebFolder = new File(webFileFolder);
+        final Resource fileWebFolder = new Resource(webFileFolder);
 
         final String warFilePath = fileWebFolder.getParent() + "/" + (warFileName);
-        final File fileWar = new File(warFilePath);
+        final Resource fileWar = new Resource(warFilePath);
 
         final boolean isBuiltWar = buildWar(fileWebFolder, fileWar);
 
         return isBuiltWar ? fileWar : null;
     }
 
-    public static boolean buildWar(final File fileWebFolder, final File fileWar) {
+    public static boolean buildWar(final Resource fileWebFolder, final Resource fileWar) {
 
         boolean isBuilt = false;
 
@@ -207,15 +200,11 @@ public class DaoSysDeploy {
 
             if(isEmpty) {
 
-                final FileOutputStream fileOutputStream = new FileOutputStream(fileWar);
+                final FileOutputStream fileOutputStream = fileWar.getFileOutputStream();
                 final ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
 
-                final File[] files = fileWebFolder.listFiles();
-
-                if(files != null) {
-                    for (final File file : files) {
-                        createWar(file, file.getName(), zipOutputStream);
-                    }
+                for (final Resource file : fileWebFolder.children()) {
+                    createWar(file, file.getName(), zipOutputStream);
                 }
 
                 zipOutputStream.close();
@@ -231,22 +220,19 @@ public class DaoSysDeploy {
         return isBuilt;
     }
 
-    public static void createWar(final File file, final String name, final ZipOutputStream zipOutputStream) throws IOException {
+    public static void createWar(final Resource file, final String name, final ZipOutputStream zipOutputStream) throws IOException {
 
-        if(file.isDirectory()) {
+        if(file.isFolder()) {
             final String path = name + (!name.endsWith("/") ? "/" : "");
             zipOutputStream.putNextEntry(new ZipEntry(path));
             zipOutputStream.closeEntry();
-            final File[] children = file.listFiles();
-            if(children != null) {
-                for (final File fileChild : children) {
-                    createWar(fileChild, path + fileChild.getName(), zipOutputStream);
-                }
+            for (final Resource fileChild : file.children()) {
+                createWar(fileChild, path + fileChild.getName(), zipOutputStream);
             }
             return;
         }
 
-        final FileInputStream fileInputStream = new FileInputStream(file);
+        final FileInputStream fileInputStream = file.getFileInputStream();
         final ZipEntry zipEntry = new ZipEntry(name);
         zipOutputStream.putNextEntry(zipEntry);
 
@@ -259,7 +245,7 @@ public class DaoSysDeploy {
         fileInputStream.close();
     }
 
-    public static boolean uploadWar(final File fileWar) {
+    public static boolean uploadWar(final Resource fileWar) {
 
         boolean isUploaded = false;
 

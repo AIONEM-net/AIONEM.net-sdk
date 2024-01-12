@@ -1,6 +1,5 @@
 package aionem.net.sdk.web.dao;
 
-
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.config.ConfEnv;
@@ -9,7 +8,9 @@ import aionem.net.sdk.web.utils.UtilsWeb;
 
 import java.nio.file.Path;
 
+
 public class ResourceResolver {
+
 
     public static int references(final Path pathFile, final String pathOld, final String pathNew, final boolean update) {
         final int[] references = new int[]{-1};
@@ -25,7 +26,7 @@ public class ResourceResolver {
                 references[0] = (content.length() - updatedContent.length()) / (pathOld.length() - pathNew.length());
 
                 if(update) {
-                    UtilsWeb.writeFile(pathFile.toFile(), updatedContent);
+                    UtilsWeb.writeResource(new Resource(pathFile), updatedContent);
                 }
 
             }

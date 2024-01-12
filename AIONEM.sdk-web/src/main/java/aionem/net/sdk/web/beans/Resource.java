@@ -2,6 +2,7 @@ package aionem.net.sdk.web.beans;
 
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsResource;
+import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -27,9 +28,11 @@ public class Resource {
     }
 
     public Resource(final String path) {
-        this.path = path;
-        this.file = new File(path);
-        this.filePath = Path.of(path);
+        this(new File(path));
+    }
+
+    public Resource(final Path filePath) {
+        this(filePath.toFile());
     }
 
     public Resource(final Resource resource, final String child) {
@@ -80,9 +83,42 @@ public class Resource {
         return !isRootPath();
     }
 
+    public String readContent() {
+        return readContent(true);
+    }
+
+    public String readContent(final boolean isLine) {
+        return UtilsText.toString(file, isLine);
+    }
+
+    public String saveContent() {
+        return readContent(true);
+    }
+
+    public boolean saveContent(final String contents) {
+        return UtilsWeb.writeResource(this, contents);
+    }
+
     public InputStream getInputStream() {
+        return getFileInputStream();
+    }
+
+    public OutputStream getOutputStream() {
+        return getFileOutputStream();
+    }
+
+    public FileInputStream getFileInputStream() {
         try {
             return new FileInputStream(file);
+        } catch (final FileNotFoundException e) {
+            log.error("\nError: file does not exist");
+            return null;
+        }
+    }
+
+    public FileOutputStream getFileOutputStream() {
+        try {
+            return new FileOutputStream(file);
         } catch (final FileNotFoundException e) {
             log.error("\nError: file does not exist");
             return null;

@@ -2,6 +2,7 @@ package aionem.net.sdk.web.system.dao;
 
 import aionem.net.sdk.data.beans.DaoRes;
 import aionem.net.sdk.core.utils.UtilsText;
+import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.utils.UtilsWeb;
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
 import lombok.extern.log4j.Log4j2;
@@ -22,18 +23,18 @@ public class DaoSysMinifierHtml {
 
         final DaoRes resMinify = new DaoRes();
 
-        final File fileIn = new File(inputFilePath);
-        final String html = minify(UtilsText.toString(fileIn, false));
+        final Resource fileIn = new Resource(inputFilePath);
+        final String html = minify(fileIn.readContent(false));
 
-        final File fileOut = new File(outputFilePath);
-        final boolean isSaved = UtilsWeb.writeFile(fileOut, html);
+        final Resource fileOut = new Resource(outputFilePath);
+        final boolean isSaved = UtilsWeb.writeResource(fileOut, html);
 
         resMinify.setSuccess(isSaved);
 
         return resMinify;
     }
 
-    public static String minifyFolder(final File fileFolder, final boolean isSaved) {
+    public static String minifyFolder(final Resource fileFolder, final boolean isSaved) {
 
         final StringBuilder htmlBuilder = new StringBuilder();
 
@@ -44,11 +45,11 @@ public class DaoSysMinifierHtml {
             }
         };
 
-        final ArrayList<File> listFiles = UtilsWeb.findFiles(fileFolder, htmlFilter);
+        final ArrayList<Resource> listFiles = UtilsWeb.findResources(fileFolder, htmlFilter);
 
         for(int i = 0; i < listFiles.size(); i++) {
 
-            final File file = listFiles.get(i);
+            final Resource file = listFiles.get(i);
 
             if(file.isFile()) {
 
@@ -57,7 +58,7 @@ public class DaoSysMinifierHtml {
                 htmlBuilder.append(i > 0 ? "\n" : "").append(html);
 
                 if(isSaved) {
-                    UtilsWeb.writeFile(file, html);
+                    UtilsWeb.writeResource(file, html);
                 }
             }
         }
@@ -65,8 +66,8 @@ public class DaoSysMinifierHtml {
         return htmlBuilder.toString();
     }
 
-    public static String minifyFile(final File file) {
-        return minify(UtilsText.toString(file, false));
+    public static String minifyFile(final Resource file) {
+        return minify(file.readContent(false));
     }
 
     public static String minify(String html) {

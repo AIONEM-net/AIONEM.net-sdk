@@ -68,7 +68,7 @@ public class PageManager {
         final String rootPagePath = ResourceResolver.getRealPathPage();
         final Resource filePageParent = new Resource(ResourceResolver.getRealPathPage(pageParent.getPath()));
 
-        for(final Resource filePage : getListFilePages(filePageParent)) {
+        for(final Resource filePage : getListResourcePages(filePageParent)) {
             final String pagePath = filePage.getRealPath().substring(rootPagePath.length());
             final Page page = new Page(pagePath, new Properties(filePage.child(Properties.PROPERTIES_JSON)));
             if(!pageParent.equals(page) && !listPages.contains(page)) {
@@ -84,7 +84,7 @@ public class PageManager {
         final ArrayList<Page> listPages = new ArrayList<>();
         final String rootPagePath = ResourceResolver.getRealPathPage();
 
-        for(final Resource filePage : getListFilePagesAll()) {
+        for(final Resource filePage : getListResourcePagesAll()) {
             final String pagePath = filePage.getRealPath().substring(rootPagePath.length());
             final Page page = new Page(pagePath, new Properties(filePage.child(Properties.PROPERTIES_JSON)));
             if(!listPages.contains(page)) {
@@ -96,81 +96,81 @@ public class PageManager {
         return listPages;
     }
 
-    public ArrayList<Resource> getListFilePagesRoot() {
-        return getListFilePages(1);
+    public ArrayList<Resource> getListResourcePagesRoot() {
+        return getListResourcePages(1);
     }
 
-    public ArrayList<Resource> getListFilePagesAll() {
-        return getListFilePages(-1);
+    public ArrayList<Resource> getListResourcePagesAll() {
+        return getListResourcePages(-1);
     }
 
-    public ArrayList<Resource> getListFilePages(final int level) {
+    public ArrayList<Resource> getListResourcePages(final int level) {
         final String realPathRoot = ResourceResolver.getRealPathPage();
         final ArrayList<Resource> listFilePages = new ArrayList<>();
         final Resource fileRoot = new Resource(realPathRoot);
         if(fileRoot.isFolder()) {
-            getListFilePages(fileRoot, listFilePages, level);
+            getListResourcePages(fileRoot, listFilePages, level);
         }
         return listFilePages;
     }
 
-    public ArrayList<Resource> getListFilePages(final Page... pages) {
+    public ArrayList<Resource> getListResourcePages(final Page... pages) {
         final String[] pagePaths = new String[pages.length];
         for(int i = 0; i < pages.length; i++) {
             pagePaths[i] = pages[i].getPath();
         }
-        return getListFilePages(pagePaths);
+        return getListResourcePages(pagePaths);
     }
 
-    public ArrayList<Resource> getListFilePages(final String... pagePaths) {
-        final Resource[] filePages = new Resource[pagePaths.length];
+    public ArrayList<Resource> getListResourcePages(final String... pagePaths) {
+        final Resource[] resourcePages = new Resource[pagePaths.length];
         for(int i = 0; i < pagePaths.length; i++) {
-            filePages[i] = new Resource(ResourceResolver.getRealPathPage(pagePaths[i]));
+            resourcePages[i] = new Resource(ResourceResolver.getRealPathPage(pagePaths[i]));
         }
-        return getListFilePages(filePages);
+        return getListResourcePages(resourcePages);
     }
 
-    private ArrayList<Resource> getListFilePages(final Resource... filePages) {
+    private ArrayList<Resource> getListResourcePages(final Resource... resourcePages) {
         final ArrayList<Resource> listFilePagesAll = new ArrayList<>();
         final ArrayList<Resource> listFilePages = new ArrayList<>();
-        for(Resource filePage : filePages) {
+        for(Resource filePage : resourcePages) {
             if(!listFilePages.contains(filePage)) {
-                listFilePagesAll.addAll(getListFilePages(filePage, new ArrayList<>(), 1));
+                listFilePagesAll.addAll(getListResourcePages(filePage, new ArrayList<>(), 1));
                 listFilePages.add(filePage);
             }
         }
         return listFilePagesAll;
     }
 
-    public ArrayList<Resource> getListFilePagesAll(final Page... pages) {
+    public ArrayList<Resource> getListResourcePagesAll(final Page... pages) {
         final String[] pagePaths = new String[pages.length];
         for(int i = 0; i < pages.length; i++) {
             pagePaths[i] = pages[i].getPath();
         }
-        return getListFilePagesAll(pagePaths);
+        return getListResourcePagesAll(pagePaths);
     }
 
-    public ArrayList<Resource> getListFilePagesAll(final String... paths) {
-        final Resource[] filePages = new Resource[paths.length];
+    public ArrayList<Resource> getListResourcePagesAll(final String... paths) {
+        final Resource[] resourcePages = new Resource[paths.length];
         for(int i = 0; i < paths.length; i++) {
-            filePages[i] = new Resource(ResourceResolver.getRealPathPage(paths[i]));
+            resourcePages[i] = new Resource(ResourceResolver.getRealPathPage(paths[i]));
         }
-        return getListFilePagesAll(filePages);
+        return getListResourcePagesAll(resourcePages);
     }
 
-    private ArrayList<Resource> getListFilePagesAll(final Resource... filePages) {
+    private ArrayList<Resource> getListResourcePagesAll(final Resource... resourcePages) {
         final ArrayList<Resource> listFilePagesAll = new ArrayList<>();
         final ArrayList<Resource> listFilePages = new ArrayList<>();
-        for(Resource filePage : filePages) {
+        for(Resource filePage : resourcePages) {
             if(!listFilePages.contains(filePage)) {
-                listFilePagesAll.addAll(getListFilePages(filePage, new ArrayList<>(), -1));
+                listFilePagesAll.addAll(getListResourcePages(filePage, new ArrayList<>(), -1));
                 listFilePages.add(filePage);
             }
         }
         return listFilePagesAll;
     }
 
-    private ArrayList<Resource> getListFilePages(final Resource filePage, final ArrayList<Resource> listFilePages, final int level) {
+    private ArrayList<Resource> getListResourcePages(final Resource filePage, final ArrayList<Resource> listFilePages, final int level) {
         final ArrayList<Resource> files = filePage.children();
         if(files != null) {
             boolean hasProperties = false;
@@ -180,9 +180,9 @@ public class PageManager {
             for(final Resource file : files) {
                 if(file.isFolder()) {
                     if(level < 0) {
-                        getListFilePages(file, listFilePages, level);
+                        getListResourcePages(file, listFilePages, level);
                     } else if(level == 1) {
-                        getListFilePages(file, listFilePages, 0);
+                        getListResourcePages(file, listFilePages, 0);
                     }
                 }else {
                     final String fileName = file.getName();
@@ -249,7 +249,7 @@ public class PageManager {
 
         if(resCache.isSuccess() && resCache.hasResponse()) {
             final String html = DaoSysMinifierHtml.minify(resCache.getResponse());
-            isCached = UtilsWeb.writeFile(realPath +"/"+ "index.html", html);
+            isCached = UtilsWeb.writeResource(realPath +"/"+ "index.html", html);
         }
 
         log.error("\nCache {} : {}", uri, isCached);
@@ -259,7 +259,7 @@ public class PageManager {
 
     public ArrayList<String> invalidateCache() {
         final ArrayList<String> listPathPaths = new ArrayList<>();
-        final List<Resource> listFilePages = getListFilePagesAll();
+        final List<Resource> listFilePages = getListResourcePagesAll();
         final String rootPagePath = ResourceResolver.getRealPathPage();
         for(final Resource filePage : listFilePages) {
             final Resource filePageHtml = new Resource(filePage, "index.html");
