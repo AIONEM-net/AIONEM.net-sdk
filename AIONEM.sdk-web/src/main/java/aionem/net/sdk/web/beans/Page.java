@@ -183,12 +183,8 @@ public @lombok.Data class Page {
         }
     }
 
-    public String getMenu() {
-        return "/ui.page"+ path +"/" + "menu.jsp";
-    }
-
     public String getContent() {
-        return "/ui.page"+ path +"/" + "content.jsp";
+        return "/ui.page"+ path +"/" + ".jsp";
     }
 
     public String getTemplatePath() {

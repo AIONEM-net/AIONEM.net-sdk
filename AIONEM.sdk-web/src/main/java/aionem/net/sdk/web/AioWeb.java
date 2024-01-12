@@ -370,10 +370,6 @@ public @Getter class AioWeb {
         return url;
     }
 
-    public RequestDispatcher getRequestDispatcher(final String path) {
-        return request.getRequestDispatcher(path);
-    }
-
     public void sendRedirect(final String location) throws IOException {
         response.sendRedirect(location);
     }
@@ -388,6 +384,28 @@ public @Getter class AioWeb {
 
     public void include(final String path) throws IOException, ServletException {
         getRequestDispatcher(path).include(request, response);
+    }
+
+    public RequestDispatcher getRequestDispatcher(final String path) {
+        return request.getRequestDispatcher(path);
+    }
+
+    public void includePageContents() {
+        final Page currentPage = getCurrentPage();
+        for (int i = 0; i < currentPage.getContents().size(); i++) {
+            final Properties content = currentPage.getContents().get(i);
+            final String resourceType = content.getResourceType();
+            final String jsonData = content.getData().toJsonAll().toString();
+
+            final RequestDispatcher dispatcher = getRequestDispatcher(resourceType);
+            request.setAttribute("$_properties", jsonData);
+
+            try {
+                dispatcher.include(request, response);
+            } catch (ServletException | IOException e) {
+                log.error("resourceType not found: {}", resourceType);
+            }
+        }
     }
 
     public boolean isHostMatch() {
