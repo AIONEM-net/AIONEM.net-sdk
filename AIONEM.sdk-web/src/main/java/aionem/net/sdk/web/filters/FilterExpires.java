@@ -398,6 +398,7 @@ public class FilterExpires implements Filter {
 
     @Getter
     protected static class Duration {
+
         protected final int amount;
         protected final DurationUnit unit;
 
