@@ -184,7 +184,15 @@ public @lombok.Data class Page {
     }
 
     public String getThumbnail() {
-        return UtilsResource.path("/ui.page", path, "/.png");
+        String thumbnail = properties.get("thumbnail");
+        if(UtilsText.isEmpty(thumbnail)) {
+            if(ResourceResolver.getResourcePage(UtilsResource.path(path, "/.png")).exists()) {
+                thumbnail = UtilsResource.path("/ui.page", path, "/.png");
+            }else {
+                thumbnail = "logo.png";
+            }
+        }
+        return thumbnail;
     }
 
     public String getTemplateThumbnail() {
