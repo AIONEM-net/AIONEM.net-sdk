@@ -69,8 +69,16 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
             if(requestPath.startsWith("/ui.page")) {
 
-                final String url = requestPath.substring("/ui.page".length());
-                aioWeb.sendRedirect(url);
+                if(requestPath.endsWith("/.png")) {
+
+                    final String filePath = UtilsResource.getRealPathRoot(requestPath);
+                    final Resource resource = new Resource(filePath);
+                    responseFile(aioWeb, resource);
+
+                }else {
+                    final String url = requestPath.substring("/ui.page".length());
+                    aioWeb.sendRedirect(url);
+                }
 
                 return;
             }else if(requestPath.startsWith("/ui.drive")) {
@@ -82,6 +90,19 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                 return;
             }else if(requestPath.startsWith("/ui.frontend")) {
                 super.doFilter(request, response, chain);
+                return;
+            }else if(requestPath.startsWith("/ui.template")) {
+
+                if(requestPath.endsWith("/.png")) {
+
+                    final String filePath = ResourceResolver.getRealPathWebInf(requestPath);
+                    final Resource resource = new Resource(filePath);
+                    responseFile(aioWeb, resource);
+
+                }else {
+                    super.doFilter(request, response, chain);
+                }
+
                 return;
             }else if(requestPath.startsWith("/ui.system")) {
                 super.doFilter(request, response, chain);
@@ -154,7 +175,8 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
         }else {
             aioWeb.setup();
-            aioWeb.include(aioWeb.getCurrentPage().getTemplatePath());
+            final String templatePath = UtilsResource.path("/WEB-INF/ui.template", aioWeb.getCurrentPage().getTemplate(), "/.jsp");
+            aioWeb.include(templatePath);
             aioWeb.getPageManager().cache(aioWeb, aioWeb.getCurrentPage().isCache());
         }
 

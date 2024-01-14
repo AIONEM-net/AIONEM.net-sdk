@@ -69,10 +69,10 @@ public @lombok.Data class Page {
         }else {
             this.path = path.startsWith("/ui.page") ? path.substring("/ui.page".length()) : path;
         }
-        this.url = ConfEnv.getInstance().getContextPath(this.path);
-
         if(!this.path.startsWith("/")) this.path = "/" + this.path;
-        if(!this.url.startsWith("/")) this.url = "/" + this.url;
+        if(this.path.endsWith("/")) this.path = this.path.substring(0, this.path.length()-1);
+
+        this.url = ConfEnv.getInstance().getContextPath(this.path);
     }
 
     public String getName() {
@@ -183,12 +183,12 @@ public @lombok.Data class Page {
         }
     }
 
-    public String getContent() {
-        return UtilsResource.path( "/ui.page", path, ".jsp");
+    public String getThumbnail() {
+        return UtilsResource.path("/ui.page", path, "/.png");
     }
 
-    public String getTemplatePath() {
-        return UtilsResource.path("/WEB-INF/ui.template/", getTemplate(), "/.jsp");
+    public String getTemplateThumbnail() {
+        return UtilsResource.path("/ui.template", getTemplate(), "/.png");
     }
 
     public ArrayList<Page> listChildren() {
@@ -228,7 +228,7 @@ public @lombok.Data class Page {
         final ArrayList<Properties> listContents = properties.getChildren("contents");
         if(listContents.isEmpty() || (listContents.size() == 1 && UtilsText.isEmpty(listContents.get(0).getResourceType()))) {
             final Properties properties = new Properties(new Data()
-                    .put("resourceType", getContent())
+                    .put("resourceType", UtilsResource.path( "/ui.page", path, ".jsp"))
             );
             listContents.add(properties);
         }

@@ -72,7 +72,7 @@ public class ResourceResolver {
     }
 
     public static String getRealPathPage(final String path) {
-        return UtilsResource.getRealPathRoot("/ui.page"+ (!UtilsText.isEmpty(path) && !path.equals("/") ? path : ConfEnv.getInstance().getHome()));
+        return UtilsResource.getRealPathRoot(UtilsResource.path("/ui.page", (!UtilsText.isEmpty(path) && !path.equals("/") ? path : ConfEnv.getInstance().getHome())));
     }
 
     public static Resource getResourcePage(final String path) {

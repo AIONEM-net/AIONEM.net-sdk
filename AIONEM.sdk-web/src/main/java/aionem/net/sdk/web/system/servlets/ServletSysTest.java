@@ -101,7 +101,6 @@ public class ServletSysTest extends HttpServletApi {
         out.println("<div>" + "page -> " + page1.getProperties() + "</div>");
         out.println("<div>" + "page -> " + page1.getResourceType() + "</div>");
         out.println("<div>" + "page -> " + page1.getTemplate() + "</div>");
-        out.println("<div>" + "page -> " + page1.getTemplatePath() + "</div>");
         out.println("<div>" + "page -> " + page1.toResource() + "</div>");
         out.println("<div>" + "page -> " + page1.getParent() + "</div>");
 
@@ -113,7 +112,6 @@ public class ServletSysTest extends HttpServletApi {
         out.println("<div>" + "page -> " + page2.getProperties() + "</div>");
         out.println("<div>" + "page -> " + page2.getResourceType() + "</div>");
         out.println("<div>" + "page -> " + page2.getTemplate() + "</div>");
-        out.println("<div>" + "page -> " + page2.getTemplatePath() + "</div>");
         out.println("<div>" + "page -> " + page2.toResource() + "</div>");
         out.println("<div>" + "page -> " + page2.getParent() + "</div>");
         out.println("<div>---------------------------------------------</div>");
