@@ -384,7 +384,7 @@ public @Getter class AioWeb {
         for(int i = 0; i < currentPage.getContents().size(); i++) {
             final Properties content = currentPage.getContents().get(i);
             final String resourceType = content.getResourceType();
-            final String jsonData = content.getData().toJsonAll().toString();
+            final String jsonData = content.toData().toJson().toString();
 
             final RequestDispatcher dispatcher = getRequestDispatcher(resourceType);
             request.setAttribute("$_properties", jsonData);

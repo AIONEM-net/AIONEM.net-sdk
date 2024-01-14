@@ -1,6 +1,7 @@
 package aionem.net.sdk.web.beans;
 
 import aionem.net.sdk.core.utils.UtilsText;
+import aionem.net.sdk.data.beans.Data;
 import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.dao.ResourceResolver;
 import lombok.Getter;
@@ -42,8 +43,6 @@ public class Resource {
             system = pathRelative.substring("/WEB-INF/ui.config/i18n".length());
         }else if(isEtc()) {
             system = pathRelative.substring("/WEB-INF/ui.config/etc".length());
-        }else if(isConfig()) {
-            system = pathRelative.substring("/WEB-INF/ui.config".length());
         }else if(isTemplate()) {
             system = pathRelative.substring("/WEB-INF/ui.template".length());
         }else if(isSystem()) {
@@ -198,10 +197,6 @@ public class Resource {
         return pathRelative.startsWith("/ui.frontend");
     }
 
-    public boolean isConfig() {
-        return pathRelative.startsWith("/WEB-INF/ui.config");
-    }
-
     public boolean isApps() {
         return pathRelative.startsWith("/WEB-INF/ui.apps");
     }
@@ -224,6 +219,44 @@ public class Resource {
 
     public boolean isSystem() {
         return pathRelative.startsWith("/ui.system");
+    }
+
+    public String getType() {
+        final String type;
+        if(isPage()) {
+            type = "page";
+        }else if(isDrive()) {
+            type = "drive";
+        }else if(isFrontend()) {
+            type = "frontend";
+        }else if(isApps()) {
+            type = "apps";
+        }else if(isEnv()) {
+            type = "env";
+        }else if(isI18n()) {
+            type = "i18n";
+        }else if(isEtc()) {
+            type = "etc";
+        }else if(isTemplate()) {
+            type = "template";
+        }else if(isSystem()) {
+            type = "system";
+        }else {
+            type = "";
+        }
+        return type;
+    }
+
+    public Data toData() {
+        final Data data = getProperties().toData();
+        data.put("name", getName());
+        data.put("pathRelative", pathRelative);
+        data.put("pathSystem", pathSystem);
+        data.put("isFolder", isFolder());
+        data.put("isFile", isFile());
+        data.put("size", getSize());
+        data.put("type", getType());
+        return data;
     }
 
     @Override

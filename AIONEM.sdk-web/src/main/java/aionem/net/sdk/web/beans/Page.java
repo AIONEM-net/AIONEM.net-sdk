@@ -243,6 +243,13 @@ public @lombok.Data class Page {
         return listContents;
     }
 
+    public Data toData() {
+        final Data data = properties.toData();
+        data.put("thumbnail", getThumbnail());
+        data.put("templateThumbnail", getTemplateThumbnail());
+        return data;
+    }
+
     @Override
     public String toString() {
         return properties.toString();

@@ -3,17 +3,16 @@ package aionem.net.sdk.web.beans;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.beans.Data;
 import aionem.net.sdk.web.AioWeb;
-import lombok.Getter;
+import com.google.gson.JsonObject;
 import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
 
 @Log4j2
-public @Getter class Properties {
+public class Properties {
 
     public static final String PROPERTIES = "$_properties";
     public static final String PROPERTIES_JSON = ".json";
@@ -152,6 +151,10 @@ public @Getter class Properties {
             return "/WEB-INF/"+ resourceType + (!resourceType.endsWith(".jsp") ? "/.jsp" : "");
         }
         return "/WEB-INF/ui.apps/"+ resourceType + (!resourceType.endsWith(".jsp") ? "/.jsp" : "");
+    }
+
+    public Data toData() {
+        return new Data(data.toJsonAll());
     }
 
     @Override
