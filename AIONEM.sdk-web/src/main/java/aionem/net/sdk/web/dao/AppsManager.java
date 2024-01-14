@@ -54,7 +54,7 @@ public class AppsManager {
                 }
             };
 
-            for (final Resource resourceCmp : ResourceResolver.findResources(resourceApp, filterJsp)) {
+            for(final Resource resourceCmp : ResourceResolver.findResources(resourceApp, filterJsp)) {
                 listComponents.add(resourceCmp.getParent());
             }
 

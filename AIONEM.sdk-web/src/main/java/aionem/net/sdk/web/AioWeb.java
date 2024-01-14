@@ -381,7 +381,7 @@ public @Getter class AioWeb {
 
     public void includePageContents() {
         final Page currentPage = getCurrentPage();
-        for (int i = 0; i < currentPage.getContents().size(); i++) {
+        for(int i = 0; i < currentPage.getContents().size(); i++) {
             final Properties content = currentPage.getContents().get(i);
             final String resourceType = content.getResourceType();
             final String jsonData = content.getData().toJsonAll().toString();

@@ -71,7 +71,7 @@ public class DaoSysDeploy {
 
         if(fileUiFrontend.isFolder()) {
 
-            for (final Resource file : fileUiFrontend.children()) {
+            for(final Resource file : fileUiFrontend.children()) {
 
                 if(file.isFolder()) {
 
@@ -202,7 +202,7 @@ public class DaoSysDeploy {
                 final FileOutputStream fileOutputStream = fileWar.getFileOutputStream();
                 final ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
 
-                for (final Resource file : fileWebFolder.children()) {
+                for(final Resource file : fileWebFolder.children()) {
                     createWar(file, file.getName(), zipOutputStream);
                 }
 
@@ -225,7 +225,7 @@ public class DaoSysDeploy {
             final String path = name + (!name.endsWith("/") ? "/" : "");
             zipOutputStream.putNextEntry(new ZipEntry(path));
             zipOutputStream.closeEntry();
-            for (final Resource fileChild : file.children()) {
+            for(final Resource fileChild : file.children()) {
                 createWar(fileChild, path + fileChild.getName(), zipOutputStream);
             }
             return;

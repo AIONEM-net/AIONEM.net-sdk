@@ -124,7 +124,7 @@ public class ServletSysTest extends HttpServletApi {
         out.println("<div>" + "pageManager -> " + ResourceResolver.getRealPathPage() + "</div>");
         out.println("<div>" + "pageManager copy -> " + pageManager.copy(page1, "/it/copied") + "</div>");
         out.println("<div>" + "pageManager move -> " + pageManager.move(page1, "/it/moved") + "</div>");
-        for (Page resource : pageManager.getListPagesRoot()) {
+        for(Page resource : pageManager.getListPagesRoot()) {
             out.println("<div>" + "Resource file -> " + resource.getPath() + "</div>");
         }
         out.println("<div>---------------------------------------------</div>");
@@ -132,10 +132,10 @@ public class ServletSysTest extends HttpServletApi {
 
         // Output for I18nManager
         final I18nManager i18nManager = new I18nManager();
-        for (Resource folderI18n : i18nManager.getListFolders()) {
+        for(Resource folderI18n : i18nManager.getListFolders()) {
             out.println("<div>" + "I18n folder -> " + folderI18n.getRelativePath() + "</div>");
         }
-        for (Resource fileI18n : i18nManager.getListI18n()) {
+        for(Resource fileI18n : i18nManager.getListI18n()) {
             out.println("<div>" + "I18n file -> " + fileI18n.getRelativePath() + "</div>");
         }
         out.println("<div>---------------------------------------------</div>");
@@ -143,10 +143,10 @@ public class ServletSysTest extends HttpServletApi {
 
         // Output for ConfigManager
         final ConfigManager configManager = new ConfigManager();
-        for (Resource folderConfig : configManager.getListFolders()) {
+        for(Resource folderConfig : configManager.getListFolders()) {
             out.println("<div>" + "Config folder -> " + folderConfig.getRelativePath() + "</div>");
         }
-        for (Resource fileConfig : configManager.getListConfigs()) {
+        for(Resource fileConfig : configManager.getListConfigs()) {
             out.println("<div>" + "Config file -> " + fileConfig.getRelativePath() + "</div>");
         }
         out.println("<div>---------------------------------------------</div>");
@@ -158,13 +158,13 @@ public class ServletSysTest extends HttpServletApi {
         out.println("<div>" + "Drive -> " + drive + "</div>");
         // out.println("<div>" + "driveManager move -> " + driveManager.move(drive, "/uploads/copied") + "</div>");
         out.println("<div>" + "driveManager copy -> " + driveManager.copy(drive, "/uploads/copied") + "</div>");
-        for (Resource file : driveManager.getFiles()) {
+        for(Resource file : driveManager.getFiles()) {
             out.println("<div>" + "Drive files -> " + file.getRelativePath() + "</div>");
         }
-        for (Resource file : driveManager.getFiles("uploads")) {
+        for(Resource file : driveManager.getFiles("uploads")) {
             out.println("<div>" + "Drive uploads -> " + file.getRelativePath() + "</div>");
         }
-        for (Resource file : driveManager.getFiles("uploads/images")) {
+        for(Resource file : driveManager.getFiles("uploads/images")) {
             out.println("<div>" + "Drive images -> " + file.getRelativePath() + "</div>");
         }
         out.println("<div>---------------------------------------------</div>");
@@ -172,10 +172,10 @@ public class ServletSysTest extends HttpServletApi {
 
         // Output for AppsManager
         final AppsManager appsManager = new AppsManager();
-        for (Resource cmp : appsManager.listApps()) {
+        for(Resource cmp : appsManager.listApps()) {
             out.println("<div>" + "Apps root -> " + cmp.getSystemPath() + "</div>");
         }
-        for (Resource file : appsManager.listComponents()) {
+        for(Resource file : appsManager.listComponents()) {
             out.println("<div>" + "Apps cmp -> " + file.getSystemPath() + "</div>");
         }
         out.println("<div>---------------------------------------------</div>");

@@ -1,8 +1,7 @@
 package aionem.net.sdk.web.system.dao;
 
-import aionem.net.sdk.data.beans.DaoRes;
 import aionem.net.sdk.core.utils.UtilsText;
-import aionem.net.sdk.data.utils.UtilsResource;
+import aionem.net.sdk.data.beans.DaoRes;
 import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.dao.ResourceResolver;
@@ -14,8 +13,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 @Log4j2
@@ -41,27 +38,19 @@ public class DaoSysMinifierJs {
         return resMinify;
     }
 
-    public static String minifyFolder(final Resource fileFolder, final boolean isSave) {
+    public static String minifyFolder(final Resource resourceFrontend, final boolean isSave) {
 
         final StringBuilder builderJs = new StringBuilder();
 
         final String uiFrontend = ConfEnv.getInstance().getContextPath("/ui.frontend");
 
-        final Resource fileJs = new Resource(fileFolder, ".js");
-        final Resource fileJsJsp = new Resource(fileFolder, "js.jsp");
-        final Pattern pattern = Pattern.compile("(/ui\\.frontend[^\"']*\\.js)\"");
-
-        final Matcher matcher = pattern.matcher(fileJsJsp.readContent(true));
-
-        final ArrayList<String> listFileJs = new ArrayList<>();
-        while(matcher.find()) {
-            listFileJs.add(matcher.group(1));
-        }
+        final Resource fileJs = new Resource(resourceFrontend, ".js");
+        final ArrayList<String> listFileJs = resourceFrontend.getProperties().getArray("js");
 
         int n = 0;
         for(int i = 0; i < listFileJs.size(); i++) {
 
-            final Resource file = new Resource(UtilsResource.getRealPathRoot(listFileJs.get(i)));
+            final Resource file = resourceFrontend.child("js", listFileJs.get(i));
 
             if(file.exists() && file.isFile()) {
 
@@ -93,11 +82,9 @@ public class DaoSysMinifierJs {
         }
         if(isSave && n > 0) {
             final boolean isMinified = fileJs.saveContent(builderJs.toString());
-            // fileJsJsp.delete();
-            // update templates: replace /js.jsp" = /.js"
-            new Resource(fileFolder, "js").delete();
+            new Resource(resourceFrontend, "js").delete();
 
-            log.error("\nAioWeb::Minify JS {} : {}", "ui.frontend/"+ fileFolder.getName(), isMinified);
+            log.error("\nAioWeb::Minify JS {} : {}", "ui.frontend/"+ resourceFrontend.getName(), isMinified);
         }
 
         if(isSave) {
@@ -109,9 +96,9 @@ public class DaoSysMinifierJs {
                 }
             };
 
-            final ArrayList<Resource> listFiles = ResourceResolver.findResources(fileFolder, filterJs);
+            final ArrayList<Resource> listFiles = ResourceResolver.findResources(resourceFrontend, filterJs);
 
-            for (Resource file : listFiles) {
+            for(Resource file : listFiles) {
                 if(file.isFile()) {
 
                     String js = file.readContent(true);

@@ -71,7 +71,7 @@ public class UtilsConverter {
     private static <T> T[] convertToArray(final Object obj, final Class<T> type) {
         if(obj.getClass().isArray()) {
             List<Object> resultList = new ArrayList<>();
-            for (int i = 0; i < Array.getLength(obj); ++i) {
+            for(int i = 0; i < Array.getLength(obj); ++i) {
                 T singleValueResult = convert(Array.get(obj, i), type);
                 if(singleValueResult != null) {
                     resultList.add(singleValueResult);
@@ -323,7 +323,7 @@ public class UtilsConverter {
                     n = -n;
                 }
 
-                for (int exp = precision - 1; exp > 0 && (double) n < Math.pow(10.0, exp); --exp) {
+                for(int exp = precision - 1; exp > 0 && (double) n < Math.pow(10.0, exp); --exp) {
                     buf.append('0');
                 }
 
@@ -340,7 +340,7 @@ public class UtilsConverter {
                 TZS.put("-00:00", gmt);
                 final String[] tzs = new String[]{"-12:00", "-11:00", "-10:00", "-09:30", "-09:00", "-08:00", "-07:00", "-06:00", "-05:00", "-04:30", "-04:00", "-03:30", "-03:00", "-02:00", "-01:00", "+01:00", "+02:00", "+03:00", "+03:30", "+04:00", "+04:30", "+05:00", "+05:30", "+05:45", "+06:00", "+06:30", "+07:00", "+08:00", "+08:45", "+09:00", "+09:30", "+10:00", "+10:30", "+11:00", "+11:30", "+12:00", "+12:45", "+13:00", "+14:00"};
 
-                for (final String tz : tzs) {
+                for(final String tz : tzs) {
                     TZS.put(tz, TimeZone.getTimeZone("GMT" + tz));
                 }
 

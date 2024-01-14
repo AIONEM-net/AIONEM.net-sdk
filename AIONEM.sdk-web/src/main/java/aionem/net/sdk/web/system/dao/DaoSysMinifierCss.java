@@ -1,14 +1,14 @@
 package aionem.net.sdk.web.system.dao;
 
-import aionem.net.sdk.data.beans.DaoRes;
 import aionem.net.sdk.core.utils.UtilsText;
-import aionem.net.sdk.data.utils.UtilsResource;
+import aionem.net.sdk.data.beans.DaoRes;
 import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.dao.ResourceResolver;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.*;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,27 +39,19 @@ public class DaoSysMinifierCss {
         return resMinify;
     }
 
-    public static String minifyFolder(final Resource fileFolder, final boolean isSave) {
+    public static String minifyFolder(final Resource resourceFrontend, final boolean isSave) {
 
         final StringBuilder builderCss = new StringBuilder();
 
         final String uiFrontend = ConfEnv.getInstance().getContextPath("/ui.frontend");
 
-        final Resource fileCss = new Resource(fileFolder, ".css");
-        final Resource fileCssJsp = new Resource(fileFolder, "css.jsp");
-        final Pattern pattern = Pattern.compile("(/ui\\.frontend[^\"']*\\.css)\"");
-
-        final Matcher matcher = pattern.matcher(fileCssJsp.readContent(false));
-
-        final ArrayList<String> listFileCss = new ArrayList<>();
-        while(matcher.find()) {
-            listFileCss.add(matcher.group(1));
-        }
+        final Resource fileCss = new Resource(resourceFrontend, ".css");
+        final ArrayList<String> listFileCss = resourceFrontend.getProperties().getArray("css");
 
         int n = 0;
         for(int i = 0; i < listFileCss.size(); i++) {
 
-            final Resource file = new Resource(UtilsResource.getRealPathRoot(listFileCss.get(i)));
+            final Resource file = resourceFrontend.child("css", listFileCss.get(i));
 
             if(file.exists() && file.isFile()) {
 
@@ -91,11 +83,9 @@ public class DaoSysMinifierCss {
         }
         if(isSave && n > 0) {
             final boolean isMinified = fileCss.saveContent(builderCss.toString());
-            // fileCssJsp.delete();
-            // update templates: replace /css.jsp" = /.css"
-            new Resource(fileFolder, "css").delete();
+            new Resource(resourceFrontend, "css").delete();
 
-            log.error("\nAioWeb::Minify CSS {} : {}", "ui.frontend/"+ fileFolder.getName(), isMinified);
+            log.error("\nAioWeb::Minify CSS {} : {}", "ui.frontend/"+ resourceFrontend.getName(), isMinified);
         }
 
         if(isSave) {
@@ -107,7 +97,7 @@ public class DaoSysMinifierCss {
                 }
             };
 
-            final ArrayList<Resource> listFiles = ResourceResolver.findResources(fileFolder, filterCss);
+            final ArrayList<Resource> listFiles = ResourceResolver.findResources(resourceFrontend, filterCss);
 
             for(final Resource file : listFiles) {
 
@@ -157,7 +147,7 @@ public class DaoSysMinifierCss {
             final List<JspMinifierCssUtils.Selector> selectors = new ArrayList<>();
             n = 0;
             j = 0;
-            for (int i = 0; i < sb.length(); i++) {
+            for(int i = 0; i < sb.length(); i++) {
                 curr = sb.charAt(i);
                 if(j < 0) {
                     throw new Exception("UnbalancedBracesException");
@@ -248,7 +238,7 @@ public class DaoSysMinifierCss {
                 if(parts.length > 2) {
                     this.subSelectors = new ArrayList<>();
                     parts = selector.split("(\\s*\\{\\s*)|(\\s*\\}\\s*)");
-                    for (int i = 1; i < parts.length; i += 2) {
+                    for(int i = 1; i < parts.length; i += 2) {
                         parts[i] = parts[i].trim();
                         parts[i + 1] = parts[i + 1].trim();
                         if(!(parts[i].isEmpty() || (parts[i + 1].isEmpty()))) {
@@ -280,12 +270,12 @@ public class DaoSysMinifierCss {
                 StringBuilder sb = new StringBuilder();
                 sb.append(this.selector).append("{");
                 if(this.subSelectors != null) {
-                    for (Selector s : this.subSelectors) {
+                    for(Selector s : this.subSelectors) {
                         sb.append(s.toString());
                     }
                 }
                 if(this.properties != null) {
-                    for (Property p : this.properties) {
+                    for(Property p : this.properties) {
                         sb.append(p.toString());
                     }
                 }
@@ -301,7 +291,7 @@ public class DaoSysMinifierCss {
                 boolean bInsideString = false, bInsideURL = false;
                 int j = 0;
                 String substr;
-                for (int i = 0; i < contents.length(); i++) {
+                for(int i = 0; i < contents.length(); i++) {
                     if(bInsideString) {
                         bInsideString = !(contents.charAt(i) == '"');
                     } else if(bInsideURL) {
@@ -325,7 +315,7 @@ public class DaoSysMinifierCss {
                 }
 
                 ArrayList<Property> results = new ArrayList<>();
-                for (int i = 0; i < parts.size(); i++) {
+                for(int i = 0; i < parts.size(); i++) {
                     try {
                         results.add(new Property(parts.get(i)));
                     } catch (Exception e) {
@@ -351,7 +341,7 @@ public class DaoSysMinifierCss {
                 int j = 0;
                 String substr;
                 log.debug("\t\tExamining property: {}", property);
-                for (int i = 0; i < property.length(); i++) {
+                for(int i = 0; i < property.length(); i++) {
                     if(!bCanSplit) {
                         bCanSplit = (property.charAt(i) == '"');
                     } else if(property.charAt(i) == '"') {
@@ -383,7 +373,7 @@ public class DaoSysMinifierCss {
             public String toString() {
                 StringBuilder sb = new StringBuilder();
                 sb.append(this.property).append(":");
-                for (Part p : this.parts) {
+                for(Part p : this.parts) {
                     sb.append(p.toString()).append(",");
                 }
                 sb.deleteCharAt(sb.length() - 1); // Delete the trailing comma.
@@ -416,7 +406,7 @@ public class DaoSysMinifierCss {
                 String[] parts = contents.split(",");
                 Part[] results = new Part[parts.length];
 
-                for (int i = 0; i < parts.length; i++) {
+                for(int i = 0; i < parts.length; i++) {
                     try {
                         results[i] = new Part(parts[i], property);
                     } catch (Exception e) {
@@ -444,7 +434,7 @@ public class DaoSysMinifierCss {
                 while(matcher.find()) {
                     hexColour = new StringBuilder("#");
                     rgbColours = matcher.group(1).split(",");
-                    for (int i = 0; i < rgbColours.length; i++) {
+                    for(int i = 0; i < rgbColours.length; i++) {
                         colourValue = Integer.parseInt(rgbColours[i]);
                         if(colourValue < 16) {
                             hexColour.append("0");
@@ -521,7 +511,7 @@ public class DaoSysMinifierCss {
                     }
                 }
 
-                for (int i = 0; i < params.length; i++) {
+                for(int i = 0; i < params.length; i++) {
                     newContents.append(params[i]).append(" ");
                 }
                 newContents.deleteCharAt(newContents.length() - 1);
@@ -535,7 +525,7 @@ public class DaoSysMinifierCss {
 
                 String lcContents = this.contents.toLowerCase();
 
-                for (int i = 0; i < FONT_WEIGHT_NAMES.length; i++) {
+                for(int i = 0; i < FONT_WEIGHT_NAMES.length; i++) {
                     if(lcContents.equals(FONT_WEIGHT_NAMES[i])) {
                         this.contents = FONT_WEIGHT_VALUES[i];
                         break;
@@ -562,7 +552,7 @@ public class DaoSysMinifierCss {
             private void simplifyColourNames() {
                 String lcContents = this.contents.toLowerCase();
 
-                for (int i = 0; i < HTML_COLOUR_NAMES.length; i++) {
+                for(int i = 0; i < HTML_COLOUR_NAMES.length; i++) {
                     if(lcContents.equals(HTML_COLOUR_NAMES[i])) {
                         if(HTML_COLOUR_VALUES[i].length() < HTML_COLOUR_NAMES[i].length()) {
                             this.contents = HTML_COLOUR_VALUES[i];

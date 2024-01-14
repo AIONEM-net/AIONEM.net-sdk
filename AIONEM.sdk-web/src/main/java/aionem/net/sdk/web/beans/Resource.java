@@ -94,6 +94,10 @@ public class Resource {
         return new Resource(UtilsResource.path(pathReal, name));
     }
 
+    public Resource child(final String... pathsName) {
+        return new Resource(UtilsResource.path(pathsName));
+    }
+
     public ArrayList<Resource> children() {
         final ArrayList<Resource> children = new ArrayList<>();
         final File[] files = file.listFiles();

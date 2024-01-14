@@ -2,6 +2,7 @@ package aionem.net.sdk.web.config;
 
 import aionem.net.sdk.core.Env;
 import aionem.net.sdk.core.utils.UtilsText;
+import aionem.net.sdk.data.utils.UtilsResource;
 
 
 public class ConfEnv extends Config {
@@ -46,10 +47,7 @@ public class ConfEnv extends Config {
     }
 
     public String getContextPath(final String path) {
-        String contextPath = getContextPath() +"/"+ path;
-        contextPath = contextPath.replace("//", "/");
-        if(contextPath.endsWith("/")) contextPath = contextPath.substring(0, contextPath.length()-1);
-        return contextPath;
+        return UtilsResource.path(getContextPath(), path);
     }
 
     public String getSenderID() {
