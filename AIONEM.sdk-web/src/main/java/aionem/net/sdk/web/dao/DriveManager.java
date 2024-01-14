@@ -18,6 +18,14 @@ import java.util.ArrayList;
 @Log4j2
 public class DriveManager {
 
+    private static DriveManager driveManager;
+    public static DriveManager getInstance() {
+        if(driveManager == null) {
+            driveManager = new DriveManager();
+        }
+        return driveManager;
+    }
+
     public DriveManager() {
 
     }
@@ -47,16 +55,14 @@ public class DriveManager {
         return resUpload;
     }
 
-    public DaoRes uploadFile(final File file, String uploadName) {
+    public DaoRes uploadFile(final File file, final String uploadName) {
 
         final DaoRes resUpload = new DaoRes();
 
         try {
 
             if(file.exists() && file.isFile()) {
-
                 return uploadFile(new FileInputStream(file), uploadName, file.getName());
-
             }else {
                 resUpload.setError("Invalid file");
             }
@@ -68,7 +74,7 @@ public class DriveManager {
         return resUpload;
     }
 
-    public DaoRes uploadFile(final InputStream fileStream, String uploadName, String fileName) {
+    public DaoRes uploadFile(final InputStream fileStream, String uploadName, final String fileName) {
 
         final DaoRes resUpload = new DaoRes();
 
@@ -84,7 +90,7 @@ public class DriveManager {
                 }
 
                 final String fileFolder = UtilsDrive.getFileFolder(fileExtension);
-                final String filePath = fileFolder +"/" + uploadName;
+                final String filePath = UtilsResource.path(fileFolder, uploadName);
                 final String fileUrl = ConfEnv.getInstance().getContextPath(ResourceResolver.DRIVE_PATH_UPLOADS) +"/"+ filePath;
 
                 final Resource fileDirectory = new Resource(UtilsResource.getRealPathRoot(ResourceResolver.DRIVE_PATH_UPLOADS +"/"+ fileFolder));
@@ -139,7 +145,7 @@ public class DriveManager {
     }
 
     public Resource getFile(final String path) {
-        return new Resource(UtilsResource.getRealPathRoot("/ui.drive" +"/" + path));
+        return ResourceResolver.getResourceDrive(path);
     }
 
     public ArrayList<Resource> getFiles() {
@@ -171,14 +177,16 @@ public class DriveManager {
                 return false;
             }
 
+            final String pathNameNew = UtilsResource.path(pathNew, nameNew);
+
             final Path pathSource = Paths.get(drive.getPathReal());
-            final Path pathDestination = Paths.get(ResourceResolver.getRealPathPage(UtilsResource.path(pathNew, nameNew)));
+            final Path pathDestination = Paths.get(ResourceResolver.getRealPathPage(pathNameNew));
 
             Files.walkFileTree(pathSource, new SimpleFileVisitor<>() {
 
                 @Override
                 public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
-                    if (!dir.equals(pathSource)) {
+                    if(!dir.equals(pathSource)) {
                         return FileVisitResult.SKIP_SUBTREE;
                     }
                     final Path targetDir = pathDestination.resolve(pathSource.relativize(dir));
@@ -196,7 +204,7 @@ public class DriveManager {
 
             });
 
-            references(drive, ResourceResolver.getResourceDrive(UtilsResource.path(pathNew, nameNew)), true);
+            references(drive, ResourceResolver.getResourceDrive(pathNameNew), true);
 
             return true;
         } catch (IOException e) {
@@ -227,13 +235,13 @@ public class DriveManager {
             final String pathNameNew = UtilsResource.path(pathNew, nameNew);
 
             final Path pathSource = Paths.get(drive.getRealPath());
-            final Path pathDestination = Paths.get(ResourceResolver.getRealPathPage(pathNameNew));
+            final Path pathDestination = Paths.get(ResourceResolver.getRealPathDrive(pathNameNew));
 
             Files.walkFileTree(pathSource, new SimpleFileVisitor<>() {
 
                 @Override
                 public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
-                    if (excludeChildren && !dir.equals(pathSource)) {
+                    if(excludeChildren && !dir.equals(pathSource)) {
                         return FileVisitResult.SKIP_SUBTREE;
                     }
                     final Path targetDir = pathDestination.resolve(pathSource.relativize(dir));
@@ -253,8 +261,8 @@ public class DriveManager {
             references(drive, ResourceResolver.getResourceDrive(pathNameNew), true);
 
             return true;
-        } catch (IOException e) {
-            log.error("Error copying page {}", e.toString());
+        } catch (Exception e) {
+            log.error("Error copying drive {}", e.toString());
         }
         return false;
     }
@@ -268,7 +276,7 @@ public class DriveManager {
             Files.walkFileTree(pathSection, new SimpleFileVisitor<>() {
                 @Override
                 public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) {
-                    if (Files.isRegularFile(file)) {
+                    if(Files.isRegularFile(file)) {
                         final int references = ResourceResolver.referenceDrives(new Resource(file), "ui.drive"+ resource.getRelativePath(), "ui.drive"+ resourceNew.getRelativePath(), update);
                         totalReferences[0] += references;
                     }

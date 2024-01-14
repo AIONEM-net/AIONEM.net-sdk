@@ -9,55 +9,55 @@ import java.util.*;
 public class UtilsConverter {
 
     public static <T> T convert(final Object object, final T defaultValue) {
-        if (defaultValue == null) return null;
+        if(defaultValue == null) return null;
         T value = (T) convert(object, defaultValue.getClass());
         return value != null ? value : defaultValue;
     }
 
     public static <T> T convert(final Object object, final Class<T> type) {
-        if (object == null || type == null) return null;
-        if (type.isAssignableFrom(object.getClass())) {
+        if(object == null || type == null) return null;
+        if(type.isAssignableFrom(object.getClass())) {
             return (T) object;
-        } else if (type.isArray()) {
+        } else if(type.isArray()) {
             return (T) convertToArray(object, type.getComponentType());
-        } else if (Calendar.class.isAssignableFrom(type) && object instanceof Date) {
+        } else if(Calendar.class.isAssignableFrom(type) && object instanceof Date) {
             return (T) Converter.DateUtils.toCalendar((Date) object);
-        } else if (type == Date.class && object instanceof Calendar) {
+        } else if(type == Date.class && object instanceof Calendar) {
             return (T) Converter.DateUtils.toDate((Calendar) object);
-        } else {
+        }else {
             String valueString = UtilsText.toString(object);
-            if (valueString == null) {
+            if(valueString == null) {
                 return null;
-            } else if (type == String.class) {
+            } else if(type == String.class) {
                 return (T) valueString;
-            } else if (type == Boolean.class) {
-                if ("true".equalsIgnoreCase(valueString) || "1".equals(valueString)) {
+            } else if(type == Boolean.class) {
+                if("true".equalsIgnoreCase(valueString) || "1".equals(valueString)) {
                     return (T) Boolean.TRUE;
-                } else {
+                }else {
                     return "false".equalsIgnoreCase(valueString) || "0".equals(valueString) ? (T) Boolean.FALSE : null;
                 }
-            } else {
+            }else {
                 try {
                     Object value;
-                    if (type == Byte.class) {
+                    if(type == Byte.class) {
                         value = Byte.parseByte(valueString);
-                    } else if (type == Short.class) {
+                    } else if(type == Short.class) {
                         value = Short.parseShort(valueString);
-                    } else if (type == Integer.class) {
+                    } else if(type == Integer.class) {
                         value = Integer.parseInt(valueString);
-                    } else if (type == Long.class) {
+                    } else if(type == Long.class) {
                         value = Long.parseLong(valueString);
-                    } else if (type == Float.class) {
+                    } else if(type == Float.class) {
                         value = Float.parseFloat(valueString);
-                    } else if (type == Double.class) {
+                    } else if(type == Double.class) {
                         value = Double.parseDouble(valueString);
-                    } else if (type == BigDecimal.class) {
+                    } else if(type == BigDecimal.class) {
                         value = new BigDecimal(valueString);
-                    } else if (Calendar.class.isAssignableFrom(type)) {
+                    } else if(Calendar.class.isAssignableFrom(type)) {
                         value = Converter.DateUtils.calendarFromString(valueString);
-                    } else if (Date.class.isAssignableFrom(type)) {
+                    } else if(Date.class.isAssignableFrom(type)) {
                         value = Converter.DateUtils.dateFromString(valueString);
-                    } else {
+                    }else {
                         value = null;
                     }
                     return (T) value;
@@ -69,20 +69,20 @@ public class UtilsConverter {
     }
 
     private static <T> T[] convertToArray(final Object obj, final Class<T> type) {
-        if (obj.getClass().isArray()) {
+        if(obj.getClass().isArray()) {
             List<Object> resultList = new ArrayList<>();
             for (int i = 0; i < Array.getLength(obj); ++i) {
                 T singleValueResult = convert(Array.get(obj, i), type);
-                if (singleValueResult != null) {
+                if(singleValueResult != null) {
                     resultList.add(singleValueResult);
                 }
             }
             return (T[]) resultList.toArray((Object[]) Array.newInstance(type, resultList.size()));
-        } else {
+        }else {
             T singleValueResult = convert(obj, type);
-            if (singleValueResult == null) {
+            if(singleValueResult == null) {
                 return (T[]) Array.newInstance(type, 0);
-            } else {
+            }else {
                 T[] arrayResult = (T[]) Array.newInstance(type, 1);
                 arrayResult[0] = singleValueResult;
                 return arrayResult;
@@ -95,9 +95,9 @@ public class UtilsConverter {
         public static class DateUtils {
 
             public static Calendar toCalendar(Date input) {
-                if (input == null) {
+                if(input == null) {
                     return null;
-                } else {
+                }else {
                     Calendar result = Calendar.getInstance();
                     result.setTime(input);
                     return result;
@@ -126,18 +126,18 @@ public class UtilsConverter {
 
 
             public static Calendar parse(final String text) {
-                if (text == null) {
+                if(text == null) {
                     throw new IllegalArgumentException("argument can not be null");
-                } else {
+                }else {
                     byte sign;
                     int start;
-                    if (text.startsWith("-")) {
+                    if(text.startsWith("-")) {
                         sign = 45;
                         start = 1;
-                    } else if (text.startsWith("+")) {
+                    } else if(text.startsWith("+")) {
                         sign = 43;
                         start = 1;
-                    } else {
+                    }else {
                         sign = 43;
                         start = 0;
                     }
@@ -153,42 +153,42 @@ public class UtilsConverter {
                     try {
                         year = Integer.parseInt(text.substring(start, start + 4));
                         start += 4;
-                        if (text.charAt(start) != '-') {
+                        if(text.charAt(start) != '-') {
                             return null;
                         }
 
                         ++start;
                         month = Integer.parseInt(text.substring(start, start + 2));
                         start += 2;
-                        if (text.charAt(start) != '-') {
+                        if(text.charAt(start) != '-') {
                             return null;
                         }
 
                         ++start;
                         day = Integer.parseInt(text.substring(start, start + 2));
                         start += 2;
-                        if (text.charAt(start) != 'T') {
+                        if(text.charAt(start) != 'T') {
                             return null;
                         }
 
                         ++start;
                         hour = Integer.parseInt(text.substring(start, start + 2));
                         start += 2;
-                        if (text.charAt(start) != ':') {
+                        if(text.charAt(start) != ':') {
                             return null;
                         }
 
                         ++start;
                         min = Integer.parseInt(text.substring(start, start + 2));
                         start += 2;
-                        if (text.charAt(start) != ':') {
+                        if(text.charAt(start) != ':') {
                             return null;
                         }
 
                         ++start;
                         sec = Integer.parseInt(text.substring(start, start + 2));
                         start += 2;
-                        if (text.charAt(start) != '.') {
+                        if(text.charAt(start) != '.') {
                             return null;
                         }
 
@@ -197,10 +197,10 @@ public class UtilsConverter {
                         start += 3;
                         String tzid = text.substring(start);
                         tz = TZS.get(tzid);
-                        if (tz == null) {
+                        if(tz == null) {
                             tzid = "GMT" + tzid;
                             tz = TimeZone.getTimeZone(tzid);
-                            if (!tz.getID().equals(tzid)) {
+                            if(!tz.getID().equals(tzid)) {
                                 return null;
                             }
                         }
@@ -210,10 +210,10 @@ public class UtilsConverter {
 
                     final Calendar cal = Calendar.getInstance(tz);
                     cal.setLenient(false);
-                    if (sign != 45 && year != 0) {
+                    if(sign != 45 && year != 0) {
                         cal.set(Calendar.YEAR, year);
                         cal.set(Calendar.ERA, 1);
-                    } else {
+                    }else {
                         cal.set(Calendar.YEAR, year + 1);
                         cal.set(Calendar.ERA, 0);
                     }
@@ -248,9 +248,9 @@ public class UtilsConverter {
             }
 
             public static String format(final Date date, int tzOffsetInSeconds) throws IllegalArgumentException {
-                if (date == null) {
+                if(date == null) {
                     throw new IllegalArgumentException("argument can not be null");
-                } else {
+                }else {
                     return format(date.getTime(), tzOffsetInSeconds);
                 }
             }
@@ -267,9 +267,9 @@ public class UtilsConverter {
             }
 
             private static String format(final Calendar cal, boolean includeMs) throws IllegalArgumentException {
-                if (cal == null) {
+                if(cal == null) {
                     throw new IllegalArgumentException("argument can not be null");
-                } else {
+                }else {
                     StringBuilder buf = new StringBuilder();
                     appendZeroPaddedInt(buf, getYear(cal), 4);
                     buf.append('-');
@@ -282,21 +282,21 @@ public class UtilsConverter {
                     appendZeroPaddedInt(buf, cal.get(Calendar.MINUTE), 2);
                     buf.append(':');
                     appendZeroPaddedInt(buf, cal.get(Calendar.SECOND), 2);
-                    if (includeMs) {
+                    if(includeMs) {
                         buf.append('.');
                         appendZeroPaddedInt(buf, cal.get(Calendar.MILLISECOND), 3);
                     }
 
                     TimeZone tz = cal.getTimeZone();
                     int offset = tz.getOffset(cal.getTimeInMillis());
-                    if (offset != 0) {
+                    if(offset != 0) {
                         int hours = Math.abs(offset / '\uea60' / 60);
                         int minutes = Math.abs(offset / '\uea60' % 60);
                         buf.append(offset < 0 ? '-' : '+');
                         appendZeroPaddedInt(buf, hours, 2);
                         buf.append(':');
                         appendZeroPaddedInt(buf, minutes, 2);
-                    } else {
+                    }else {
                         buf.append('Z');
                     }
 
@@ -306,19 +306,19 @@ public class UtilsConverter {
 
             public static int getYear(final Calendar calendar) throws IllegalArgumentException {
                 int year = calendar.get(Calendar.YEAR);
-                if (calendar.isSet(Calendar.ERA) && calendar.get(Calendar.ERA) == 0) {
+                if(calendar.isSet(Calendar.ERA) && calendar.get(Calendar.ERA) == 0) {
                     year = 1 - year;
                 }
 
-                if (year <= 9999 && year >= -9999) {
+                if(year <= 9999 && year >= -9999) {
                     return year;
-                } else {
+                }else {
                     throw new IllegalArgumentException("Calendar has more than four year digits, cannot be formatted as ISO8601: " + year);
                 }
             }
 
             private static void appendZeroPaddedInt(final StringBuilder buf, int n, final int precision) {
-                if (n < 0) {
+                if(n < 0) {
                     buf.append('-');
                     n = -n;
                 }

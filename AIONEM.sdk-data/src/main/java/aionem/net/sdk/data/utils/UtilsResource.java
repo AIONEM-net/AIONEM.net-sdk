@@ -135,9 +135,9 @@ public class UtilsResource {
         if(folders == null || folders.length == 0) folders = new String[]{""};
         for(final String folder : folders) {
             try {
-                if (locale != null) {
+                if(locale != null) {
                     return ResourceBundle.getBundle(path(folder, name), locale);
-                } else {
+                }else {
                     return ResourceBundle.getBundle(path(folder, name));
                 }
             } catch (Exception ignore) {
@@ -146,11 +146,38 @@ public class UtilsResource {
         return null;
     }
 
-    public static String path(final String folder, final String path) {
-        if(UtilsText.isEmpty(folder) && UtilsText.isEmpty(path)) return "";
-        if(UtilsText.isEmpty(folder)) return path.endsWith("/") ? path.substring(0, path.length() - 1) : path;
-        if(UtilsText.isEmpty(path)) return folder.endsWith("/") ? folder.substring(0, folder.length() - 1) : folder;
-        return folder +(!folder.endsWith("/") && !path.startsWith("/") ? "/" : "")+  path;
+    public static String path(final String... arrayPaths) {
+        String paths = "";
+        if(arrayPaths != null && arrayPaths.length > 0) {
+            for(int i = 0; i < arrayPaths.length; i++) {
+                String path = arrayPaths[i];
+                if(i == 0) {
+                    paths = path;
+                }else {
+                    paths = path(paths, path);
+                }
+            }
+        }
+        return paths;
+    }
+
+    public static String path(final String folder, final String name) {
+        String path = "";
+        if(UtilsText.isEmpty(folder) && UtilsText.isEmpty(name)) return "";
+
+        if(UtilsText.isEmpty(folder)) {
+            path = name;
+        }else if(UtilsText.isEmpty(name)) {
+            path = folder;
+        }else {
+            path = folder +(!folder.endsWith("/") && !name.startsWith("/") ? "/" : "")+  name;
+        }
+
+        if(path.endsWith("/")) {
+            path = path.substring(0, path.length() -1);
+        }
+        return path
+                .replace("//", "/");
     }
 
     public static String parentFolder(final String folder) {

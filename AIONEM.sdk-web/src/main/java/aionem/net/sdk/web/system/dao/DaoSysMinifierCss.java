@@ -65,11 +65,11 @@ public class DaoSysMinifierCss {
 
                 String css = file.readContent(false);
 
-                if (!file.getName().equals("min.css")) {
+                if(!file.getName().equals("min.css")) {
                     css = minify(css);
                 }
 
-                if (isSave) {
+                if(isSave) {
                     file.saveContent(css);
                     file.delete();
                 }
@@ -81,7 +81,7 @@ public class DaoSysMinifierCss {
                         .replace("`/ui.frontend", "`" + uiFrontend)
                         .replace("../", "");
 
-                if (!UtilsText.isEmpty(css)) {
+                if(!UtilsText.isEmpty(css)) {
                     builderCss.append(i > 0 ? "\n" : "").append(css);
                 }
 
@@ -255,7 +255,7 @@ public class DaoSysMinifierCss {
                             this.subSelectors.add(new Selector(parts[i] + "{" + parts[i + 1] + "}"));
                         }
                     }
-                } else {
+                }else {
                     String contents = parts[parts.length - 1].trim();
                     log.debug("Parsing selector: {}", this.selector);
                     log.debug("\t{}", contents);
@@ -548,7 +548,7 @@ public class DaoSysMinifierCss {
                     this.contents = this.contents.replaceAll("(?i)url\\(('|\")?(.*?)\\1\\)", "url($2)");
                 } else if((this.contents.length() > 4) && (this.contents.substring(0, 4).equalsIgnoreCase("var("))) {
                     this.contents = this.contents.replaceAll("\\s", "");
-                } else {
+                }else {
                     String[] words = this.contents.split("\\s");
                     if(words.length == 1) {
                         if(!this.property.equalsIgnoreCase("animation-name")) {
@@ -588,7 +588,7 @@ public class DaoSysMinifierCss {
                             && matcher.group(5).equalsIgnoreCase(matcher.group(6))) {
                         matcher.appendReplacement(newContents, "#" + matcher.group(1).toLowerCase()
                                 + matcher.group(3).toLowerCase() + matcher.group(5).toLowerCase());
-                    } else {
+                    }else {
                         matcher.appendReplacement(newContents, matcher.group().toLowerCase());
                     }
                 }

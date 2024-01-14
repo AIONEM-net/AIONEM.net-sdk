@@ -54,9 +54,9 @@ public class PageManager {
 
     public ArrayList<Page> getListPages(final Page pageParent) {
         final ArrayList<Page> listPages = new ArrayList<>();
+        
         final String rootPagePath = ResourceResolver.getRealPathPage();
         final Resource filePageParent = new Resource(ResourceResolver.getRealPathPage(pageParent.getPath()));
-
         for(final Resource filePage : getListResourcePages(filePageParent)) {
             final String pagePath = filePage.getRealPath().substring(rootPagePath.length());
             final Page page = new Page(pagePath, new Properties(filePage.child(Properties.PROPERTIES_JSON)));
@@ -71,8 +71,8 @@ public class PageManager {
 
     public ArrayList<Page> getListPagesAll() {
         final ArrayList<Page> listPages = new ArrayList<>();
+        
         final String rootPagePath = ResourceResolver.getRealPathPage();
-
         for(final Resource filePage : getListResourcePagesAll()) {
             final String pagePath = filePage.getRealPath().substring(rootPagePath.length());
             final Page page = new Page(pagePath, new Properties(filePage.child(Properties.PROPERTIES_JSON)));
@@ -95,6 +95,7 @@ public class PageManager {
 
     public ArrayList<Resource> getListResourcePages(final int level) {
         final String realPathRoot = ResourceResolver.getRealPathPage();
+        
         final ArrayList<Resource> listFilePages = new ArrayList<>();
         final Resource fileRoot = new Resource(realPathRoot);
         if(fileRoot.isFolder()) {
@@ -121,6 +122,7 @@ public class PageManager {
 
     private ArrayList<Resource> getListResourcePages(final Resource... resourcePages) {
         final ArrayList<Resource> listFilePagesAll = new ArrayList<>();
+        
         final ArrayList<Resource> listFilePages = new ArrayList<>();
         for(Resource filePage : resourcePages) {
             if(!listFilePages.contains(filePage)) {
@@ -149,6 +151,7 @@ public class PageManager {
 
     private ArrayList<Resource> getListResourcePagesAll(final Resource... resourcePages) {
         final ArrayList<Resource> listFilePagesAll = new ArrayList<>();
+        
         final ArrayList<Resource> listFilePages = new ArrayList<>();
         for(Resource filePage : resourcePages) {
             if(!listFilePages.contains(filePage)) {
@@ -190,13 +193,6 @@ public class PageManager {
         }
         return listFilePages;
     }
-
-    public static Comparator<Page> comparatorPage = new Comparator<Page>() {
-        @Override
-        public int compare(final Page page1, final Page page2) {
-            return Integer.compare(page1.getOrder(), page2.getOrder());
-        }
-    };
 
     public void cache(final AioWeb aioWeb, final boolean enabled) {
         if(enabled) {
@@ -280,7 +276,7 @@ public class PageManager {
 
                 @Override
                 public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
-                    if (!dir.equals(pathSource)) {
+                    if(!dir.equals(pathSource)) {
                         return FileVisitResult.SKIP_SUBTREE;
                     }
                     final Path targetDir = pathDestination.resolve(pathSource.relativize(dir));
@@ -333,7 +329,7 @@ public class PageManager {
 
                 @Override
                 public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
-                    if (excludeChildren && !dir.equals(pathSource)) {
+                    if(excludeChildren && !dir.equals(pathSource)) {
                         return FileVisitResult.SKIP_SUBTREE;
                     }
                     final Path targetDir = pathDestination.resolve(pathSource.relativize(dir));
@@ -374,7 +370,7 @@ public class PageManager {
             Files.walkFileTree(pathSection, new SimpleFileVisitor<>() {
                 @Override
                 public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) {
-                    if (Files.isRegularFile(file)) {
+                    if(Files.isRegularFile(file)) {
                         final int references = ResourceResolver.referencePages(new Resource(file), "ui.page"+ page.getPath(), "ui.page"+ pageNew.getPath(), update);
                         totalReferences[0] += references;
                     }
@@ -387,5 +383,12 @@ public class PageManager {
 
         return totalReferences[0];
     }
-
+    
+    public static Comparator<Page> comparatorPage = new Comparator<Page>() {
+        @Override
+        public int compare(final Page page1, final Page page2) {
+            return Integer.compare(page1.getOrder(), page2.getOrder());
+        }
+    };
+    
 }

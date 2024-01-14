@@ -2,6 +2,7 @@ package aionem.net.sdk.web.beans;
 
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.beans.Data;
+import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.AioWeb;
 import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.dao.PageManager;
@@ -183,11 +184,11 @@ public @lombok.Data class Page {
     }
 
     public String getContent() {
-        return "/ui.page"+ path +"/" + ".jsp";
+        return UtilsResource.path( "/ui.page", path, ".jsp");
     }
 
     public String getTemplatePath() {
-        return "/WEB-INF/ui.template/"+ getTemplate() +"/.jsp";
+        return UtilsResource.path("/WEB-INF/ui.template/", getTemplate(), "/.jsp");
     }
 
     public ArrayList<Page> listChildren() {
@@ -224,7 +225,7 @@ public @lombok.Data class Page {
     }
 
     public ArrayList<Properties> getContents() {
-        final ArrayList<Properties> listContents = properties.getChildren("content");
+        final ArrayList<Properties> listContents = properties.getChildren("contents");
         if(listContents.isEmpty() || (listContents.size() == 1 && UtilsText.isEmpty(listContents.get(0).getResourceType()))) {
             final Properties properties = new Properties(new Data()
                     .put("resourceType", getContent())

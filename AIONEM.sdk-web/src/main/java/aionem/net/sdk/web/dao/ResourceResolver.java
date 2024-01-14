@@ -68,7 +68,7 @@ public class ResourceResolver {
     }
 
     public static String getRealPathDrive(final String path) {
-        return UtilsResource.getRealPathRoot("/ui.drive"+ (!UtilsText.isEmpty(path) ? "/" + path : ""));
+        return UtilsResource.getRealPathRoot(UtilsResource.path("/ui.drive", path));
     }
 
     public static String getRealPathPage(final String path) {
@@ -91,7 +91,7 @@ public class ResourceResolver {
             for(final Resource resource : resourceFolder.children()) {
                 if(resource.isFolder()) {
                     listResources.addAll(findResources(resource, filenameFilter));
-                } else {
+                }else {
                     if(filenameFilter.accept(resourceFolder.getFile(), resource.getName())) {
                         listResources.add(resource);
                     }
@@ -103,7 +103,7 @@ public class ResourceResolver {
     }
 
     public static String readResource(final String name) {
-        return readResource(name, "/WEB-INF/classes/", "/");
+        return readResource(name, "/WEB-INF/classes/", "/classes/");
     }
 
     public static String readResourceWebInf(final String name) {
@@ -124,10 +124,6 @@ public class ResourceResolver {
 
     public static String readResourceEtc(final String name) {
         return readResource(name, "/WEB-INF/ui.config/etc/", "/ui.config/etc/");
-    }
-
-    public static ResourceBundle getResourceBundleConfig(final String name) {
-        return UtilsResource.getResourceBundle("/ui.config/" + name);
     }
 
     public static ResourceBundle getResourceBundleEnv(final String name) {
@@ -163,7 +159,7 @@ public class ResourceResolver {
             for(final String folder : folders) {
 
                 Resource resource = new Resource(UtilsResource.getRealPathRoot(folder + name));
-                if (resource.exists() && resource.isFile()) {
+                if(resource.exists() && resource.isFile()) {
                     return resource.getInputStream();
                 }
 

@@ -112,11 +112,11 @@ public class DaoSysMinifierJs {
             final ArrayList<Resource> listFiles = ResourceResolver.findResources(fileFolder, filterJs);
 
             for (Resource file : listFiles) {
-                if (file.isFile()) {
+                if(file.isFile()) {
 
                     String js = file.readContent(true);
 
-                    if (!file.getName().equals("min.js")) {
+                    if(!file.getName().equals("min.js")) {
                         js = minify(js);
                     }
 

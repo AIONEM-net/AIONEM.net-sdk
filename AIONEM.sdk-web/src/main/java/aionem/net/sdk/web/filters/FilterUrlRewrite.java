@@ -73,17 +73,17 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                 aioWeb.sendRedirect(url);
 
                 return;
-            }else if (requestPath.startsWith("/ui.drive")) {
+            }else if(requestPath.startsWith("/ui.drive")) {
 
                 final String filePath = UtilsResource.getRealPathRoot(requestPath);
                 final Resource resource = new Resource(filePath);
                 responseFile(aioWeb, resource);
 
                 return;
-            }else if (requestPath.startsWith("/ui.frontend")) {
+            }else if(requestPath.startsWith("/ui.frontend")) {
                 super.doFilter(request, response, chain);
                 return;
-            }else if (requestPath.startsWith("/ui.system")) {
+            }else if(requestPath.startsWith("/ui.system")) {
                 super.doFilter(request, response, chain);
                 return;
             }else if(requestPath.startsWith("/api")) {
@@ -93,7 +93,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
             Pattern pattern = Pattern.compile("^/drive/(.+)$");
             Matcher matcher = pattern.matcher(requestPath);
-            if (matcher.matches()) {
+            if(matcher.matches()) {
 
                 final String group1 = matcher.group(1);
 
@@ -107,7 +107,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
             pattern = Pattern.compile("^/assets/([^/]+)/(.+)$");
             matcher = pattern.matcher(requestPath);
-            if (matcher.matches()) {
+            if(matcher.matches()) {
 
                 final String group1 = matcher.group(1);
                 final String group2 = matcher.group(2);
@@ -122,7 +122,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
             pattern = Pattern.compile("^/cdn/(.+)$");
             matcher = pattern.matcher(requestPath);
-            if (matcher.matches()) {
+            if(matcher.matches()) {
 
                 final String group1 = matcher.group(1);
 

@@ -67,7 +67,7 @@ public class UtilsJson {
     public static JsonObject toJsonObject(final Object object) {
         JsonObject jsonObject = new JsonObject();
         try {
-            if(object instanceof JsonObject) {
+            if(object instanceof JsonElement) {
                 jsonObject = (JsonObject) object;
             }else if(object instanceof Data) {
                 jsonObject = ((Data) object).toJson();

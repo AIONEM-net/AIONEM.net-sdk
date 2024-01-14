@@ -46,10 +46,7 @@ public class Config {
             name = env +"/"+ name;
             this.resourceBundle = ResourceResolver.getResourceBundleEnv(name);
         }else {
-            this.resourceBundle = ResourceResolver.getResourceBundleConfig(name);
-            if(this.resourceBundle == null) {
-                this.resourceBundle = ResourceResolver.getResourceBundleEnv(name);
-            }
+            this.resourceBundle = ResourceResolver.getResourceBundleEnv(name);
         }
 
         this.data = getData(name);
@@ -101,7 +98,7 @@ public class Config {
     }
 
     public ResourceBundle getBaseResourceBundle() {
-        return ResourceResolver.getResourceBundleConfig(getBaseName());
+        return ResourceResolver.getResourceBundleEnv(getBaseName());
     }
 
     private static Data getData(String name) {

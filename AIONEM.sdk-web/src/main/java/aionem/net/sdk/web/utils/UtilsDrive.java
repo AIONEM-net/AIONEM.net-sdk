@@ -23,7 +23,7 @@ public class UtilsDrive {
     public static String getFileExtension(final String fileName) {
         String fileExtension = "";
         final int lastIndex = fileName.lastIndexOf(".");
-        if (lastIndex > 0 && lastIndex < fileName.length() - 1) {
+        if(lastIndex > 0 && lastIndex < fileName.length() - 1) {
             fileExtension = fileName.substring(lastIndex + 1);
         }
         return fileExtension;
@@ -32,7 +32,7 @@ public class UtilsDrive {
     public static String getFileFolder(final String fileExtension) {
         String fileFolder = "others";
 
-        if (!UtilsText.isEmpty(fileExtension)) {
+        if(!UtilsText.isEmpty(fileExtension)) {
 
             switch (fileExtension.toLowerCase()) {
 

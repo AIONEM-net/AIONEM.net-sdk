@@ -142,10 +142,10 @@ public class ApiRes {
 
             log.error("\nERROR: " + e +" : "+ e.getStackTrace()[0] +"\n");
 
-            if (UtilsText.isEmpty(error)) {
-                if (e instanceof SQLException) {
+            if(UtilsText.isEmpty(error)) {
+                if(e instanceof SQLException) {
                     this.error = "Connection failed";
-                } else if (Env.IS_DEBUG_EXCEPTION) {
+                } else if(Env.IS_DEBUG_EXCEPTION) {
                     this.error = UtilsText.notEmpty(e.getMessage(), "Something went wrong");
                 }
             }

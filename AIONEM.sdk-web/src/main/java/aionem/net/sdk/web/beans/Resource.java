@@ -66,10 +66,6 @@ public class Resource {
         this(resource.child(child).file);
     }
 
-    public static Resource driver(final String path) {
-        return ResourceResolver.getResourcePage(path);
-    }
-
     public String getName() {
         return file.getName();
     }
@@ -228,10 +224,10 @@ public class Resource {
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        Resource resource = (Resource) object;
+    public boolean equals(final Object object) {
+        if(this == object) return true;
+        if(object == null || getClass() != object.getClass()) return false;
+        final Resource resource = (Resource) object;
         return Objects.equals(file, resource.file) && Objects.equals(pathReal, resource.pathReal);
     }
 

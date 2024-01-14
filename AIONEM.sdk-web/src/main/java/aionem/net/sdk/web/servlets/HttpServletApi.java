@@ -142,25 +142,25 @@ public class HttpServletApi extends HttpServlet {
                 }
             }else {
 
-                if (method.getName().equals("doGet") && request.getMethod().equals("GET")) {
+                if(method.getName().equals("doGet") && request.getMethod().equals("GET")) {
                     methodRequest = method;
                     break;
-                } else if (method.getName().equals("doPost") && request.getMethod().equals("POST")) {
+                } else if(method.getName().equals("doPost") && request.getMethod().equals("POST")) {
                     methodRequest = method;
                     break;
-                } else if (method.getName().equals("doPut") && request.getMethod().equals("PUT")) {
+                } else if(method.getName().equals("doPut") && request.getMethod().equals("PUT")) {
                     methodRequest = method;
                     break;
-                } else if (method.getName().equals("doDelete") && request.getMethod().equals("DELETE")) {
+                } else if(method.getName().equals("doDelete") && request.getMethod().equals("DELETE")) {
                     methodRequest = method;
                     break;
-                } else if (method.getName().equals("doHead") && request.getMethod().equals("HEAD")) {
+                } else if(method.getName().equals("doHead") && request.getMethod().equals("HEAD")) {
                     methodRequest = method;
                     break;
-                } else if (method.getName().equals("doOptions") && request.getMethod().equals("OPTIONS")) {
+                } else if(method.getName().equals("doOptions") && request.getMethod().equals("OPTIONS")) {
                     methodRequest = method;
                     break;
-                } else if (method.getName().equals("doTrace") && request.getMethod().equals("TRACE")) {
+                } else if(method.getName().equals("doTrace") && request.getMethod().equals("TRACE")) {
                     methodRequest = method;
                     break;
                 }

@@ -82,10 +82,10 @@ public class DaoSysDeploy {
                     new Resource(file, ".js").saveContent(js);
 
                 }else {
-                    if (file.getName().endsWith(".css")) {
+                    if(file.getName().endsWith(".css")) {
                         DaoSysMinifierCss.minifyFile(file);
 
-                    } else if (file.getName().equals(".js")) {
+                    } else if(file.getName().equals(".js")) {
                         DaoSysMinifierJs.minifyFile(file);
                     }
                 }
@@ -110,7 +110,7 @@ public class DaoSysDeploy {
             if(new Resource(filePage, Properties.PROPERTIES_JSON).exists()) {
                 final boolean isCached = new PageManager().cache(page);
                 boolean isDeleted = true;
-                if (isCached) {
+                if(isCached) {
                     final boolean isDeleted1 = new Resource(filePage, "content.jsp").delete();
                     final boolean isDeleted2 = new Resource(filePage, Properties.PROPERTIES_JSON).delete();
                     isDeleted = isDeleted1 || isDeleted2 || new Resource(filePage, "index.jsp").delete();
@@ -193,7 +193,7 @@ public class DaoSysDeploy {
             final boolean isEmpty;
             if(fileWar.exists()) {
                 isEmpty = fileWar.delete();
-            } else {
+            }else {
                 isEmpty = true;
             }
 

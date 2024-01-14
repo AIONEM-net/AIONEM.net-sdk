@@ -52,22 +52,22 @@ public class FilterExpires implements Filter {
     }
 
     protected static boolean contains(String str, String searchStr) {
-        if (str != null && searchStr != null) {
+        if(str != null && searchStr != null) {
             return str.contains(searchStr);
-        } else {
+        }else {
             return false;
         }
     }
 
     protected static String intsToCommaDelimitedString(int[] ints) {
-        if (ints == null) {
+        if(ints == null) {
             return "";
-        } else {
+        }else {
             StringBuilder result = new StringBuilder();
 
             for(int i = 0; i < ints.length; ++i) {
                 result.append(ints[i]);
-                if (i < ints.length - 1) {
+                if(i < ints.length - 1) {
                     result.append(", ");
                 }
             }
@@ -85,44 +85,44 @@ public class FilterExpires implements Filter {
     }
 
     protected static boolean startsWithIgnoreCase(String string, String prefix) {
-        if (string != null && prefix != null) {
+        if(string != null && prefix != null) {
             return prefix.length() <= string.length() && string.regionMatches(true, 0, prefix, 0, prefix.length());
-        } else {
+        }else {
             return string == null && prefix == null;
         }
     }
 
     protected static String substringBefore(String str, String separator) {
-        if (str != null && !str.isEmpty() && separator != null) {
-            if (separator.isEmpty()) {
+        if(str != null && !str.isEmpty() && separator != null) {
+            if(separator.isEmpty()) {
                 return "";
-            } else {
+            }else {
                 int separatorIndex = str.indexOf(separator);
                 return separatorIndex == -1 ? str : str.substring(0, separatorIndex);
             }
-        } else {
+        }else {
             return null;
         }
     }
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (request instanceof HttpServletRequest && response instanceof HttpServletResponse) {
+        if(request instanceof HttpServletRequest && response instanceof HttpServletResponse) {
             HttpServletRequest httpRequest = (HttpServletRequest)request;
             HttpServletResponse httpResponse = (HttpServletResponse)response;
-            if (response.isCommitted()) {
-                if (log.isDebugEnabled()) {
+            if(response.isCommitted()) {
+                if(log.isDebugEnabled()) {
                     log.debug(sm.getString("expiresFilter.responseAlreadyCommited", new Object[]{httpRequest.getRequestURL()}));
                 }
 
                 chain.doFilter(request, response);
-            } else {
+            }else {
                 XHttpServletResponse xResponse = new XHttpServletResponse(httpRequest, httpResponse);
                 chain.doFilter(request, xResponse);
-                if (!xResponse.isWriteResponseBodyStarted()) {
+                if(!xResponse.isWriteResponseBodyStarted()) {
                     this.onBeforeWriteResponseBody(httpRequest, xResponse);
                 }
             }
-        } else {
+        }else {
             chain.doFilter(request, response);
         }
 
@@ -132,21 +132,21 @@ public class FilterExpires implements Filter {
         String contentType = response.getContentType();
         ExpiresConfiguration configuration = this.expiresConfigurationByContentType.get(contentType);
         Date result;
-        if (configuration != null) {
+        if(configuration != null) {
             result = this.getExpirationDate(configuration, response);
-            if (log.isDebugEnabled()) {
+            if(log.isDebugEnabled()) {
                 log.debug(sm.getString("expiresFilter.useMatchingConfiguration", new Object[]{configuration, contentType, contentType, result}));
             }
 
             return result;
-        } else {
+        }else {
             String majorType;
-            if (contains(contentType, ";")) {
+            if(contains(contentType, ";")) {
                 majorType = substringBefore(contentType, ";").trim();
                 configuration = this.expiresConfigurationByContentType.get(majorType);
-                if (configuration != null) {
+                if(configuration != null) {
                     result = this.getExpirationDate(configuration, response);
-                    if (log.isDebugEnabled()) {
+                    if(log.isDebugEnabled()) {
                         log.debug(sm.getString("expiresFilter.useMatchingConfiguration", new Object[]{configuration, majorType, contentType, result}));
                     }
 
@@ -154,12 +154,12 @@ public class FilterExpires implements Filter {
                 }
             }
 
-            if (contains(contentType, "/")) {
+            if(contains(contentType, "/")) {
                 majorType = substringBefore(contentType, "/");
                 configuration = this.expiresConfigurationByContentType.get(majorType);
-                if (configuration != null) {
+                if(configuration != null) {
                     result = this.getExpirationDate(configuration, response);
-                    if (log.isDebugEnabled()) {
+                    if(log.isDebugEnabled()) {
                         log.debug(sm.getString("expiresFilter.useMatchingConfiguration", new Object[]{configuration, majorType, contentType, result}));
                     }
 
@@ -167,15 +167,15 @@ public class FilterExpires implements Filter {
                 }
             }
 
-            if (this.defaultExpiresConfiguration != null) {
+            if(this.defaultExpiresConfiguration != null) {
                 result = this.getExpirationDate(this.defaultExpiresConfiguration, response);
-                if (log.isDebugEnabled()) {
+                if(log.isDebugEnabled()) {
                     log.debug(sm.getString("expiresFilter.useDefaultConfiguration", new Object[]{this.defaultExpiresConfiguration, contentType, result}));
                 }
 
                 return result;
-            } else {
-                if (log.isDebugEnabled()) {
+            }else {
+                if(log.isDebugEnabled()) {
                     log.debug(sm.getString("expiresFilter.noExpirationConfiguredForContentType", new Object[]{contentType}));
                 }
 
@@ -191,7 +191,7 @@ public class FilterExpires implements Filter {
                 calendar = Calendar.getInstance();
                 break;
             case LAST_MODIFICATION_TIME:
-                if (response.isLastModifiedHeaderSet()) {
+                if(response.isLastModifiedHeaderSet()) {
                     try {
                         long lastModified = response.getLastModifiedHeader();
                         calendar = Calendar.getInstance();
@@ -199,7 +199,7 @@ public class FilterExpires implements Filter {
                     } catch (NumberFormatException var6) {
                         calendar = Calendar.getInstance();
                     }
-                } else {
+                }else {
                     calendar = Calendar.getInstance();
                 }
                 break;
@@ -222,15 +222,15 @@ public class FilterExpires implements Filter {
             String value = filterConfig.getInitParameter(name);
 
             try {
-                if (name.startsWith("ExpiresByType")) {
+                if(name.startsWith("ExpiresByType")) {
                     String contentType = name.substring("ExpiresByType".length()).trim();
                     ExpiresConfiguration expiresConfiguration = this.parseExpiresConfiguration(value);
                     this.expiresConfigurationByContentType.put(contentType, expiresConfiguration);
-                } else if (name.equalsIgnoreCase("ExpiresDefault")) {
+                } else if(name.equalsIgnoreCase("ExpiresDefault")) {
                     this.defaultExpiresConfiguration = this.parseExpiresConfiguration(value);
-                } else if (name.equalsIgnoreCase("ExpiresExcludedResponseStatusCodes")) {
+                } else if(name.equalsIgnoreCase("ExpiresExcludedResponseStatusCodes")) {
                     this.excludedResponseStatusCodes = commaDelimitedListToIntArray(value);
-                } else {
+                }else {
                     log.warn(sm.getString("expiresFilter.unknownParameterIgnored", new Object[]{name, value}));
                 }
             } catch (RuntimeException var7) {
@@ -243,16 +243,16 @@ public class FilterExpires implements Filter {
 
     protected boolean isEligibleToExpirationHeaderGeneration(HttpServletRequest request, XHttpServletResponse response) {
         boolean expirationHeaderHasBeenSet = response.containsHeader("Expires") || contains(response.getCacheControlHeader(), "max-age");
-        if (expirationHeaderHasBeenSet) {
-            if (log.isDebugEnabled()) {
+        if(expirationHeaderHasBeenSet) {
+            if(log.isDebugEnabled()) {
                 log.debug(sm.getString("expiresFilter.expirationHeaderAlreadyDefined", request.getRequestURI(), response.getStatus(), response.getContentType()));
             }
 
             return false;
-        } else {
+        }else {
             for(int skippedStatusCode : this.excludedResponseStatusCodes) {
-                if (response.getStatus() == skippedStatusCode) {
-                    if (log.isDebugEnabled()) {
+                if(response.getStatus() == skippedStatusCode) {
+                    if(log.isDebugEnabled()) {
                         log.debug(sm.getString("expiresFilter.skippedStatusCode", request.getRequestURI(), response.getStatus(), response.getContentType()));
                     }
 
@@ -265,14 +265,14 @@ public class FilterExpires implements Filter {
     }
 
     public void onBeforeWriteResponseBody(HttpServletRequest request, XHttpServletResponse response) {
-        if (this.isEligibleToExpirationHeaderGeneration(request, response)) {
+        if(this.isEligibleToExpirationHeaderGeneration(request, response)) {
             Date expirationDate = this.getExpirationDate(response);
-            if (expirationDate == null) {
-                if (log.isDebugEnabled()) {
+            if(expirationDate == null) {
+                if(log.isDebugEnabled()) {
                     log.debug(sm.getString("expiresFilter.noExpirationConfigured", request.getRequestURI(), response.getStatus(), response.getContentType()));
                 }
-            } else {
-                if (log.isDebugEnabled()) {
+            }else {
+                if(log.isDebugEnabled()) {
                     log.debug(sm.getString("expiresFilter.setExpirationDate", request.getRequestURI(), response.getStatus(), response.getContentType(), expirationDate));
                 }
 
@@ -298,21 +298,21 @@ public class FilterExpires implements Filter {
         }
 
         StartingPoint startingPoint;
-        if (!"access".equalsIgnoreCase(currentToken) && !"now".equalsIgnoreCase(currentToken)) {
-            if ("modification".equalsIgnoreCase(currentToken)) {
+        if(!"access".equalsIgnoreCase(currentToken) && !"now".equalsIgnoreCase(currentToken)) {
+            if("modification".equalsIgnoreCase(currentToken)) {
                 startingPoint = FilterExpires.StartingPoint.LAST_MODIFICATION_TIME;
-            } else if (!tokenizer.hasMoreTokens() && startsWithIgnoreCase(currentToken, "a")) {
+            } else if(!tokenizer.hasMoreTokens() && startsWithIgnoreCase(currentToken, "a")) {
                 startingPoint = FilterExpires.StartingPoint.ACCESS_TIME;
                 tokenizer = new StringTokenizer(currentToken.substring(1) + " seconds", " ");
-            } else {
-                if (tokenizer.hasMoreTokens() || !startsWithIgnoreCase(currentToken, "m")) {
+            }else {
+                if(tokenizer.hasMoreTokens() || !startsWithIgnoreCase(currentToken, "m")) {
                     throw new IllegalStateException(sm.getString("expiresFilter.startingPointInvalid", new Object[]{currentToken, line}));
                 }
 
                 startingPoint = FilterExpires.StartingPoint.LAST_MODIFICATION_TIME;
                 tokenizer = new StringTokenizer(currentToken.substring(1) + " seconds", " ");
             }
-        } else {
+        }else {
             startingPoint = FilterExpires.StartingPoint.ACCESS_TIME;
         }
 
@@ -322,7 +322,7 @@ public class FilterExpires implements Filter {
             throw new IllegalStateException(sm.getString("Duration not found in directive '{}'", new Object[]{line}));
         }
 
-        if ("plus".equalsIgnoreCase(currentToken)) {
+        if("plus".equalsIgnoreCase(currentToken)) {
             try {
                 currentToken = tokenizer.nextToken();
             } catch (NoSuchElementException var12) {
@@ -347,39 +347,39 @@ public class FilterExpires implements Filter {
             }
 
             DurationUnit durationUnit;
-            if ("years".equalsIgnoreCase(currentToken)) {
+            if("years".equalsIgnoreCase(currentToken)) {
                 durationUnit = FilterExpires.DurationUnit.YEAR;
-            } else if (!"month".equalsIgnoreCase(currentToken) && !"months".equalsIgnoreCase(currentToken)) {
-                if (!"week".equalsIgnoreCase(currentToken) && !"weeks".equalsIgnoreCase(currentToken)) {
-                    if (!"day".equalsIgnoreCase(currentToken) && !"days".equalsIgnoreCase(currentToken)) {
-                        if (!"hour".equalsIgnoreCase(currentToken) && !"hours".equalsIgnoreCase(currentToken)) {
-                            if (!"minute".equalsIgnoreCase(currentToken) && !"minutes".equalsIgnoreCase(currentToken)) {
-                                if (!"second".equalsIgnoreCase(currentToken) && !"seconds".equalsIgnoreCase(currentToken)) {
+            } else if(!"month".equalsIgnoreCase(currentToken) && !"months".equalsIgnoreCase(currentToken)) {
+                if(!"week".equalsIgnoreCase(currentToken) && !"weeks".equalsIgnoreCase(currentToken)) {
+                    if(!"day".equalsIgnoreCase(currentToken) && !"days".equalsIgnoreCase(currentToken)) {
+                        if(!"hour".equalsIgnoreCase(currentToken) && !"hours".equalsIgnoreCase(currentToken)) {
+                            if(!"minute".equalsIgnoreCase(currentToken) && !"minutes".equalsIgnoreCase(currentToken)) {
+                                if(!"second".equalsIgnoreCase(currentToken) && !"seconds".equalsIgnoreCase(currentToken)) {
                                     throw new IllegalStateException(sm.getString("Invalid duration unit (years|months|weeks|days|hours|minutes|seconds) '{}' in directive '{}'", new Object[]{currentToken, line}));
                                 }
 
                                 durationUnit = FilterExpires.DurationUnit.SECOND;
-                            } else {
+                            }else {
                                 durationUnit = FilterExpires.DurationUnit.MINUTE;
                             }
-                        } else {
+                        }else {
                             durationUnit = FilterExpires.DurationUnit.HOUR;
                         }
-                    } else {
+                    }else {
                         durationUnit = FilterExpires.DurationUnit.DAY;
                     }
-                } else {
+                }else {
                     durationUnit = FilterExpires.DurationUnit.WEEK;
                 }
-            } else {
+            }else {
                 durationUnit = FilterExpires.DurationUnit.MONTH;
             }
 
             Duration duration = new Duration(amount, durationUnit);
             durations.add(duration);
-            if (tokenizer.hasMoreTokens()) {
+            if(tokenizer.hasMoreTokens()) {
                 currentToken = tokenizer.nextToken();
-            } else {
+            }else {
                 currentToken = null;
             }
         }
@@ -468,7 +468,7 @@ public class FilterExpires implements Filter {
 
         public void addDateHeader(String name, long date) {
             super.addDateHeader(name, date);
-            if (!this.lastModifiedHeaderSet) {
+            if(!this.lastModifiedHeaderSet) {
                 this.lastModifiedHeader = date;
                 this.lastModifiedHeaderSet = true;
             }
@@ -477,7 +477,7 @@ public class FilterExpires implements Filter {
 
         public void addHeader(String name, String value) {
             super.addHeader(name, value);
-            if ("Cache-Control".equalsIgnoreCase(name) && this.cacheControlHeader == null) {
+            if("Cache-Control".equalsIgnoreCase(name) && this.cacheControlHeader == null) {
                 this.cacheControlHeader = value;
             }
 
@@ -492,7 +492,7 @@ public class FilterExpires implements Filter {
         }
 
         public ServletOutputStream getOutputStream() throws IOException {
-            if (this.servletOutputStream == null) {
+            if(this.servletOutputStream == null) {
                 this.servletOutputStream = FilterExpires.this.new XServletOutputStream(super.getOutputStream(), this.request, this);
             }
 
@@ -500,7 +500,7 @@ public class FilterExpires implements Filter {
         }
 
         public PrintWriter getWriter() throws IOException {
-            if (this.printWriter == null) {
+            if(this.printWriter == null) {
                 this.printWriter = FilterExpires.this.new XPrintWriter(super.getWriter(), this.request, this);
             }
 
@@ -524,7 +524,7 @@ public class FilterExpires implements Filter {
 
         public void setDateHeader(String name, long date) {
             super.setDateHeader(name, date);
-            if ("Last-Modified".equalsIgnoreCase(name)) {
+            if("Last-Modified".equalsIgnoreCase(name)) {
                 this.lastModifiedHeader = date;
                 this.lastModifiedHeaderSet = true;
             }
@@ -533,7 +533,7 @@ public class FilterExpires implements Filter {
 
         public void setHeader(String name, String value) {
             super.setHeader(name, value);
-            if ("Cache-Control".equalsIgnoreCase(name)) {
+            if("Cache-Control".equalsIgnoreCase(name)) {
                 this.cacheControlHeader = value;
             }
 
@@ -577,7 +577,7 @@ public class FilterExpires implements Filter {
         }
 
         private void fireBeforeWriteResponseBodyEvent() {
-            if (!this.response.isWriteResponseBodyStarted()) {
+            if(!this.response.isWriteResponseBodyStarted()) {
                 this.response.setWriteResponseBodyStarted(true);
                 FilterExpires.this.onBeforeWriteResponseBody(this.request, this.response);
             }
@@ -737,7 +737,7 @@ public class FilterExpires implements Filter {
         }
 
         private void fireOnBeforeWriteResponseBodyEvent() {
-            if (!this.response.isWriteResponseBodyStarted()) {
+            if(!this.response.isWriteResponseBodyStarted()) {
                 this.response.setWriteResponseBodyStarted(true);
                 FilterExpires.this.onBeforeWriteResponseBody(this.request, this.response);
             }
@@ -864,7 +864,7 @@ public class FilterExpires implements Filter {
                 bnd = ResourceBundle.getBundle(bundleName, locale);
             } catch (MissingResourceException ex) {
                 ClassLoader cl = Thread.currentThread().getContextClassLoader();
-                if (cl != null) {
+                if(cl != null) {
                     try {
                         bnd = ResourceBundle.getBundle(bundleName, locale, cl);
                     } catch (MissingResourceException ignored) {
@@ -872,20 +872,20 @@ public class FilterExpires implements Filter {
                 }
             }
             bundle = bnd;
-            if (bundle != null) {
+            if(bundle != null) {
                 Locale bundleLocale = bundle.getLocale();
-                if (bundleLocale.equals(Locale.ROOT)) {
+                if(bundleLocale.equals(Locale.ROOT)) {
                     this.locale = Locale.ENGLISH;
-                } else {
+                }else {
                     this.locale = bundleLocale;
                 }
-            } else {
+            }else {
                 this.locale = null;
             }
         }
 
         public String getString(String key) {
-            if (key == null){
+            if(key == null){
                 String msg = "key may not have a null value";
                 throw new IllegalArgumentException(msg);
             }
@@ -893,7 +893,7 @@ public class FilterExpires implements Filter {
             String str = null;
 
             try {
-                if (bundle != null) {
+                if(bundle != null) {
                     str = bundle.getString(key);
                 }
             } catch (MissingResourceException mre) {
@@ -906,7 +906,7 @@ public class FilterExpires implements Filter {
 
         public String getString(final String key, final Object... args) {
             String value = getString(key);
-            if (value == null) {
+            if(value == null) {
                 value = key;
             }
 
@@ -930,13 +930,13 @@ public class FilterExpires implements Filter {
                 String packageName, Locale locale) {
 
             Map<Locale, StringManager> map = managers.get(packageName);
-            if (map == null) {
+            if(map == null) {
                 map = new LinkedHashMap(LOCALE_CACHE_SIZE, 1, true) {
                     private static final long serialVersionUID = 1L;
                     @Override
                     protected boolean removeEldestEntry(
                             Map.Entry eldest) {
-                        if (size() > (LOCALE_CACHE_SIZE - 1)) {
+                        if(size() > (LOCALE_CACHE_SIZE - 1)) {
                             return true;
                         }
                         return false;
@@ -946,7 +946,7 @@ public class FilterExpires implements Filter {
             }
 
             StringManager mgr = map.get(locale);
-            if (mgr == null) {
+            if(mgr == null) {
                 mgr = new StringManager(packageName, locale);
                 map.put(locale, mgr);
             }

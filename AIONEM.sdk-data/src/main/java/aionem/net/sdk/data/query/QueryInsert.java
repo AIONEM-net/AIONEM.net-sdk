@@ -148,9 +148,9 @@ public class QueryInsert extends Query {
             final PreparedStatement prepareStatement = getConnection().prepareStatement(getQuery(), Statement.RETURN_GENERATED_KEYS);
             final int affectedRows = prepareStatement.executeUpdate();
 
-            if (affectedRows > 0) {
+            if(affectedRows > 0) {
                 final ResultSet generatedKeys = prepareStatement.getGeneratedKeys();
-                if (generatedKeys.next()) {
+                if(generatedKeys.next()) {
                     key = generatedKeys.getInt(1);
                 }
                 generatedKeys.close();

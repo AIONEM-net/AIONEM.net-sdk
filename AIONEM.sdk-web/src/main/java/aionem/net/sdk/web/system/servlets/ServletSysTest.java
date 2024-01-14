@@ -102,7 +102,6 @@ public class ServletSysTest extends HttpServletApi {
         out.println("<div>" + "page -> " + page1.getResourceType() + "</div>");
         out.println("<div>" + "page -> " + page1.getTemplate() + "</div>");
         out.println("<div>" + "page -> " + page1.getTemplatePath() + "</div>");
-        out.println("<div>" + "page -> " + page1.getContent() + "</div>");
         out.println("<div>" + "page -> " + page1.toResource() + "</div>");
         out.println("<div>" + "page -> " + page1.getParent() + "</div>");
 
@@ -115,7 +114,6 @@ public class ServletSysTest extends HttpServletApi {
         out.println("<div>" + "page -> " + page2.getResourceType() + "</div>");
         out.println("<div>" + "page -> " + page2.getTemplate() + "</div>");
         out.println("<div>" + "page -> " + page2.getTemplatePath() + "</div>");
-        out.println("<div>" + "page -> " + page2.getContent() + "</div>");
         out.println("<div>" + "page -> " + page2.toResource() + "</div>");
         out.println("<div>" + "page -> " + page2.getParent() + "</div>");
         out.println("<div>---------------------------------------------</div>");
@@ -156,7 +154,10 @@ public class ServletSysTest extends HttpServletApi {
 
         // Output for DriveManager
         final DriveManager driveManager = new DriveManager();
-        out.println("<div>" + "Drive -> " + driveManager.getFolder() + "</div>");
+        final Resource drive = driveManager.getFile("/uploads/logo.png");
+        out.println("<div>" + "Drive -> " + drive + "</div>");
+        // out.println("<div>" + "driveManager move -> " + driveManager.move(drive, "/uploads/copied") + "</div>");
+        out.println("<div>" + "driveManager copy -> " + driveManager.copy(drive, "/uploads/copied") + "</div>");
         for (Resource file : driveManager.getFiles()) {
             out.println("<div>" + "Drive files -> " + file.getRelativePath() + "</div>");
         }

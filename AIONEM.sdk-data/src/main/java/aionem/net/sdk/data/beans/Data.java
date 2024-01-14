@@ -7,6 +7,7 @@ import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.query.Col;
 import aionem.net.sdk.data.utils.UtilsData;
 import aionem.net.sdk.data.utils.UtilsJson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.Getter;
@@ -51,7 +52,7 @@ public class Data {
                 final boolean isStatic = Modifier.isStatic(modifiers);
                 final boolean isFinal = Modifier.isFinal(modifiers);
                 final boolean isPrivate = Modifier.isPrivate(modifiers);
-                if (!isStatic && !isFinal && !isPrivate) {
+                if(!isStatic && !isFinal && !isPrivate) {
                     field.setAccessible(true);
                     final Col col = field.isAnnotationPresent(Col.class) ? field.getDeclaredAnnotation(Col.class) : null;
                     final String fieldName = field.getName();
@@ -142,13 +143,13 @@ public class Data {
                     final int modifiers = field.getModifiers();
                     final boolean isStatic = Modifier.isStatic(modifiers);
                     final boolean isPrivate = Modifier.isPrivate(modifiers);
-                    if (!isStatic && !isPrivate) {
+                    if(!isStatic && !isPrivate) {
                         field.setAccessible(true);
                         final Col col = field.isAnnotationPresent(Col.class) ? field.getDeclaredAnnotation(Col.class) : null;
                         final String fieldName = field.getName();
                         final String key = col != null ? UtilsText.notEmpty(col.value(), fieldName) : fieldName;
                         Object value = field.get(dbInstance);
-                        if (value == null) {
+                        if(value == null) {
                             value = this.values.get(key);
                         }
                         UtilsJson.add(json, key, value);
@@ -295,8 +296,16 @@ public class Data {
     public Datas getChildren(final String key) {
         if(UtilsText.isEmpty(key)) return getChildren();
         final Datas datas = new Datas();
-        for(final Map.Entry<String, JsonElement> jsonElement : UtilsJson.toJsonObject(get(key)).entrySet()) {
-            datas.add(new Data(jsonElement.getValue()));
+        final JsonElement jsonElement = UtilsJson.toJson(get(key));
+        if(jsonElement.isJsonArray()) {
+            for(final JsonElement json : (JsonArray) jsonElement) {
+                datas.add(new Data(json));
+            }
+        }else if(jsonElement.isJsonObject()) {
+            for(final Map.Entry<String, JsonElement> json : ((JsonObject) jsonElement).entrySet()) {
+                datas.add(new Data(json.getValue()));
+            }
+            return datas;
         }
         return datas;
     }
