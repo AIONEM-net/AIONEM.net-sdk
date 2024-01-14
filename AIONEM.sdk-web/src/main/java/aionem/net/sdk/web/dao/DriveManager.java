@@ -85,21 +85,21 @@ public class DriveManager {
 
                 final String fileFolder = UtilsDrive.getFileFolder(fileExtension);
                 final String filePath = fileFolder +"/" + uploadName;
-                final String fileUrl = ConfEnv.getInstance().getContextPath(PageManager.DRIVE_PATH_UPLOADS) +"/"+ filePath;
+                final String fileUrl = ConfEnv.getInstance().getContextPath(ResourceResolver.DRIVE_PATH_UPLOADS) +"/"+ filePath;
 
-                final File fileDirectory = new File(UtilsResource.getRealPathRoot(PageManager.DRIVE_PATH_UPLOADS +"/"+ fileFolder));
+                final Resource fileDirectory = new Resource(UtilsResource.getRealPathRoot(ResourceResolver.DRIVE_PATH_UPLOADS +"/"+ fileFolder));
 
                 final boolean isDirectory;
                 if(!fileDirectory.exists()) {
-                    isDirectory = fileDirectory.mkdirs();
+                    isDirectory = fileDirectory.getFile().mkdirs();
                 }else {
                     isDirectory = true;
                 }
 
                 if(isDirectory) {
 
-                    final File file = new File(fileDirectory.getPath() + "/" + uploadName);
-                    final FileOutputStream outputStream = new FileOutputStream(file);
+                    final Resource file = new Resource(fileDirectory.getRealPath() + "/" + uploadName);
+                    final FileOutputStream outputStream = file.getFileOutputStream();
 
                     final byte[] buffer = new byte[4096];
                     int readSize;
@@ -108,7 +108,7 @@ public class DriveManager {
                     }
                     fileStream.close();
 
-                    final long fileSize = file.length();
+                    final long fileSize = file.getSize();
 
                     resUpload.setSuccess(true);
 
@@ -139,7 +139,7 @@ public class DriveManager {
     }
 
     public Resource getFile(final String path) {
-        return new Resource(UtilsResource.getRealFileRoot("/ui.drive" +"/" + path));
+        return new Resource(UtilsResource.getRealPathRoot("/ui.drive" +"/" + path));
     }
 
     public ArrayList<Resource> getFiles() {
@@ -164,9 +164,9 @@ public class DriveManager {
         try {
             Files.walkFileTree(pathSection, new SimpleFileVisitor<>() {
                 @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) {
                     if (Files.isRegularFile(file)) {
-                        final int references = ResourceResolver.references(file, "ui.drive"+ resource.getPath(), "ui.drive"+ resourceNew.getPath(), update);
+                        final int references = ResourceResolver.references(new Resource(file), "ui.drive"+ resource.getRelativePath(), "ui.drive"+ resourceNew.getRelativePath(), update);
                         totalReferences[0] += references;
                     }
                     return FileVisitResult.CONTINUE;

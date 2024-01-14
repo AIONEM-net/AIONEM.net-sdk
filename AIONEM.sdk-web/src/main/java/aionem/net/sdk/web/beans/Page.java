@@ -52,7 +52,7 @@ public @lombok.Data class Page {
     }
 
     public void init(final Resource resourcePage) {
-        init(resourcePage.getPath(), new Properties(resourcePage.child(Properties.PROPERTIES_JSON)));
+        init(resourcePage.getRelativePath(), new Properties(resourcePage.child(Properties.PROPERTIES_JSON)));
     }
 
     public void init(final String path, final Properties properties) {
@@ -65,11 +65,10 @@ public @lombok.Data class Page {
 
         if(UtilsText.isEmpty(path) || path.equals("/")) {
             this.path = ConfEnv.getInstance().getHome();
-            this.url = ConfEnv.getInstance().getContextPath(this.path);
         }else {
             this.path = path.startsWith("/ui.page") ? path.substring("/ui.page".length()) : path;
-            this.url = ConfEnv.getInstance().getContextPath(this.path);
         }
+        this.url = ConfEnv.getInstance().getContextPath(this.path);
 
         if(!this.path.startsWith("/")) this.path = "/" + this.path;
         if(!this.url.startsWith("/")) this.url = "/" + this.url;
@@ -222,6 +221,10 @@ public @lombok.Data class Page {
     public Page getParent() {
         final Resource resourceParent = getResource().getParent();
         return new Page(resourceParent);
+    }
+
+    public Resource toResource() {
+        return new Resource(ResourceResolver.getRealPathPage(path));
     }
 
     public ArrayList<Properties> getContents() {

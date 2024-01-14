@@ -5,7 +5,7 @@ import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.config.ConfEnv;
-import aionem.net.sdk.web.utils.UtilsWeb;
+import aionem.net.sdk.web.dao.ResourceResolver;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.*;
 import lombok.extern.log4j.Log4j2;
@@ -34,7 +34,7 @@ public class DaoSysMinifierJs {
         final String html = minify(fileIn.readContent(true));
 
         final Resource fileOut = new Resource(outputFilePath);
-        final boolean isSaved = UtilsWeb.writeResource(fileOut, html);
+        final boolean isSaved = fileOut.saveContent(html);
 
         resMinify.setSuccess(isSaved);
 
@@ -72,7 +72,7 @@ public class DaoSysMinifierJs {
                 }
 
                 if(isSave) {
-                    UtilsWeb.writeResource(file, js);
+                    file.saveContent(js);
                     file.delete();
                 }
 
@@ -92,7 +92,7 @@ public class DaoSysMinifierJs {
 
         }
         if(isSave && n > 0) {
-            final boolean isMinified = UtilsWeb.writeResource(fileJs, builderJs.toString());
+            final boolean isMinified = fileJs.saveContent(builderJs.toString());
             // fileJsJsp.delete();
             // update templates: replace /js.jsp" = /.js"
             new Resource(fileFolder, "js").delete();
@@ -109,7 +109,7 @@ public class DaoSysMinifierJs {
                 }
             };
 
-            final ArrayList<Resource> listFiles = UtilsWeb.findResources(fileFolder, filterJs);
+            final ArrayList<Resource> listFiles = ResourceResolver.findResources(fileFolder, filterJs);
 
             for (Resource file : listFiles) {
                 if (file.isFile()) {
@@ -120,7 +120,7 @@ public class DaoSysMinifierJs {
                         js = minify(js);
                     }
 
-                    UtilsWeb.writeResource(file, js);
+                    file.saveContent(js);
                 }
             }
         }

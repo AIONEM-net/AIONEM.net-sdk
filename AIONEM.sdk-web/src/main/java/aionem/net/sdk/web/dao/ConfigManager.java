@@ -2,7 +2,6 @@ package aionem.net.sdk.web.dao;
 
 import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.beans.Resource;
-import aionem.net.sdk.web.utils.UtilsWeb;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -18,13 +17,13 @@ public class ConfigManager {
     public ArrayList<Resource> getListFolders() {
         final ArrayList<Resource> folder = new ArrayList<>();
 
-        final File folder1 = ResourceResolver.getRealFileWebInf("/ui.config/env").getFile();
-        final File folder2 = UtilsResource.getResourceFile("/config");
-        final File folder3 = UtilsResource.getResourceFolder();
+        final Resource folder1 = ResourceResolver.getRealFileWebInf("/ui.config/env");
+        final Resource folder2 = new Resource(UtilsResource.getResourcePath("/config"));
+        final Resource folder3 = new Resource(UtilsResource.getResourcePath());
 
-        if(folder1.exists() && folder1.isDirectory()) folder.add(new Resource(folder1));
-        if(folder2.exists() && folder2.isDirectory()) folder.add(new Resource(folder2));
-        if(folder3.exists() && folder3.isDirectory()) folder.add(new Resource(folder3));
+        if(folder1.exists() && folder1.isFolder()) folder.add(folder1);
+        if(folder2.exists() && folder2.isFolder()) folder.add(folder2);
+        if(folder3.exists() && folder3.isFolder()) folder.add(folder3);
 
         return folder;
     }
@@ -52,7 +51,7 @@ public class ConfigManager {
         };
 
         for(final Resource folderConfig : getListFolders()) {
-            listConfigs.addAll(UtilsWeb.findResources(folderConfig, filterJson));
+            listConfigs.addAll(ResourceResolver.findResources(folderConfig, filterJson));
         }
 
         return listConfigs;
@@ -70,7 +69,7 @@ public class ConfigManager {
         };
 
         for(final Resource folderConfig : getListFolders()) {
-            listConfigs.addAll(UtilsWeb.findResources(folderConfig, filterProperties));
+            listConfigs.addAll(ResourceResolver.findResources(folderConfig, filterProperties));
         }
 
         return listConfigs;

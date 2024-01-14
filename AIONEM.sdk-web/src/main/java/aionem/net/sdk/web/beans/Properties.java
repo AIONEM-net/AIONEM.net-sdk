@@ -41,7 +41,7 @@ public @Getter class Properties {
     }
 
     public Properties init(final Resource resourceProperties) {
-        return init(new Data(resourceProperties.getFile()));
+        return init(new Data(resourceProperties.readContent()));
     }
 
     public Properties init(final AioWeb aioWeb) {

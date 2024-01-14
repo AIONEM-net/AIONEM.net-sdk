@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 
@@ -172,7 +173,8 @@ public class HttpServletApi extends HttpServlet {
                 methodRequest.setAccessible(true);
                 methodRequest.invoke(this, request, response);
             }catch(Exception e) {
-                final ApiRes apiRes = ApiRes.withError(HttpURLConnection.HTTP_NOT_FOUND, "API error invoking method");
+                final ApiRes apiRes = ApiRes.withError(HttpURLConnection.HTTP_INTERNAL_ERROR, "Something went wrong");
+                apiRes.setException(e);
                 apiRes.setResponse(response);
             }
         }else {
@@ -222,6 +224,11 @@ public class HttpServletApi extends HttpServlet {
             return method.getAnnotation(TraceMapping.class).value();
         }
         return "";
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
     }
 
 }

@@ -8,7 +8,6 @@ import aionem.net.sdk.web.beans.Properties;
 import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.dao.PageManager;
 import aionem.net.sdk.web.dao.ResourceResolver;
-import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.FileInputStream;
@@ -79,8 +78,8 @@ public class DaoSysDeploy {
                     final String css = DaoSysMinifierCss.minifyFolder(file, true);
                     final String js = DaoSysMinifierJs.minifyFolder(file, true);
 
-                    UtilsWeb.writeResource(new Resource(file, ".css"), css);
-                    UtilsWeb.writeResource(new Resource(file, ".js"), js);
+                    new Resource(file, ".css").saveContent(css);
+                    new Resource(file, ".js").saveContent(js);
 
                 }else {
                     if (file.getName().endsWith(".css")) {
@@ -135,7 +134,7 @@ public class DaoSysDeploy {
         try {
 
             final Resource fileConfEnv1 = new Resource(ResourceResolver.getRealPathWebInf("ui.config/application.json"));
-            final Resource fileConfEnv2 = new Resource(UtilsResource.getResourceFile("application.json"));
+            final Resource fileConfEnv2 = new Resource(UtilsResource.getResourcePath("application.json"));
 
             final ArrayList<Resource> listFileConfig = new ArrayList<>();
             listFileConfig.add(fileConfEnv1);
@@ -145,7 +144,7 @@ public class DaoSysDeploy {
                 if(fileConfEnv.exists() && fileConfEnv.isFile()) {
                     final Data data = new Data(fileConfEnv);
                     data.put("env", env);
-                    isUpdated = UtilsWeb.writeResource(fileConfEnv, UtilsJson.prettyPrint(data.toJson()));
+                    isUpdated = fileConfEnv.saveContent(UtilsJson.prettyPrint(data.toJson()));
                     n++;
                 }
             }
@@ -160,7 +159,7 @@ public class DaoSysDeploy {
                 if(resourceBundle != null) {
                     final Data data = new Data(resourceBundle);
                     data.put("env", env);
-                    isUpdated = UtilsWeb.writeResource(new Resource(UtilsResource.getResourceFile(resourceName + ".properties")), data.toResourceBundleString());
+                    isUpdated = new Resource(UtilsResource.getResourcePath(resourceName + ".properties")).saveContent(data.toResourceBundleString());
                     n++;
                 }
             }

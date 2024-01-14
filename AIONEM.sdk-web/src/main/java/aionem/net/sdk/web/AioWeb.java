@@ -9,6 +9,7 @@ import aionem.net.sdk.web.dao.PageManager;
 import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.beans.Page;
 import aionem.net.sdk.web.beans.Properties;
+import aionem.net.sdk.web.dao.ResourceResolver;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -277,17 +278,8 @@ public @Getter class AioWeb {
         return getRequestUrlQuery();
     }
 
-    public boolean isSystemPath() {
-        return isSystemPath(getRequestURI());
-    }
-
-    public boolean isSystemPath(final String requestUrl) {
-        boolean isSystemPath = false;
-        for(final String systemPath: PageManager.SYSTEM_PATH) {
-            isSystemPath = requestUrl.startsWith(systemPath);
-            if(isSystemPath) break;
-        }
-        return isSystemPath;
+    public boolean isSystemUrl() {
+        return ResourceResolver.isSystemPath(getRequestURI());
     }
 
     public I18n getI18n() {

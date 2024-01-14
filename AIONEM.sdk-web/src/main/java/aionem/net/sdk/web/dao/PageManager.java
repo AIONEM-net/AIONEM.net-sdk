@@ -9,7 +9,6 @@ import aionem.net.sdk.web.beans.Page;
 import aionem.net.sdk.web.beans.Properties;
 import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.system.dao.DaoSysMinifierHtml;
-import aionem.net.sdk.web.utils.UtilsWeb;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
@@ -22,17 +21,6 @@ import java.util.List;
 
 @Log4j2
 public class PageManager {
-
-    public static final List<String> SYSTEM_PATH_1 = List.of("/ui.system", "/ui.page", "/ui.frontend", "/ui.drive", "/META-INF", "/WEB-INF");
-    public static final List<String> SYSTEM_PATH_2 = List.of("/ui.config", "/ui.apps", "/ui.etc", "/ui.template");
-    public static final List<String> SYSTEM_PATH_3 = List.of("/api", "/drive", "/assets", "/cdn");
-    public static final List<String> SYSTEM_PATH = new ArrayList<>(SYSTEM_PATH_1);
-    public static final String DRIVE_PATH_UPLOADS = "/ui.drive/uploads/";
-
-    static {
-        SYSTEM_PATH.addAll(SYSTEM_PATH_2);
-        SYSTEM_PATH.addAll(SYSTEM_PATH_3);
-    }
 
     private static PageManager pageManager;
     public static PageManager getInstance() {
@@ -228,20 +216,17 @@ public class PageManager {
     public void cache(final AioWeb aioWeb) {
         final boolean isCaching = "true".equalsIgnoreCase(aioWeb.getHeader("A-Caching"));
         if(!isCaching && !aioWeb.isRemoteLocal()) {
-            cache(aioWeb.getRequestUrl(), aioWeb.getRealPathCurrent());
+            cache(aioWeb.getCurrentPage());
         }
     }
 
     public boolean cache(final Page page) {
         final String url = ConfEnv.getInstance().getUrl(page.getUrl());
-        final String realPath = ResourceResolver.getRealPathPage(page.getPath());
-        return cache(url, realPath);
-    }
+        final Resource resourcePage = page.toResource();
 
-    public boolean cache(final String uri, final String realPath) {
         boolean isCached = false;
 
-        final DaoRes resCache = new Network.Get(uri)
+        final DaoRes resCache = new Network.Get(url)
                 .setDataHeaders(new Data()
                         .put("A-Caching", "true")
                 )
@@ -249,10 +234,10 @@ public class PageManager {
 
         if(resCache.isSuccess() && resCache.hasResponse()) {
             final String html = DaoSysMinifierHtml.minify(resCache.getResponse());
-            isCached = UtilsWeb.writeResource(realPath +"/"+ "index.html", html);
+            resourcePage.child("index.html").saveContent(html);
         }
 
-        log.error("\nCache {} : {}", uri, isCached);
+        log.error("\nCache {} : {}", url, isCached);
 
         return isCached;
     }
@@ -381,9 +366,9 @@ public class PageManager {
         try {
             Files.walkFileTree(pathSection, new SimpleFileVisitor<>() {
                 @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) {
                     if (Files.isRegularFile(file)) {
-                        final int references = ResourceResolver.references(file, "ui.page"+ page.getPath(), "ui.page"+ pageNew.getPath(), update);
+                        final int references = ResourceResolver.references(new Resource(file), "ui.page"+ page.getPath(), "ui.page"+ pageNew.getPath(), update);
                         totalReferences[0] += references;
                     }
                     return FileVisitResult.CONTINUE;

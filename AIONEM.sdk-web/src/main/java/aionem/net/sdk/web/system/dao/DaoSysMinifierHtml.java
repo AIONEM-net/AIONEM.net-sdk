@@ -1,9 +1,8 @@
 package aionem.net.sdk.web.system.dao;
 
 import aionem.net.sdk.data.beans.DaoRes;
-import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.web.beans.Resource;
-import aionem.net.sdk.web.utils.UtilsWeb;
+import aionem.net.sdk.web.dao.ResourceResolver;
 import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
 import lombok.extern.log4j.Log4j2;
 
@@ -27,7 +26,7 @@ public class DaoSysMinifierHtml {
         final String html = minify(fileIn.readContent(false));
 
         final Resource fileOut = new Resource(outputFilePath);
-        final boolean isSaved = UtilsWeb.writeResource(fileOut, html);
+        final boolean isSaved = fileOut.saveContent(html);
 
         resMinify.setSuccess(isSaved);
 
@@ -45,7 +44,7 @@ public class DaoSysMinifierHtml {
             }
         };
 
-        final ArrayList<Resource> listFiles = UtilsWeb.findResources(fileFolder, htmlFilter);
+        final ArrayList<Resource> listFiles = ResourceResolver.findResources(fileFolder, htmlFilter);
 
         for(int i = 0; i < listFiles.size(); i++) {
 
@@ -58,7 +57,7 @@ public class DaoSysMinifierHtml {
                 htmlBuilder.append(i > 0 ? "\n" : "").append(html);
 
                 if(isSaved) {
-                    UtilsWeb.writeResource(file, html);
+                    file.saveContent(html);
                 }
             }
         }

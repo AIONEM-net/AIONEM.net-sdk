@@ -3,7 +3,7 @@ package aionem.net.sdk.web.config;
 import aionem.net.sdk.core.utils.UtilsConverter;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.beans.Data;
-import aionem.net.sdk.web.utils.UtilsWeb;
+import aionem.net.sdk.web.dao.ResourceResolver;
 import lombok.Getter;
 
 import java.util.HashMap;
@@ -44,11 +44,11 @@ public class Config {
 
         if(!UtilsText.isEmpty(env)) {
             name = env +"/"+ name;
-            this.resourceBundle = UtilsWeb.getResourceBundleEnv(name);
+            this.resourceBundle = ResourceResolver.getResourceBundleEnv(name);
         }else {
-            this.resourceBundle = UtilsWeb.getResourceBundleConfig(name);
+            this.resourceBundle = ResourceResolver.getResourceBundleConfig(name);
             if(this.resourceBundle == null) {
-                this.resourceBundle = UtilsWeb.getResourceBundleEnv(name);
+                this.resourceBundle = ResourceResolver.getResourceBundleEnv(name);
             }
         }
 
@@ -101,7 +101,7 @@ public class Config {
     }
 
     public ResourceBundle getBaseResourceBundle() {
-        return UtilsWeb.getResourceBundleConfig(getBaseName());
+        return ResourceResolver.getResourceBundleConfig(getBaseName());
     }
 
     private static Data getData(String name) {
@@ -114,9 +114,9 @@ public class Config {
         }
         if(data == null || data.isEmpty()) {
 
-            String json = UtilsWeb.readResourceEnv(name);
+            String json = ResourceResolver.readResourceEnv(name);
             if(UtilsText.isEmpty(json)) {
-                json = UtilsWeb.readResourceConfig(name);
+                json = ResourceResolver.readResourceConfig(name);
             }
 
             if(!UtilsText.isEmpty(json)) {

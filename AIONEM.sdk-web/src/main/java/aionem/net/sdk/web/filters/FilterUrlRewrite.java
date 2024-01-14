@@ -30,7 +30,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
         final String requestPath = aioWeb.getRequestURI();
 
         final boolean isUiPage = !requestPath.contains(".");
-        final boolean isSystemPath = aioWeb.isSystemPath(requestPath);
+        final boolean isSystemPath = ResourceResolver.isSystemPath(requestPath);
 
         if(!aioWeb.isHostMatch() && !aioWeb.isRemoteLocal()) {
 
@@ -155,6 +155,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
         }else {
             aioWeb.setup();
             aioWeb.include(aioWeb.getCurrentPage().getTemplatePath());
+            aioWeb.getPageManager().cache(aioWeb, aioWeb.getCurrentPage().isCache());
         }
 
     }
@@ -163,7 +164,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
         final Resource resourceFile;
         if(resource.exists() && resource.isFolder()) {
-            resourceFile = resource.child("file");
+            resourceFile = resource.child(".file");
         }else {
             resourceFile = resource;
         }

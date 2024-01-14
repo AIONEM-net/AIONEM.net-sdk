@@ -2,7 +2,6 @@ package aionem.net.sdk.web.dao;
 
 import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.beans.Resource;
-import aionem.net.sdk.web.utils.UtilsWeb;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -19,13 +18,13 @@ public class I18nManager {
 
         final ArrayList<Resource> listI18nFolders = new ArrayList<>();
 
-        final File folder1 = ResourceResolver.getRealFileWebInf("/ui.config/i18n").getFile();
-        final File folder2 = UtilsResource.getResourceFile("/config/i18n");
-        final File folder3 = UtilsResource.getResourceFile("/i18n");
+        final Resource folder1 = ResourceResolver.getRealFileWebInf("/ui.config/i18n");
+        final Resource folder2 = new Resource(UtilsResource.getResourcePath("/config/i18n"));
+        final Resource folder3 = new Resource(UtilsResource.getResourcePath("/i18n"));
 
-        if(folder1.exists() && folder1.isDirectory()) listI18nFolders.add(new Resource(folder1));
-        if(folder2.exists() && folder2.isDirectory()) listI18nFolders.add(new Resource(folder2));
-        if(folder3.exists() && folder3.isDirectory()) listI18nFolders.add(new Resource(folder3));
+        if(folder1.exists() && folder1.isFolder()) listI18nFolders.add(folder1);
+        if(folder2.exists() && folder2.isFolder()) listI18nFolders.add(folder2);
+        if(folder3.exists() && folder3.isFolder()) listI18nFolders.add(folder3);
 
         return listI18nFolders;
     }
@@ -53,7 +52,7 @@ public class I18nManager {
         };
 
         for(final Resource folderI18n : getListFolders()) {
-            filesI18n.addAll(UtilsWeb.findResources(folderI18n, filterJson));
+            filesI18n.addAll(ResourceResolver.findResources(folderI18n, filterJson));
         }
 
         return filesI18n;
@@ -71,7 +70,7 @@ public class I18nManager {
         };
 
         for(final Resource folderI18n : getListFolders()) {
-            filesI18n.addAll(UtilsWeb.findResources(folderI18n, filterProperties));
+            filesI18n.addAll(ResourceResolver.findResources(folderI18n, filterProperties));
         }
 
         return filesI18n;

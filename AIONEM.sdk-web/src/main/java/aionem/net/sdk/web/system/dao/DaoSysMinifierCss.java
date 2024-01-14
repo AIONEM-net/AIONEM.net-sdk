@@ -5,7 +5,7 @@ import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.config.ConfEnv;
-import aionem.net.sdk.web.utils.UtilsWeb;
+import aionem.net.sdk.web.dao.ResourceResolver;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.*;
@@ -32,7 +32,7 @@ public class DaoSysMinifierCss {
         final String css = minify(fileIn.readContent(false));
 
         final Resource fileOut = new Resource(pathOut);
-        final boolean isSaved = UtilsWeb.writeResource(fileOut, css);
+        final boolean isSaved = fileOut.saveContent(css);
 
         resMinify.setSuccess(isSaved);
 
@@ -70,7 +70,7 @@ public class DaoSysMinifierCss {
                 }
 
                 if (isSave) {
-                    UtilsWeb.writeResource(file, css);
+                    file.saveContent(css);
                     file.delete();
                 }
 
@@ -90,7 +90,7 @@ public class DaoSysMinifierCss {
 
         }
         if(isSave && n > 0) {
-            final boolean isMinified = UtilsWeb.writeResource(fileCss, builderCss.toString());
+            final boolean isMinified = fileCss.saveContent(builderCss.toString());
             // fileCssJsp.delete();
             // update templates: replace /css.jsp" = /.css"
             new Resource(fileFolder, "css").delete();
@@ -107,7 +107,7 @@ public class DaoSysMinifierCss {
                 }
             };
 
-            final ArrayList<Resource> listFiles = UtilsWeb.findResources(fileFolder, filterCss);
+            final ArrayList<Resource> listFiles = ResourceResolver.findResources(fileFolder, filterCss);
 
             for(final Resource file : listFiles) {
 
@@ -119,7 +119,7 @@ public class DaoSysMinifierCss {
                         css = minify(css);
                     }
 
-                    UtilsWeb.writeResource(file, css);
+                    file.saveContent(css);
                 }
             }
 
