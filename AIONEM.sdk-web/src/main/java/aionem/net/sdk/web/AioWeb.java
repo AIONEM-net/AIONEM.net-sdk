@@ -5,6 +5,7 @@ import aionem.net.sdk.core.utils.UtilsNetwork;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.dao.I18n;
 import aionem.net.sdk.data.utils.UtilsResource;
+import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.dao.PageManager;
 import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.beans.Page;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Locale;
 
 
@@ -361,6 +363,22 @@ public @Getter class AioWeb {
         return request.getRequestDispatcher(path);
     }
 
+    public PrintWriter getWriter() throws IOException {
+        return response.getWriter();
+    }
+
+    public PrintWriter print(final String line) throws IOException {
+        final PrintWriter writer = getWriter();
+        writer.print(line);
+        return writer;
+    }
+
+    public PrintWriter println(final String line) throws IOException {
+        final PrintWriter writer = getWriter();
+        writer.println(line);
+        return writer;
+    }
+
     public void includePageContents() {
         final Page currentPage = getCurrentPage();
         for (int i = 0; i < currentPage.getContents().size(); i++) {
@@ -386,6 +404,64 @@ public @Getter class AioWeb {
     public boolean isRemoteLocal() {
         final String remoteHost = request.getRemoteHost();
         return "0:0:0:0:0:0:0:1".equalsIgnoreCase(remoteHost) || "127.0.0.1".equalsIgnoreCase(remoteHost) || "localhost".equalsIgnoreCase(remoteHost);
+    }
+
+    public String printFrontendCss() {
+
+        final StringBuilder styles = new StringBuilder();
+
+        final Resource resourceTemplate = new Resource("/WEB-INF/ui.template", getCurrentPage().getTemplate());
+        final Properties propertiesTemplate = resourceTemplate.getProperties();
+
+        for(final String uiFrontend : propertiesTemplate.getArray("ui.frontend")) {
+
+            if(!ConfEnv.getInstance().isEnvLocalOrNone()) {
+                styles.append("<link rel='stylesheet' href='").append(UtilsResource.path("/ui.frontend", uiFrontend, ".css")).append("'/>");
+            }else {
+
+                final Resource resourceFrontend = new Resource(UtilsResource.path("/ui.frontend", uiFrontend));
+                final Properties propertiesFrontend = resourceFrontend.getProperties();
+
+                for(final String css : propertiesFrontend.getArray("css")) {
+                    styles.append("<link rel='stylesheet' href='").append(UtilsResource.path("/ui.frontend", uiFrontend, "css", css)).append("'/>");
+                }
+            }
+
+        }
+
+        return styles.toString();
+    }
+
+    public String printFrontendJs() {
+
+        final StringBuilder scrips = new StringBuilder();
+
+        final Resource resourceTemplate = new Resource("/WEB-INF/ui.template", getCurrentPage().getTemplate());
+        final Properties propertiesTemplate = resourceTemplate.getProperties();
+
+        for(final String uiFrontend : propertiesTemplate.getArray("ui.frontend")) {
+
+            if(!ConfEnv.getInstance().isEnvLocalOrNone()) {
+                scrips.append("\n")
+                        .append("<script type='text/javascript' src='")
+                        .append(UtilsResource.path("/ui.frontend", uiFrontend, ".js"))
+                        .append("'></script>");
+            }else {
+
+                final Resource resourceFrontend = new Resource(UtilsResource.path("/ui.frontend", uiFrontend));
+                final Properties propertiesFrontend = resourceFrontend.getProperties();
+
+                for(final String js : propertiesFrontend.getArray("js")) {
+                    scrips.append("\n")
+                            .append("<script type='text/javascript' src='")
+                            .append(UtilsResource.path("/ui.frontend", uiFrontend, "js", js))
+                            .append("'></script>");
+                }
+            }
+
+        }
+
+        return scrips.toString();
     }
 
 }

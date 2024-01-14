@@ -85,6 +85,10 @@ public @Getter class Properties {
         return data.get(key, false);
     }
 
+    public ArrayList<String> getArray(final String key) {
+        return data.getArray(key);
+    }
+
     public Object getObject(final String key) {
         return data.get(key);
     }

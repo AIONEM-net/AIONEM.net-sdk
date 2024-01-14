@@ -257,6 +257,19 @@ public class Data {
         return isOrLast && keys.length > 0 ? keys[keys.length-1] : "";
     }
 
+    public ArrayList<String> getArray(final String key) {
+        final ArrayList<String> values = new ArrayList<>();
+        final JsonArray jsonArray = UtilsJson.toJsonArray(get(key));
+        for(final JsonElement jsonElement : jsonArray) {
+            if(jsonElement.isJsonPrimitive()) {
+                values.add(jsonElement.getAsString());
+            }else {
+                values.add(jsonElement.toString());
+            }
+        }
+        return values;
+    }
+
     public String getNullable(final String key) {
         return has(key) ? get(key) : null;
     }

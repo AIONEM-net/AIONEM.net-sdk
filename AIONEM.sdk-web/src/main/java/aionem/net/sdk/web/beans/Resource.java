@@ -58,6 +58,10 @@ public class Resource {
         this(new File(ResourceResolver.isSystemPathRoot(pathReal) ? UtilsResource.getRealPathRoot(pathReal) : pathReal));
     }
 
+    public Resource(final String... paths) {
+        this(UtilsResource.path(paths));
+    }
+
     public Resource(final Path filePath) {
         this(filePath.toFile());
     }
