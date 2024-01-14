@@ -9,7 +9,6 @@ import aionem.net.sdk.web.dao.PageManager;
 import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.beans.Page;
 import aionem.net.sdk.web.beans.Properties;
-import aionem.net.sdk.web.dao.ResourceResolver;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -189,14 +188,6 @@ public @Getter class AioWeb {
         return servletContext != null ? UtilsText.notNull(servletContext.getInitParameter(name), defaultValue) : defaultValue;
     }
 
-    public String getRealPathCurrent() {
-        return getRealPathCurrent("");
-    }
-
-    public String getRealPathCurrent(final String path) {
-        return UtilsResource.getRealPathRoot(getServletPath()) + (!UtilsText.isEmpty(path) ? "/" + path : "");
-    }
-
     public String getRealPathPageCurrent(final String path) {
         return UtilsResource.getRealPathRoot("/ui.page"+ getServletPage() + (!UtilsText.isEmpty(path) ? "/" + path : ""));
     }
@@ -207,15 +198,7 @@ public @Getter class AioWeb {
 
     public String getServletPage() {
         final boolean needHome = !isSite() || isUnderHome() || isRoot();
-        return (needHome ? getHome() : "") + request.getServletPath().replace("/index.jsp", "");
-    }
-
-    public String getHome() {
-        return getConfEnv().get("home", "/en");
-    }
-
-    public String getSites() {
-        return getConfEnv().get("sites", getHome());
+        return (needHome ? getConfEnv().getHome() : "") + request.getServletPath().replace("/index.jsp", "");
     }
 
     public boolean isRoot() {
@@ -228,7 +211,7 @@ public @Getter class AioWeb {
     }
 
     public boolean isSite() {
-        return getSites().contains(getRequestRoot());
+        return getConfEnv().getSites().contains(getRequestRoot());
     }
 
     public boolean isUnderHome() {
@@ -276,10 +259,6 @@ public @Getter class AioWeb {
 
     public String getUrlQuery() {
         return getRequestUrlQuery();
-    }
-
-    public boolean isSystemUrl() {
-        return ResourceResolver.isSystemPath(getRequestURI());
     }
 
     public I18n getI18n() {

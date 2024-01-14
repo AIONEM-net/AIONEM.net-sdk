@@ -3,8 +3,8 @@ package aionem.net.sdk.web.dao;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.beans.DaoRes;
 import aionem.net.sdk.data.utils.UtilsResource;
-import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.beans.Resource;
+import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.utils.UtilsDrive;
 import lombok.extern.log4j.Log4j2;
 
@@ -156,6 +156,109 @@ public class DriveManager {
         return listFiles;
     }
 
+    public boolean move(final Resource drive, final String pathNew) {
+        return move(drive, pathNew, drive.getName());
+    }
+
+    public boolean move(final Resource drive, final String pathNew, final String nameNew) {
+        try {
+
+            if(!drive.isDrive()) {
+                return false;
+            }
+
+            if(!drive.exists()) {
+                return false;
+            }
+
+            final Path pathSource = Paths.get(drive.getPathReal());
+            final Path pathDestination = Paths.get(ResourceResolver.getRealPathPage(UtilsResource.path(pathNew, nameNew)));
+
+            Files.walkFileTree(pathSource, new SimpleFileVisitor<>() {
+
+                @Override
+                public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
+                    if (!dir.equals(pathSource)) {
+                        return FileVisitResult.SKIP_SUBTREE;
+                    }
+                    final Path targetDir = pathDestination.resolve(pathSource.relativize(dir));
+                    Files.createDirectories(targetDir);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                    final Path targetFile = pathDestination.resolve(pathSource.relativize(file));
+                    Files.copy(file, targetFile, StandardCopyOption.REPLACE_EXISTING);
+                    file.toFile().delete();
+                    return FileVisitResult.CONTINUE;
+                }
+
+            });
+
+            references(drive, ResourceResolver.getResourceDrive(UtilsResource.path(pathNew, nameNew)), true);
+
+            return true;
+        } catch (IOException e) {
+            log.error("Error moving drive {}", e.toString());
+        }
+        return false;
+    }
+
+    public boolean copy(final Resource drive, final String pathNew) {
+        return copy(drive, pathNew, drive.getName(), false);
+    }
+
+    public boolean copy(final Resource drive, final String pathNew, final boolean excludeChildren) {
+        return copy(drive, pathNew, drive.getName(), excludeChildren);
+    }
+
+    public boolean copy(final Resource drive, final String pathNew, final String nameNew, final boolean excludeChildren) {
+        try {
+
+            if(!drive.isDrive()) {
+                return false;
+            }
+
+            if(!drive.exists()) {
+                return false;
+            }
+
+            final String pathNameNew = UtilsResource.path(pathNew, nameNew);
+
+            final Path pathSource = Paths.get(drive.getRealPath());
+            final Path pathDestination = Paths.get(ResourceResolver.getRealPathPage(pathNameNew));
+
+            Files.walkFileTree(pathSource, new SimpleFileVisitor<>() {
+
+                @Override
+                public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
+                    if (excludeChildren && !dir.equals(pathSource)) {
+                        return FileVisitResult.SKIP_SUBTREE;
+                    }
+                    final Path targetDir = pathDestination.resolve(pathSource.relativize(dir));
+                    Files.createDirectories(targetDir);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                    final Path targetFile = pathDestination.resolve(pathSource.relativize(file));
+                    Files.copy(file, targetFile, StandardCopyOption.REPLACE_EXISTING);
+                    return FileVisitResult.CONTINUE;
+                }
+
+            });
+
+            references(drive, ResourceResolver.getResourceDrive(pathNameNew), true);
+
+            return true;
+        } catch (IOException e) {
+            log.error("Error copying page {}", e.toString());
+        }
+        return false;
+    }
+
     public int references(final Resource resource, final Resource resourceNew, final boolean update) {
         final int[] totalReferences = {0};
 
@@ -166,7 +269,7 @@ public class DriveManager {
                 @Override
                 public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) {
                     if (Files.isRegularFile(file)) {
-                        final int references = ResourceResolver.references(new Resource(file), "ui.drive"+ resource.getRelativePath(), "ui.drive"+ resourceNew.getRelativePath(), update);
+                        final int references = ResourceResolver.referenceDrives(new Resource(file), "ui.drive"+ resource.getRelativePath(), "ui.drive"+ resourceNew.getRelativePath(), update);
                         totalReferences[0] += references;
                     }
                     return FileVisitResult.CONTINUE;

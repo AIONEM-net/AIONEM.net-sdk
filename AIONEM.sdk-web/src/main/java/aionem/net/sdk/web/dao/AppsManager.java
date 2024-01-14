@@ -13,7 +13,7 @@ public class AppsManager {
 
     }
 
-    public Resource getFolder() {
+    private Resource getFolder() {
         return new Resource("/WEB-INF/ui.apps");
     }
 

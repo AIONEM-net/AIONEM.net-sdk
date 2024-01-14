@@ -66,6 +66,10 @@ public class Resource {
         this(resource.child(child).file);
     }
 
+    public static Resource driver(final String path) {
+        return ResourceResolver.getResourcePage(path);
+    }
+
     public String getName() {
         return file.getName();
     }

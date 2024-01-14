@@ -47,35 +47,6 @@ public class ResourceResolver {
         return isSystemPath;
     }
 
-    public static int references(final Resource resource, final String pathOld, final String pathNew, final boolean update) {
-        final int[] references = new int[]{-1};
-
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-
-                final String content = resource.readContent();
-
-                final String updatedContent = content.replace("ui.page"+ pathOld,"ui.page"+ pathNew);
-
-                references[0] = (content.length() - updatedContent.length()) / (pathOld.length() - pathNew.length());
-
-                if(update) {
-                    resource.saveContent(updatedContent);
-                }
-
-            }
-        };
-
-        if(update) {
-            new Thread(runnable).start();
-        }else {
-            runnable.run();
-        }
-
-        return Math.abs(references[0]);
-    }
-
     public static String getRealPathWebInf() {
         return getRealPathWebInf("");
     }
@@ -104,8 +75,12 @@ public class ResourceResolver {
         return UtilsResource.getRealPathRoot("/ui.page"+ (!UtilsText.isEmpty(path) && !path.equals("/") ? path : ConfEnv.getInstance().getHome()));
     }
 
-    public static Resource getFilePage(final String path) {
+    public static Resource getResourcePage(final String path) {
         return new Resource(getRealPathPage(path));
+    }
+
+    public static Resource getResourceDrive(final String path) {
+        return new Resource(getRealPathDrive(path));
     }
 
     public static ArrayList<Resource> findResources(final Resource resourceFolder, final FilenameFilter filenameFilter) {
@@ -136,39 +111,39 @@ public class ResourceResolver {
     }
 
     public static String readResourceConfig(final String name) {
-        return readResource(name, "/WEB-INF/ui.config/", "/ui.config/", "/config/");
+        return readResource(name, "/WEB-INF/ui.config/", "/ui.config/");
     }
 
     public static String readResourceEnv(final String name) {
-        return readResource(name, "/WEB-INF/ui.config/env/", "/ui.config/env/", "/config/env/");
+        return readResource(name, "/WEB-INF/ui.config/env/", "/ui.config/env/");
     }
 
     public static String readResourceI18n(final String name) {
-        return readResource(name, "/WEB-INF/ui.config/i18n/", "/ui.config/i18n/", "/config/i18n/");
+        return readResource(name, "/WEB-INF/ui.config/i18n/", "/ui.config/i18n/");
     }
 
     public static String readResourceEtc(final String name) {
-        return readResource(name, "/WEB-INF/ui.config/etc/", "/ui.config/etc/", "/etc/");
+        return readResource(name, "/WEB-INF/ui.config/etc/", "/ui.config/etc/");
     }
 
     public static ResourceBundle getResourceBundleConfig(final String name) {
-        return UtilsResource.getResourceBundle("/config/" + name);
+        return UtilsResource.getResourceBundle("/ui.config/" + name);
     }
 
     public static ResourceBundle getResourceBundleEnv(final String name) {
-        return UtilsResource.getResourceBundle("/config/env/" + name);
+        return UtilsResource.getResourceBundle("/ui.config/env/" + name);
     }
 
     public static ResourceBundle getResourceBundleI18n(final String name) {
-        return UtilsResource.getResourceBundle("/config/i18n/" + name);
+        return UtilsResource.getResourceBundle("/ui.config/i18n/" + name);
     }
 
     public static ResourceBundle getResourceBundleI18n(final String name, final Locale locale) {
-        return UtilsResource.getResourceBundle("/config/i18n/" + name, locale);
+        return UtilsResource.getResourceBundle("/ui.config/i18n/" + name, locale);
     }
 
     public static ResourceBundle getResourceBundleEtc(final String name) {
-        return UtilsResource.getResourceBundle("/etc/" + name);
+        return UtilsResource.getResourceBundle("/ui.config/etc/" + name);
     }
 
     public static String readResource(final String name, final String... folders) {
@@ -202,6 +177,64 @@ public class ResourceResolver {
             log.error("\nERROR: - readStream ::" + e + Arrays.toString(folders) + name +"\n");
         }
         return null;
+    }
+
+    public static int referencePages(final Resource resource, final String pathOld, final String pathNew, final boolean update) {
+        final int[] references = new int[]{-1};
+
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+
+                final String content = resource.readContent();
+
+                final String updatedContent = content.replace("ui.page"+ pathOld,"ui.page"+ pathNew);
+
+                references[0] = (content.length() - updatedContent.length()) / (pathOld.length() - pathNew.length());
+
+                if(update) {
+                    resource.saveContent(updatedContent);
+                }
+
+            }
+        };
+
+        if(update) {
+            new Thread(runnable).start();
+        }else {
+            runnable.run();
+        }
+
+        return Math.abs(references[0]);
+    }
+
+    public static int referenceDrives(final Resource resource, final String pathOld, final String pathNew, final boolean update) {
+        final int[] references = new int[]{-1};
+
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+
+                final String content = resource.readContent();
+
+                final String updatedContent = content.replace("ui.drive"+ pathOld,"ui.drive"+ pathNew);
+
+                references[0] = (content.length() - updatedContent.length()) / (pathOld.length() - pathNew.length());
+
+                if(update) {
+                    resource.saveContent(updatedContent);
+                }
+
+            }
+        };
+
+        if(update) {
+            new Thread(runnable).start();
+        }else {
+            runnable.run();
+        }
+
+        return Math.abs(references[0]);
     }
 
 }

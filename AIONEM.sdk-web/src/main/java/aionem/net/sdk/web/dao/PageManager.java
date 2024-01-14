@@ -3,6 +3,7 @@ package aionem.net.sdk.web.dao;
 import aionem.net.sdk.data.beans.DaoRes;
 import aionem.net.sdk.data.beans.Data;
 import aionem.net.sdk.data.dao.Network;
+import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.AioWeb;
 import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.beans.Page;
@@ -265,12 +266,15 @@ public class PageManager {
 
     public boolean move(final Page page, final String pathNew, final String nameNew) {
         try {
-            final Path pathSource = Paths.get(ResourceResolver.getRealPathPage(page.getPath()));
-            final Path pathDestination = Paths.get(ResourceResolver.getRealPathPage(pathNew + "/" + nameNew));
 
-            if(!pathSource.toFile().exists()) {
+            if(!page.exists()) {
                 return false;
             }
+
+            final String pathNameNew = UtilsResource.path(pathNew, nameNew);
+
+            final Path pathSource = Paths.get(ResourceResolver.getRealPathPage(page.getPath()));
+            final Path pathDestination = Paths.get(ResourceResolver.getRealPathPage(pathNameNew));
 
             Files.walkFileTree(pathSource, new SimpleFileVisitor<>() {
 
@@ -294,7 +298,7 @@ public class PageManager {
 
             });
 
-            final Page pageNew = new Page(pathNew + "/" + nameNew);
+            final Page pageNew = new Page(pathNameNew);
 
             references(page, pageNew, true);
 
@@ -315,13 +319,16 @@ public class PageManager {
 
     public boolean copy(final Page page, final String pathNew, final String nameNew, final boolean excludeChildren) {
         try {
-            final Path pathSource = Paths.get(ResourceResolver.getRealPathPage(page.getPath()));
-            final Path pathDestination = Paths.get(ResourceResolver.getRealPathPage(pathNew + "/" + nameNew));
 
-            if(!pathSource.toFile().exists()) {
-              return false;  
+            if(!page.exists()) {
+                return false;
             }
-            
+
+            final String pathNameNew = UtilsResource.path(pathNew, nameNew);
+
+            final Path pathSource = Paths.get(ResourceResolver.getRealPathPage(page.getPath()));
+            final Path pathDestination = Paths.get(ResourceResolver.getRealPathPage(pathNameNew));
+
             Files.walkFileTree(pathSource, new SimpleFileVisitor<>() {
 
                 @Override
@@ -343,7 +350,7 @@ public class PageManager {
 
             });
 
-            final Page pageNew = new Page(pathNew + "/" + nameNew);
+            final Page pageNew = new Page(pathNameNew);
 
             references(page, pageNew, pageNew, true);
 
@@ -368,7 +375,7 @@ public class PageManager {
                 @Override
                 public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) {
                     if (Files.isRegularFile(file)) {
-                        final int references = ResourceResolver.references(new Resource(file), "ui.page"+ page.getPath(), "ui.page"+ pageNew.getPath(), update);
+                        final int references = ResourceResolver.referencePages(new Resource(file), "ui.page"+ page.getPath(), "ui.page"+ pageNew.getPath(), update);
                         totalReferences[0] += references;
                     }
                     return FileVisitResult.CONTINUE;

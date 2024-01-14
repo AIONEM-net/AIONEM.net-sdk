@@ -16,33 +16,33 @@ public class I18nManager {
 
     public ArrayList<Resource> getListFolders() {
 
-        final ArrayList<Resource> listI18nFolders = new ArrayList<>();
+        final ArrayList<Resource> listFolders = new ArrayList<>();
 
         final Resource folder1 = ResourceResolver.getRealFileWebInf("/ui.config/i18n");
         final Resource folder2 = new Resource(UtilsResource.getResourcePath("/config/i18n"));
         final Resource folder3 = new Resource(UtilsResource.getResourcePath("/i18n"));
 
-        if(folder1.exists() && folder1.isFolder()) listI18nFolders.add(folder1);
-        if(folder2.exists() && folder2.isFolder()) listI18nFolders.add(folder2);
-        if(folder3.exists() && folder3.isFolder()) listI18nFolders.add(folder3);
+        if(folder1.exists() && folder1.isFolder()) listFolders.add(folder1);
+        if(folder2.exists() && folder2.isFolder()) listFolders.add(folder2);
+        if(folder3.exists() && folder3.isFolder()) listFolders.add(folder3);
 
-        return listI18nFolders;
+        return listFolders;
     }
 
     public ArrayList<Resource> getListI18n() {
 
-        final ArrayList<Resource> filesI18n = new ArrayList<>();
+        final ArrayList<Resource> listI18n = new ArrayList<>();
 
-        filesI18n.addAll(getListI18nJson());
+        listI18n.addAll(getListI18nJson());
 
-        filesI18n.addAll(getListI18nProperties());
+        listI18n.addAll(getListI18nProperties());
 
-        return filesI18n;
+        return listI18n;
     }
 
     public ArrayList<Resource> getListI18nJson() {
 
-        final ArrayList<Resource> filesI18n = new ArrayList<>();
+        final ArrayList<Resource> listI18n = new ArrayList<>();
 
         final FilenameFilter filterJson = new FilenameFilter() {
             @Override
@@ -52,15 +52,15 @@ public class I18nManager {
         };
 
         for(final Resource folderI18n : getListFolders()) {
-            filesI18n.addAll(ResourceResolver.findResources(folderI18n, filterJson));
+            listI18n.addAll(ResourceResolver.findResources(folderI18n, filterJson));
         }
 
-        return filesI18n;
+        return listI18n;
     }
 
     public ArrayList<Resource> getListI18nProperties() {
 
-        final ArrayList<Resource> filesI18n = new ArrayList<>();
+        final ArrayList<Resource> listI18n = new ArrayList<>();
 
         final FilenameFilter filterProperties = new FilenameFilter() {
             @Override
@@ -70,10 +70,10 @@ public class I18nManager {
         };
 
         for(final Resource folderI18n : getListFolders()) {
-            filesI18n.addAll(ResourceResolver.findResources(folderI18n, filterProperties));
+            listI18n.addAll(ResourceResolver.findResources(folderI18n, filterProperties));
         }
 
-        return filesI18n;
+        return listI18n;
     }
 
 }

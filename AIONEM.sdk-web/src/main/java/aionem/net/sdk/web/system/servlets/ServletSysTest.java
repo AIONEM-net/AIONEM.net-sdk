@@ -84,6 +84,7 @@ public class ServletSysTest extends HttpServletApi {
 
         // Output for DataSystem
         DataAuth dataAuth = new DataAuth();
+        dataAuth.init(dataAuth);
         dataAuth.put("id", 4);
         out.println("<div>" + "data var -> " + dataAuth.getId() + "</div>");
         out.println("<div>" + "data key -> " + dataAuth.get("id") + "</div>");
@@ -102,7 +103,7 @@ public class ServletSysTest extends HttpServletApi {
         out.println("<div>" + "page -> " + page1.getTemplate() + "</div>");
         out.println("<div>" + "page -> " + page1.getTemplatePath() + "</div>");
         out.println("<div>" + "page -> " + page1.getContent() + "</div>");
-        out.println("<div>" + "page -> " + page1.getResource() + "</div>");
+        out.println("<div>" + "page -> " + page1.toResource() + "</div>");
         out.println("<div>" + "page -> " + page1.getParent() + "</div>");
 
         Page page2 = new Page("/en");
@@ -115,7 +116,7 @@ public class ServletSysTest extends HttpServletApi {
         out.println("<div>" + "page -> " + page2.getTemplate() + "</div>");
         out.println("<div>" + "page -> " + page2.getTemplatePath() + "</div>");
         out.println("<div>" + "page -> " + page2.getContent() + "</div>");
-        out.println("<div>" + "page -> " + page2.getResource() + "</div>");
+        out.println("<div>" + "page -> " + page2.toResource() + "</div>");
         out.println("<div>" + "page -> " + page2.getParent() + "</div>");
         out.println("<div>---------------------------------------------</div>");
 
@@ -123,8 +124,10 @@ public class ServletSysTest extends HttpServletApi {
         // Output for PageManager
         PageManager pageManager = new PageManager();
         out.println("<div>" + "pageManager -> " + ResourceResolver.getRealPathPage() + "</div>");
+        out.println("<div>" + "pageManager copy -> " + pageManager.copy(page1, "/it/copied") + "</div>");
+        out.println("<div>" + "pageManager move -> " + pageManager.move(page1, "/it/moved") + "</div>");
         for (Page resource : pageManager.getListPagesRoot()) {
-            out.println("<div>" + "Resource file -> " + resource + "</div>");
+            out.println("<div>" + "Resource file -> " + resource.getPath() + "</div>");
         }
         out.println("<div>---------------------------------------------</div>");
 
@@ -168,9 +171,8 @@ public class ServletSysTest extends HttpServletApi {
 
         // Output for AppsManager
         final AppsManager appsManager = new AppsManager();
-        out.println("<div>" + "Apps -> " + appsManager.getFolder() + "</div>");
         for (Resource cmp : appsManager.listApps()) {
-            out.println("<div>" + "Apps -> " + cmp.getSystemPath() + "</div>");
+            out.println("<div>" + "Apps root -> " + cmp.getSystemPath() + "</div>");
         }
         for (Resource file : appsManager.listComponents()) {
             out.println("<div>" + "Apps cmp -> " + file.getSystemPath() + "</div>");

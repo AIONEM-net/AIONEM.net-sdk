@@ -202,7 +202,7 @@ public @lombok.Data class Page {
     }
 
     public boolean exists() {
-        return getResource().exists();
+        return toResource().exists();
     }
 
     public boolean isRootPath() {
@@ -214,17 +214,13 @@ public @lombok.Data class Page {
         return !isRootPath();
     }
 
-    public Resource getResource() {
-        return ResourceResolver.getFilePage(path);
+    public Resource toResource() {
+        return ResourceResolver.getResourcePage(path);
     }
 
     public Page getParent() {
-        final Resource resourceParent = getResource().getParent();
+        final Resource resourceParent = toResource().getParent();
         return new Page(resourceParent);
-    }
-
-    public Resource toResource() {
-        return new Resource(ResourceResolver.getRealPathPage(path));
     }
 
     public ArrayList<Properties> getContents() {
@@ -236,10 +232,6 @@ public @lombok.Data class Page {
             listContents.add(properties);
         }
         return listContents;
-    }
-
-    public boolean cache() {
-        return PageManager.getInstance().cache(this);
     }
 
     @Override
