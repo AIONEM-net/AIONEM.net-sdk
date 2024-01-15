@@ -330,18 +330,7 @@ public @Getter class AioWeb {
                 language = getSessionAttribute("language", "");
             }
             if(UtilsText.isEmpty(language)) {
-
-                final Page currentPage = getCurrentPage();
-                language = currentPage.getLanguage();
-                
-                if(UtilsText.isEmpty(language)) {
-                    final Page homePage = getPageManager().getHomePage(currentPage);
-                    language = homePage.getLanguage();
-
-                    if(UtilsText.isEmpty(language)) {
-                        language = homePage.getPath();
-                    }
-                }
+                language = getPageManager().getLanguage(getCurrentPage());
             }
 
             language = UtilsText.notEmpty(language, "en");

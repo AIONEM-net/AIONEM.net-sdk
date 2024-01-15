@@ -64,15 +64,19 @@ public @lombok.Data class Page {
             this.properties = new Properties();
         }
 
+        final String home = ConfEnv.getInstance().getHome();
+
         if(UtilsText.isEmpty(path) || path.equals("/")) {
-            this.path = ConfEnv.getInstance().getHome();
+            this.path = home;
+            this.url = "/";
         }else {
             this.path = path.startsWith("/ui.page") ? path.substring("/ui.page".length()) : path;
+            this.url = ConfEnv.getInstance().getContextPath(this.path);
         }
+
         if(!this.path.startsWith("/")) this.path = "/" + this.path;
         if(this.path.endsWith("/")) this.path = this.path.substring(0, this.path.length()-1);
-
-        this.url = ConfEnv.getInstance().getContextPath(this.path);
+        if(this.url.startsWith(home)) this.url = this.path.substring(home.length());
     }
 
     public String getName() {

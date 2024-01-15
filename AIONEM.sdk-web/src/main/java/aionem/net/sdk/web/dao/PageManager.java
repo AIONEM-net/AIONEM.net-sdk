@@ -1,5 +1,6 @@
 package aionem.net.sdk.web.dao;
 
+import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.beans.DaoRes;
 import aionem.net.sdk.data.beans.Data;
 import aionem.net.sdk.data.dao.Network;
@@ -45,6 +46,44 @@ public class PageManager {
             homePage = homePage.getParent();
         }
         return homePage;
+    }
+
+    public String getLanguage(final Page page) {
+
+        String language = page.getLanguage();
+
+        if(UtilsText.isEmpty(language)) {
+            final Page homePage = getHomePage(page);
+            language = homePage.getLanguage();
+
+            if(UtilsText.isEmpty(language)) {
+                language = homePage.getPath();
+            }
+        }
+
+        return language;
+    }
+
+    public boolean isRoot(final Page page) {
+        return UtilsText.isEmpty(page.getUrl()) || page.getUrl().equals("/");
+    }
+
+    public boolean isHome(final Page page) {
+        return isRoot(page) || page.getUrl().equalsIgnoreCase(ConfEnv.getInstance().getHome());
+    }
+
+    public boolean isSite(final Page page) {
+        return ConfEnv.getInstance().getSites().contains(page.getPath());
+    }
+
+    public String getSite(final Page page) {
+        final String site;
+        if(isSite(page)) {
+            site = page.getPath();
+        }else {
+            site = ConfEnv.getInstance().getHome();
+        }
+        return site;
     }
 
     public ArrayList<Page> getListPagesRoot() {
