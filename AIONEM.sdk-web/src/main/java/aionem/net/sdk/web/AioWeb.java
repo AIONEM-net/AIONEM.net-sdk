@@ -316,11 +316,44 @@ public @Getter class AioWeb {
     }
 
     public String getLanguage() {
-        return UtilsText.notEmpty(getSessionAttribute("language"), "en");
+
+        String language = getRequestAttribute("language", String.class);
+
+        if(UtilsText.isEmpty(language)) {
+
+            language = getParameter("lang");
+
+            if(UtilsText.isEmpty(language)) {
+                language = getHeader("Accept-Language");
+            }
+            if(UtilsText.isEmpty(language)) {
+                language = getSessionAttribute("language", "");
+            }
+            if(UtilsText.isEmpty(language)) {
+
+                final Page currentPage = getCurrentPage();
+                language = currentPage.getLanguage();
+                
+                if(UtilsText.isEmpty(language)) {
+                    final Page homePage = getPageManager().getHomePage(currentPage);
+                    language = homePage.getLanguage();
+
+                    if(UtilsText.isEmpty(language)) {
+                        language = homePage.getPath();
+                    }
+                }
+            }
+
+            language = UtilsText.notEmpty(language, "en");
+            setRequestAttribute("language", language);
+        }
+
+        return language;
     }
 
     public Locale getLocale() {
-        return new Locale(getLanguage());
+        final Locale locale = getRequestAttribute("locale", Locale.class);
+        return locale != null ? locale : getRequestAttribute("locale", new Locale(getLanguage()), true);
     }
 
     public boolean isPublishMode() {
