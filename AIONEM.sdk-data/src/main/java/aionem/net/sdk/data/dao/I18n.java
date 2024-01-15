@@ -51,8 +51,8 @@ public class I18n {
         return init("", locale);
     }
 
-    public I18n init(final String name, final I18n I18n1) {
-        return init(name, I18n1.getLocal());
+    public I18n init(final String name, final I18n I18n) {
+        return init(name, I18n.getLocal());
     }
 
     public I18n init(String name, final Locale locale) {
