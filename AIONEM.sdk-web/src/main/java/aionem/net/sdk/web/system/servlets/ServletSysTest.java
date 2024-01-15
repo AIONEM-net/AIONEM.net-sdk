@@ -8,6 +8,7 @@ import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.config.Config;
 import aionem.net.sdk.web.dao.*;
+import aionem.net.sdk.web.servlets.GetMapping;
 import aionem.net.sdk.web.servlets.HttpServletApi;
 
 import javax.servlet.ServletException;
@@ -22,8 +23,8 @@ import java.io.PrintWriter;
 public class ServletSysTest extends HttpServletApi {
 
 
-    @Override
-    protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+    @GetMapping("/")
+    public void doGetTest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 
         response.setContentType("text/html;charset=UTF-8");
         final PrintWriter out = response.getWriter();
@@ -99,7 +100,6 @@ public class ServletSysTest extends HttpServletApi {
         out.println("<div>" + "page -> " + page1.getUrl() + "</div>");
         out.println("<div>" + "page -> " + page1.listChildren().size() + "</div>");
         out.println("<div>" + "page -> " + page1.getProperties() + "</div>");
-        out.println("<div>" + "page -> " + page1.getResourceType() + "</div>");
         out.println("<div>" + "page -> " + page1.getTemplate() + "</div>");
         out.println("<div>" + "page -> " + page1.toResource() + "</div>");
         out.println("<div>" + "page -> " + page1.getParent() + "</div>");
@@ -110,7 +110,6 @@ public class ServletSysTest extends HttpServletApi {
         out.println("<div>" + "page -> " + page2.getUrl() + "</div>");
         out.println("<div>" + "page -> " + page2.listChildren().size() + "</div>");
         out.println("<div>" + "page -> " + page2.getProperties() + "</div>");
-        out.println("<div>" + "page -> " + page2.getResourceType() + "</div>");
         out.println("<div>" + "page -> " + page2.getTemplate() + "</div>");
         out.println("<div>" + "page -> " + page2.toResource() + "</div>");
         out.println("<div>" + "page -> " + page2.getParent() + "</div>");

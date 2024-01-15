@@ -135,10 +135,6 @@ public @lombok.Data class Page {
         return properties.getOr("template", "page");
     }
 
-    public String getResourceType() {
-        return properties.getOr("resourceType", "");
-    }
-
     public int getOrder() {
         return properties.get("order", 0);
     }

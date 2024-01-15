@@ -14,6 +14,10 @@ public class I18nManager {
 
     }
 
+    public Resource getI18n(final String name) {
+        return new Resource(ResourceResolver.getRealPathWebInf(UtilsResource.path("/ui.config/i18n", name)));
+    }
+
     public ArrayList<Resource> getListFolders() {
 
         final ArrayList<Resource> listFolders = new ArrayList<>();

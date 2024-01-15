@@ -55,10 +55,6 @@ public class PageManager {
         if(UtilsText.isEmpty(language)) {
             final Page homePage = getHomePage(page);
             language = homePage.getLanguage();
-
-            if(UtilsText.isEmpty(language)) {
-                language = homePage.getPath();
-            }
         }
 
         return language;

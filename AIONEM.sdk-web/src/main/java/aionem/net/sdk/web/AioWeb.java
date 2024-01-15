@@ -331,6 +331,9 @@ public @Getter class AioWeb {
             }
             if(UtilsText.isEmpty(language)) {
                 language = getHeader("Accept-Language");
+                if(!UtilsText.isEmpty(language) && language.contains("-")) {
+                    language = language.substring(0, language.indexOf("-"));
+                }
             }
 
             language = UtilsText.notEmpty(language, "en");

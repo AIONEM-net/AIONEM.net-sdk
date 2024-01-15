@@ -14,6 +14,10 @@ public class ConfigManager {
 
     }
 
+    public Resource getConfig(final String name) {
+        return new Resource(ResourceResolver.getRealPathWebInf(UtilsResource.path("/ui.config/env", name)));
+    }
+
     public ArrayList<Resource> getListFolders() {
 
         final ArrayList<Resource> listFolders = new ArrayList<>();

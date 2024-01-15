@@ -1,5 +1,6 @@
 package aionem.net.sdk.web.system.servlets;
 
+import aionem.net.sdk.web.servlets.GetMapping;
 import aionem.net.sdk.web.servlets.HttpServletApi;
 import aionem.net.sdk.web.system.dao.DaoSysDeploy;
 
@@ -15,8 +16,8 @@ import java.io.PrintWriter;
 public class ServletSysDeploy extends HttpServletApi {
 
 
-    @Override
-    protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+    @GetMapping("/*")
+    protected void doGetDeploy(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 
         final boolean isDeployWar = DaoSysDeploy.deployWar("prod", "aionem.net.war");
 
