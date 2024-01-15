@@ -19,7 +19,7 @@ public class UtilsParse {
             final String valueString = UtilsText.toString(value);
             Double.parseDouble(valueString);
             isNumber = true;
-        }catch(Exception ignore) {
+        }catch(final Exception ignore) {
             isNumber = false;
         }
         return isNumber;
@@ -32,7 +32,7 @@ public class UtilsParse {
         if(!UtilsText.isEmpty(valueString)) {
             try {
                 number = Double.parseDouble(valueString);
-            }catch(Exception ignore) {
+            }catch(final Exception ignore) {
             }
         }
         return number;
@@ -43,7 +43,7 @@ public class UtilsParse {
         try {
             final String valueString = UtilsText.toString(value);
             isBoolean = valueString.equalsIgnoreCase("true") || valueString.equalsIgnoreCase("false");
-        }catch(Exception ignore) {
+        }catch(final Exception ignore) {
             isBoolean = false;
         }
         return isBoolean;
@@ -56,7 +56,7 @@ public class UtilsParse {
         if(!UtilsText.isEmpty(valueString)) {
             try {
                 bool = Boolean.parseBoolean(valueString);
-            }catch(Exception ignore) {
+            }catch(final Exception ignore) {
             }
         }
         return bool;
@@ -76,7 +76,7 @@ public class UtilsParse {
         try {
             final DateFormat simpleDateFormat = new SimpleDateFormat(format, locale);
             return simpleDateFormat.parse(date);
-        }catch(Exception e) {
+        }catch(final Exception e) {
             log.error("\nAIONEM.NET-SDK: ERROR WHILE PARSING DATE "+ e);
             return null;
         }

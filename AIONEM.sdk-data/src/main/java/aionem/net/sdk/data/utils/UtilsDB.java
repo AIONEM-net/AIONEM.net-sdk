@@ -55,7 +55,7 @@ public class UtilsDB {
                 final DateFormat simpleDateFormat = new SimpleDateFormat(format, locale);
                 formatDate = simpleDateFormat.format(date.getTime());
             }
-        }catch(Exception e) {
+        }catch(final Exception e) {
             log.error("\nAIONEM.NET-SDK: ERROR WHILE PARSING DATE " + e +"\n");
         }
         return formatDate;

@@ -620,7 +620,7 @@ public class QuerySelect extends QueryCondition {
         for(final Data data : executeListData()) {
             try {
                 listData.add(UtilsData.adaptTo(type, data.toJson()));
-            }catch(Exception e) {
+            }catch(final Exception e) {
                 setException(e);
             }
         }
@@ -692,7 +692,7 @@ public class QuerySelect extends QueryCondition {
             resultSet.close();
             statement.close();
 
-        }catch(Exception e) {
+        }catch(final Exception e) {
             setException(e);
             throw e;
         }

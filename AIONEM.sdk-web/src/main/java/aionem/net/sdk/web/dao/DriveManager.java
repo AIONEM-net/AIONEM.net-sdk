@@ -48,7 +48,7 @@ public class DriveManager {
                 resUpload.setError("Invalid file");
             }
 
-        }catch(Exception e) {
+        }catch(final Exception e) {
             resUpload.setException(e);
         }
 
@@ -67,7 +67,7 @@ public class DriveManager {
                 resUpload.setError("Invalid file");
             }
 
-        }catch(Exception e) {
+        }catch(final Exception e) {
             resUpload.setException(e);
         }
 
@@ -133,7 +133,7 @@ public class DriveManager {
                 resUpload.setError("Invalid file");
             }
 
-        }catch(Exception e) {
+        }catch(final Exception e) {
             resUpload.setException(e);
         }
 

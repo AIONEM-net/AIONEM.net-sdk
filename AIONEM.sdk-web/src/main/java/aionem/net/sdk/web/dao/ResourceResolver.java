@@ -169,7 +169,7 @@ public class ResourceResolver {
                 }
             }
 
-        }catch(Exception e) {
+        }catch(final Exception e) {
             log.error("\nERROR: - readStream ::" + e + Arrays.toString(folders) + name +"\n");
         }
         return null;

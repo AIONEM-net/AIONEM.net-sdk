@@ -73,7 +73,7 @@ public class UtilsApi {
             while((bytesRead = bufferedReader.read(charBuffer)) > 0) {
                 stringBuilder.append(charBuffer, 0, bytesRead);
             }
-        }catch(Exception e) {
+        }catch(final Exception e) {
             log.info("\nERROR: API - POST-BODY ::" + e +"\n");
         }
         return stringBuilder.toString();
@@ -84,7 +84,7 @@ public class UtilsApi {
             if(!request.getParts().isEmpty()) {
                 return request.getPart(fileName);
             }
-        }catch(Exception e) {
+        }catch(final Exception e) {
             log.info("\nERROR: API - getPart ::" + e +"\n");
         }
         return null;

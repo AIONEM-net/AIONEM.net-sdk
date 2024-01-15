@@ -147,7 +147,7 @@ public @lombok.Data class Network {
 
                 httpURLConnection.disconnect();
 
-            }catch(Exception e) {
+            }catch(final Exception e) {
                 resGet.setException(e);
             }
 
@@ -250,7 +250,7 @@ public @lombok.Data class Network {
 
                 httpURLConnection.disconnect();
 
-            }catch(Exception e) {
+            }catch(final Exception e) {
                 resPost.setException(e);
             }
 

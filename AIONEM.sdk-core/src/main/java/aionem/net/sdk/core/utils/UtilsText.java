@@ -104,7 +104,7 @@ public class UtilsText {
                 }
 
             }
-        }catch(Exception ignore) {
+        }catch(final Exception ignore) {
         }
         return value;
     }

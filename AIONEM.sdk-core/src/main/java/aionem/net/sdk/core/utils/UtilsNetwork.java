@@ -45,7 +45,7 @@ public class UtilsNetwork {
     public static String encodeUrl(final String url, final String encoding) {
         try {
             return URLEncoder.encode(url, encoding);
-        }catch(Exception ignore) {
+        }catch(final Exception ignore) {
             return url;
         }
     }

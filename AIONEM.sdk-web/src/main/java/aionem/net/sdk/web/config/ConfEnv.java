@@ -50,6 +50,10 @@ public class ConfEnv extends Config {
         return UtilsResource.path(getContextPath(), path);
     }
 
+    public String getError(final int code) {
+        return get("error_"+ code, "/en/error/404");
+    }
+
     public String getSenderID() {
         return get("senderID");
     }

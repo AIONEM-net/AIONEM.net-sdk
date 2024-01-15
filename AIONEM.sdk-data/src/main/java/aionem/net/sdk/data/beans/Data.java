@@ -63,7 +63,7 @@ public class Data {
                             value = UtilsConverter.convert(value, field.getType());
                         }
                         put(key, value);
-                    }catch(Exception e) {
+                    }catch(final Exception e) {
                         log.error("\nERROR: Data - init " + e + "\n");
                     }
                 }
@@ -83,7 +83,7 @@ public class Data {
         this.values.putAll(data.values);
         try {
             return UtilsData.adaptTo(dbInstance, data.toJson());
-        }catch(Exception e) {
+        }catch(final Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK : Data - fromData " + e +"\n");
         }
         return dbInstance;
@@ -94,7 +94,7 @@ public class Data {
         this.values.putAll(data);
         try {
             return UtilsData.adaptTo(dbInstance, UtilsJson.fromHashMap(data));
-        }catch(Exception e) {
+        }catch(final Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK : Data - fromData " + e +"\n");
         }
         return dbInstance;
@@ -105,7 +105,7 @@ public class Data {
         this.values.putAll(UtilsJson.toHashMap(data));
         try {
             return UtilsData.adaptTo(dbInstance, data);
-        }catch(Exception e) {
+        }catch(final Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK : Data - fromData " + e +"\n");
         }
         return dbInstance;
@@ -158,7 +158,7 @@ public class Data {
             }else {
                 return UtilsJson.fromHashMap(this.values);
             }
-        }catch(Exception e) {
+        }catch(final Exception e) {
             log.error("\nERROR: toJson " + e +"\n");
         }
         return json;

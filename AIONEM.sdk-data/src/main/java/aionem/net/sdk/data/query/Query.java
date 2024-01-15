@@ -87,7 +87,7 @@ public class Query {
                 connection = DriverManager.getConnection(ConfApp.getDBConnectionUrl(), ConfApp.getDBUser(), ConfApp.getDBPassword());
             }
 
-        }catch(Exception e) {
+        }catch(final Exception e) {
             log.error("\n"+ e +" :: " + e.getStackTrace()[0] +"\n");
         }
         return connection;
@@ -100,7 +100,7 @@ public class Query {
                 if(!connection.isClosed()) {
                     connection.close();
                 }
-            }catch(Exception e) {
+            }catch(final Exception e) {
                 log.error("\nERROR: DB CONNECTION - Close ::" + e +"\n");
                 isClosed = false;
             }

@@ -172,7 +172,7 @@ public class HttpServletApi extends HttpServlet {
             try {
                 methodRequest.setAccessible(true);
                 methodRequest.invoke(this, request, response);
-            }catch(Exception e) {
+            }catch(final Exception e) {
                 final ApiRes apiRes = ApiRes.withError(HttpURLConnection.HTTP_INTERNAL_ERROR, "Something went wrong");
                 apiRes.setException(e);
                 apiRes.setResponse(response);

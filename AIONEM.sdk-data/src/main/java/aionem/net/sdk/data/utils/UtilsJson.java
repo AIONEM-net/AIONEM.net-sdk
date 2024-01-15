@@ -46,7 +46,7 @@ public class UtilsJson {
                     isJson = true;
                 }
             }
-        }catch(Exception ignore) {
+        }catch(final Exception ignore) {
         }
         return isJson;
     }
@@ -98,7 +98,7 @@ public class UtilsJson {
             }else {
                 jsonArray = new Gson().toJsonTree(object).getAsJsonArray();
             }
-        }catch(Exception ignore) {
+        }catch(final Exception ignore) {
         }
         return jsonArray != null && !jsonArray.isJsonNull() ? jsonArray : new JsonArray();
     }
@@ -226,7 +226,7 @@ public class UtilsJson {
                     return null;
                 }
             }
-        }catch(Exception ignore) {
+        }catch(final Exception ignore) {
         }
         return value;
     }
@@ -278,7 +278,7 @@ public class UtilsJson {
 
             }
 
-        }catch(Exception ignore) {
+        }catch(final Exception ignore) {
         }
 
         return listMap;

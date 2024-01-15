@@ -204,7 +204,7 @@ public class ApiRes {
                     this.data.addProperty(key, UtilsText.toString(data));
                 }
             }
-        }catch(Exception e) {
+        }catch(final Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK : Response - Put Data :: " + e +"\n");
             if(Env.IS_DEBUG) setException(e);
         }
@@ -279,7 +279,7 @@ public class ApiRes {
                     UtilsJson.add(jsonResponse, "exception", eMessage);
                 }
             }
-        }catch(Exception e) {
+        }catch(final Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK : toJsonResponse " + e +"\n");
         }
         return jsonResponse;

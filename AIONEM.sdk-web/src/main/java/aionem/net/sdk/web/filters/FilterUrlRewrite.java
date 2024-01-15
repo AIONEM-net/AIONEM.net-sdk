@@ -2,6 +2,7 @@ package aionem.net.sdk.web.filters;
 
 import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.beans.Page;
 import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.dao.ResourceResolver;
@@ -42,10 +43,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                 aioWeb.getResponse().setContentType("text/html; charset=UTF-8");
 
                 if(aioWeb.isRoot()) {
-
-                    final String pathPage = ConfEnv.getInstance().getHome();
-                    responsePage(aioWeb, pathPage);
-
+                    responsePage(aioWeb, aioWeb.getCurrentPage(), HttpServletResponse.SC_OK);
                 }else if(aioWeb.isHome()) {
                     final String url = "/"+ aioWeb.getRequestQuery(true);
                     aioWeb.sendRedirect(url);
@@ -53,13 +51,15 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                     final String url = aioWeb.getRequestUrlQuery().substring(ConfEnv.getInstance().getHome().length());
                     aioWeb.sendRedirect(url);
                 }else {
-
-                    final String pathPage = aioWeb.getServletPage();
-                    responsePage(aioWeb, pathPage);
+                    responsePage(aioWeb, aioWeb.getCurrentPage(), HttpServletResponse.SC_OK);
                 }
 
-            }catch(Exception e) {
-                aioWeb.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }catch(final Exception e) {
+                if(!aioWeb.getCurrentPage().exists()) {
+                    responsePage(aioWeb, new Page(ConfEnv.getInstance().getError(404)), HttpServletResponse.SC_NOT_FOUND);
+                }else {
+                    responsePage(aioWeb, new Page(ConfEnv.getInstance().getError(500)), HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                }
             }
 
         }else {
@@ -159,22 +159,26 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
     }
 
-    private void responsePage(final AioWeb aioWeb, final String pathPage) throws ServletException, IOException {
+    private void responsePage(final AioWeb aioWeb, final Page currentPage, final int status) throws ServletException, IOException {
 
-        if(new Resource(ResourceResolver.getRealPathPage(pathPage) +"/index.html").exists()) {
+        if(currentPage.toResource().child( "index.html").exists()) {
 
-            final String urlIndexQuery = pathPage
-                    + (!pathPage.endsWith("/") ? "/" : "")
+            final String urlIndexQuery = currentPage.getPath()
+                    + (!currentPage.getPath().endsWith("/") ? "/" : "")
                     + "index.html"
                     +"?"+ aioWeb.getRequestQuery();
 
             aioWeb.include("/ui.page" + urlIndexQuery);
 
         }else {
-            aioWeb.setup();
-            final String templatePath = UtilsResource.path("/WEB-INF/ui.template", aioWeb.getCurrentPage().getTemplate(), "/.jsp");
+            if(status == HttpServletResponse.SC_OK) {
+                aioWeb.setup();
+            }else {
+                aioWeb.setRequestAttribute("currentPage", currentPage);
+            }
+            final String templatePath = UtilsResource.path("/WEB-INF/ui.template", currentPage.getTemplate(), "/.jsp");
             aioWeb.include(templatePath);
-            aioWeb.getPageManager().cache(aioWeb, aioWeb.getCurrentPage().isCache());
+            aioWeb.getPageManager().cache(aioWeb, currentPage.isCache());
         }
 
     }

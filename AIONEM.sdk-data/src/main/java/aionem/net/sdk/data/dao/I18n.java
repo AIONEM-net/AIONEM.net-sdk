@@ -71,7 +71,7 @@ public class I18n {
                 this.resourceBundle = UtilsResource.getResourceBundle(name, this.locale, "/ui.config/i18n", "/i18n");
             }
 
-        }catch(Exception e) {
+        }catch(final Exception e) {
             log.error("\nERROR: - init ::" + e +"\n");
         }
         return this;
@@ -121,7 +121,7 @@ public class I18n {
                 }
             }
 
-        }catch(Exception e) {
+        }catch(final Exception e) {
             log.error("\nERROR: - get ::" + e +"\n");
         }
 
