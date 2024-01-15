@@ -61,7 +61,7 @@ public class UtilsConverter {
                         value = null;
                     }
                     return (T) value;
-                } catch (Exception ignore) {
+                }catch(final Exception ignore) {
                     return null;
                 }
             }

@@ -256,105 +256,119 @@ public class PageManager {
         return listPathPaths;
     }
 
-    public boolean move(final Page page, final String pathNew) {
+    public DaoRes move(final Page page, final String pathNew) {
         return move(page, pathNew, page.getName());
     }
 
-    public boolean move(final Page page, final String pathNew, final String nameNew) {
+    public DaoRes move(final Page page, final String pathNew, final String nameNew) {
+
+        final DaoRes resMove = new DaoRes();
+
         try {
 
             if(!page.exists()) {
-                return false;
-            }
+                resMove.setError("Page doesn't exist");
+            }else {
 
-            final String pathNameNew = UtilsResource.path(pathNew, nameNew);
+                final String pathNameNew = UtilsResource.path(pathNew, nameNew);
 
-            final Path pathSource = Paths.get(ResourceResolver.getRealPathPage(page.getPath()));
-            final Path pathDestination = Paths.get(ResourceResolver.getRealPathPage(pathNameNew));
+                final Path pathSource = Paths.get(ResourceResolver.getRealPathPage(page.getPath()));
+                final Path pathDestination = Paths.get(ResourceResolver.getRealPathPage(pathNameNew));
 
-            Files.walkFileTree(pathSource, new SimpleFileVisitor<>() {
+                Files.walkFileTree(pathSource, new SimpleFileVisitor<>() {
 
-                @Override
-                public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
-                    if(!dir.equals(pathSource)) {
-                        return FileVisitResult.SKIP_SUBTREE;
+                    @Override
+                    public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
+                        if (!dir.equals(pathSource)) {
+                            return FileVisitResult.SKIP_SUBTREE;
+                        }
+                        final Path targetDir = pathDestination.resolve(pathSource.relativize(dir));
+                        Files.createDirectories(targetDir);
+                        return FileVisitResult.CONTINUE;
                     }
-                    final Path targetDir = pathDestination.resolve(pathSource.relativize(dir));
-                    Files.createDirectories(targetDir);
-                    return FileVisitResult.CONTINUE;
-                }
 
-                @Override
-                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-                    final Path targetFile = pathDestination.resolve(pathSource.relativize(file));
-                    Files.copy(file, targetFile, StandardCopyOption.REPLACE_EXISTING);
-                    file.toFile().delete();
-                    return FileVisitResult.CONTINUE;
-                }
+                    @Override
+                    public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                        final Path targetFile = pathDestination.resolve(pathSource.relativize(file));
+                        Files.copy(file, targetFile, StandardCopyOption.REPLACE_EXISTING);
+                        file.toFile().delete();
+                        return FileVisitResult.CONTINUE;
+                    }
 
-            });
+                });
 
-            final Page pageNew = new Page(pathNameNew);
+                final Page pageNew = new Page(pathNameNew);
 
-            references(page, pageNew, true);
+                final int references = references(page, pageNew, true);
 
-            return true;
-        } catch (IOException e) {
-            log.error("Error moving page {}", e.toString());
+                resMove.setSuccess(true);
+                resMove.put("references", references);
+            }
+            
+        }catch(final Exception e) {
+            resMove.setException(e);
         }
-        return false;
+        
+        return resMove;
     }
 
-    public boolean copy(final Page page, final String pathNew) {
+    public DaoRes copy(final Page page, final String pathNew) {
         return copy(page, pathNew, page.getName(), false);
     }
 
-    public boolean copy(final Page page, final String pathNew, final boolean excludeChildren) {
+    public DaoRes copy(final Page page, final String pathNew, final boolean excludeChildren) {
         return copy(page, pathNew, page.getName(), excludeChildren);
     }
 
-    public boolean copy(final Page page, final String pathNew, final String nameNew, final boolean excludeChildren) {
+    public DaoRes copy(final Page page, final String pathNew, final String nameNew, final boolean excludeChildren) {
+
+        final DaoRes resCopy = new DaoRes();
+
         try {
 
             if(!page.exists()) {
-                return false;
+                resCopy.setError("Page doesn't exist");
+            }else {
+
+                final String pathNameNew = UtilsResource.path(pathNew, nameNew);
+
+                final Path pathSource = Paths.get(ResourceResolver.getRealPathPage(page.getPath()));
+                final Path pathDestination = Paths.get(ResourceResolver.getRealPathPage(pathNameNew));
+
+                Files.walkFileTree(pathSource, new SimpleFileVisitor<>() {
+
+                    @Override
+                    public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
+                        if (excludeChildren && !dir.equals(pathSource)) {
+                            return FileVisitResult.SKIP_SUBTREE;
+                        }
+                        final Path targetDir = pathDestination.resolve(pathSource.relativize(dir));
+                        Files.createDirectories(targetDir);
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    @Override
+                    public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                        final Path targetFile = pathDestination.resolve(pathSource.relativize(file));
+                        Files.copy(file, targetFile, StandardCopyOption.REPLACE_EXISTING);
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                });
+
+                final Page pageNew = new Page(pathNameNew);
+
+                final int references = references(page, pageNew, pageNew, true);
+
+                resCopy.setSuccess(true);
+                resCopy.put("references", references);
             }
 
-            final String pathNameNew = UtilsResource.path(pathNew, nameNew);
-
-            final Path pathSource = Paths.get(ResourceResolver.getRealPathPage(page.getPath()));
-            final Path pathDestination = Paths.get(ResourceResolver.getRealPathPage(pathNameNew));
-
-            Files.walkFileTree(pathSource, new SimpleFileVisitor<>() {
-
-                @Override
-                public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
-                    if(excludeChildren && !dir.equals(pathSource)) {
-                        return FileVisitResult.SKIP_SUBTREE;
-                    }
-                    final Path targetDir = pathDestination.resolve(pathSource.relativize(dir));
-                    Files.createDirectories(targetDir);
-                    return FileVisitResult.CONTINUE;
-                }
-
-                @Override
-                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-                    final Path targetFile = pathDestination.resolve(pathSource.relativize(file));
-                    Files.copy(file, targetFile, StandardCopyOption.REPLACE_EXISTING);
-                    return FileVisitResult.CONTINUE;
-                }
-
-            });
-
-            final Page pageNew = new Page(pathNameNew);
-
-            references(page, pageNew, pageNew, true);
-
-            return true;
-        } catch (IOException e) {
-            log.error("Error copying page {}", e.toString());
+        }catch(final Exception e) {
+            resCopy.setException(e);
         }
-        return false;
+
+        return resCopy;
     }
 
     public int references(final Page page, final Page pageNew, final boolean update) {

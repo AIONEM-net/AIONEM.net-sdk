@@ -559,7 +559,7 @@ public class QuerySelect extends QueryCondition {
     public <T> T executeData(Class<T> type, final T defaultValue) {
         try {
             return executeData(type);
-        } catch (Exception e) {
+        }catch(final Exception e) {
             return defaultValue;
         }
     }
@@ -609,7 +609,7 @@ public class QuerySelect extends QueryCondition {
     public <T> ArrayList<T> executeList(final Class<T> type, final ArrayList<T> defaultList) {
         try {
             return executeList(type);
-        } catch (Exception e) {
+        }catch(final Exception e) {
             setException(e);
         }
         return defaultList;
@@ -702,7 +702,7 @@ public class QuerySelect extends QueryCondition {
     public long executeCount(final long defaultValue) {
         try {
             return executeCount();
-        } catch (Exception e) {
+        }catch(final Exception e) {
             return defaultValue;
         }
     }
@@ -718,7 +718,7 @@ public class QuerySelect extends QueryCondition {
     public long executeCount(String columnLabel, boolean addCount, final long defaultValue) {
         try {
             return executeCount(columnLabel, addCount);
-        } catch (Exception e) {
+        }catch(final Exception e) {
             return defaultValue;
         }
     }

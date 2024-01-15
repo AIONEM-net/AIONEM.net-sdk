@@ -162,109 +162,118 @@ public class DriveManager {
         return listFiles;
     }
 
-    public boolean move(final Resource drive, final String pathNew) {
+    public DaoRes move(final Resource drive, final String pathNew) {
         return move(drive, pathNew, drive.getName());
     }
 
-    public boolean move(final Resource drive, final String pathNew, final String nameNew) {
+    public DaoRes move(final Resource drive, final String pathNew, final String nameNew) {
+        
+        final DaoRes resMove = new DaoRes();
+        
         try {
-
+            
             if(!drive.isDrive()) {
-                return false;
-            }
+                resMove.setError("Not a drive");
+            }else if(!drive.exists()) {
+                resMove.setError("Drive doesn't exist");
+            }else {
 
-            if(!drive.exists()) {
-                return false;
-            }
+                final String pathNameNew = UtilsResource.path(pathNew, nameNew);
 
-            final String pathNameNew = UtilsResource.path(pathNew, nameNew);
+                final Path pathSource = Paths.get(drive.getPathReal());
+                final Path pathDestination = Paths.get(ResourceResolver.getRealPathPage(pathNameNew));
 
-            final Path pathSource = Paths.get(drive.getPathReal());
-            final Path pathDestination = Paths.get(ResourceResolver.getRealPathPage(pathNameNew));
+                Files.walkFileTree(pathSource, new SimpleFileVisitor<>() {
 
-            Files.walkFileTree(pathSource, new SimpleFileVisitor<>() {
-
-                @Override
-                public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
-                    if(!dir.equals(pathSource)) {
-                        return FileVisitResult.SKIP_SUBTREE;
+                    @Override
+                    public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
+                        if (!dir.equals(pathSource)) {
+                            return FileVisitResult.SKIP_SUBTREE;
+                        }
+                        final Path targetDir = pathDestination.resolve(pathSource.relativize(dir));
+                        Files.createDirectories(targetDir);
+                        return FileVisitResult.CONTINUE;
                     }
-                    final Path targetDir = pathDestination.resolve(pathSource.relativize(dir));
-                    Files.createDirectories(targetDir);
-                    return FileVisitResult.CONTINUE;
-                }
 
-                @Override
-                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-                    final Path targetFile = pathDestination.resolve(pathSource.relativize(file));
-                    Files.copy(file, targetFile, StandardCopyOption.REPLACE_EXISTING);
-                    file.toFile().delete();
-                    return FileVisitResult.CONTINUE;
-                }
+                    @Override
+                    public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                        final Path targetFile = pathDestination.resolve(pathSource.relativize(file));
+                        Files.copy(file, targetFile, StandardCopyOption.REPLACE_EXISTING);
+                        file.toFile().delete();
+                        return FileVisitResult.CONTINUE;
+                    }
 
-            });
+                });
 
-            references(drive, ResourceResolver.getResourceDrive(pathNameNew), true);
+                final int references = references(drive, ResourceResolver.getResourceDrive(pathNameNew), true);
 
-            return true;
-        } catch (IOException e) {
-            log.error("Error moving drive {}", e.toString());
+                resMove.setSuccess(true);
+                resMove.put("references", references);
+            }
+        }catch(final Exception e) {
+            resMove.setException(e);
         }
-        return false;
+        
+        return resMove;
     }
 
-    public boolean copy(final Resource drive, final String pathNew) {
+    public DaoRes copy(final Resource drive, final String pathNew) {
         return copy(drive, pathNew, drive.getName(), false);
     }
 
-    public boolean copy(final Resource drive, final String pathNew, final boolean excludeChildren) {
+    public DaoRes copy(final Resource drive, final String pathNew, final boolean excludeChildren) {
         return copy(drive, pathNew, drive.getName(), excludeChildren);
     }
 
-    public boolean copy(final Resource drive, final String pathNew, final String nameNew, final boolean excludeChildren) {
+    public DaoRes copy(final Resource drive, final String pathNew, final String nameNew, final boolean excludeChildren) {
+
+        final DaoRes resCopy = new DaoRes();
+
         try {
 
             if(!drive.isDrive()) {
-                return false;
-            }
+                resCopy.setError("Not a drive");
+            }else if(!drive.exists()) {
+                resCopy.setError("Drive doesn't exist");
+            }else {
 
-            if(!drive.exists()) {
-                return false;
-            }
+                final String pathNameNew = UtilsResource.path(pathNew, nameNew);
 
-            final String pathNameNew = UtilsResource.path(pathNew, nameNew);
+                final Path pathSource = Paths.get(drive.getRealPath());
+                final Path pathDestination = Paths.get(ResourceResolver.getRealPathDrive(pathNameNew));
 
-            final Path pathSource = Paths.get(drive.getRealPath());
-            final Path pathDestination = Paths.get(ResourceResolver.getRealPathDrive(pathNameNew));
+                Files.walkFileTree(pathSource, new SimpleFileVisitor<>() {
 
-            Files.walkFileTree(pathSource, new SimpleFileVisitor<>() {
-
-                @Override
-                public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
-                    if(excludeChildren && !dir.equals(pathSource)) {
-                        return FileVisitResult.SKIP_SUBTREE;
+                    @Override
+                    public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
+                        if (excludeChildren && !dir.equals(pathSource)) {
+                            return FileVisitResult.SKIP_SUBTREE;
+                        }
+                        final Path targetDir = pathDestination.resolve(pathSource.relativize(dir));
+                        Files.createDirectories(targetDir);
+                        return FileVisitResult.CONTINUE;
                     }
-                    final Path targetDir = pathDestination.resolve(pathSource.relativize(dir));
-                    Files.createDirectories(targetDir);
-                    return FileVisitResult.CONTINUE;
-                }
 
-                @Override
-                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-                    final Path targetFile = pathDestination.resolve(pathSource.relativize(file));
-                    Files.copy(file, targetFile, StandardCopyOption.REPLACE_EXISTING);
-                    return FileVisitResult.CONTINUE;
-                }
+                    @Override
+                    public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                        final Path targetFile = pathDestination.resolve(pathSource.relativize(file));
+                        Files.copy(file, targetFile, StandardCopyOption.REPLACE_EXISTING);
+                        return FileVisitResult.CONTINUE;
+                    }
 
-            });
+                });
 
-            references(drive, ResourceResolver.getResourceDrive(pathNameNew), true);
+                final int references = references(drive, ResourceResolver.getResourceDrive(pathNameNew), true);
 
-            return true;
-        } catch (Exception e) {
-            log.error("Error copying drive {}", e.toString());
+                resCopy.setSuccess(true);
+                resCopy.put("references", references);
+            }
+
+        }catch(final Exception e) {
+            resCopy.setException(e);
         }
-        return false;
+        
+        return resCopy;
     }
 
     public int references(final Resource resource, final Resource resourceNew, final boolean update) {

@@ -133,7 +133,7 @@ public class Resource {
         try(final FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8)) {
             fileWriter.write(contents);
             isWritten = true;
-        } catch (Exception e) {
+        }catch(final Exception e) {
             log.error("\nERROR: - writeFile ::"+ e +"\n");
         }
         return isWritten;

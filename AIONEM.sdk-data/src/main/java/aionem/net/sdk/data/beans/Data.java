@@ -211,7 +211,7 @@ public class Data {
                 }
             }
         } catch (NoSuchFieldException ignore) {
-        } catch (Exception e) {
+        }catch(final Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK put : " + e + "\n");
         }
         return getInstance();

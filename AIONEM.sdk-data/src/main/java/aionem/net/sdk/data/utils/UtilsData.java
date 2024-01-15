@@ -119,7 +119,7 @@ public class UtilsData {
                     final String key = matcher.group(1);
                     final String value = data.get(key);
                     matcher.appendReplacement(stringBuffer, value);
-                } catch (Exception e) {
+                }catch(final Exception e) {
                     log.info("\nERROR: TextUtils - replaceVariables ::" + e + "\n");
                 }
             }

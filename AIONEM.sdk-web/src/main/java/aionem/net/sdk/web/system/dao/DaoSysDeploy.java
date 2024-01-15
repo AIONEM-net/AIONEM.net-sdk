@@ -164,7 +164,7 @@ public class DaoSysDeploy {
                 }
             }
 
-        } catch (Exception e) {
+        }catch(final Exception e) {
             log.error("ERROR: AIONEM.net - JSP - WebApp : UpdateEnv :: {}", e.getMessage());
         }
 
@@ -212,7 +212,7 @@ public class DaoSysDeploy {
                 isBuilt = true;
             }
 
-        } catch (Exception e) {
+        }catch(final Exception e) {
             log.error("Error: AIONEM.net - JSP - WebApp : deployWar", e);
         }
 

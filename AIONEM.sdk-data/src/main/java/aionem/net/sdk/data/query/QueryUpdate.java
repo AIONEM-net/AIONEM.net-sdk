@@ -436,7 +436,7 @@ public class QueryUpdate extends QueryCondition {
     public boolean executeUpdateSuccess(final boolean defaultValue) {
         try {
             return executeUpdate() > 0;
-        } catch (Exception e) {
+        }catch(final Exception e) {
             return defaultValue;
         }
     }

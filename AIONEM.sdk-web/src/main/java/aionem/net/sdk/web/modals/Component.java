@@ -68,7 +68,7 @@ public @Getter abstract class Component {
                                 value = properties.get(key);
                             }
                             field.set(instance, value);
-                        } catch (Exception e) {
+                        }catch(final Exception e) {
                             log.error("\nERROR: Cmp - init " + e + "\n");
                         }
                     }

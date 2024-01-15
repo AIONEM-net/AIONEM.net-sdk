@@ -125,7 +125,7 @@ public class QueryInsert extends Query {
                 resInsert.setError(getError());
                 resInsert.setException(getException());
             }
-        } catch (Exception e) {
+        }catch(final Exception e) {
             resInsert.setError(getError());
             resInsert.setException(e);
         }
@@ -135,7 +135,7 @@ public class QueryInsert extends Query {
     public long executeInsert(final long defaultValue) {
         try {
             return executeInsert();
-        } catch (Exception e) {
+        }catch(final Exception e) {
             return defaultValue;
         }
     }

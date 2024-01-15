@@ -159,7 +159,7 @@ public class DaoSysMinifierCss {
                     if(j == 0) {
                         try {
                             selectors.add(new JspMinifierCssUtils.Selector(sb.substring(n, i + 1)));
-                        } catch (Exception ignore) {
+                        }catch(final Exception ignore) {
                         }
                         n = i + 1;
                     }
@@ -318,7 +318,7 @@ public class DaoSysMinifierCss {
                 for(int i = 0; i < parts.size(); i++) {
                     try {
                         results.add(new Property(parts.get(i)));
-                    } catch (Exception e) {
+                    }catch(final Exception e) {
                         log.debug("Incomplete property in selector '{}': {}", selector, e.getMessage());
                     }
                 }
@@ -409,7 +409,7 @@ public class DaoSysMinifierCss {
                 for(int i = 0; i < parts.length; i++) {
                     try {
                         results[i] = new Part(parts[i], property);
-                    } catch (Exception e) {
+                    }catch(final Exception e) {
                         log.debug("Exception in parseValues().", e);
                         results[i] = null;
                     }

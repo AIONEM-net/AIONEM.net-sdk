@@ -140,7 +140,7 @@ public class UtilsResource {
                 }else {
                     return ResourceBundle.getBundle(path(folder, name));
                 }
-            } catch (Exception ignore) {
+            }catch(final Exception ignore) {
             }
         }
         return null;
