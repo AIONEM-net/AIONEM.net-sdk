@@ -7,6 +7,7 @@ import aionem.net.sdk.data.beans.Data;
 import lombok.extern.log4j.Log4j2;
 
 import javax.net.ssl.HttpsURLConnection;
+import java.io.DataOutputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -230,14 +231,17 @@ public @lombok.Data class Network {
                 if(dataBody != null) {
                     httpURLConnection.setDoInput(true);
                     httpURLConnection.setDoOutput(true);
-                    final OutputStream outputStream = httpURLConnection.getOutputStream();
+                    final DataOutputStream dataOutputStream = new DataOutputStream(httpURLConnection.getOutputStream());
                     final byte[] input;
                     if(dataHeaders != null && dataHeaders.equalsIgnoreCase("application/json", "Content-Type")) {
                         input = dataBody.getJsonBytes();
                     }else {
                         input = dataBody.getQueryBytes();
                     }
-                    outputStream.write(input, 0, input.length);
+                    httpURLConnection.setFixedLengthStreamingMode(input.length);
+                    dataOutputStream.write(input, 0, input.length);
+                    dataOutputStream.flush();
+                    dataOutputStream.close();
                 }
 
                 resPost.setSuccess(true);

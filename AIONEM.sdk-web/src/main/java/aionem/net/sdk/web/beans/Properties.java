@@ -3,7 +3,6 @@ package aionem.net.sdk.web.beans;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.beans.Data;
 import aionem.net.sdk.web.AioWeb;
-import com.google.gson.JsonObject;
 import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.http.HttpServletRequest;

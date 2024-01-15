@@ -18,10 +18,10 @@ public @lombok.Data class Page {
 
     private String path = "/";
     private String url = "/";
-    private Properties properties = new Properties();
+    private Properties properties;
 
     public Page() {
-
+        properties = new Properties();
     }
 
     public Page(final AioWeb aioWeb) {
