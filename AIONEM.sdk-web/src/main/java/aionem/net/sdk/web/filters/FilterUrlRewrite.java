@@ -55,10 +55,13 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                 }
 
             }catch(final Exception e) {
+                final Page errorPage;
                 if(!aioWeb.getCurrentPage().exists()) {
-                    responsePage(aioWeb, new Page(ConfEnv.getInstance().getError(404)), HttpServletResponse.SC_NOT_FOUND);
+                    errorPage = new Page(ConfEnv.getInstance().getError(404));
+                    responsePage(aioWeb, errorPage, HttpServletResponse.SC_NOT_FOUND);
                 }else {
-                    responsePage(aioWeb, new Page(ConfEnv.getInstance().getError(500)), HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    errorPage = new Page(ConfEnv.getInstance().getError(500));
+                    responsePage(aioWeb, errorPage, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 }
             }
 
