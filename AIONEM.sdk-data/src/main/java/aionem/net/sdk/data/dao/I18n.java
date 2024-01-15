@@ -48,7 +48,7 @@ public class I18n {
     }
 
     public I18n init(final Locale locale) {
-        return init(name, locale);
+        return init("", locale);
     }
 
     public I18n init(final String name, final I18n I18n1) {

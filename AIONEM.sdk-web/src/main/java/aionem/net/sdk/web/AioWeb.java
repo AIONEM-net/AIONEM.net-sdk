@@ -264,8 +264,8 @@ public @Getter class AioWeb {
     }
 
     public I18n getI18n() {
-        final I18n i18n = getApplicationAttribute("i18n", I18n.class);
-        return i18n != null ? i18n : getApplicationAttribute("i18n", new I18n(getLocale()), true);
+        final I18n i18n = getRequestAttribute("i18n", I18n.class);
+        return i18n != null ? i18n : getRequestAttribute("i18n", new I18n(getLocale()), true);
     }
 
     public Page getHomePage() {
@@ -321,16 +321,16 @@ public @Getter class AioWeb {
 
         if(UtilsText.isEmpty(language)) {
 
-            language = getParameter("lang");
+            language = getParameter("language");
 
-            if(UtilsText.isEmpty(language)) {
-                language = getHeader("Accept-Language");
-            }
             if(UtilsText.isEmpty(language)) {
                 language = getSessionAttribute("language", "");
             }
             if(UtilsText.isEmpty(language)) {
                 language = getPageManager().getLanguage(getCurrentPage());
+            }
+            if(UtilsText.isEmpty(language)) {
+                language = getHeader("Accept-Language");
             }
 
             language = UtilsText.notEmpty(language, "en");
