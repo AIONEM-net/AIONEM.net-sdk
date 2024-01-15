@@ -7,10 +7,7 @@ import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.dao.ResourceResolver;
 import org.tuckey.web.filters.urlrewrite.UrlRewriteFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,7 +86,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
                 return;
             }else if(requestPath.startsWith("/ui.frontend")) {
-                super.doFilter(request, response, chain);
+                chain.doFilter(request, response);
                 return;
             }else if(requestPath.startsWith("/ui.template")) {
 
@@ -100,15 +97,15 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                     responseFile(aioWeb, resource);
 
                 }else {
-                    super.doFilter(request, response, chain);
+                    chain.doFilter(request, response);
                 }
 
                 return;
             }else if(requestPath.startsWith("/ui.system")) {
-                super.doFilter(request, response, chain);
+                chain.doFilter(request, response);
                 return;
             }else if(requestPath.startsWith("/api")) {
-                super.doFilter(request, response, chain);
+                chain.doFilter(request, response);
                 return;
             }
 
