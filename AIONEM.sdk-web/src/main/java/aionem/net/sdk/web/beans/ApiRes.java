@@ -279,6 +279,8 @@ public class ApiRes {
                     UtilsJson.add(jsonResponse, "exception", eMessage);
                 }
             }
+            UtilsJson.add(jsonResponse, "time", System.currentTimeMillis());
+            UtilsJson.add(jsonResponse, "language", "en");
         }catch(final Exception e) {
             log.error("\nERROR: AIONEM.NET_SDK : toJsonResponse " + e +"\n");
         }

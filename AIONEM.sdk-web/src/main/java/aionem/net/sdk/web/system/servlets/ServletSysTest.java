@@ -10,6 +10,7 @@ import aionem.net.sdk.web.config.Config;
 import aionem.net.sdk.web.dao.*;
 import aionem.net.sdk.web.servlets.GetMapping;
 import aionem.net.sdk.web.servlets.HttpServletApi;
+import aionem.net.sdk.web.utils.UtilsApi;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,7 +24,7 @@ import java.io.PrintWriter;
 public class ServletSysTest extends HttpServletApi {
 
 
-    @GetMapping("/item")
+    @GetMapping("/{id}")
     protected void doGetTest(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
 
         response.setContentType("text/html;charset=UTF-8");
