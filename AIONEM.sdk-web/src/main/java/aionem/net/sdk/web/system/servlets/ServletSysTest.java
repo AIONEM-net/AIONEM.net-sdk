@@ -23,8 +23,8 @@ import java.io.PrintWriter;
 public class ServletSysTest extends HttpServletApi {
 
 
-    @GetMapping("/")
-    public void doGetTest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+    @GetMapping("/item")
+    protected void doGetTest(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
 
         response.setContentType("text/html;charset=UTF-8");
         final PrintWriter out = response.getWriter();

@@ -99,8 +99,12 @@ public class HttpServletApi extends HttpServlet {
     @Override
     public void service(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 
-        final String requestURI = request.getRequestURI();
+        String requestURI = request.getRequestURI();
         final Method[] methods = this.getClass().getDeclaredMethods();
+
+        if(requestURI.endsWith("/")) {
+            requestURI = requestURI.substring(0, requestURI.length() - 1);
+        }
 
         Method methodRequest = null;
         for(final Method method : methods) {
@@ -185,22 +189,66 @@ public class HttpServletApi extends HttpServlet {
 
     private boolean isHandleRequest(final Method method, final String requestURI) {
 
-        boolean isInvokeMethod = true;
+        boolean isInvokeMethod;
 
         if(!UtilsText.isEmpty(urlPattern)) {
 
-            String mappingValue = getMappingValue(method);
+            final String mappingValue = getMappingValue(method);
 
-            if(!UtilsText.isEmpty(mappingValue)) {
+            if(mappingValue != null) {
 
-                if(!mappingValue.startsWith("/")) {
-                    mappingValue = "/" + mappingValue;
+                isInvokeMethod = false;
+
+                final boolean endsWithStar = mappingValue.endsWith("*");
+                final boolean endsWithId = mappingValue.endsWith("{id}");
+
+                String mapping = mappingValue;
+
+                if(!mapping.startsWith("/")) {
+                    mapping = "/" + mapping;
+                }
+                if(endsWithStar) {
+                    mapping = mapping.substring(0, mapping.length() - 1);
+                }
+                if(endsWithId) {
+                    mapping = mapping.substring(0, mapping.length() - 4);
+                }
+                if(mapping.endsWith("/")) {
+                    mapping = mapping.substring(0, mapping.length() - 1);
+                }
+                if(mapping.equals("/")) {
+                    mapping = "";
                 }
 
-                if(!requestURI.equals(urlPattern + mappingValue)) {
-                    isInvokeMethod = false;
+                if(endsWithStar) {
+                    if(requestURI.startsWith(urlPattern + mapping)) {
+                        isInvokeMethod = true;
+                    }
+
+                }else if(endsWithId) {
+
+                    String id = requestURI.substring((urlPattern + mapping).length());
+
+                    if(id.startsWith("/")) {
+                        id = id.substring(1);
+                    }
+
+                    if(!UtilsText.isEmpty(id) && !id.contains("/")) {
+                        isInvokeMethod = true;
+                    }
+
+                }else {
+                    if(requestURI.equals(urlPattern + mapping)) {
+                        isInvokeMethod = true;
+                    }
                 }
+
+            }else {
+                isInvokeMethod = true;
             }
+
+        }else {
+            isInvokeMethod = false;
         }
 
         return isInvokeMethod;
