@@ -1,5 +1,6 @@
 package aionem.net.sdk.data.config;
 
+import aionem.net.sdk.core.Env;
 import aionem.net.sdk.core.utils.UtilsConverter;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.beans.Data;
@@ -16,9 +17,7 @@ public class ConfApp {
 
     @Getter
     private final String name = "application";
-    @Getter
     private String env = "";
-    @Getter
     private Data data = new Data();
     private ResourceBundle resourceBundle;
 
@@ -26,25 +25,22 @@ public class ConfApp {
     public static ConfApp getInstance() {
         if(confApp == null) {
             confApp = new ConfApp();
+
+            Env.IS_DEBUG = confApp.isDebug();
+            Env.IS_DEBUG_EXCEPTION = confApp.isDebugException();
         }
         return confApp;
     }
 
-    private ConfApp() {
+    protected ConfApp() {
         init();
     }
 
     public ConfApp init() {
-        String name = this.name;
 
-        final String env = getEnv();
+        final String name = UtilsResource.path(getEnv(), this.name);
 
-        if(!UtilsText.isEmpty(env)) {
-            name = "/"+ env +"/"+ name;
-            this.resourceBundle = UtilsResource.getResourceBundle(name, "/ui.config/env", "/config/env");
-        }else {
-            this.resourceBundle = UtilsResource.getResourceBundle(name, "/ui.config", "/config");
-        }
+        this.resourceBundle = UtilsResource.getResourceBundle(name, "/ui.config/conf", "/config/conf", "/ui.config", "/config", "/");
 
         this.data = getData(name);
 
@@ -112,12 +108,12 @@ public class ConfApp {
         return false;
     }
 
-    public Data getBaseData() {
+    private Data getBaseData() {
         return getData(getName());
     }
 
-    public ResourceBundle getBaseResourceBundle() {
-        return UtilsResource.getResourceBundle(getName(), "/ui.config/", "/ui.config/env/", "/config/", "/config/env/", "/");
+    private ResourceBundle getBaseResourceBundle() {
+        return UtilsResource.getResourceBundle(getName(), "/ui.config/conf", "/ui.config", "/config/conf", "/config", "/");
     }
 
     private static <T> Data getData(String name) {
@@ -130,9 +126,9 @@ public class ConfApp {
         }
         if(data == null || data.isEmpty()) {
 
-            String json = UtilsResource.readResourceOrParent(name, "/ui.config/", "/ui.config/env/");
+            String json = UtilsResource.readResourceOrParent(name, "/ui.config/conf", "/config/conf");
             if(UtilsText.isEmpty(json)) {
-                json = UtilsResource.readResource(name, "/config/", "/config/env/", "/");
+                json = UtilsResource.readResource(name, "/ui.config", "/config", "/");
             }
 
             if(!UtilsText.isEmpty(json)) {
@@ -142,6 +138,17 @@ public class ConfApp {
         }
 
         return data != null ? data : new Data();
+    }
+
+    public void invalidate() {
+        mapData.remove(getName());
+        this.env = "";
+        init();
+    }
+
+    public static void invalidateAll() {
+        mapData.clear();
+        getInstance().invalidate();
     }
 
     @Override
@@ -189,15 +196,12 @@ public class ConfApp {
         return ConfApp.getInstance().get("db_password", "spring.datasource.password", "");
     }
 
-    public void invalidate() {
-        mapData.remove(getName());
-        this.env = "";
-        init();
+    public boolean isDebug() {
+        return get("debug", Env.IS_DEBUG);
     }
 
-    public static void invalidateAll() {
-        mapData.clear();
-        getInstance().invalidate();
+    public boolean isDebugException() {
+        return get("debug_exception", Env.IS_DEBUG_EXCEPTION);
     }
 
 }

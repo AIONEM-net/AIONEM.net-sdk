@@ -82,6 +82,7 @@ public class UtilsJson {
                 }
             }
         }catch(final Exception ignore) {
+            System.out.println(ignore);
         }
         return jsonObject != null && !jsonObject.isJsonNull() ? jsonObject : new JsonObject();
     }

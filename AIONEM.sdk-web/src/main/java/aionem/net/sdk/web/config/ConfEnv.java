@@ -1,37 +1,27 @@
 package aionem.net.sdk.web.config;
 
-import aionem.net.sdk.core.Env;
 import aionem.net.sdk.core.utils.UtilsText;
+import aionem.net.sdk.data.config.ConfApp;
 import aionem.net.sdk.data.utils.UtilsResource;
 
 
-public class ConfEnv extends Config {
+public class ConfEnv extends ConfApp {
 
     public static final String ENV_PROD = "prod";
     public static final String ENV_STAGE = "stage";
     public static final String ENV_DEV = "dev";
     public static final String ENV_LOCAL = "local";
 
-    private String env = "";
-
     private static ConfEnv confEnv;
     public static ConfEnv getInstance() {
         if(confEnv == null) {
             confEnv = new ConfEnv();
-
-            Env.IS_DEBUG = confEnv.isDebug();
-            Env.IS_DEBUG_EXCEPTION = confEnv.isDebugException();
         }
         return confEnv;
     }
 
     public ConfEnv() {
         super();
-    }
-
-    public String getEnv() {
-        env = !UtilsText.isEmpty(env) ? env : get("env");
-        return env;
     }
 
     public String getHome() {
@@ -54,10 +44,6 @@ public class ConfEnv extends Config {
         return get("error_"+ code, "/en/error/404");
     }
 
-    public String getSenderID() {
-        return get("senderID");
-    }
-
     public String getDomain() {
         final String domain = get("domain");
         return !UtilsText.isEmpty(domain) ? domain : (isEnvLocal() ? "127.0.0.1" : "");
@@ -74,34 +60,6 @@ public class ConfEnv extends Config {
 
     public String getHost() {
         return get("host");
-    }
-
-    public String getSenderName() {
-        return get("senderName");
-    }
-
-    public String getSenderEmail() {
-        return get("senderEmail");
-    }
-
-    public String getSenderPassword() {
-        return get("senderPassword");
-    }
-
-    public String getSupportEmail() {
-        return get("supportEmail");
-    }
-
-    public String getCcEmail() {
-        return get("ccEmail");
-    }
-
-    public String getInitGoogleSignInClientID() {
-        return get("GoogleSignInClientID");
-    }
-
-    public String getAPI_SMS_KEY() {
-        return get("API_SMS_KEY");
     }
 
     public boolean isEnvProd() {
@@ -125,17 +83,8 @@ public class ConfEnv extends Config {
         return UtilsText.isEmpty(env) || ENV_LOCAL.equalsIgnoreCase(env);
     }
 
-    public boolean isDebug() {
-        return get("debug", Env.IS_DEBUG);
-    }
-
-    public boolean isDebugException() {
-        return get("debug_exception", Env.IS_DEBUG_EXCEPTION);
-    }
-
     @Override
     public void invalidate() {
-        this.env = "";
         super.invalidate();
     }
 

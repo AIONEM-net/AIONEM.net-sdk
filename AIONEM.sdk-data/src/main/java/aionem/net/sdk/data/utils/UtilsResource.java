@@ -48,7 +48,8 @@ public class UtilsResource {
     public static String getResourcePath(final String path) {
         if(UtilsText.isEmpty(RESOURCE_PATH)) {
             final URL resource = UtilsResource.class.getClassLoader().getResource("");
-            RESOURCE_PATH = resource != null ? resource.getFile() : "";
+            final String resourcePath = resource != null ? resource.getFile() : "";
+            RESOURCE_PATH = resourcePath.endsWith("/") ? resourcePath.substring(0, resourcePath.length()-1) : "";
         }
         return path(RESOURCE_PATH, path);
     }
@@ -70,7 +71,7 @@ public class UtilsResource {
                 if(file.exists() && file.isFile()) {
                     return new FileInputStream(file);
                 }
-            }catch (IOException ignore) {
+            }catch (Exception ignore) {
             }
         }
         return null;
@@ -84,31 +85,12 @@ public class UtilsResource {
                 if(file.exists() && file.isFile()) {
                     return new FileInputStream(file);
                 }else {
-                    InputStream inputStream = getResourceStream(path(folder, name));
+                    final InputStream inputStream = getResourceStream(path(folder, name));
                     if(inputStream != null) {
                         return inputStream;
                     }
                 }
-            }catch (IOException ignore) {
-            }
-        }
-        return null;
-    }
-
-    public static InputStream getResourceStreamOrRoot(final String name, String... folders) {
-        if(folders == null || folders.length == 0) folders = new String[]{""};
-        for(final String folder : folders) {
-            try {
-                final File file = getRealFileParent(path(folder, name));
-                if(file.exists() && file.isFile()) {
-                    return new FileInputStream(file);
-                }else {
-                    InputStream inputStream = getResourceStreamOrParent(path(folder, name));
-                    if(inputStream != null) {
-                        return inputStream;
-                    }
-                }
-            }catch (IOException ignore) {
+            }catch (Exception ignore) {
             }
         }
         return null;
@@ -121,11 +103,6 @@ public class UtilsResource {
     public static String readResourceOrParent(final String name, String... folders) {
         return UtilsText.toString(getResourceStreamOrParent(name, folders));
     }
-
-    public static String readResourceOrRoot(final String name, String... folders) {
-        return UtilsText.toString(getResourceStreamOrParent(name, folders));
-    }
-
 
     public static ResourceBundle getResourceBundle(final String name, String... folders) {
         return getResourceBundle(name, null, folders);

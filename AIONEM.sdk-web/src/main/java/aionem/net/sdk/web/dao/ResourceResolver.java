@@ -17,7 +17,7 @@ public class ResourceResolver {
     public static final List<String> SYSTEM_PATH_ROOTS = List.of("/ui.system", "/ui.page", "/ui.frontend", "/ui.drive", "/WEB-INF", "/META-INF");
     public static final List<String> SYSTEM_PATH_WEB_INF = List.of("/ui.config", "/ui.apps", "/ui.template");
     public static final List<String> SYSTEM_PATH_ALIAS = List.of("/api", "/drive", "/assets", "/cdn");
-    public static final String DRIVE_PATH_UPLOADS = "/ui.drive/uploads/";
+    public static final String DRIVE_PATH_UPLOADS = "/ui.drive/uploads";
 
     public static final List<String> SYSTEM_PATHS = new ArrayList<>(SYSTEM_PATH_ROOTS);
 
@@ -47,10 +47,6 @@ public class ResourceResolver {
         return isSystemPath;
     }
 
-    public static String getRealPathWebInf() {
-        return getRealPathWebInf("");
-    }
-
     public static String getRealPathWebInf(final String path) {
         return UtilsResource.getRealPathParent(path);
     }
@@ -63,24 +59,12 @@ public class ResourceResolver {
         return UtilsResource.getRealPathRoot("/ui.page");
     }
 
-    public static String getRealPathDrive() {
-        return UtilsResource.getRealPathRoot("/ui.drive");
-    }
-
-    public static String getRealPathDrive(final String path) {
-        return UtilsResource.getRealPathRoot(UtilsResource.path("/ui.drive", path));
-    }
-
     public static String getRealPathPage(final String path) {
         return UtilsResource.getRealPathRoot(UtilsResource.path("/ui.page", (!UtilsText.isEmpty(path) && !path.equals("/") ? path : ConfEnv.getInstance().getHome())));
     }
 
     public static Resource getResourcePage(final String path) {
         return new Resource(getRealPathPage(path));
-    }
-
-    public static Resource getResourceDrive(final String path) {
-        return new Resource(getRealPathDrive(path));
     }
 
     public static ArrayList<Resource> findResources(final Resource resourceFolder, final FilenameFilter filenameFilter) {
@@ -103,43 +87,43 @@ public class ResourceResolver {
     }
 
     public static String readResource(final String name) {
-        return readResource(name, "/WEB-INF/classes/", "/classes/");
+        return readResource(name, "/WEB-INF/classes", "/classes");
     }
 
     public static String readResourceWebInf(final String name) {
-        return readResource(name, "/WEB-INF/", "/");
+        return readResource(name, "/WEB-INF", "/");
     }
 
     public static String readResourceConfig(final String name) {
-        return readResource(name, "/WEB-INF/ui.config/", "/ui.config/");
+        return readResource(name, "/WEB-INF/ui.config", "/ui.config");
     }
 
     public static String readResourceEnv(final String name) {
-        return readResource(name, "/WEB-INF/ui.config/env/", "/ui.config/env/");
+        return readResource(name, "/WEB-INF/ui.config/conf", "/ui.config/conf");
     }
 
     public static String readResourceI18n(final String name) {
-        return readResource(name, "/WEB-INF/ui.config/i18n/", "/ui.config/i18n/");
+        return readResource(name, "/WEB-INF/ui.config/i18n", "/ui.config/i18n");
     }
 
     public static String readResourceEtc(final String name) {
-        return readResource(name, "/WEB-INF/ui.config/etc/", "/ui.config/etc/");
+        return readResource(name, "/WEB-INF/ui.config/etc", "/ui.config/etc");
     }
 
     public static ResourceBundle getResourceBundleEnv(final String name) {
-        return UtilsResource.getResourceBundle("/ui.config/env/" + name);
+        return UtilsResource.getResourceBundle(UtilsResource.path("/ui.config/conf", name));
     }
 
     public static ResourceBundle getResourceBundleI18n(final String name) {
-        return UtilsResource.getResourceBundle("/ui.config/i18n/" + name);
+        return UtilsResource.getResourceBundle(UtilsResource.path("/ui.config/i18n", name));
     }
 
     public static ResourceBundle getResourceBundleI18n(final String name, final Locale locale) {
-        return UtilsResource.getResourceBundle("/ui.config/i18n/" + name, locale);
+        return UtilsResource.getResourceBundle(UtilsResource.path("/ui.config/i18n", name), locale);
     }
 
     public static ResourceBundle getResourceBundleEtc(final String name) {
-        return UtilsResource.getResourceBundle("/ui.config/etc/" + name);
+        return UtilsResource.getResourceBundle(UtilsResource.path("/ui.config/etc", name));
     }
 
     public static String readResource(final String name, final String... folders) {

@@ -30,7 +30,37 @@ public class DriveManager {
 
     }
 
-    public DaoRes uploadFile(final Part filePart, String uploadName) {
+    public Resource getRoot() {
+        return getFile("");
+    }
+
+    public ArrayList<Resource> getRoots() {
+        return getFiles("");
+    }
+
+    public Resource getFile(final String path) {
+        return new Resource("/ui.drive", path);
+    }
+
+    public ArrayList<Resource> getFiles(final String path) {
+        final ArrayList<Resource> listFiles = new ArrayList<>();
+        for(final Resource drive : getFile(path).children()) {
+            if(drive.exists()) {
+                listFiles.add(drive);
+            }
+        }
+        return listFiles;
+    }
+
+    private String getRealPathDrive(final String path) {
+        return UtilsResource.getRealPathRoot(UtilsResource.path("/ui.drive", path));
+    }
+
+    public DaoRes uploadFile(final Part filePart, String name) {
+        return uploadFile(filePart,"", name);
+    }
+
+    public DaoRes uploadFile(final Part filePart, final String folder, String name) {
 
         final DaoRes resUpload = new DaoRes();
 
@@ -39,10 +69,17 @@ public class DriveManager {
             if(filePart != null) {
 
                 final InputStream fileStream = filePart.getInputStream();
+
                 final String fileName = UtilsText.notEmpty(filePart.getName(), filePart.getName());
-                uploadName = UtilsText.notEmpty(uploadName, fileName);
+                name = UtilsText.notEmpty(name, fileName);
 
-                return uploadFile(fileStream, uploadName, fileName);
+                String fileExtension = UtilsDrive.getFileExtension(name);
+                if(UtilsText.isEmpty(fileExtension)) {
+                    fileExtension = UtilsDrive.getFileExtension(fileName);
+                    name = name + (!name.endsWith(".") ? "." : "") + fileExtension;
+                }
+
+                return uploadFile(fileStream, folder, name);
 
             }else {
                 resUpload.setError("Invalid file");
@@ -55,26 +92,11 @@ public class DriveManager {
         return resUpload;
     }
 
-    public DaoRes uploadFile(final File file, final String uploadName) {
-
-        final DaoRes resUpload = new DaoRes();
-
-        try {
-
-            if(file.exists() && file.isFile()) {
-                return uploadFile(new FileInputStream(file), uploadName, file.getName());
-            }else {
-                resUpload.setError("Invalid file");
-            }
-
-        }catch(final Exception e) {
-            resUpload.setException(e);
-        }
-
-        return resUpload;
+    public DaoRes uploadFile(final InputStream fileStream, final String name) {
+        return uploadFile(fileStream, "", name);
     }
 
-    public DaoRes uploadFile(final InputStream fileStream, String uploadName, final String fileName) {
+    public DaoRes uploadFile(final InputStream fileStream, String folder, final String name) {
 
         final DaoRes resUpload = new DaoRes();
 
@@ -82,30 +104,28 @@ public class DriveManager {
 
             if(fileStream != null) {
 
-                String fileExtension = UtilsDrive.getFileExtension(uploadName);
+                final String extension = UtilsDrive.getFileExtension(name);
 
-                if(UtilsText.isEmpty(fileExtension)) {
-                    fileExtension = UtilsDrive.getFileExtension(fileName);
-                    uploadName = uploadName + (!uploadName.endsWith(".") ? "." : "") + fileExtension;
+                if(UtilsText.isEmpty(folder)) {
+                    final String uploadFolder = UtilsDrive.getUploadFolder(extension);
+                    folder = UtilsResource.path(ResourceResolver.DRIVE_PATH_UPLOADS, uploadFolder);
                 }
 
-                final String fileFolder = UtilsDrive.getFileFolder(fileExtension);
-                final String filePath = UtilsResource.path(fileFolder, uploadName);
-                final String fileUrl = ConfEnv.getInstance().getContextPath(ResourceResolver.DRIVE_PATH_UPLOADS) +"/"+ filePath;
+                final String drivePath = UtilsResource.path(folder, name);
+                final Resource driveFolder = getFile(folder);
 
-                final Resource fileDirectory = new Resource(UtilsResource.getRealPathRoot(ResourceResolver.DRIVE_PATH_UPLOADS +"/"+ fileFolder));
-
-                final boolean isDirectory;
-                if(!fileDirectory.exists()) {
-                    isDirectory = fileDirectory.getFile().mkdirs();
+                final boolean isFolder;
+                if(!driveFolder.exists()) {
+                    isFolder = driveFolder.getFile().mkdirs();
                 }else {
-                    isDirectory = true;
+                    isFolder = true;
                 }
 
-                if(isDirectory) {
+                if(isFolder) {
 
-                    final Resource file = new Resource(fileDirectory.getRealPath() + "/" + uploadName);
-                    final FileOutputStream outputStream = file.getFileOutputStream();
+                    final Resource drive = driveFolder.child(name);
+                    final FileOutputStream outputStream = drive.getFileOutputStream();
+                    final long fileSize = drive.getSize();
 
                     final byte[] buffer = new byte[4096];
                     int readSize;
@@ -114,16 +134,14 @@ public class DriveManager {
                     }
                     fileStream.close();
 
-                    final long fileSize = file.getSize();
+                    final String driveUrl = ConfEnv.getInstance().getContextPath(drivePath);
 
                     resUpload.setSuccess(true);
-
-                    resUpload.put(UtilsDrive.DRIVE_FILE, fileName);
-                    resUpload.put(UtilsDrive.DRIVE_FILE_NAME, uploadName);
-                    resUpload.put(UtilsDrive.DRIVE_FILE_PATH, filePath);
-                    resUpload.put(UtilsDrive.DRIVE_FILE_URL, fileUrl);
+                    resUpload.put(UtilsDrive.DRIVE_FILE_NAME, name);
+                    resUpload.put(UtilsDrive.DRIVE_FILE_PATH, drivePath);
+                    resUpload.put(UtilsDrive.DRIVE_FILE_URL, driveUrl);
                     resUpload.put(UtilsDrive.DRIVE_FILE_SIZE, fileSize);
-                    resUpload.put(UtilsDrive.DRIVE_FILE_EXTENSION, fileExtension);
+                    resUpload.put(UtilsDrive.DRIVE_FILE_EXTENSION, extension);
 
                 }else {
                     resUpload.setError("Directory doesn't exist");
@@ -138,28 +156,6 @@ public class DriveManager {
         }
 
         return resUpload;
-    }
-
-    public Resource getFolder() {
-        return getFile("");
-    }
-
-    public Resource getFile(final String path) {
-        return ResourceResolver.getResourceDrive(path);
-    }
-
-    public ArrayList<Resource> getFiles() {
-        return getFiles("");
-    }
-
-    public ArrayList<Resource> getFiles(final String path) {
-        final ArrayList<Resource> listFiles = new ArrayList<>();
-        for(final Resource file : getFile(path).children()) {
-            if(file.exists()) {
-                listFiles.add(file);
-            }
-        }
-        return listFiles;
     }
 
     public DaoRes move(final Resource drive, final String pathNew) {
@@ -205,7 +201,7 @@ public class DriveManager {
 
                 });
 
-                final int references = references(drive, ResourceResolver.getResourceDrive(pathNameNew), true);
+                final int references = references(drive, getFile(pathNameNew), true);
 
                 resMove.setSuccess(true);
                 resMove.put("references", references);
@@ -240,7 +236,7 @@ public class DriveManager {
                 final String pathNameNew = UtilsResource.path(pathNew, nameNew);
 
                 final Path pathSource = Paths.get(drive.getRealPath());
-                final Path pathDestination = Paths.get(ResourceResolver.getRealPathDrive(pathNameNew));
+                final Path pathDestination = Paths.get(getRealPathDrive(pathNameNew));
 
                 Files.walkFileTree(pathSource, new SimpleFileVisitor<>() {
 
@@ -263,7 +259,7 @@ public class DriveManager {
 
                 });
 
-                final int references = references(drive, ResourceResolver.getResourceDrive(pathNameNew), true);
+                final int references = references(drive, getFile(pathNameNew), true);
 
                 resCopy.setSuccess(true);
                 resCopy.put("references", references);

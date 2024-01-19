@@ -5,7 +5,6 @@ import aionem.net.sdk.core.utils.UtilsText;
 
 public class UtilsDrive {
 
-    public static final String DRIVE_FILE = "file";
     public static final String DRIVE_FILE_URL = "url";
     public static final String DRIVE_FILE_PATH = "path";
     public static final String DRIVE_FILE_NAME = "name";
@@ -29,8 +28,8 @@ public class UtilsDrive {
         return fileExtension;
     }
 
-    public static String getFileFolder(final String fileExtension) {
-        String fileFolder = "others";
+    public static String getUploadFolder(final String fileExtension) {
+        String uploadFolder = "others";
 
         if(!UtilsText.isEmpty(fileExtension)) {
 
@@ -42,7 +41,7 @@ public class UtilsDrive {
                 case "jpeg":
                 case "gif":
                 case "bmp":
-                    fileFolder = "images";
+                    uploadFolder = "images";
                     break;
 
                 // Videos
@@ -51,7 +50,7 @@ public class UtilsDrive {
                 case "mov":
                 case "mkv":
                 case "wmv":
-                    fileFolder = "videos";
+                    uploadFolder = "videos";
                     break;
 
                 // Documents
@@ -60,7 +59,7 @@ public class UtilsDrive {
                 case "pdf":
                 case "txt":
                 case "rtf":
-                    fileFolder = "documents";
+                    uploadFolder = "documents";
                     break;
 
                 // Compressed
@@ -69,15 +68,15 @@ public class UtilsDrive {
                 case "7z":
                 case "gz":
                 case "tar":
-                    fileFolder = "compressed";
+                    uploadFolder = "compressed";
                     break;
 
                 default:
-                    fileFolder = "others";
+                    uploadFolder = "others";
             }
         }
 
-        return fileFolder;
+        return uploadFolder;
     }
 
 }

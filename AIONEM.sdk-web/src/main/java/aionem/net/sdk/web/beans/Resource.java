@@ -4,6 +4,7 @@ import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.beans.Data;
 import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.dao.ResourceResolver;
+import aionem.net.sdk.web.utils.UtilsDrive;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -37,8 +38,8 @@ public class Resource {
             system = pathRelative.substring("/ui.frontend".length());
         }else if(isApps()) {
             system = pathRelative.substring("/WEB-INF/ui.apps".length());
-        }else if(isEnv()) {
-            system = pathRelative.substring("/WEB-INF/ui.config/env".length());
+        }else if(isConf()) {
+            system = pathRelative.substring("/WEB-INF/ui.config/conf".length());
         }else if(isI18n()) {
             system = pathRelative.substring("/WEB-INF/ui.config/i18n".length());
         }else if(isEtc()) {
@@ -125,16 +126,21 @@ public class Resource {
     }
 
     public String readContent(final boolean isLine) {
-        return UtilsText.toString(file, isLine);
+        if(exists() && isFile()) {
+            return UtilsText.toString(file, isLine);
+        }
+        return null;
     }
 
     public boolean saveContent(final String contents) {
         boolean isWritten = false;
-        try(final FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8)) {
-            fileWriter.write(contents);
-            isWritten = true;
-        }catch(final Exception e) {
-            log.error("\nERROR: - writeFile ::"+ e +"\n");
+        if(exists() && isFile()) {
+            try (final FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8)) {
+                fileWriter.write(contents);
+                isWritten = true;
+            } catch (final Exception e) {
+                log.error("\nERROR: - writeFile ::" + e + "\n");
+            }
         }
         return isWritten;
     }
@@ -165,8 +171,18 @@ public class Resource {
         }
     }
 
+    public String getExtension() {
+        return UtilsDrive.getFileExtension(getName());
+    }
+
     public boolean delete() {
-        return file.delete();
+        boolean isDeleted = false;
+        if(exists()) {
+            if(isPage() || isDrive()) {
+                isDeleted = file.delete();
+            }
+        }
+        return isDeleted;
     }
 
     public boolean exists() {
@@ -205,8 +221,8 @@ public class Resource {
         return pathRelative.startsWith("/WEB-INF/ui.template");
     }
 
-    public boolean isEnv() {
-        return pathRelative.startsWith("/WEB-INF/ui.config/env");
+    public boolean isConf() {
+        return pathRelative.startsWith("/WEB-INF/ui.config/conf");
     }
 
     public boolean isI18n() {
@@ -231,7 +247,7 @@ public class Resource {
             type = "frontend";
         }else if(isApps()) {
             type = "apps";
-        }else if(isEnv()) {
+        }else if(isConf()) {
             type = "env";
         }else if(isI18n()) {
             type = "i18n";
