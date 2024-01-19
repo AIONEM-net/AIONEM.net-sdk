@@ -15,7 +15,7 @@ public class I18nManager {
     }
 
     public Resource getI18n(final String name) {
-        return new Resource("/ui.config/i18n");
+        return new Resource("/ui.config/i18n", name);
     }
 
     public ArrayList<Resource> getListFolders() {
