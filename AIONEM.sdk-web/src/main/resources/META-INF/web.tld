@@ -24,11 +24,6 @@
         <name>template</name>
         <tag-class>aionem.net.sdk.web.tag.TemplateTag</tag-class>
         <body-content>empty</body-content>
-        <attribute>
-            <name>name</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
     </tag>
     
 </taglib>

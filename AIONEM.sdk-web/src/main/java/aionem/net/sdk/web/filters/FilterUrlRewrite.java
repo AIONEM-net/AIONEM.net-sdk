@@ -5,11 +5,15 @@ import aionem.net.sdk.web.WebContext;
 import aionem.net.sdk.web.beans.Page;
 import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.config.ConfEnv;
+import aionem.net.sdk.web.dao.DaoTemplate;
 import aionem.net.sdk.web.dao.ResourceResolver;
 import lombok.extern.log4j.Log4j2;
 import org.tuckey.web.filters.urlrewrite.UrlRewriteFilter;
 
-import javax.servlet.*;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +29,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
     @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
 
-        final WebContext webContext = new WebContext(request, response);
+        final WebContext webContext = WebContext.getInstance(request, response);
 
         try {
 
@@ -34,12 +38,12 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
             final boolean isUiPage = !requestPath.contains(".");
             final boolean isSystemPath = ResourceResolver.isSystemPath(requestPath);
 
-            if (!webContext.isHostMatch() && !webContext.isRemoteLocal()) {
+            if(!webContext.isHostMatch() && !webContext.isRemoteLocal()) {
 
                 final String urlQuery = webContext.getRequestUrlQuery();
                 webContext.sendRedirect(webContext.getConfEnv().getUrl(urlQuery));
 
-            } else if (isUiPage && !isSystemPath) {
+            }else if (isUiPage && !isSystemPath) {
 
                 try {
 
@@ -199,10 +203,8 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
             webContext.setRequestAttribute("currentPage", currentPage);
             webContext.setup();
+            webContext.include("/WEB-INF/ui.template/page/.jsp");
 
-            final String templatePath = UtilsResource.path("/WEB-INF/ui.template", currentPage.getTemplate(), "/.jsp");
-            webContext.include(templatePath);
-            webContext.getPageManager().cache(webContext, currentPage.isCache());
         }
 
     }

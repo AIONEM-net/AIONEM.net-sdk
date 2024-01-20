@@ -10,8 +10,7 @@ public class WebContextTag extends SimpleTagSupport {
 
     @Override
     public void doTag() {
-        final WebContext webContext = new WebContext(getJspContext());
-        getJspContext().setAttribute("webContext", webContext);
+        WebContext.getInstance(getJspContext());
     }
 
 }

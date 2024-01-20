@@ -1,5 +1,7 @@
 package aionem.net.sdk.web.tag;
 
+import aionem.net.sdk.web.WebContext;
+import aionem.net.sdk.web.beans.Page;
 import aionem.net.sdk.web.dao.DaoTemplate;
 
 import javax.servlet.jsp.tagext.SimpleTagSupport;
@@ -8,18 +10,18 @@ import java.io.IOException;
 
 public class TemplateTag extends SimpleTagSupport {
 
-    private String name;
 
     @Override
     public void doTag() throws IOException {
 
+        final WebContext webContext = WebContext.getInstance(getJspContext());
+
+        final Page currentPage = webContext.getCurrentPage();
+
         final DaoTemplate daoTemplate = new DaoTemplate();
+        daoTemplate.render(webContext, currentPage.getTemplate());
 
-        daoTemplate.render(getJspContext(), name);
-    }
-
-    public void setName(final String name) {
-        this.name = name;
+        webContext.getPageManager().cache(webContext, currentPage.isCache());
     }
 
 }

@@ -21,7 +21,7 @@ public class ServletSysUi extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        final WebContext webContext = new WebContext(request, response);
+        final WebContext webContext = WebContext.getInstance(request, response);
 
         String path = request.getPathInfo();
         if(UtilsText.isEmpty(path)) {

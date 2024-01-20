@@ -10,7 +10,6 @@ import aionem.net.sdk.web.config.ConfEnv;
 import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.ServletException;
-import javax.servlet.jsp.JspContext;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import java.io.IOException;
@@ -20,10 +19,8 @@ import java.io.IOException;
 public class DaoTemplate {
 
 
-    public void render(final JspContext jspContext, final String template) throws IOException {
+    public void render(final WebContext webContext, final String template) throws IOException {
 
-        final WebContext webContext = new WebContext(jspContext);
-        final JspWriter out = webContext.getOut();
         final Page currentPage = webContext.getCurrentPage();
 
         final String pathTemplate = UtilsResource.path("/WEB-INF/ui.template", template);
@@ -32,6 +29,7 @@ public class DaoTemplate {
 
         webContext.getResponse().setContentType("text/html;charset=UTF-8");
 
+        final JspWriter out = webContext.getOut();
         out.println("<html lang='"+ webContext.getLanguage() +"'>");
         out.println("<head>");
         out.println("<base href='/'"
@@ -72,7 +70,7 @@ public class DaoTemplate {
 
         for(final Properties properties : propertiesTemplate.getChildren("body")) {
             if("/WEB-INF/ui.apps/container/.jsp".equals(properties.getResourceType())) {
-                includePageContents(webContext.getPageContext());
+                includePageContents(webContext);
             }else {
                 webContext.includeCatch(properties.getResourceType());
             }
@@ -82,14 +80,13 @@ public class DaoTemplate {
         if(!"page".equalsIgnoreCase(template)) {
             webContext.includeCatch("/WEB-INF/ui.template/page/foot.jsp");
         }
-        out.println(printFrontendJs(webContext.getPageContext()));
+        out.println(printFrontendJs(webContext));
         out.println("</body>");
         out.println("</html>");
     }
 
-    public void includePageContents(final PageContext pageContext) throws IOException {
+    public void includePageContents(final WebContext webContext) throws IOException {
 
-        final WebContext webContext = WebContext.getInstance(pageContext);
         final JspWriter out = webContext.getOut();
 
         out.println("<div class='body-content'>");
@@ -144,11 +141,10 @@ public class DaoTemplate {
         return styles.toString();
     }
 
-    public String printFrontendJs(final PageContext pageContext) throws IOException {
+    public String printFrontendJs(final WebContext webContext) throws IOException {
 
         final StringBuilder scrips = new StringBuilder();
 
-        final WebContext webContext = WebContext.getInstance(pageContext);
         final JspWriter out = webContext.getOut();
 
         final Resource resourceTemplate = new Resource("/WEB-INF/ui.template", webContext.getCurrentPage().getTemplate());

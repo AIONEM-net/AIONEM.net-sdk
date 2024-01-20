@@ -33,6 +33,10 @@ public @Getter class WebContext {
     protected ServletContext servletContext;
     protected HttpSession session;
 
+    public static WebContext getInstance(final JspContext jspContext) {
+        return getInstance((PageContext) jspContext);
+    }
+
     public static WebContext getInstance(final PageContext pageContext) {
         WebContext webContext = (WebContext) pageContext.getAttribute("webContext", PageContext.REQUEST_SCOPE);
         if(webContext == null) {
@@ -42,6 +46,19 @@ public @Getter class WebContext {
             if(webContext.pageContext == null) {
                 webContext.pageContext = pageContext;
             }
+        }
+        return webContext;
+    }
+
+    public static WebContext getInstance(final ServletRequest request, final ServletResponse response) {
+        return getInstance((HttpServletRequest) request, (HttpServletResponse) response);
+    }
+
+    public static WebContext getInstance(final HttpServletRequest request, final HttpServletResponse response) {
+        WebContext webContext = (WebContext) request.getAttribute("webContext");
+        if(webContext == null) {
+            webContext = new WebContext(request, response);
+            request.setAttribute("webContext", webContext);
         }
         return webContext;
     }
@@ -92,7 +109,6 @@ public @Getter class WebContext {
     }
 
     public void setup() {
-        setRequestAttribute("webContext", this);
         getPageProperties();
         getI18n();
         getCurrentPage();
@@ -369,7 +385,9 @@ public @Getter class WebContext {
                 }
             }
 
-            language = UtilsText.notEmpty(language, "en");
+            if(UtilsText.isEmpty(language)) {
+                language = UtilsText.notEmpty(request.getLocale().getLanguage(), "en");
+            }
             setRequestAttribute("language", language);
         }
 
@@ -449,7 +467,7 @@ public @Getter class WebContext {
         return request.getRequestDispatcher(path);
     }
 
-    public JspWriter getOut() throws IOException {
+    public JspWriter getOut() {
         return pageContext.getOut();
     }
 
