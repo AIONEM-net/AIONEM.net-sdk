@@ -35,7 +35,7 @@ public @Getter abstract class Component {
     }
 
     public <T> T init(final AioWeb aioWeb) {
-        return (T) init(instance, aioWeb, aioWeb.getProperties());
+        return (T) init(instance, aioWeb, aioWeb.getPageProperties());
     }
 
     public <T> T init(final AioWeb aioWeb, final Properties properties) {

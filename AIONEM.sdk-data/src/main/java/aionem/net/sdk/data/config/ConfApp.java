@@ -32,7 +32,7 @@ public class ConfApp {
         return confApp;
     }
 
-    protected ConfApp() {
+    public ConfApp() {
         init();
     }
 

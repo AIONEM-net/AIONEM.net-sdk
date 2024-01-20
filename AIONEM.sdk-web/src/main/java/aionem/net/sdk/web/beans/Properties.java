@@ -2,6 +2,7 @@ package aionem.net.sdk.web.beans;
 
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.beans.Data;
+import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.AioWeb;
 import lombok.extern.log4j.Log4j2;
 
@@ -144,12 +145,16 @@ public class Properties {
         if(UtilsText.isEmpty(resourceType)) return "";
         if(resourceType.startsWith("/WEB-INF/")) {
             return resourceType;
-        }else if(resourceType.startsWith("/ui.page")) {
+        }else if(resourceType.startsWith("/ui.page/")) {
             return resourceType;
-        }else if(resourceType.startsWith("ui.apps")) {
-            return "/WEB-INF/"+ resourceType + (!resourceType.endsWith(".jsp") ? "/.jsp" : "");
+        }else if(resourceType.startsWith("ui.apps/") || resourceType.startsWith("/ui.apps/")) {
+            return UtilsResource.path("/WEB-INF", resourceType + (!resourceType.endsWith(".jsp") ? "/.jsp" : ""));
         }
-        return "/WEB-INF/ui.apps/"+ resourceType + (!resourceType.endsWith(".jsp") ? "/.jsp" : "");
+        return UtilsResource.path( "/WEB-INF/ui.apps", resourceType + (!resourceType.endsWith(".jsp") ? "/.jsp" : ""));
+    }
+
+    public boolean hasResourceType() {
+        return !isEmpty("resourceType");
     }
 
     public Data toData() {

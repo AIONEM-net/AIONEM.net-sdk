@@ -43,7 +43,7 @@ public @lombok.Data class Page {
     public void init(final AioWeb aioWeb) {
         this.path = aioWeb.getServletPage();
         this.url = aioWeb.getContextServletPage();
-        init(this.path, aioWeb.getProperties());
+        init(this.path, aioWeb.getPageProperties());
     }
 
     public void init(final String path) {
@@ -84,7 +84,8 @@ public @lombok.Data class Page {
     }
 
     public String getTitle() {
-        return properties.getOr("title", getName());
+        final String title = properties.get("title");
+        return !UtilsText.isEmpty(title) ? title : UtilsText.capitalizeFirstLetter(getName());
     }
 
     public String getSubTitle() {
@@ -233,7 +234,13 @@ public @lombok.Data class Page {
     }
 
     public ArrayList<Properties> getContents() {
-        return properties.getChildren("contents");
+        final ArrayList<Properties> listContents = new ArrayList<>();
+        for(final Properties properties : properties.getChildren("contents")) {
+            if(properties.hasResourceType()) {
+                listContents.add(properties);
+            }
+        }
+        return listContents;
     }
 
     public Data toData() {
