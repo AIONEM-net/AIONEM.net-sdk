@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -39,6 +40,10 @@ public @Getter abstract class Component {
 
     public <T> T init(final AioWeb aioWeb, final Properties properties) {
         return (T) init(instance, aioWeb, properties);
+    }
+
+    public <T> T init(final HttpServletRequest request) {
+        return (T) init(instance, (AioWeb) request.getAttribute("aioWeb"), new Properties(request));
     }
 
     public <T> T init(final T instance, final AioWeb aioWeb, final Properties properties) {

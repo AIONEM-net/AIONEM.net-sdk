@@ -233,14 +233,7 @@ public @lombok.Data class Page {
     }
 
     public ArrayList<Properties> getContents() {
-        final ArrayList<Properties> listContents = properties.getChildren("contents");
-        if(listContents.isEmpty() || (listContents.size() == 1 && UtilsText.isEmpty(listContents.get(0).getResourceType()))) {
-            final Properties properties = new Properties(new Data()
-                    .put("resourceType", UtilsResource.path( "/ui.page", path, ".jsp"))
-            );
-            listContents.add(properties);
-        }
-        return listContents;
+        return properties.getChildren("contents");
     }
 
     public Data toData() {
