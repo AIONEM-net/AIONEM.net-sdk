@@ -38,6 +38,7 @@ public class DaoTemplate {
                 +" data-ui-mode='"+ webContext.getMode() +"'"
                 +" data-ui-context-url=''"
                 +" data-ui-context-root=''"
+                +" data-ui-content-root='"+ webContext.getConfEnv().getHome() +"'"
                 +" data-ui-home-url='"+ webContext.getHomePage().getUrl() +"'"
                 +" data-ui-home-path='"+ webContext.getHomePage().getPath() +"'"
                 +">");
@@ -66,7 +67,7 @@ public class DaoTemplate {
         out.println(printFrontendCss(webContext.getPageContext()));
         out.println("</head>");
 
-        out.println("<body class='"+ propertiesTemplate.get("class") +"'>");
+        out.println("<body class='"+ propertiesTemplate.get("class") + webContext.getPageProperties().get("class") +"'>");
 
         for(final Properties properties : propertiesTemplate.getChildren("body")) {
             if("/WEB-INF/ui.apps/container/.jsp".equals(properties.getResourceType())) {
