@@ -3,7 +3,7 @@ package aionem.net.sdk.web.beans;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.beans.Data;
 import aionem.net.sdk.data.utils.UtilsResource;
-import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.WebContext;
 import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.dao.PageManager;
 import aionem.net.sdk.web.dao.ResourceResolver;
@@ -24,8 +24,8 @@ public @lombok.Data class Page {
         properties = new Properties();
     }
 
-    public Page(final AioWeb aioWeb) {
-        init(aioWeb);
+    public Page(final WebContext webContext) {
+        init(webContext);
     }
 
     public Page(final String path) {
@@ -40,10 +40,10 @@ public @lombok.Data class Page {
         init(resourcePage);
     }
 
-    public void init(final AioWeb aioWeb) {
-        this.path = aioWeb.getServletPage();
-        this.url = aioWeb.getContextServletPage();
-        init(this.path, aioWeb.getPageProperties());
+    public void init(final WebContext webContext) {
+        this.path = webContext.getServletPage();
+        this.url = webContext.getContextServletPage();
+        init(this.path, webContext.getPageProperties());
     }
 
     public void init(final String path) {

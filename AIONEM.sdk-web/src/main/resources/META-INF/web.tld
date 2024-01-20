@@ -9,8 +9,8 @@
     <uri>https://aionem.net/sdk/web</uri>
 
     <tag>
-        <name>aioWeb</name>
-        <tag-class>aionem.net.sdk.web.tag.AioWebTag</tag-class>
+        <name>webContext</name>
+        <tag-class>aionem.net.sdk.web.tag.WebContextTag</tag-class>
         <body-content>empty</body-content>
     </tag>
 

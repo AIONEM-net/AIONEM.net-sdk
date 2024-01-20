@@ -1,7 +1,7 @@
 package aionem.net.sdk.web.modals;
 
 import aionem.net.sdk.core.utils.UtilsText;
-import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.WebContext;
 import aionem.net.sdk.web.beans.Page;
 import aionem.net.sdk.web.beans.Properties;
 import lombok.Getter;
@@ -18,12 +18,12 @@ public class CmpBreadcrumb extends Component {
         init(this);
     }
 
-    public CmpBreadcrumb(final AioWeb aioWeb) {
-        init(this, aioWeb);
+    public CmpBreadcrumb(final WebContext webContext) {
+        init(this, webContext);
     }
 
-    public CmpBreadcrumb(final AioWeb aioWeb, final Properties properties) {
-        init(this, aioWeb, properties);
+    public CmpBreadcrumb(final WebContext webContext, final Properties properties) {
+        init(this, webContext, properties);
     }
 
     @Override

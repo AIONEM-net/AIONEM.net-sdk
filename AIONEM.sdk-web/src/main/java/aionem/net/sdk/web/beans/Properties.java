@@ -3,7 +3,7 @@ package aionem.net.sdk.web.beans;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.beans.Data;
 import aionem.net.sdk.data.utils.UtilsResource;
-import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.WebContext;
 import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,8 +31,8 @@ public class Properties {
         init(resourceProperties);
     }
 
-    public Properties(final AioWeb aioWeb) {
-        init(aioWeb);
+    public Properties(final WebContext webContext) {
+        init(webContext);
     }
 
     public Properties(final HttpServletRequest request) {
@@ -50,9 +50,9 @@ public class Properties {
         return init(new Data());
     }
 
-    public Properties init(final AioWeb aioWeb) {
+    public Properties init(final WebContext webContext) {
         if(data == null || data.isEmpty()) {
-            final Resource resource = new Resource(aioWeb.getRealPathPageCurrent(Properties.PROPERTIES_JSON));
+            final Resource resource = new Resource(webContext.getRealPathPageCurrent(Properties.PROPERTIES_JSON));
             init(resource);
         }
         return this;

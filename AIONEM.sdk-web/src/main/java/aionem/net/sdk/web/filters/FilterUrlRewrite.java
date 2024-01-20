@@ -1,7 +1,7 @@
 package aionem.net.sdk.web.filters;
 
 import aionem.net.sdk.data.utils.UtilsResource;
-import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.WebContext;
 import aionem.net.sdk.web.beans.Page;
 import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.config.ConfEnv;
@@ -23,45 +23,45 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
     @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
 
-        final AioWeb aioWeb = new AioWeb(request, response);
+        final WebContext webContext = new WebContext(request, response);
 
-        final String requestPath = aioWeb.getRequestURI();
+        final String requestPath = webContext.getRequestURI();
 
         final boolean isUiPage = !requestPath.contains(".");
         final boolean isSystemPath = ResourceResolver.isSystemPath(requestPath);
 
-        if(!aioWeb.isHostMatch() && !aioWeb.isRemoteLocal()) {
+        if(!webContext.isHostMatch() && !webContext.isRemoteLocal()) {
 
-            final String urlQuery = aioWeb.getRequestUrlQuery();
-            aioWeb.sendRedirect(aioWeb.getConfEnv().getUrl(urlQuery));
+            final String urlQuery = webContext.getRequestUrlQuery();
+            webContext.sendRedirect(webContext.getConfEnv().getUrl(urlQuery));
 
         }else if(isUiPage && !isSystemPath) {
 
             try {
 
-                aioWeb.getResponse().setCharacterEncoding("UTF-8");
-                aioWeb.getResponse().setContentType("text/html; charset=UTF-8");
+                webContext.getResponse().setCharacterEncoding("UTF-8");
+                webContext.getResponse().setContentType("text/html; charset=UTF-8");
 
-                if(aioWeb.isRoot()) {
-                    responsePage(aioWeb, aioWeb.getCurrentPage(), HttpServletResponse.SC_OK);
-                }else if(aioWeb.isHome()) {
-                    final String url = "/"+ aioWeb.getRequestQuery(true);
-                    aioWeb.sendRedirect(url);
-                }else if(aioWeb.isUnderHome()) {
-                    final String url = aioWeb.getRequestUrlQuery().substring(ConfEnv.getInstance().getHome().length());
-                    aioWeb.sendRedirect(url);
+                if(webContext.isRoot()) {
+                    responsePage(webContext, webContext.getCurrentPage(), HttpServletResponse.SC_OK);
+                }else if(webContext.isHome()) {
+                    final String url = "/"+ webContext.getRequestQuery(true);
+                    webContext.sendRedirect(url);
+                }else if(webContext.isUnderHome()) {
+                    final String url = webContext.getRequestUrlQuery().substring(ConfEnv.getInstance().getHome().length());
+                    webContext.sendRedirect(url);
                 }else {
-                    responsePage(aioWeb, aioWeb.getCurrentPage(), HttpServletResponse.SC_OK);
+                    responsePage(webContext, webContext.getCurrentPage(), HttpServletResponse.SC_OK);
                 }
 
             }catch(final Exception e) {
                 final Page errorPage;
-                if(!aioWeb.getCurrentPage().exists()) {
+                if(!webContext.getCurrentPage().exists()) {
                     errorPage = new Page(ConfEnv.getInstance().getError(404));
-                    responsePage(aioWeb, errorPage, HttpServletResponse.SC_NOT_FOUND);
+                    responsePage(webContext, errorPage, HttpServletResponse.SC_NOT_FOUND);
                 }else {
                     errorPage = new Page(ConfEnv.getInstance().getError(500));
-                    responsePage(aioWeb, errorPage, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    responsePage(webContext, errorPage, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 }
             }
 
@@ -73,11 +73,11 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
                     final String filePath = UtilsResource.getRealPathRoot(requestPath);
                     final Resource resource = new Resource(filePath);
-                    responseFile(aioWeb, resource);
+                    responseFile(webContext, resource);
 
                 }else {
                     final String url = requestPath.substring("/ui.page".length());
-                    aioWeb.sendRedirect(url);
+                    webContext.sendRedirect(url);
                 }
 
                 return;
@@ -85,7 +85,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
                 final String filePath = UtilsResource.getRealPathRoot(requestPath);
                 final Resource resource = new Resource(filePath);
-                responseFile(aioWeb, resource);
+                responseFile(webContext, resource);
 
                 return;
             }else if(requestPath.startsWith("/ui.frontend")) {
@@ -97,7 +97,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
                     final String filePath = ResourceResolver.getRealPathWebInf(requestPath);
                     final Resource resource = new Resource(filePath);
-                    responseFile(aioWeb, resource);
+                    responseFile(webContext, resource);
 
                 }else {
                     chain.doFilter(request, response);
@@ -122,7 +122,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                 final String filePath = UtilsResource.getRealPathRoot(path);
                 final Resource resource = new Resource(filePath);
 
-                responseFile(aioWeb, resource);
+                responseFile(webContext, resource);
                 return;
             }
 
@@ -137,7 +137,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                 final String filePath = UtilsResource.getRealPathRoot(path);
                 final Resource resource = new Resource(filePath);
 
-                responseFile(aioWeb, resource);
+                responseFile(webContext, resource);
                 return;
             }
 
@@ -151,42 +151,42 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                 final String filePath = UtilsResource.getRealPathRoot(path);
                 final Resource resource = new Resource(filePath);
 
-                responseFile(aioWeb, resource);
+                responseFile(webContext, resource);
                 return;
             }
 
             final String filePath = UtilsResource.getRealPathRoot("/ui.frontend" + requestPath);
             final Resource resource = new Resource(filePath);
-            responseFile(aioWeb, resource);
+            responseFile(webContext, resource);
         }
 
     }
 
-    private void responsePage(final AioWeb aioWeb, final Page currentPage, final int status) throws ServletException, IOException {
+    private void responsePage(final WebContext webContext, final Page currentPage, final int status) throws ServletException, IOException {
 
         if(currentPage.toResource().child( "index.html").exists()) {
 
             final String urlIndexQuery = currentPage.getPath()
                     + (!currentPage.getPath().endsWith("/") ? "/" : "")
                     + "index.html"
-                    +"?"+ aioWeb.getRequestQuery();
+                    +"?"+ webContext.getRequestQuery();
 
-            aioWeb.include("/ui.page" + urlIndexQuery);
+            webContext.include("/ui.page" + urlIndexQuery);
 
         }else {
             if(status == HttpServletResponse.SC_OK) {
-                aioWeb.setup();
+                webContext.setup();
             }else {
-                aioWeb.setRequestAttribute("currentPage", currentPage);
+                webContext.setRequestAttribute("currentPage", currentPage);
             }
             final String templatePath = UtilsResource.path("/WEB-INF/ui.template", currentPage.getTemplate(), "/.jsp");
-            aioWeb.include(templatePath);
-            aioWeb.getPageManager().cache(aioWeb, currentPage.isCache());
+            webContext.include(templatePath);
+            webContext.getPageManager().cache(webContext, currentPage.isCache());
         }
 
     }
 
-    private void responseFile(final AioWeb aioWeb, final Resource resource) throws IOException {
+    private void responseFile(final WebContext webContext, final Resource resource) throws IOException {
 
         final Resource resourceFile;
         if(resource.exists() && resource.isFolder()) {
@@ -199,12 +199,12 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
             final String fileName = resource.getName();
 
-            aioWeb.getResponse().setContentType("text/plain");
-            aioWeb.getResponse().setContentLength((int) resourceFile.getSize());
-            aioWeb.setHeader("Content-Disposition", "inline; filename=\"" + fileName + "\"");
+            webContext.getResponse().setContentType("text/plain");
+            webContext.getResponse().setContentLength((int) resourceFile.getSize());
+            webContext.setHeader("Content-Disposition", "inline; filename=\"" + fileName + "\"");
 
             try( final InputStream inputStream = resourceFile.getInputStream();
-                 final OutputStream outputStream = aioWeb.getResponse().getOutputStream()) {
+                 final OutputStream outputStream = webContext.getResponse().getOutputStream()) {
 
                 final byte[] buffer = new byte[4096];
                 int bytesRead;
@@ -214,7 +214,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
             }
 
         }else {
-            aioWeb.sendError(HttpServletResponse.SC_NOT_FOUND);
+            webContext.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
 
     }

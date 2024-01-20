@@ -2,7 +2,7 @@ package aionem.net.sdk.web.dao;
 
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsResource;
-import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.WebContext;
 import aionem.net.sdk.web.beans.Page;
 import aionem.net.sdk.web.beans.Properties;
 import aionem.net.sdk.web.beans.Resource;
@@ -22,79 +22,79 @@ public class DaoTemplate {
 
     public void render(final JspContext jspContext, final String template) throws IOException {
 
-        final AioWeb aioWeb = new AioWeb(jspContext);
-        final JspWriter out = aioWeb.getOut();
+        final WebContext webContext = new WebContext(jspContext);
+        final JspWriter out = webContext.getOut();
 
         final String pathTemplate = UtilsResource.path("/WEB-INF/ui.template", template);
         final Resource resourceTemplate = new Resource(pathTemplate);
         final Properties propertiesTemplate = new Properties(resourceTemplate);
 
-        aioWeb.getResponse().setContentType("text/html;charset=UTF-8");
+        webContext.getResponse().setContentType("text/html;charset=UTF-8");
 
-        out.println("<html lang='"+ aioWeb.getLanguage() +"'>");
+        out.println("<html lang='"+ webContext.getLanguage() +"'>");
         out.println("<head>");
         out.println("<base href='/'>");
-        out.println("<title>"+ aioWeb.getCurrentPage().getFullTitle(aioWeb.getHomePage()) +"</title>");
-        out.println("<meta name='template' content='"+ aioWeb.getCurrentPage().getTemplate() +"'>");
-        out.println("<meta name='thumbnail' content='"+ aioWeb.getCurrentPage().getThumbnail() +"'>");
+        out.println("<title>"+ webContext.getCurrentPage().getFullTitle(webContext.getHomePage()) +"</title>");
+        out.println("<meta name='template' content='"+ webContext.getCurrentPage().getTemplate() +"'>");
+        out.println("<meta name='thumbnail' content='"+ webContext.getCurrentPage().getThumbnail() +"'>");
         out.println("<meta name='viewport' content='width=device-width, initial-scale=1'>");
         out.println("<meta charset='UTF-8'>");
         out.println("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>");
-        out.println("<meta property='og:url' content='"+ aioWeb.getCurrentPage().getUrl() +"'>");
-        out.println("<meta property='og:title' content='"+ aioWeb.getCurrentPage().getFullTitle(aioWeb.getHomePage()) +"'>");
-        out.println("<meta property='og:image' content='"+ aioWeb.getCurrentPage().getThumbnail() +"'>");
-        out.println("<meta property='og:description' content='"+ aioWeb.getCurrentPage().getDescription() +"'>");
-        out.println("<meta name='description' content='"+ aioWeb.getCurrentPage().getDescription() +"'>");
-        out.println("<meta name='keywords' content='"+ aioWeb.getCurrentPage().getKeywords() +"'>");
+        out.println("<meta property='og:url' content='"+ webContext.getCurrentPage().getUrl() +"'>");
+        out.println("<meta property='og:title' content='"+ webContext.getCurrentPage().getFullTitle(webContext.getHomePage()) +"'>");
+        out.println("<meta property='og:image' content='"+ webContext.getCurrentPage().getThumbnail() +"'>");
+        out.println("<meta property='og:description' content='"+ webContext.getCurrentPage().getDescription() +"'>");
+        out.println("<meta name='description' content='"+ webContext.getCurrentPage().getDescription() +"'>");
+        out.println("<meta name='keywords' content='"+ webContext.getCurrentPage().getKeywords() +"'>");
 
-        if(!UtilsText.isEmpty(aioWeb.getCurrentPage().getRedirect())) {
-            out.println("<script>window.location.replace('"+ aioWeb.getRedirect(aioWeb.getCurrentPage().getRedirect()) +"');</script>");
+        if(!UtilsText.isEmpty(webContext.getCurrentPage().getRedirect())) {
+            out.println("<script>window.location.replace('"+ webContext.getRedirect(webContext.getCurrentPage().getRedirect()) +"');</script>");
         }
 
         if(!"page".equalsIgnoreCase(template)) {
-            aioWeb.includeCatch("/WEB-INF/ui.template/page/head.jsp");
+            webContext.includeCatch("/WEB-INF/ui.template/page/head.jsp");
         }
-        aioWeb.includeCatch("/ui.frontend/seo.html");
-        aioWeb.includeCatch(UtilsResource.path(pathTemplate, "head.jsp"));
-        out.println(printFrontendCss(aioWeb.getPageContext()));
+        webContext.includeCatch("/ui.frontend/seo.html");
+        webContext.includeCatch(UtilsResource.path(pathTemplate, "head.jsp"));
+        out.println(printFrontendCss(webContext.getPageContext()));
         out.println("</head>");
 
         out.println("<body class='"+ propertiesTemplate.get("class") +"'>");
 
         for(final Properties properties : propertiesTemplate.getChildren("body")) {
             if("/WEB-INF/ui.apps/container/.jsp".equals(properties.getResourceType())) {
-                includePageContents(aioWeb.getPageContext());
+                includePageContents(webContext.getPageContext());
             }else {
-                aioWeb.includeCatch(properties.getResourceType());
+                webContext.includeCatch(properties.getResourceType());
             }
         }
 
-        aioWeb.includeCatch(UtilsResource.path(pathTemplate, "foot.jsp"));
+        webContext.includeCatch(UtilsResource.path(pathTemplate, "foot.jsp"));
         if(!"page".equalsIgnoreCase(template)) {
-            aioWeb.includeCatch("/WEB-INF/ui.template/page/foot.jsp");
+            webContext.includeCatch("/WEB-INF/ui.template/page/foot.jsp");
         }
-        out.println(printFrontendJs(aioWeb.getPageContext()));
+        out.println(printFrontendJs(webContext.getPageContext()));
         out.println("</body>");
         out.println("</html>");
     }
 
     public void includePageContents(final PageContext pageContext) throws IOException {
 
-        final AioWeb aioWeb = new AioWeb(pageContext);
-        final JspWriter out = aioWeb.getOut();
+        final WebContext webContext = new WebContext(pageContext);
+        final JspWriter out = webContext.getOut();
 
         out.println("<div class='body-content'>");
 
-        final Page currentPage = aioWeb.getCurrentPage();
+        final Page currentPage = webContext.getCurrentPage();
         for(int i = 0; i < currentPage.getContents().size(); i++) {
             final Properties content = currentPage.getContents().get(i);
             final String resourceType = content.getResourceType();
             final String jsonData = content.toData().toJson().toString();
 
-            aioWeb.setRequestAttribute("$_properties", jsonData);
+            webContext.setRequestAttribute("$_properties", jsonData);
 
             try {
-                aioWeb.include(resourceType);
+                webContext.include(resourceType);
             } catch (ServletException | IOException e) {
                 log.error("resourceType not found: {}", resourceType);
             }
@@ -106,12 +106,12 @@ public class DaoTemplate {
 
     public String printFrontendCss(final PageContext pageContext) throws IOException {
 
-        final AioWeb aioWeb = new AioWeb(pageContext);
-        final JspWriter out = aioWeb.getOut();
+        final WebContext webContext = new WebContext(pageContext);
+        final JspWriter out = webContext.getOut();
 
         final StringBuilder styles = new StringBuilder();
 
-        final Resource resourceTemplate = new Resource("/WEB-INF/ui.template", aioWeb.getCurrentPage().getTemplate());
+        final Resource resourceTemplate = new Resource("/WEB-INF/ui.template", webContext.getCurrentPage().getTemplate());
         final Properties propertiesTemplate = resourceTemplate.getProperties();
 
         for(final String uiFrontend : propertiesTemplate.getArray("ui.frontend")) {
@@ -140,10 +140,10 @@ public class DaoTemplate {
 
         final StringBuilder scrips = new StringBuilder();
 
-        final AioWeb aioWeb = new AioWeb(pageContext);
-        final JspWriter out = aioWeb.getOut();
+        final WebContext webContext = new WebContext(pageContext);
+        final JspWriter out = webContext.getOut();
 
-        final Resource resourceTemplate = new Resource("/WEB-INF/ui.template", aioWeb.getCurrentPage().getTemplate());
+        final Resource resourceTemplate = new Resource("/WEB-INF/ui.template", webContext.getCurrentPage().getTemplate());
         final Properties propertiesTemplate = resourceTemplate.getProperties();
 
         for(final String uiFrontend : propertiesTemplate.getArray("ui.frontend")) {

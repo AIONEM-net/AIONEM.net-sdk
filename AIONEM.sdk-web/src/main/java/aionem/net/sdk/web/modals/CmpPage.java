@@ -1,6 +1,6 @@
 package aionem.net.sdk.web.modals;
 
-import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.WebContext;
 import aionem.net.sdk.web.beans.Properties;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -13,12 +13,12 @@ public @Getter class CmpPage extends Component {
         init(this);
     }
 
-    public CmpPage(final AioWeb aioWeb) {
-        init(this, aioWeb);
+    public CmpPage(final WebContext webContext) {
+        init(this, webContext);
     }
 
-    public CmpPage(final AioWeb aioWeb, final Properties properties) {
-        init(this, aioWeb, properties);
+    public CmpPage(final WebContext webContext, final Properties properties) {
+        init(this, webContext, properties);
     }
 
     @Override

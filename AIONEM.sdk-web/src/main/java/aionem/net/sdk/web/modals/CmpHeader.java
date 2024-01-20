@@ -1,6 +1,6 @@
 package aionem.net.sdk.web.modals;
 
-import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.WebContext;
 import aionem.net.sdk.web.beans.Properties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,12 +13,12 @@ public @Data class CmpHeader extends Component {
         super();
     }
 
-    public CmpHeader(final AioWeb aioWeb) {
-        init(this, aioWeb);
+    public CmpHeader(final WebContext webContext) {
+        init(this, webContext);
     }
 
-    public CmpHeader(final AioWeb aioWeb, final Properties properties) {
-        init(this, aioWeb, properties);
+    public CmpHeader(final WebContext webContext, final Properties properties) {
+        init(this, webContext, properties);
     }
 
     @Override

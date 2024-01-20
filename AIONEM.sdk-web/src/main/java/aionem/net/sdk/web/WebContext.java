@@ -5,8 +5,6 @@ import aionem.net.sdk.core.utils.UtilsNetwork;
 import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.dao.I18n;
 import aionem.net.sdk.data.utils.UtilsResource;
-import aionem.net.sdk.web.beans.Resource;
-import aionem.net.sdk.web.dao.DaoTemplate;
 import aionem.net.sdk.web.dao.PageManager;
 import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.beans.Page;
@@ -27,7 +25,7 @@ import java.util.Locale;
 
 
 @Log4j2
-public @Getter class AioWeb {
+public @Getter class WebContext {
 
     protected HttpServletRequest request;
     protected HttpServletResponse response;
@@ -35,43 +33,43 @@ public @Getter class AioWeb {
     protected ServletContext servletContext;
     protected HttpSession session;
 
-    public AioWeb(final JspContext jspContext) {
+    public WebContext(final JspContext jspContext) {
         init(jspContext);
     }
 
-    public AioWeb(final PageContext pageContext) {
+    public WebContext(final PageContext pageContext) {
         init(pageContext);
     }
 
-    public AioWeb(final ServletRequest request, final ServletResponse response) {
+    public WebContext(final ServletRequest request, final ServletResponse response) {
         init(request, response);
     }
 
-    public AioWeb(final HttpServletRequest request, final HttpServletResponse response) {
+    public WebContext(final HttpServletRequest request, final HttpServletResponse response) {
         init(request, response);
     }
 
-    public AioWeb init(final JspContext jspContext) {
+    public WebContext init(final JspContext jspContext) {
         return init((PageContext) jspContext);
     }
 
-    public AioWeb init(final PageContext pageContext) {
+    public WebContext init(final PageContext pageContext) {
         return init((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), pageContext);
     }
 
-    public AioWeb init(final ServletRequest request, final ServletResponse response) {
+    public WebContext init(final ServletRequest request, final ServletResponse response) {
         return init((HttpServletRequest) request, (HttpServletResponse) response);
     }
 
-    public AioWeb init(final HttpServletRequest request, final HttpServletResponse response) {
+    public WebContext init(final HttpServletRequest request, final HttpServletResponse response) {
         return init(request, response, null);
     }
 
-    public AioWeb(final HttpServletRequest request, final HttpServletResponse response, final PageContext pageContext) {
+    public WebContext(final HttpServletRequest request, final HttpServletResponse response, final PageContext pageContext) {
         init(request, response, pageContext);
     }
 
-    public AioWeb init(final HttpServletRequest request, final HttpServletResponse response, final PageContext pageContext) {
+    public WebContext init(final HttpServletRequest request, final HttpServletResponse response, final PageContext pageContext) {
         this.request = request;
         this.response = response;
         this.pageContext = pageContext;
@@ -80,8 +78,8 @@ public @Getter class AioWeb {
         return this;
     }
 
-    public AioWeb setup() {
-        setRequestAttribute("aioWeb", this);
+    public WebContext setup() {
+        setRequestAttribute("webContext", this);
         getPageProperties();
         getI18n();
         getCurrentPage();

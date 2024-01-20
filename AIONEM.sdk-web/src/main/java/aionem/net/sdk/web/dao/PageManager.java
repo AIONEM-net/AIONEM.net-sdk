@@ -5,7 +5,7 @@ import aionem.net.sdk.data.beans.DaoRes;
 import aionem.net.sdk.data.beans.Data;
 import aionem.net.sdk.data.dao.Network;
 import aionem.net.sdk.data.utils.UtilsResource;
-import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.WebContext;
 import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.beans.Page;
 import aionem.net.sdk.web.beans.Properties;
@@ -229,26 +229,26 @@ public class PageManager {
         return listFilePages;
     }
 
-    public void cache(final AioWeb aioWeb, final boolean enabled) {
+    public void cache(final WebContext webContext, final boolean enabled) {
         if(enabled) {
             final long twoDaysInSeconds = 2*24*60*60;
             final long expiresTimeInSeconds = twoDaysInSeconds + (System.currentTimeMillis() / 1000);
-            aioWeb.getResponse().setHeader("Cache-Control", "max-age=" + twoDaysInSeconds);
-            aioWeb.getResponse().setDateHeader("Expires", expiresTimeInSeconds * 1000);
+            webContext.getResponse().setHeader("Cache-Control", "max-age=" + twoDaysInSeconds);
+            webContext.getResponse().setDateHeader("Expires", expiresTimeInSeconds * 1000);
 
-            cache(aioWeb);
+            cache(webContext);
 
         }else {
-            aioWeb.getResponse().setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-            aioWeb.getResponse().setHeader("Pragma", "no-cache");
-            aioWeb.getResponse().setDateHeader("Expires", 0);
+            webContext.getResponse().setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            webContext.getResponse().setHeader("Pragma", "no-cache");
+            webContext.getResponse().setDateHeader("Expires", 0);
         }
     }
 
-    public void cache(final AioWeb aioWeb) {
-        final boolean isCaching = "true".equalsIgnoreCase(aioWeb.getHeader("A-Caching"));
-        if(!isCaching && !aioWeb.isRemoteLocal()) {
-            cache(aioWeb.getCurrentPage());
+    public void cache(final WebContext webContext) {
+        final boolean isCaching = "true".equalsIgnoreCase(webContext.getHeader("A-Caching"));
+        if(!isCaching && !webContext.isRemoteLocal()) {
+            cache(webContext.getCurrentPage());
         }
     }
 

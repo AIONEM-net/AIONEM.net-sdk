@@ -1,7 +1,7 @@
 package aionem.net.sdk.web.modals;
 
 import aionem.net.sdk.core.utils.UtilsText;
-import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.WebContext;
 import aionem.net.sdk.web.beans.Properties;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 @Log4j2
 public @Getter abstract class Component {
 
-    protected AioWeb aioWeb;
+    protected WebContext webContext;
     protected Properties properties;
     private volatile Object instance;
 
@@ -30,25 +30,25 @@ public @Getter abstract class Component {
         return instance;
     }
 
-    public <T> T init(T instance, final AioWeb aioWeb) {
-        return init(instance, aioWeb, new Properties(aioWeb));
+    public <T> T init(T instance, final WebContext webContext) {
+        return init(instance, webContext, new Properties(webContext));
     }
 
-    public <T> T init(final AioWeb aioWeb) {
-        return (T) init(instance, aioWeb, aioWeb.getPageProperties());
+    public <T> T init(final WebContext webContext) {
+        return (T) init(instance, webContext, webContext.getPageProperties());
     }
 
-    public <T> T init(final AioWeb aioWeb, final Properties properties) {
-        return (T) init(instance, aioWeb, properties);
+    public <T> T init(final WebContext webContext, final Properties properties) {
+        return (T) init(instance, webContext, properties);
     }
 
     public <T> T init(final HttpServletRequest request) {
-        return (T) init(instance, (AioWeb) request.getAttribute("aioWeb"), new Properties(request));
+        return (T) init(instance, (WebContext) request.getAttribute("webContext"), new Properties(request));
     }
 
-    public <T> T init(final T instance, final AioWeb aioWeb, final Properties properties) {
+    public <T> T init(final T instance, final WebContext webContext, final Properties properties) {
         this.instance = instance;
-        this.aioWeb = aioWeb;
+        this.webContext = webContext;
         boolean isNew = false;
 
         if(instance != null && !properties.isEmpty() && !properties.equals(this.properties)) {

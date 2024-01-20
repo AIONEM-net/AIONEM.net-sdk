@@ -1,6 +1,6 @@
 package aionem.net.sdk.web.modals;
 
-import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.WebContext;
 import aionem.net.sdk.web.beans.Properties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,12 +13,12 @@ public @Data class CmpFooter extends Component {
         init(this);
     }
 
-    public CmpFooter(final AioWeb aioWeb) {
-        init(this, aioWeb);
+    public CmpFooter(final WebContext webContext) {
+        init(this, webContext);
     }
 
-    public CmpFooter(final AioWeb aioWeb, final Properties properties) {
-        init(this, aioWeb, properties);
+    public CmpFooter(final WebContext webContext, final Properties properties) {
+        init(this, webContext, properties);
     }
 
     @Override

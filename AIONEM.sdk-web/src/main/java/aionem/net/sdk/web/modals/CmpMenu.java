@@ -1,6 +1,6 @@
 package aionem.net.sdk.web.modals;
 
-import aionem.net.sdk.web.AioWeb;
+import aionem.net.sdk.web.WebContext;
 import aionem.net.sdk.web.beans.Page;
 import aionem.net.sdk.web.beans.Properties;
 import aionem.net.sdk.web.dao.PageManager;
@@ -18,12 +18,12 @@ public class CmpMenu extends Component {
         init(this);
     }
 
-    public CmpMenu(final AioWeb aioWeb) {
-        init(this, aioWeb);
+    public CmpMenu(final WebContext webContext) {
+        init(this, webContext);
     }
 
-    public CmpMenu(final AioWeb aioWeb, final Properties properties) {
-        init(this, aioWeb, properties);
+    public CmpMenu(final WebContext webContext, final Properties properties) {
+        init(this, webContext, properties);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class CmpMenu extends Component {
     public ArrayList<Page> getListPageItems() {
         if(listPageItems.isEmpty()) {
             final PageManager pageManager = PageManager.getInstance();
-            for(final Page page : pageManager.getListPages(aioWeb.getHomePage())) {
+            for(final Page page : pageManager.getListPages(webContext.getHomePage())) {
                 if(!page.isHideInNav()) {
                     listPageItems.add(page);
                 }
