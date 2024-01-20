@@ -26,7 +26,7 @@ public class DaoTemplate {
 
         final String pathTemplate = UtilsResource.path("/WEB-INF/ui.template", template);
         final Resource resourceTemplate = new Resource(pathTemplate);
-        final Properties properties = new Properties(resourceTemplate);
+        final Properties propertiesTemplate = new Properties(resourceTemplate);
 
         aioWeb.getResponse().setContentType("text/html;charset=UTF-8");
 
@@ -36,17 +36,24 @@ public class DaoTemplate {
             aioWeb.includeCatch("/WEB-INF/ui.template/page/head.jsp");
         }
         aioWeb.includeCatch(UtilsResource.path(pathTemplate, "head.jsp"));
-        out.println(printFrontendCss(jspContext));
+        out.println(printFrontendCss(aioWeb.getPageContext()));
         out.println("</head>");
 
-        out.println("<body class='"+ properties.get("class") +"'>");
-        aioWeb.includeCatch(UtilsResource.path(pathTemplate, "body.jsp"));
+        out.println("<body class='"+ propertiesTemplate.get("class") +"'>");
+
+        for(final Properties properties : propertiesTemplate.getChildren("body")) {
+            if("/WEB-INF/ui.apps/container/.jsp".equals(properties.getResourceType())) {
+                includePageContents(aioWeb.getPageContext());
+            }else {
+                aioWeb.includeCatch(properties.getResourceType());
+            }
+        }
 
         aioWeb.includeCatch(UtilsResource.path(pathTemplate, "foot.jsp"));
         if(!"page".equalsIgnoreCase(template)) {
             aioWeb.includeCatch("/WEB-INF/ui.template/page/foot.jsp");
         }
-        out.println(printFrontendJs(jspContext));
+        out.println(printFrontendJs(aioWeb.getPageContext()));
         out.println("</body>");
         out.println("</html>");
     }
@@ -77,9 +84,9 @@ public class DaoTemplate {
 
     }
 
-    public String printFrontendCss(final JspContext jspContext) throws IOException {
+    public String printFrontendCss(final PageContext pageContext) throws IOException {
 
-        final AioWeb aioWeb = new AioWeb(jspContext);
+        final AioWeb aioWeb = new AioWeb(pageContext);
         final JspWriter out = aioWeb.getOut();
 
         final StringBuilder styles = new StringBuilder();
@@ -109,11 +116,11 @@ public class DaoTemplate {
         return styles.toString();
     }
 
-    public String printFrontendJs(final JspContext jspContext) throws IOException {
+    public String printFrontendJs(final PageContext pageContext) throws IOException {
 
         final StringBuilder scrips = new StringBuilder();
 
-        final AioWeb aioWeb = new AioWeb(jspContext);
+        final AioWeb aioWeb = new AioWeb(pageContext);
         final JspWriter out = aioWeb.getOut();
 
         final Resource resourceTemplate = new Resource("/WEB-INF/ui.template", aioWeb.getCurrentPage().getTemplate());
