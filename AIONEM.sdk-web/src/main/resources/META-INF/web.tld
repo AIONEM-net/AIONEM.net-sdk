@@ -9,15 +9,26 @@
     <uri>https://aionem.net/sdk/web</uri>
 
     <tag>
+        <name>aioWeb</name>
+        <tag-class>aionem.net.sdk.web.tag.AioWebTag</tag-class>
+        <body-content>empty</body-content>
+    </tag>
+
+    <tag>
         <name>properties</name>
         <tag-class>aionem.net.sdk.web.tag.PropertiesTag</tag-class>
         <body-content>empty</body-content>
     </tag>
 
     <tag>
-        <name>aioWeb</name>
-        <tag-class>aionem.net.sdk.web.tag.AioWebTag</tag-class>
+        <name>template</name>
+        <tag-class>aionem.net.sdk.web.tag.TemplateTag</tag-class>
         <body-content>empty</body-content>
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
     
 </taglib>

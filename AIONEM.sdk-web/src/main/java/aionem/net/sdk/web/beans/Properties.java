@@ -39,8 +39,15 @@ public class Properties {
         init(request);
     }
 
-    public Properties init(final Resource resourceProperties) {
-        return init(new Data(resourceProperties.readContent()));
+    public Properties init(final Resource resource) {
+        if(resource.exists()) {
+            if(resource.isFile()) {
+                return init(new Data(resource.readContent()));
+            }else {
+                return init(resource.child(PROPERTIES_JSON));
+            }
+        }
+        return init(new Data());
     }
 
     public Properties init(final AioWeb aioWeb) {
