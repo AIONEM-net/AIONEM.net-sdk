@@ -99,9 +99,8 @@ public class DaoTemplate {
             final String resourceType = content.getResourceType();
             final String jsonData = content.toData().toJson().toString();
 
-            webContext.setRequestAttribute("$_properties", jsonData);
-
             try {
+                webContext.setRequestAttribute(Properties.PROPERTIES, jsonData);
                 webContext.include(resourceType);
             } catch (ServletException | IOException e) {
                 log.error("resourceType not found: {}", resourceType);

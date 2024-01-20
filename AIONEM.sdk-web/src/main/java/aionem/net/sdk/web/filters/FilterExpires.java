@@ -6,6 +6,8 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
@@ -15,6 +17,13 @@ import lombok.extern.log4j.Log4j2;
 
 
 @Log4j2
+@WebFilter(filterName = "FilterExpires", urlPatterns = "/*", initParams = {
+        @WebInitParam(name = "ExpiresByType image", value = "access plus 7 days"),
+        @WebInitParam(name = "ExpiresByType text/css", value = "access plus 7 days"),
+        @WebInitParam(name = "ExpiresByType application/javascript", value = "access plus 7 days"),
+        @WebInitParam(name = "ExpiresByType text/html", value = "modification plus 3 days"),
+        @WebInitParam(name = "ExpiresDefault", value = "access plus 30 days")
+})
 public class FilterExpires implements Filter {
 
     private static final Pattern commaSeparatedValuesPattern = Pattern.compile("\\s*,\\s*");

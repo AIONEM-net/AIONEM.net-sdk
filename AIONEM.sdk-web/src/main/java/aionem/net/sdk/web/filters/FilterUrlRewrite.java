@@ -25,139 +25,154 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
         final WebContext webContext = new WebContext(request, response);
 
-        final String requestPath = webContext.getRequestURI();
+        try {
 
-        final boolean isUiPage = !requestPath.contains(".");
-        final boolean isSystemPath = ResourceResolver.isSystemPath(requestPath);
+            final String requestPath = webContext.getRequestURI();
 
-        if(!webContext.isHostMatch() && !webContext.isRemoteLocal()) {
+            final boolean isUiPage = !requestPath.contains(".");
+            final boolean isSystemPath = ResourceResolver.isSystemPath(requestPath);
 
-            final String urlQuery = webContext.getRequestUrlQuery();
-            webContext.sendRedirect(webContext.getConfEnv().getUrl(urlQuery));
+            if (!webContext.isHostMatch() && !webContext.isRemoteLocal()) {
 
-        }else if(isUiPage && !isSystemPath) {
+                final String urlQuery = webContext.getRequestUrlQuery();
+                webContext.sendRedirect(webContext.getConfEnv().getUrl(urlQuery));
 
-            try {
+            } else if (isUiPage && !isSystemPath) {
 
-                webContext.getResponse().setCharacterEncoding("UTF-8");
-                webContext.getResponse().setContentType("text/html; charset=UTF-8");
+                try {
 
-                if(webContext.isRoot()) {
-                    responsePage(webContext, webContext.getCurrentPage(), HttpServletResponse.SC_OK);
-                }else if(webContext.isHome()) {
-                    final String url = "/"+ webContext.getRequestQuery(true);
-                    webContext.sendRedirect(url);
-                }else if(webContext.isUnderHome()) {
-                    final String url = webContext.getRequestUrlQuery().substring(ConfEnv.getInstance().getHome().length());
-                    webContext.sendRedirect(url);
-                }else {
-                    responsePage(webContext, webContext.getCurrentPage(), HttpServletResponse.SC_OK);
+                    webContext.getResponse().setCharacterEncoding("UTF-8");
+                    webContext.getResponse().setContentType("text/html; charset=UTF-8");
+
+                    if (webContext.isRoot()) {
+                        responsePage(webContext, webContext.getCurrentPage(), HttpServletResponse.SC_OK);
+                    } else if (webContext.isHome()) {
+                        final String url = "/" + webContext.getRequestQuery(true);
+                        webContext.sendRedirect(url);
+                    } else if (webContext.isUnderHome()) {
+                        final String url = webContext.getRequestUrlQuery().substring(ConfEnv.getInstance().getHome().length());
+                        webContext.sendRedirect(url);
+                    } else {
+                        responsePage(webContext, webContext.getCurrentPage(), HttpServletResponse.SC_OK);
+                    }
+
+                } catch (final Exception e) {
+                    final Page errorPage;
+                    if (!webContext.getCurrentPage().exists()) {
+                        errorPage = new Page(ConfEnv.getInstance().getError(404));
+                        responsePage(webContext, errorPage, HttpServletResponse.SC_NOT_FOUND);
+                    } else {
+                        errorPage = new Page(ConfEnv.getInstance().getError(500));
+                        responsePage(webContext, errorPage, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    }
                 }
 
-            }catch(final Exception e) {
-                final Page errorPage;
-                if(!webContext.getCurrentPage().exists()) {
-                    errorPage = new Page(ConfEnv.getInstance().getError(404));
-                    responsePage(webContext, errorPage, HttpServletResponse.SC_NOT_FOUND);
-                }else {
-                    errorPage = new Page(ConfEnv.getInstance().getError(500));
-                    responsePage(webContext, errorPage, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                }
-            }
+            } else {
 
-        }else {
+                if (requestPath.startsWith("/ui.page")) {
 
-            if(requestPath.startsWith("/ui.page")) {
+                    if (requestPath.endsWith("/.png")) {
 
-                if(requestPath.endsWith("/.png")) {
+                        final String filePath = UtilsResource.getRealPathRoot(requestPath);
+                        final Resource resource = new Resource(filePath);
+                        responseFile(webContext, resource);
+
+                    } else {
+                        final String url = requestPath.substring("/ui.page".length());
+                        webContext.sendRedirect(url);
+                    }
+
+                    return;
+                } else if (requestPath.startsWith("/ui.drive")) {
 
                     final String filePath = UtilsResource.getRealPathRoot(requestPath);
                     final Resource resource = new Resource(filePath);
                     responseFile(webContext, resource);
 
-                }else {
-                    final String url = requestPath.substring("/ui.page".length());
-                    webContext.sendRedirect(url);
-                }
-
-                return;
-            }else if(requestPath.startsWith("/ui.drive")) {
-
-                final String filePath = UtilsResource.getRealPathRoot(requestPath);
-                final Resource resource = new Resource(filePath);
-                responseFile(webContext, resource);
-
-                return;
-            }else if(requestPath.startsWith("/ui.frontend")) {
-                chain.doFilter(request, response);
-                return;
-            }else if(requestPath.startsWith("/ui.template")) {
-
-                if(requestPath.endsWith("/.png")) {
-
-                    final String filePath = ResourceResolver.getRealPathWebInf(requestPath);
-                    final Resource resource = new Resource(filePath);
-                    responseFile(webContext, resource);
-
-                }else {
+                    return;
+                } else if (requestPath.startsWith("/ui.frontend")) {
                     chain.doFilter(request, response);
+                    return;
+                } else if (requestPath.startsWith("/ui.template")) {
+
+                    if (requestPath.endsWith("/.png")) {
+
+                        final String filePath = ResourceResolver.getRealPathWebInf(requestPath);
+                        final Resource resource = new Resource(filePath);
+                        responseFile(webContext, resource);
+
+                    } else {
+                        chain.doFilter(request, response);
+                    }
+
+                    return;
+                } else if (requestPath.startsWith("/ui.system")) {
+                    chain.doFilter(request, response);
+                    return;
+                } else if (requestPath.startsWith("/api")) {
+                    chain.doFilter(request, response);
+                    return;
                 }
 
-                return;
-            }else if(requestPath.startsWith("/ui.system")) {
-                chain.doFilter(request, response);
-                return;
-            }else if(requestPath.startsWith("/api")) {
-                chain.doFilter(request, response);
-                return;
-            }
+                Pattern pattern = Pattern.compile("^/drive/(.+)$");
+                Matcher matcher = pattern.matcher(requestPath);
+                if (matcher.matches()) {
 
-            Pattern pattern = Pattern.compile("^/drive/(.+)$");
-            Matcher matcher = pattern.matcher(requestPath);
-            if(matcher.matches()) {
+                    final String group1 = matcher.group(1);
 
-                final String group1 = matcher.group(1);
+                    final String path = "/ui.drive/" + group1;
+                    final String filePath = UtilsResource.getRealPathRoot(path);
+                    final Resource resource = new Resource(filePath);
 
-                final String path = "/ui.drive/" + group1;
-                final String filePath = UtilsResource.getRealPathRoot(path);
+                    responseFile(webContext, resource);
+                    return;
+                }
+
+                pattern = Pattern.compile("^/assets/([^/]+)/(.+)$");
+                matcher = pattern.matcher(requestPath);
+                if (matcher.matches()) {
+
+                    final String group1 = matcher.group(1);
+                    final String group2 = matcher.group(2);
+
+                    final String path = "/ui.frontend/" + group1 + "/resources/" + group2;
+                    final String filePath = UtilsResource.getRealPathRoot(path);
+                    final Resource resource = new Resource(filePath);
+
+                    responseFile(webContext, resource);
+                    return;
+                }
+
+                pattern = Pattern.compile("^/cdn/(.+)$");
+                matcher = pattern.matcher(requestPath);
+                if (matcher.matches()) {
+
+                    final String group1 = matcher.group(1);
+
+                    final String path = "/ui.frontend/" + group1;
+                    final String filePath = UtilsResource.getRealPathRoot(path);
+                    final Resource resource = new Resource(filePath);
+
+                    responseFile(webContext, resource);
+                    return;
+                }
+
+                final String filePath = UtilsResource.getRealPathRoot("/ui.frontend" + requestPath);
                 final Resource resource = new Resource(filePath);
-
                 responseFile(webContext, resource);
-                return;
             }
 
-            pattern = Pattern.compile("^/assets/([^/]+)/(.+)$");
-            matcher = pattern.matcher(requestPath);
-            if(matcher.matches()) {
-
-                final String group1 = matcher.group(1);
-                final String group2 = matcher.group(2);
-
-                final String path = "/ui.frontend/" + group1 + "/resources/" + group2;
-                final String filePath = UtilsResource.getRealPathRoot(path);
-                final Resource resource = new Resource(filePath);
-
-                responseFile(webContext, resource);
-                return;
+        } catch (final Exception e) {
+            int errorCode = webContext.getResponse().getStatus();
+            if (errorCode == 404) {
+                request.getRequestDispatcher("/ui.page/en/error/404").forward(request, response);
+            } else if (errorCode == 500) {
+                request.getRequestDispatcher("/ui.page/en/error/500").forward(request, response);
+            } else if (errorCode == 503) {
+                request.getRequestDispatcher("/ui.page/en/error/503").forward(request, response);
+            } else {
+                request.getRequestDispatcher("/ui.page/en/error").forward(request, response);
             }
-
-            pattern = Pattern.compile("^/cdn/(.+)$");
-            matcher = pattern.matcher(requestPath);
-            if(matcher.matches()) {
-
-                final String group1 = matcher.group(1);
-
-                final String path = "/ui.frontend/" + group1;
-                final String filePath = UtilsResource.getRealPathRoot(path);
-                final Resource resource = new Resource(filePath);
-
-                responseFile(webContext, resource);
-                return;
-            }
-
-            final String filePath = UtilsResource.getRealPathRoot("/ui.frontend" + requestPath);
-            final Resource resource = new Resource(filePath);
-            responseFile(webContext, resource);
         }
 
     }

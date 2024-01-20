@@ -60,7 +60,10 @@ public class Properties {
 
     public Properties init(final HttpServletRequest request) {
         if(data == null || data.isEmpty()) {
-            final String properties = request.getParameter(PROPERTIES);
+            String properties = request.getParameter(PROPERTIES);
+            if(UtilsText.isEmpty(properties)) {
+                properties = (String) request.getAttribute(PROPERTIES);
+            }
             init(new Data(properties));
         }
         return this;
