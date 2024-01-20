@@ -32,12 +32,12 @@ public class ServletSysUi extends HttpServlet {
 
         if(!daoWebAuth.isAuthenticated(webContext)) {
             if(!"/login".equalsIgnoreCase(path)) {
-                webContext.sendRedirect("/ui.system/login", true);
+                webContext.sendRedirect(UtilsResource.path(request.getServletPath(), "login"), true);
+                return;
             }
-            return;
         }else {
             if("/login".equalsIgnoreCase(path)) {
-                webContext.sendRedirect("/ui.system");
+                webContext.sendRedirect(request.getServletPath());
             }
         }
 
