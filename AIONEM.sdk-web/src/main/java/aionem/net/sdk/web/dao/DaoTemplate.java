@@ -33,7 +33,14 @@ public class DaoTemplate {
 
         out.println("<html lang='"+ webContext.getLanguage() +"'>");
         out.println("<head>");
-        out.println("<base href='/'>");
+        out.println("<base href='/'"
+                +" data-ui-env='"+ webContext.getConfEnv().getEnv() +"'"
+                +" data-ui-mode='"+ webContext.getMode() +"'"
+                +" data-ui-context-url=''"
+                +" data-ui-context-root=''"
+                +" data-ui-home-url='"+ webContext.getHomePage().getUrl() +"'"
+                +" data-ui-home-path='"+ webContext.getHomePage().getPath() +"'"
+                +">");
         out.println("<title>"+ webContext.getCurrentPage().getFullTitle(webContext.getHomePage()) +"</title>");
         out.println("<meta name='template' content='"+ webContext.getCurrentPage().getTemplate() +"'>");
         out.println("<meta name='thumbnail' content='"+ webContext.getCurrentPage().getThumbnail() +"'>");
@@ -80,7 +87,7 @@ public class DaoTemplate {
 
     public void includePageContents(final PageContext pageContext) throws IOException {
 
-        final WebContext webContext = new WebContext(pageContext);
+        final WebContext webContext = WebContext.getInstance(pageContext);
         final JspWriter out = webContext.getOut();
 
         out.println("<div class='body-content'>");
@@ -106,7 +113,7 @@ public class DaoTemplate {
 
     public String printFrontendCss(final PageContext pageContext) throws IOException {
 
-        final WebContext webContext = new WebContext(pageContext);
+        final WebContext webContext = WebContext.getInstance(pageContext);
         final JspWriter out = webContext.getOut();
 
         final StringBuilder styles = new StringBuilder();
@@ -140,7 +147,7 @@ public class DaoTemplate {
 
         final StringBuilder scrips = new StringBuilder();
 
-        final WebContext webContext = new WebContext(pageContext);
+        final WebContext webContext = WebContext.getInstance(pageContext);
         final JspWriter out = webContext.getOut();
 
         final Resource resourceTemplate = new Resource("/WEB-INF/ui.template", webContext.getCurrentPage().getTemplate());

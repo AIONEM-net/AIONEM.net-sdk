@@ -33,6 +33,19 @@ public @Getter class WebContext {
     protected ServletContext servletContext;
     protected HttpSession session;
 
+    public static WebContext getInstance(final PageContext pageContext) {
+        WebContext webContext = (WebContext) pageContext.getAttribute("webContext", PageContext.REQUEST_SCOPE);
+        if(webContext == null) {
+            webContext = new WebContext(pageContext);
+            pageContext.setAttribute("webContext", webContext, PageContext.REQUEST_SCOPE);
+        }else {
+            if(webContext.pageContext == null) {
+                webContext.pageContext = pageContext;
+            }
+        }
+        return webContext;
+    }
+
     public WebContext(final JspContext jspContext) {
         init(jspContext);
     }
@@ -78,13 +91,12 @@ public @Getter class WebContext {
         return this;
     }
 
-    public WebContext setup() {
+    public void setup() {
         setRequestAttribute("webContext", this);
         getPageProperties();
         getI18n();
         getCurrentPage();
         getHomePage();
-        return this;
     }
 
     public ConfEnv getConfEnv() {
@@ -367,6 +379,10 @@ public @Getter class WebContext {
     public Locale getLocale() {
         final Locale locale = getRequestAttribute("locale", Locale.class);
         return locale != null ? locale : getRequestAttribute("locale", new Locale(getLanguage()), true);
+    }
+
+    public String getMode() {
+        return isPublishMode() ? "PUBLISH" : "AUTHOR";
     }
 
     public boolean isPublishMode() {
