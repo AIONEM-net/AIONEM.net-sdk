@@ -47,7 +47,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                     webContext.getResponse().setContentType("text/html; charset=UTF-8");
 
                     if (webContext.isRoot()) {
-                        responsePage(webContext, webContext.getCurrentPage(), HttpServletResponse.SC_OK);
+                        responsePage(webContext, webContext.getCurrentPage());
                     } else if (webContext.isHome()) {
                         final String url = "/" + webContext.getRequestQuery(true);
                         webContext.sendRedirect(url);
@@ -55,17 +55,17 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                         final String url = webContext.getRequestUrlQuery().substring(ConfEnv.getInstance().getHome().length());
                         webContext.sendRedirect(url);
                     } else {
-                        responsePage(webContext, webContext.getCurrentPage(), HttpServletResponse.SC_OK);
+                        responsePage(webContext, webContext.getCurrentPage());
                     }
 
                 } catch (final Exception e) {
                     final Page errorPage;
                     if (!webContext.getCurrentPage().exists()) {
                         errorPage = new Page(ConfEnv.getInstance().getError(404));
-                        responsePage(webContext, errorPage, HttpServletResponse.SC_NOT_FOUND);
+                        responsePage(webContext, errorPage);
                     } else {
                         errorPage = new Page(ConfEnv.getInstance().getError(500));
-                        responsePage(webContext, errorPage, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        responsePage(webContext, errorPage);
                     }
                 }
 
@@ -180,7 +180,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
     }
 
-    private void responsePage(final WebContext webContext, final Page currentPage, final int status) throws ServletException, IOException {
+    private void responsePage(final WebContext webContext, Page currentPage) throws ServletException, IOException {
 
         if(currentPage.toResource().child( "index.html").exists()) {
 
@@ -192,11 +192,14 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
             webContext.include("/ui.page" + urlIndexQuery);
 
         }else {
-            if(status == HttpServletResponse.SC_OK) {
-                webContext.setup();
-            }else {
-                webContext.setRequestAttribute("currentPage", currentPage);
+
+            if(!currentPage.exists()) {
+                currentPage = new Page(ConfEnv.getInstance().getError(404));
             }
+
+            webContext.setRequestAttribute("currentPage", currentPage);
+            webContext.setup();
+
             final String templatePath = UtilsResource.path("/WEB-INF/ui.template", currentPage.getTemplate(), "/.jsp");
             webContext.include(templatePath);
             webContext.getPageManager().cache(webContext, currentPage.isCache());

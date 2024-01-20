@@ -24,6 +24,7 @@ public class DaoTemplate {
 
         final WebContext webContext = new WebContext(jspContext);
         final JspWriter out = webContext.getOut();
+        final Page currentPage = webContext.getCurrentPage();
 
         final String pathTemplate = UtilsResource.path("/WEB-INF/ui.template", template);
         final Resource resourceTemplate = new Resource(pathTemplate);
@@ -42,21 +43,21 @@ public class DaoTemplate {
                 +" data-ui-home-url='"+ webContext.getHomePage().getUrl() +"'"
                 +" data-ui-home-path='"+ webContext.getHomePage().getPath() +"'"
                 +">");
-        out.println("<title>"+ webContext.getCurrentPage().getFullTitle(webContext.getHomePage()) +"</title>");
-        out.println("<meta name='template' content='"+ webContext.getCurrentPage().getTemplate() +"'>");
-        out.println("<meta name='thumbnail' content='"+ webContext.getCurrentPage().getThumbnail() +"'>");
+        out.println("<title>"+ currentPage.getFullTitle(webContext.getHomePage()) +"</title>");
+        out.println("<meta name='template' content='"+ currentPage.getTemplate() +"'>");
+        out.println("<meta name='thumbnail' content='"+ currentPage.getThumbnail() +"'>");
         out.println("<meta name='viewport' content='width=device-width, initial-scale=1'>");
         out.println("<meta charset='UTF-8'>");
         out.println("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>");
-        out.println("<meta property='og:url' content='"+ webContext.getCurrentPage().getUrl() +"'>");
-        out.println("<meta property='og:title' content='"+ webContext.getCurrentPage().getFullTitle(webContext.getHomePage()) +"'>");
-        out.println("<meta property='og:image' content='"+ webContext.getCurrentPage().getThumbnail() +"'>");
-        out.println("<meta property='og:description' content='"+ webContext.getCurrentPage().getDescription() +"'>");
-        out.println("<meta name='description' content='"+ webContext.getCurrentPage().getDescription() +"'>");
-        out.println("<meta name='keywords' content='"+ webContext.getCurrentPage().getKeywords() +"'>");
+        out.println("<meta property='og:url' content='"+ currentPage.getUrl() +"'>");
+        out.println("<meta property='og:title' content='"+ currentPage.getFullTitle(webContext.getHomePage()) +"'>");
+        out.println("<meta property='og:image' content='"+ currentPage.getThumbnail() +"'>");
+        out.println("<meta property='og:description' content='"+ currentPage.getDescription() +"'>");
+        out.println("<meta name='description' content='"+ currentPage.getDescription() +"'>");
+        out.println("<meta name='keywords' content='"+ currentPage.getKeywords() +"'>");
 
-        if(!UtilsText.isEmpty(webContext.getCurrentPage().getRedirect())) {
-            out.println("<script>window.location.replace('"+ webContext.getRedirect(webContext.getCurrentPage().getRedirect()) +"');</script>");
+        if(!UtilsText.isEmpty(currentPage.getRedirect())) {
+            out.println("<script>window.location.replace('"+ webContext.getRedirect(currentPage.getRedirect()) +"');</script>");
         }
 
         if(!"page".equalsIgnoreCase(template)) {
