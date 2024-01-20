@@ -1,5 +1,6 @@
 package aionem.net.sdk.web.dao;
 
+import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.utils.UtilsResource;
 import aionem.net.sdk.web.AioWeb;
 import aionem.net.sdk.web.beans.Page;
@@ -32,9 +33,28 @@ public class DaoTemplate {
 
         out.println("<html lang='"+ aioWeb.getLanguage() +"'>");
         out.println("<head>");
+        out.println("<base href='/'>");
+        out.println("<title>"+ aioWeb.getCurrentPage().getFullTitle(aioWeb.getHomePage()) +"</title>");
+        out.println("<meta name='template' content='"+ aioWeb.getCurrentPage().getTemplate() +"'>");
+        out.println("<meta name='thumbnail' content='"+ aioWeb.getCurrentPage().getThumbnail() +"'>");
+        out.println("<meta name='viewport' content='width=device-width, initial-scale=1'>");
+        out.println("<meta charset='UTF-8'>");
+        out.println("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>");
+        out.println("<meta property='og:url' content='"+ aioWeb.getCurrentPage().getUrl() +"'>");
+        out.println("<meta property='og:title' content='"+ aioWeb.getCurrentPage().getFullTitle(aioWeb.getHomePage()) +"'>");
+        out.println("<meta property='og:image' content='"+ aioWeb.getCurrentPage().getThumbnail() +"'>");
+        out.println("<meta property='og:description' content='"+ aioWeb.getCurrentPage().getDescription() +"'>");
+        out.println("<meta name='description' content='"+ aioWeb.getCurrentPage().getDescription() +"'>");
+        out.println("<meta name='keywords' content='"+ aioWeb.getCurrentPage().getKeywords() +"'>");
+
+        if(!UtilsText.isEmpty(aioWeb.getCurrentPage().getRedirect())) {
+            out.println("<script>window.location.replace('"+ aioWeb.getRedirect(aioWeb.getCurrentPage().getRedirect()) +"');</script>");
+        }
+
         if(!"page".equalsIgnoreCase(template)) {
             aioWeb.includeCatch("/WEB-INF/ui.template/page/head.jsp");
         }
+        aioWeb.includeCatch("/ui.frontend/seo.html");
         aioWeb.includeCatch(UtilsResource.path(pathTemplate, "head.jsp"));
         out.println(printFrontendCss(aioWeb.getPageContext()));
         out.println("</head>");

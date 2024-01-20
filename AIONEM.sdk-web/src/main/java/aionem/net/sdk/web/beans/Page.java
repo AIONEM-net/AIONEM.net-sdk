@@ -120,6 +120,10 @@ public @lombok.Data class Page {
         return properties.getOr("description", "");
     }
 
+    public String getKeywords() {
+        return properties.getOr("keywords", "");
+    }
+
     public String getRedirect() {
         return properties.getOr("redirect", "");
     }
