@@ -62,9 +62,17 @@ public class Conf {
         return get(key, "");
     }
 
+    public Data getChild(final String key) {
+        return new Data(get(key, ""));
+    }
+
     public String getOr(final String key1, final String key2) {
         final String value = get(key1);
         return !UtilsText.isEmpty(value) ? value : get(key2);
+    }
+
+    public boolean isEmpty(final String key) {
+        return UtilsText.isEmpty(get(key, ""));
     }
 
     public <T> T get(final String key, final T defaultValue) {

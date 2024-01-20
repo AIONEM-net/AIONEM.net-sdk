@@ -175,6 +175,23 @@ public class ServletSysTest extends HttpServletApi {
         out.println("<div>---------------------------------------------</div>");
 
 
+        // PageManager
+        out.println("<div>"+ "saveSiteMap -> "+ pageManager.saveSiteMap() +"</div>");
+        out.println("<div>---------------------------------------------</div>");
+
+
+        // DaoWebAuth
+        final DaoWebAuth daoAuth = DaoWebAuth.getInstance();
+        out.println("<div>"+ "Auth user -> "+ daoAuth.getUser("admin@aionem.net") +"</div>");
+        out.println("<div>"+ "Auth user -> "+ daoAuth.getUser("editor@aionem.net") +"</div>");
+        out.println("<div>"+ "Auth exist admin -> "+ daoAuth.getUser("admin@aionem.net") +"</div>");
+        out.println("<div>"+ "Auth exist test -> "+ daoAuth.getUser("test@aionem.net") +"</div>");
+        out.println("<div>"+ "Auth exist isAuthenticated -> "+ daoAuth.isAuthenticated("admin@aionem.net", "123") +"</div>");
+        out.println("<div>"+ "Auth exist isAuthenticated -> "+ daoAuth.isAuthenticated("admin@aionem.net", "test") +"</div>");
+        out.println("<div>"+ "Auth exist isAuthenticated -> "+ daoAuth.isAuthenticated("test@aionem.net", "123") +"</div>");
+        out.println("<div>---------------------------------------------</div>");
+
+
         out.println("</body>");
         out.println("</html>");
         out.close();

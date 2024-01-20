@@ -16,6 +16,8 @@ import lombok.extern.log4j.Log4j2;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -229,6 +231,13 @@ public class PageManager {
         return listFilePages;
     }
 
+    public static Comparator<Page> comparatorPage = new Comparator<Page>() {
+        @Override
+        public int compare(final Page page1, final Page page2) {
+            return Integer.compare(page1.getOrder(), page2.getOrder());
+        }
+    };
+
     public void cache(final WebContext webContext, final boolean enabled) {
         if(enabled) {
             final long twoDaysInSeconds = 2*24*60*60;
@@ -432,12 +441,43 @@ public class PageManager {
 
         return totalReferences[0];
     }
-    
-    public static Comparator<Page> comparatorPage = new Comparator<Page>() {
-        @Override
-        public int compare(final Page page1, final Page page2) {
-            return Integer.compare(page1.getOrder(), page2.getOrder());
+
+    public boolean saveSiteMap() {
+        boolean isSaved;
+        final Resource resourceSitemap = new Resource("/ui.frontend/sitemap.xml");
+        isSaved = resourceSitemap.saveContent(geSiteMap());
+        return isSaved && resourceSitemap.exists();
+    }
+
+    public String geSiteMap() {
+        final StringBuilder siteMap = new StringBuilder();
+
+        siteMap.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        siteMap.append("\n")
+                .append("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd\">")
+                .append("\n");
+
+        final ZonedDateTime now = ZonedDateTime.now();
+        final String time = now.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+
+        final String domainUrl = ConfEnv.getInstance().getUrl();
+
+        for(final Page page : getListPagesAll()) {
+            if(page.isSeo()) {
+
+                final double priority = 1.0;
+
+                siteMap.append("\n  ").append("<url>");
+                siteMap.append("\n      ").append("<loc>").append(UtilsResource.path(domainUrl, page.getUrl())).append("</loc>");
+                siteMap.append("\n      ").append("<time>").append(time).append("</time>");
+                siteMap.append("\n      ").append("<priority>").append(priority).append("</priority>");
+                siteMap.append("\n  ").append("</url>");
+            }
         }
-    };
+
+        siteMap.append("\n\n").append("</urlset>");
+
+        return siteMap.toString();
+    }
     
 }

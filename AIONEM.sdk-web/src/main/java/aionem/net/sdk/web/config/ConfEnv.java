@@ -55,7 +55,7 @@ public class ConfEnv extends ConfApp {
     }
 
     public String getUrl(final String path) {
-        return getUrl() + getContextPath(path);
+        return UtilsResource.path(getUrl(), getContextPath(path));
     }
 
     public String getHost() {
