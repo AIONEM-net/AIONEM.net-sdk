@@ -175,6 +175,22 @@ public class DaoTemplate {
 
         }
 
+        final String scripsReplacePage = "\n<script>" +
+                "const rootContent='"+ webContext.getConfEnv().getHome() +"';" +
+                "document.querySelectorAll('a[href]').forEach(function(elA) {" +
+                "    let href = elA.getAttribute('href');" +
+                "    if(href.startsWith('/ui.page/')) {" +
+                "        href = href.substring('/ui.page'.length);" +
+                "    }" +
+                "    if(href.startsWith(rootContent)) {" +
+                "        href = href.substring(rootContent.length);" +
+                "    }" +
+                "    elA.setAttribute('href', href)" +
+                "});" +
+                "</script>";
+
+        scrips.append(scripsReplacePage);
+
         if(false) {
             out.println(scrips.toString());
         }
