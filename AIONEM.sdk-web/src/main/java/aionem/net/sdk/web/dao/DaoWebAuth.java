@@ -1,9 +1,11 @@
 package aionem.net.sdk.web.dao;
 
+import aionem.net.sdk.core.utils.UtilsText;
 import aionem.net.sdk.data.beans.Data;
 import aionem.net.sdk.web.WebContext;
 import aionem.net.sdk.web.config.Conf;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.StringTokenizer;
@@ -45,20 +47,32 @@ public class DaoWebAuth {
     }
 
     public boolean isAuthenticated(final WebContext webContext) {
-        return isAuthenticated(webContext.getRequest());
-    }
+        final String authorization = webContext.getHeader("Authorization");
 
-    public boolean isAuthenticated(final HttpServletRequest request) {
-        final String authorization = request.getHeader("Authorization");
+        String base64Credentials = "";
 
-        if(authorization != null && authorization.startsWith("Basic")) {
+        if(!UtilsText.isEmpty(authorization) && authorization.startsWith("Basic")) {
+            base64Credentials = authorization.substring("Basic".length()).trim();
 
-            final String base64Credentials = authorization.substring("Basic".length()).trim();
+            final Cookie cookie = new Cookie("AIONEM.NET_UI.SYSTEM", base64Credentials);
+            cookie.setMaxAge(30*60);
+            webContext.getResponse().addCookie(cookie);
+
+        }else {
+            for(final Cookie cookie : webContext.getRequest().getCookies()) {
+                if("AIONEM.NET_UI.SYSTEM".equals(cookie.getName())) {
+                    base64Credentials = cookie.getValue();
+                }
+            }
+        }
+
+        if(!UtilsText.isEmpty(base64Credentials)) {
+
             final String credentials = new String(Base64.getDecoder().decode(base64Credentials));
 
             final StringTokenizer tokenizer = new StringTokenizer(credentials, ":");
-            String email = tokenizer.nextToken();
-            String password = tokenizer.nextToken();
+            final String email = tokenizer.nextToken();
+            final String password = tokenizer.nextToken();
 
             return isAuthenticated(email, password);
         }

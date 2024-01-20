@@ -6,6 +6,7 @@ import aionem.net.sdk.web.beans.Page;
 import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.config.ConfEnv;
 import aionem.net.sdk.web.dao.ResourceResolver;
+import lombok.extern.log4j.Log4j2;
 import org.tuckey.web.filters.urlrewrite.UrlRewriteFilter;
 
 import javax.servlet.*;
@@ -17,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+@Log4j2
 public class FilterUrlRewrite extends UrlRewriteFilter {
 
 
@@ -163,6 +165,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
             }
 
         } catch (final Exception e) {
+            log.error("\nError: doFilter {}", e.toString());
             int errorCode = webContext.getResponse().getStatus();
             if (errorCode == 404) {
                 request.getRequestDispatcher("/ui.page/en/error/404").forward(request, response);

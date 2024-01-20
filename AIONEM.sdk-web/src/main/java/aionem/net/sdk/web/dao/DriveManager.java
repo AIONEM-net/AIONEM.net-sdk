@@ -108,10 +108,9 @@ public class DriveManager {
 
                 if(UtilsText.isEmpty(folder)) {
                     final String uploadFolder = UtilsDrive.getUploadFolder(extension);
-                    folder = UtilsResource.path(ResourceResolver.DRIVE_PATH_UPLOADS, uploadFolder);
+                    folder = UtilsResource.path("uploads", uploadFolder);
                 }
 
-                final String drivePath = UtilsResource.path(folder, name);
                 final Resource driveFolder = getFile(folder);
 
                 final boolean isFolder;
@@ -126,6 +125,7 @@ public class DriveManager {
                     final Resource drive = driveFolder.child(name);
                     final FileOutputStream outputStream = drive.getFileOutputStream();
                     final long fileSize = drive.getSize();
+                    final String drivePath = drive.getRelativePath();
 
                     final byte[] buffer = new byte[4096];
                     int readSize;

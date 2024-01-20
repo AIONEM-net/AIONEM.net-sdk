@@ -67,6 +67,11 @@ public class UtilsResource {
         if(folders == null || folders.length == 0) folders = new String[]{""};
         for(final String folder : folders) {
             try {
+                final URL resource = UtilsResource.class.getClassLoader().getResource(path(folder, name));
+                if(resource != null) {
+                    return resource.openStream();
+                }
+
                 final File file = getResourceFile(path(folder, name));
                 if(file.exists() && file.isFile()) {
                     return new FileInputStream(file);

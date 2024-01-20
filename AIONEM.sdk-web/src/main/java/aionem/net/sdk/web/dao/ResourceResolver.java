@@ -17,7 +17,6 @@ public class ResourceResolver {
     public static final List<String> SYSTEM_PATH_ROOTS = List.of("/ui.system", "/ui.page", "/ui.frontend", "/ui.drive", "/WEB-INF", "/META-INF");
     public static final List<String> SYSTEM_PATH_WEB_INF = List.of("/ui.config", "/ui.apps", "/ui.template");
     public static final List<String> SYSTEM_PATH_ALIAS = List.of("/api", "/drive", "/assets", "/cdn");
-    public static final String DRIVE_PATH_UPLOADS = "/ui.drive/uploads";
 
     public static final List<String> SYSTEM_PATHS = new ArrayList<>(SYSTEM_PATH_ROOTS);
 

@@ -406,7 +406,15 @@ public @Getter class WebContext {
     }
 
     public void sendRedirect(final String location) throws IOException {
-        response.sendRedirect(location);
+        sendRedirect(location, false);
+    }
+
+    public void sendRedirect(final String location, boolean isRedirect) throws IOException {
+        String url = location;
+        if(isRedirect) {
+            url = UtilsNetwork.addParameter(url, "redirect", getUrlQuery());
+        }
+        response.sendRedirect(url);
     }
 
     public void sendError(final int error) throws IOException {
