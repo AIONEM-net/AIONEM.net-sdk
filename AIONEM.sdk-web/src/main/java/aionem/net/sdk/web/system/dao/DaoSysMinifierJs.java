@@ -84,7 +84,7 @@ public class DaoSysMinifierJs {
             final boolean isMinified = fileJs.saveContent(builderJs.toString());
             new Resource(resourceFrontend, "js").delete();
 
-            log.error("\nAioWeb::Minify JS {} : {}", "ui.frontend/"+ resourceFrontend.getName(), isMinified);
+            log.error("\nWebContext::Minify JS {} : {}", "ui.frontend/"+ resourceFrontend.getName(), isMinified);
         }
 
         if(isSave) {

@@ -85,7 +85,7 @@ public class DaoSysMinifierCss {
             final boolean isMinified = fileCss.saveContent(builderCss.toString());
             new Resource(resourceFrontend, "css").delete();
 
-            log.error("\nAioWeb::Minify CSS {} : {}", "ui.frontend/"+ resourceFrontend.getName(), isMinified);
+            log.error("\nWebContext::Minify CSS {} : {}", "ui.frontend/"+ resourceFrontend.getName(), isMinified);
         }
 
         if(isSave) {
