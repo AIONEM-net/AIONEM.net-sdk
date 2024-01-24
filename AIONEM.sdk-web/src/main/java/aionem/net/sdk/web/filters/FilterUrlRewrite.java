@@ -16,6 +16,7 @@ import javax.servlet.ServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,6 +40,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
             if(!webContext.isHostMatch() && !webContext.isRemoteLocal()) {
 
                 final String urlQuery = webContext.getRequestUrlQuery();
+
                 webContext.sendRedirect(webContext.getConfEnv().getUrl(urlQuery));
 
             }else if (isUiPage && !isSystemPath) {
@@ -167,7 +169,6 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
             }
 
         } catch (final Exception e) {
-            log.error("\nError: doFilter {}", e.toString());
             int errorCode = webContext.getResponse().getStatus();
             if (errorCode == 404) {
                 final Page errorPage = new Page(ConfEnv.getInstance().getError(404));

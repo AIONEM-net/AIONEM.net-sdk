@@ -68,11 +68,10 @@ public class DaoWebAuth {
 
         if(!UtilsText.isEmpty(base64Credentials)) {
 
-            final String credentials = new String(Base64.getDecoder().decode(base64Credentials));
+            final String[] credentials = new String(Base64.getDecoder().decode(base64Credentials)).split(":");
 
-            final StringTokenizer tokenizer = new StringTokenizer(credentials, ":");
-            final String email = tokenizer.nextToken();
-            final String password = tokenizer.nextToken();
+            final String email = credentials.length > 0 ? credentials[0] : "";
+            final String password = credentials.length > 1 ? credentials[1] : "";
 
             return isAuthenticated(email, password);
         }

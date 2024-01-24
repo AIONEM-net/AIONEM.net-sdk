@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 
-@Getter
 @Log4j2
 public class Resource {
 
@@ -26,7 +25,7 @@ public class Resource {
 
     public Resource(final File file) {
         this.file = file;
-        this.pathReal = file.getAbsolutePath();
+        this.pathReal = UtilsResource.path(file.getAbsolutePath());
         this.pathRelative = UtilsResource.getRelativePath(pathReal);
 
         final String system;
@@ -54,8 +53,8 @@ public class Resource {
         this.pathSystem = system.startsWith("/") ? system.substring("/".length()) : system;
     }
 
-    public Resource(final String pathReal) {
-        this(new File(ResourceResolver.isSystemPathRoot(pathReal) ? UtilsResource.getRealPathRoot(pathReal) : pathReal));
+    public Resource(final String path) {
+        this(new File(ResourceResolver.isSystemPathRoot(path) ? UtilsResource.getRealPathRoot(path) : path));
     }
 
     public Resource(final String... paths) {
@@ -84,6 +83,10 @@ public class Resource {
 
     public String getSystemPath() {
         return pathSystem;
+    }
+
+    public File getFile() {
+        return file;
     }
 
     public long getSize() {

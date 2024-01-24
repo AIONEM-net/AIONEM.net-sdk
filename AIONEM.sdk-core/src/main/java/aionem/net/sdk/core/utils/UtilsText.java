@@ -66,18 +66,20 @@ public class UtilsText {
         String value = object.toString();
         try {
 
+            log.debug("toString: {}, {}", object, isLine);
+
             if(!(object instanceof String || object instanceof Character || object instanceof StringBuilder ||
                     object instanceof Integer || object instanceof Long || object instanceof Double || object instanceof Boolean)) {
 
                 if(object instanceof Path) {
-                    value = toString(((Path) object).toFile());
+                    value = toString(((Path) object).toFile(), isLine);
                 }else if(object instanceof File) {
                     final File file = (File) object;
-                    value = file.exists() && file.isFile() ? toString(new FileInputStream(file)) : "";
+                    value = file.exists() && file.isFile() ? toString(new FileInputStream(file), isLine) : "";
                 }else if(object instanceof HttpURLConnection) {
-                    value = toString(((HttpURLConnection) object).getInputStream());
+                    value = toString(((HttpURLConnection) object).getInputStream(), isLine);
                 }else if(object instanceof InputStream) {
-                    value = toString(new BufferedReader(new InputStreamReader((InputStream) object, StandardCharsets.UTF_8)));
+                    value = toString(new BufferedReader(new InputStreamReader((InputStream) object, StandardCharsets.UTF_8)), isLine);
                 }else if(object instanceof BufferedReader) {
                     final StringBuilder response = new StringBuilder();
                     final BufferedReader bufferedReader = (BufferedReader) object;
@@ -93,7 +95,7 @@ public class UtilsText {
                     if(Array.getLength(object) == 0) {
                         value = null;
                     }else {
-                        value = toString(Array.get(object, 0));
+                        value = toString(Array.get(object, 0), isLine);
                     }
                 }else if(object instanceof Calendar) {
                     value = UtilsConverter.Converter.DateUtils.calendarToString((Calendar) object);

@@ -176,7 +176,7 @@ public class DriveManager {
 
                 final String pathNameNew = UtilsResource.path(pathNew, nameNew);
 
-                final Path pathSource = Paths.get(drive.getPathReal());
+                final Path pathSource = Paths.get(drive.getRealPath());
                 final Path pathDestination = Paths.get(ResourceResolver.getRealPathPage(pathNameNew));
 
                 Files.walkFileTree(pathSource, new SimpleFileVisitor<>() {

@@ -1,6 +1,7 @@
 package aionem.net.sdk.data.utils;
 
 import aionem.net.sdk.core.utils.UtilsText;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,6 +12,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 
+@Log4j2
 public class UtilsResource {
 
     private static String ROOT_PATH = "";
@@ -23,8 +25,7 @@ public class UtilsResource {
 
     public static String getRealPathRoot(final String path) {
         if(UtilsText.isEmpty(ROOT_PATH)) {
-            final String realPathParent = getRealPathParent();
-            ROOT_PATH = realPathParent.contains("/") ? realPathParent.substring(0, realPathParent.lastIndexOf("/")) : "";
+            ROOT_PATH = parentFolder(getRealPathParent());
         }
         return path(ROOT_PATH, path);
     }
@@ -35,8 +36,7 @@ public class UtilsResource {
 
     public static String getRealPathParent(final String path) {
         if(UtilsText.isEmpty(PARENT_PATH)) {
-            final String resourcePath = getResourcePath();
-            PARENT_PATH = resourcePath.contains("/") ? resourcePath.substring(0, resourcePath.lastIndexOf("/")) : "";
+            PARENT_PATH = parentFolder(getResourcePath());
         }
         return path(PARENT_PATH, path);
     }
@@ -48,17 +48,16 @@ public class UtilsResource {
     public static String getResourcePath(final String path) {
         if(UtilsText.isEmpty(RESOURCE_PATH)) {
             final URL resource = UtilsResource.class.getClassLoader().getResource("");
-            final String resourcePath = resource != null ? resource.getFile() : "";
-            RESOURCE_PATH = resourcePath.endsWith("/") ? resourcePath.substring(0, resourcePath.length()-1) : "";
+            RESOURCE_PATH = path(resource != null ? resource.getFile() : "");
         }
         return path(RESOURCE_PATH, path);
     }
 
     public static String getRelativePath(String path) {
         final String realPathRoot = getRealPathRoot();
-        if(!path.startsWith("/")) path = "/" + path;
         if(path.startsWith(realPathRoot)) {
             path = path.substring(realPathRoot.length());
+            if(!path.startsWith("/")) path = "/" + path;
         }
         return path;
     }
@@ -144,7 +143,7 @@ public class UtilsResource {
     }
 
     public static String path(final String folder, final String name) {
-        String path = "";
+        String path;
         if(UtilsText.isEmpty(folder) && UtilsText.isEmpty(name)) return "";
 
         if(UtilsText.isEmpty(folder)) {
@@ -159,12 +158,13 @@ public class UtilsResource {
             path = path.substring(0, path.length() -1);
         }
         return path
+                .replace("\\", "/")
                 .replace("//", "/");
     }
 
     public static String parentFolder(final String folder) {
         if(UtilsText.isEmpty(folder)) return folder;
-        return folder.contains("/") ? folder.substring(0, folder.lastIndexOf("/")) : "";
+        return folder.contains("/") ? path(folder.substring(0, folder.lastIndexOf("/"))) : "";
     }
 
     private static File getResourceFile(final String path) {
