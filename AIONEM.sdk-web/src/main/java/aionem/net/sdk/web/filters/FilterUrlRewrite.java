@@ -5,7 +5,6 @@ import aionem.net.sdk.web.WebContext;
 import aionem.net.sdk.web.beans.Page;
 import aionem.net.sdk.web.beans.Resource;
 import aionem.net.sdk.web.config.ConfEnv;
-import aionem.net.sdk.web.dao.DaoTemplate;
 import aionem.net.sdk.web.dao.ResourceResolver;
 import lombok.extern.log4j.Log4j2;
 import org.tuckey.web.filters.urlrewrite.UrlRewriteFilter;
@@ -14,7 +13,6 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -81,7 +79,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
                         final String filePath = UtilsResource.getRealPathRoot(requestPath);
                         final Resource resource = new Resource(filePath);
-                        responseFile(webContext, resource);
+                        responseFile(webContext, resource, chain);
 
                     } else {
                         final String url = requestPath.substring("/ui.page".length());
@@ -93,7 +91,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
                     final String filePath = UtilsResource.getRealPathRoot(requestPath);
                     final Resource resource = new Resource(filePath);
-                    responseFile(webContext, resource);
+                    responseFile(webContext, resource, chain);
 
                     return;
                 } else if (requestPath.startsWith("/ui.frontend")) {
@@ -105,7 +103,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
                         final String filePath = ResourceResolver.getRealPathWebInf(requestPath);
                         final Resource resource = new Resource(filePath);
-                        responseFile(webContext, resource);
+                        responseFile(webContext, resource, null);
 
                     } else {
                         chain.doFilter(request, response);
@@ -130,7 +128,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                     final String filePath = UtilsResource.getRealPathRoot(path);
                     final Resource resource = new Resource(filePath);
 
-                    responseFile(webContext, resource);
+                    responseFile(webContext, resource, null);
                     return;
                 }
 
@@ -145,7 +143,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                     final String filePath = UtilsResource.getRealPathRoot(path);
                     final Resource resource = new Resource(filePath);
 
-                    responseFile(webContext, resource);
+                    responseFile(webContext, resource, null);
                     return;
                 }
 
@@ -159,26 +157,30 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                     final String filePath = UtilsResource.getRealPathRoot(path);
                     final Resource resource = new Resource(filePath);
 
-                    responseFile(webContext, resource);
+                    responseFile(webContext, resource, null);
                     return;
                 }
 
                 final String filePath = UtilsResource.getRealPathRoot("/ui.frontend" + requestPath);
                 final Resource resource = new Resource(filePath);
-                responseFile(webContext, resource);
+                responseFile(webContext, resource, chain);
             }
 
         } catch (final Exception e) {
             log.error("\nError: doFilter {}", e.toString());
             int errorCode = webContext.getResponse().getStatus();
             if (errorCode == 404) {
-                request.getRequestDispatcher("/ui.page/en/error/404").forward(request, response);
+                final Page errorPage = new Page(ConfEnv.getInstance().getError(404));
+                responsePage(webContext, errorPage);
             } else if (errorCode == 500) {
-                request.getRequestDispatcher("/ui.page/en/error/500").forward(request, response);
+                final Page errorPage = new Page(ConfEnv.getInstance().getError(500));
+                responsePage(webContext, errorPage);
             } else if (errorCode == 503) {
-                request.getRequestDispatcher("/ui.page/en/error/503").forward(request, response);
+                final Page errorPage = new Page(ConfEnv.getInstance().getError(503));
+                responsePage(webContext, errorPage);
             } else {
-                request.getRequestDispatcher("/ui.page/en/error").forward(request, response);
+                final Page errorPage = new Page(ConfEnv.getInstance().getError());
+                responsePage(webContext, errorPage);
             }
         }
 
@@ -204,12 +206,11 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
             webContext.setRequestAttribute("currentPage", currentPage);
             webContext.setup();
             webContext.include("/WEB-INF/ui.template/page/.jsp");
-
         }
 
     }
 
-    private void responseFile(final WebContext webContext, final Resource resource) throws IOException {
+    private void responseFile(final WebContext webContext, final Resource resource, final FilterChain chain) throws IOException, ServletException {
 
         final Resource resourceFile;
         if(resource.exists() && resource.isFolder()) {
@@ -237,7 +238,8 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
             }
 
         }else {
-            webContext.sendError(HttpServletResponse.SC_NOT_FOUND);
+            final Page errorPage = new Page(ConfEnv.getInstance().getError(404));
+            responsePage(webContext, errorPage);
         }
 
     }
