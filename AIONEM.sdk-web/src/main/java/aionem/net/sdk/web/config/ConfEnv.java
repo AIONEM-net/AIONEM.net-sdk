@@ -40,11 +40,11 @@ public class ConfEnv extends ConfApp {
         return UtilsResource.path(getContextPath(), path);
     }
 
-    public String getError() {
+    public String getErrorPage() {
         return get("error", "/en/error");
     }
 
-    public String getError(final int code) {
+    public String getErrorPage(final int code) {
         return get("error_"+ code, "/en/error/404");
     }
 

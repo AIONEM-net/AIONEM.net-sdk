@@ -17,8 +17,8 @@ import java.util.ArrayList;
 @Log4j2
 public @Getter abstract class Component {
 
-    protected WebContext webContext;
-    protected Properties properties;
+    private WebContext webContext;
+    private Properties properties;
     private volatile Object instance;
 
     public Component() {
@@ -43,7 +43,11 @@ public @Getter abstract class Component {
     }
 
     public <T> T init(final HttpServletRequest request) {
-        return (T) init(instance, (WebContext) request.getAttribute("webContext"), new Properties(request));
+        return (T) init(request, new Properties(request));
+    }
+
+    public <T> T init(final HttpServletRequest request, final Properties properties) {
+        return (T) init(instance, (WebContext) request.getAttribute("webContext"), properties);
     }
 
     public <T> T init(final T instance, final WebContext webContext, final Properties properties) {

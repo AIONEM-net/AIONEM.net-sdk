@@ -34,7 +34,7 @@ public class CmpMenu extends Component {
     public ArrayList<Page> getListPageItems() {
         if(listPageItems.isEmpty()) {
             final PageManager pageManager = PageManager.getInstance();
-            for(final Page page : pageManager.getListPages(webContext.getHomePage())) {
+            for(final Page page : pageManager.getListPages(getWebContext().getHomePage())) {
                 if(!page.isHideInNav()) {
                     listPageItems.add(page);
                 }

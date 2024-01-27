@@ -31,18 +31,23 @@ public class CmpBreadcrumb extends Component {
 
     }
 
-    public ArrayList<Page> init(final Page homePageItem, final Page currentPageItem) {
-        listBreadcrumbs.clear();
-        listBreadcrumbs.add(homePageItem);
-        if(!homePageItem.equals(currentPageItem)) {
-            final String[] breadcrumbs = pathDifference(homePageItem, currentPageItem).split("/");
-            for(int i = 1; i < breadcrumbs.length - 1; i++) {
-                String breadcrumb = breadcrumbs[i];
-                final Page pageItem = new Page();
-                pageItem.init(listBreadcrumbs.get(i - 1).getPath() + "/" + breadcrumb);
-                listBreadcrumbs.add(pageItem);
+    public ArrayList<Page> getListBreadcrumbs() {
+        if(listBreadcrumbs.isEmpty()) {
+
+            final Page homePage = getWebContext().getHomePage();
+            final Page currentPage = getWebContext().getCurrentPage();
+
+            listBreadcrumbs.add(homePage);
+            if (!homePage.equals(currentPage)) {
+                final String[] breadcrumbs = pathDifference(homePage, currentPage).split("/");
+                for (int i = 1; i < breadcrumbs.length - 1; i++) {
+                    String breadcrumb = breadcrumbs[i];
+                    final Page pageItem = new Page();
+                    pageItem.init(listBreadcrumbs.get(i - 1).getPath() + "/" + breadcrumb);
+                    listBreadcrumbs.add(pageItem);
+                }
+                listBreadcrumbs.add(currentPage);
             }
-            listBreadcrumbs.add(currentPageItem);
         }
         return listBreadcrumbs;
     }

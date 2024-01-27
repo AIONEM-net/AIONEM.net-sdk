@@ -16,7 +16,6 @@ import javax.servlet.ServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,10 +64,10 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
                 } catch (final Exception e) {
                     final Page errorPage;
                     if (!webContext.getCurrentPage().exists()) {
-                        errorPage = new Page(ConfEnv.getInstance().getError(404));
+                        errorPage = new Page(ConfEnv.getInstance().getErrorPage(404));
                         responsePage(webContext, errorPage);
                     } else {
-                        errorPage = new Page(ConfEnv.getInstance().getError(500));
+                        errorPage = new Page(ConfEnv.getInstance().getErrorPage(500));
                         responsePage(webContext, errorPage);
                     }
                 }
@@ -171,16 +170,16 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
         } catch (final Exception e) {
             int errorCode = webContext.getResponse().getStatus();
             if (errorCode == 404) {
-                final Page errorPage = new Page(ConfEnv.getInstance().getError(404));
+                final Page errorPage = new Page(ConfEnv.getInstance().getErrorPage(404));
                 responsePage(webContext, errorPage);
             } else if (errorCode == 500) {
-                final Page errorPage = new Page(ConfEnv.getInstance().getError(500));
+                final Page errorPage = new Page(ConfEnv.getInstance().getErrorPage(500));
                 responsePage(webContext, errorPage);
             } else if (errorCode == 503) {
-                final Page errorPage = new Page(ConfEnv.getInstance().getError(503));
+                final Page errorPage = new Page(ConfEnv.getInstance().getErrorPage(503));
                 responsePage(webContext, errorPage);
             } else {
-                final Page errorPage = new Page(ConfEnv.getInstance().getError());
+                final Page errorPage = new Page(ConfEnv.getInstance().getErrorPage());
                 responsePage(webContext, errorPage);
             }
         }
@@ -201,7 +200,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
         }else {
 
             if(!currentPage.exists()) {
-                currentPage = new Page(ConfEnv.getInstance().getError(404));
+                currentPage = new Page(ConfEnv.getInstance().getErrorPage(404));
             }
 
             webContext.setRequestAttribute("currentPage", currentPage);
@@ -239,7 +238,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
             }
 
         }else {
-            final Page errorPage = new Page(ConfEnv.getInstance().getError(404));
+            final Page errorPage = new Page(ConfEnv.getInstance().getErrorPage(404));
             responsePage(webContext, errorPage);
         }
 
