@@ -87,8 +87,8 @@ public @Getter class Datas implements Iterable<Data> {
         final Comparator<Data> comparator = new Comparator<Data>() {
             @Override
             public int compare(final Data data1, final Data data2) {
-                final boolean isData1 = data1.equalsIgnoreCase(value, key);
-                final boolean isData2 = data2.equalsIgnoreCase(value, key);
+                final boolean isData1 = data1.equalsIgnoreCase(key, value);
+                final boolean isData2 = data2.equalsIgnoreCase(key, value);
                 if(isData1 && isData2) return 0;
                 if(isData1) return -1;
                 if(isData2) return 1;
@@ -109,8 +109,8 @@ public @Getter class Datas implements Iterable<Data> {
         final Comparator<Data> comparator = new Comparator<Data>() {
             @Override
             public int compare(final Data data1, final Data data2) {
-                final boolean isData1 = data1.equalsIgnoreCase(value, key);
-                final boolean isData2 = data2.equalsIgnoreCase(value, key);
+                final boolean isData1 = data1.equalsIgnoreCase(key, value);
+                final boolean isData2 = data2.equalsIgnoreCase(key, value);
                 if(isData1 && isData2) return 0;
                 if(isData1) return 1;
                 if(isData2) return -1;

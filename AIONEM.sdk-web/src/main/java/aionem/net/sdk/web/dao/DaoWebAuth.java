@@ -6,9 +6,7 @@ import aionem.net.sdk.web.WebContext;
 import aionem.net.sdk.web.config.Conf;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
-import java.util.StringTokenizer;
 
 
 public class DaoWebAuth {
@@ -40,7 +38,7 @@ public class DaoWebAuth {
 
     public boolean isAuthenticated(final String email, final String password) {
         final Data dataUser = confUser.getChild(email);
-        if(dataUser.equals2("password", password)) {
+        if(dataUser.equals("password", password)) {
             return true;
         }
         return false;

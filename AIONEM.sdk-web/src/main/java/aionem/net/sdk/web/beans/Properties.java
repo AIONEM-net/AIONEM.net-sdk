@@ -135,11 +135,11 @@ public class Properties {
     }
 
     public boolean equals2(final String key, final Object... values) {
-        return data.equals2(key, values);
+        return data.equals(key, values);
     }
 
     public boolean equalsIgnoreCase2(final String key, final Object... values) {
-        return data.equalsIgnoreCase2(key, values);
+        return data.equalsIgnoreCase(key, values);
     }
 
     public int size() {

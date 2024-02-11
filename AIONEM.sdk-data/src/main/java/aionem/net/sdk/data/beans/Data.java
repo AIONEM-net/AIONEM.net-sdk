@@ -32,15 +32,15 @@ public class Data {
     }
 
     public Data(final JsonObject values) {
-        init(instance, values);
+        init(null, values);
     }
 
     public Data(final HashMap<String, Object> values) {
-        init(instance, values);
+        init(null, values);
     }
 
     public Data(final Object data) {
-        init(instance, UtilsJson.toJsonObject(data));
+        init(null, UtilsJson.toJsonObject(data));
     }
 
     public <T> T init(T dbInstance) {
@@ -71,11 +71,6 @@ public class Data {
         }
 
         return dbInstance;
-    }
-
-    public <T> T init(T t, final boolean init) {
-        if(init) return init(t);
-        return t;
     }
 
     public <T> T init(final T dbInstance, final Data data) {
@@ -417,7 +412,7 @@ public class Data {
         return Objects.hash(toString());
     }
 
-    public boolean equals2(final String key, final Object... values) {
+    public boolean equals(final String key, final Object... values) {
         final Object value = getObject(key);
         for(final Object value1 : values) {
             final boolean isEqual = Objects.equals(value, value1) || UtilsText.equals(UtilsText.toString(value), UtilsText.toString(value1));
@@ -426,21 +421,13 @@ public class Data {
         return false;
     }
 
-    public boolean equalsIgnoreCase2(final String key, final Object... values) {
+    public boolean equalsIgnoreCase(final String key, final Object... values) {
         final String value = get(key);
         for(final Object value1 : values) {
             final boolean isEqual = Objects.equals(value, value1) || UtilsText.equalsIgnoreCase(value, UtilsText.toString(value1));
             if(isEqual) return true;
         }
         return false;
-    }
-
-    public boolean equals(final Object value, final String key) {
-        return Objects.equals(value, getObject(key));
-    }
-
-    public boolean equalsIgnoreCase(final Object value, final String key) {
-        return equals(value, key) || UtilsText.equalsIgnoreCase(UtilsText.toString(value), get(key));
     }
 
 }

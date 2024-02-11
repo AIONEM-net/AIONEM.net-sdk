@@ -8,7 +8,6 @@ import lombok.extern.log4j.Log4j2;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.DataOutputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -233,7 +232,7 @@ public @lombok.Data class Network {
                     httpURLConnection.setDoOutput(true);
                     final DataOutputStream dataOutputStream = new DataOutputStream(httpURLConnection.getOutputStream());
                     final byte[] input;
-                    if(dataHeaders != null && dataHeaders.equalsIgnoreCase("application/json", "Content-Type")) {
+                    if(dataHeaders != null && dataHeaders.equalsIgnoreCase("Content-Type", "application/json")) {
                         input = dataBody.getJsonBytes();
                     }else {
                         input = dataBody.getQueryBytes();
