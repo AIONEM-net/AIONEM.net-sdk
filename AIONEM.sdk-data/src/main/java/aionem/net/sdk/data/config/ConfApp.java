@@ -40,7 +40,7 @@ public class ConfApp {
 
         final String name = UtilsResource.path(getEnv(), this.name);
 
-        this.resourceBundle = UtilsResource.getResourceBundle(name, "/ui.config/conf", "/config/conf", "/ui.config", "/config", "/");
+        this.resourceBundle = UtilsResource.getResourceBundle(name, "/WEB-INF/ui.config/conf", "/ui.config/conf", "/");
 
         this.data = getData(name);
 
@@ -113,7 +113,7 @@ public class ConfApp {
     }
 
     private ResourceBundle getBaseResourceBundle() {
-        return UtilsResource.getResourceBundle(getName(), "/ui.config/conf", "/ui.config", "/config/conf", "/config", "/");
+        return UtilsResource.getResourceBundle(getName(), "/WEB-INF/ui.config/conf", "/ui.config/conf", "/");
     }
 
     private static <T> Data getData(String name) {
@@ -126,9 +126,9 @@ public class ConfApp {
         }
         if(data == null || data.isEmpty()) {
 
-            String json = UtilsResource.readResourceOrParent(name, "/ui.config/conf", "/config/conf");
+            String json = UtilsResource.readResourceOrParent(name, "/WEB-INF/ui.config/conf", "/ui.config/conf", "/");
             if(UtilsText.isEmpty(json)) {
-                json = UtilsResource.readResource(name, "/ui.config", "/config", "/");
+                json = UtilsResource.readResource(name, "/WEB-INF/ui.config/conf", "/ui.config/conf", "/");
             }
 
             if(!UtilsText.isEmpty(json)) {

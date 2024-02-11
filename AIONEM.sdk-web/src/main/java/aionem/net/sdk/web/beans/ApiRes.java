@@ -158,6 +158,11 @@ public class ApiRes {
         }
     }
 
+    public void handleException(final Exception exception) {
+        setError("Something went wrong");
+        setException(exception);
+    }
+
     public Exception getException() {
         if(exception == null) {
             if(!UtilsText.isEmpty(error)) {
@@ -213,12 +218,39 @@ public class ApiRes {
     public void setResponse(final HttpServletResponse response) throws IOException {
         setResponse(response, null);
     }
+    public void setResponse1(final jakarta.servlet.http.HttpServletResponse response) throws IOException {
+        setResponse1(response, null);
+    }
 
     public void setResponse(final HttpServletResponse response, final Data dataHeaders) throws IOException {
         setResponse(response, dataHeaders, "application/json");
     }
+    public void setResponse1(final jakarta.servlet.http.HttpServletResponse response, final Data dataHeaders) throws IOException {
+        setResponse1(response, dataHeaders, "application/json");
+    }
 
     public void setResponse(final HttpServletResponse response, final Data dataHeaders, final String contentType) throws IOException {
+
+        if(dataHeaders != null) {
+            for(final Map.Entry<String, String> header : dataHeaders.getValuesString().entrySet()) {
+                response.setHeader(header.getKey(), header.getValue());
+            }
+        }
+
+        response.setStatus(HttpURLConnection.HTTP_OK);
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType(contentType);
+
+        if("application/json".equalsIgnoreCase(contentType)) {
+            final Gson gson = UtilsJson.getGsonPretty();
+            response.getWriter().write(gson.toJson(toJsonResponse()));
+        }else {
+            response.getWriter().write(getMessage());
+        }
+
+        response.getWriter().close();
+    }
+    public void setResponse1(final jakarta.servlet.http.HttpServletResponse response, final Data dataHeaders, final String contentType) throws IOException {
 
         if(dataHeaders != null) {
             for(final Map.Entry<String, String> header : dataHeaders.getValuesString().entrySet()) {

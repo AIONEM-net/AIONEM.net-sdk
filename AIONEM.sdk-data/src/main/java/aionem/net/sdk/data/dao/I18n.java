@@ -62,14 +62,11 @@ public class I18n {
                 name = locale != null ? locale.getLanguage() : this.name;
             }
 
-            if(!name.equals(this.name)) {
-                this.name = name;
-                this.locale = locale == null ? getLocal() : locale;
+            this.name = name;
+            this.locale = locale == null ? getLocal() : locale;
 
-                this.data = getData(name);
-
-                this.resourceBundle = UtilsResource.getResourceBundle(name, this.locale, "/ui.config/i18n", "/i18n");
-            }
+            this.data = getData(name);
+            this.resourceBundle = UtilsResource.getResourceBundle(name, this.locale, "/WEB-INF/ui.config/i18n", "/ui.config/i18n", "/");
 
         }catch(final Exception e) {
             log.error("\nERROR: - init ::" + e +"\n");
@@ -140,9 +137,9 @@ public class I18n {
         }
         if(data == null || data.isEmpty()) {
 
-            String json = UtilsResource.readResourceOrParent(name, "/ui.config/i18n", "/i18n");
+            String json = UtilsResource.readResourceOrParent(name, "/WEB-INF/ui.config/i18n", "/ui.config/i18n", "/");
             if(UtilsText.isEmpty(json)) {
-                json = UtilsResource.readResource(name, "/ui.config/i18n", "/i18n");
+                json = UtilsResource.readResource(name, "/WEB-INF/ui.config/i18n", "/ui.config/i18n", "/");
             }
 
             if(!UtilsText.isEmpty(json)) {

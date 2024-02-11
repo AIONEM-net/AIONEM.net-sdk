@@ -109,6 +109,15 @@ public class QueryInsert extends Query {
         return getQuery();
     }
 
+    public boolean executeInsertSuccess(final boolean defaultValue) {
+        try {
+            return executeInsertSuccess();
+        }catch (final SQLException e) {
+            setException(e);
+            return defaultValue;
+        }
+    }
+
     public boolean executeInsertSuccess() throws SQLException {
         return executeInsert() > 0;
     }

@@ -578,6 +578,15 @@ public class QuerySelect extends QueryCondition {
         return !listData.isEmpty() ? listData.get(0).toJson() : null;
     }
 
+    public boolean executeExists(final boolean defaultValue) {
+        try {
+            return executeExists();
+        } catch (SQLException e) {
+            setException(e);
+            return defaultValue;
+        }
+    }
+
     public boolean executeExists() throws SQLException {
         return !executeListData().isEmpty();
     }

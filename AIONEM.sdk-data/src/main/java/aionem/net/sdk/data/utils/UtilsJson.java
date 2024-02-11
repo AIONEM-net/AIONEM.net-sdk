@@ -81,8 +81,8 @@ public class UtilsJson {
                     jsonObject = new Gson().fromJson(value, JsonObject.class);
                 }
             }
-        }catch(final Exception ignore) {
-            System.out.println(ignore);
+        }catch(final Exception e) {
+            log.error(e);
         }
         return jsonObject != null && !jsonObject.isJsonNull() ? jsonObject : new JsonObject();
     }
@@ -99,7 +99,8 @@ public class UtilsJson {
             }else {
                 jsonArray = new Gson().toJsonTree(object).getAsJsonArray();
             }
-        }catch(final Exception ignore) {
+        }catch(final Exception e) {
+            log.info(e);
         }
         return jsonArray != null && !jsonArray.isJsonNull() ? jsonArray : new JsonArray();
     }
@@ -227,7 +228,8 @@ public class UtilsJson {
                     return null;
                 }
             }
-        }catch(final Exception ignore) {
+        }catch(final Exception e) {
+            log.error(e);
         }
         return value;
     }
@@ -279,7 +281,8 @@ public class UtilsJson {
 
             }
 
-        }catch(final Exception ignore) {
+        }catch(final Exception e) {
+            log.error(e);
         }
 
         return listMap;

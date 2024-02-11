@@ -6,7 +6,7 @@
 
     <groupId>net.aionem</groupId>
     <artifactId>aionem.net-sdk-web</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>AIONEM.sdk-web</name>
     <packaging>jar</packaging>
 
@@ -20,17 +20,23 @@
         <dependency>
             <groupId>net.aionem</groupId>
             <artifactId>aionem.net-sdk-core</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>net.aionem</groupId>
             <artifactId>aionem.net-sdk-data</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <version>4.0.2</version>
+            <version>6.0.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

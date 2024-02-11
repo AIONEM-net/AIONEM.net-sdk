@@ -6,7 +6,7 @@
 
     <groupId>net.aionem</groupId>
     <artifactId>aionem.net-sdk-data</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>AIONEM.sdk-data</name>
     <packaging>jar</packaging>
 
@@ -20,7 +20,7 @@
         <dependency>
             <groupId>net.aionem</groupId>
             <artifactId>aionem.net-sdk-core</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.mysql</groupId>
