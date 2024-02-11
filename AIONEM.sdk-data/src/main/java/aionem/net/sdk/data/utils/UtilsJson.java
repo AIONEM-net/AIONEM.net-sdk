@@ -73,6 +73,8 @@ public class UtilsJson {
                 jsonObject = ((Data) object).toJson();
             }else if(object instanceof HashMap) {
                 jsonObject = fromHashMap((HashMap<String, Object>) object);
+            }else if(object instanceof Map) {
+                jsonObject = fromHashMap((Map<String, Object>) object);
             }else if(object instanceof ResourceBundle) {
                 jsonObject = fromResourceBundle((ResourceBundle) object);
             }else {
@@ -115,7 +117,7 @@ public class UtilsJson {
         return values;
     }
 
-    public static JsonObject fromHashMap(final HashMap<String, Object> hashMap) {
+    public static JsonObject fromHashMap(final Map<String, Object> hashMap) {
         final JsonObject jsonObject = new JsonObject();
         if(hashMap != null) {
             for(final String key : hashMap.keySet()) {
@@ -138,6 +140,7 @@ public class UtilsJson {
     }
 
     public static JsonObject add(final JsonObject data, final String key, final Object value) {
+        log.info(key, value);
         if(value instanceof JsonObject) {
             data.add(key, (JsonObject) value);
         }else if(value instanceof JsonArray) {
