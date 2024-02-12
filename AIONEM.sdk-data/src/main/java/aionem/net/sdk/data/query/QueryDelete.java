@@ -1,6 +1,7 @@
 package aionem.net.sdk.data.query;
 
 import aionem.net.sdk.core.utils.UtilsText;
+import aionem.net.sdk.data.beans.DaoRes;
 import aionem.net.sdk.data.beans.Data;
 
 import java.sql.SQLException;
@@ -298,6 +299,22 @@ public class QueryDelete extends QueryCondition {
     @Override
     public String toString() {
         return getQuery();
+    }
+
+    public DaoRes executeDeleteRes() {
+        final DaoRes resDelete = new DaoRes();
+        try {
+            final boolean isDeleted = executeDeleteSuccess();
+            if(isDeleted) {
+                resDelete.setSuccess(true);
+            }else {
+                resDelete.setError(getError());
+                resDelete.setException(getException());
+            }
+        } catch (SQLException e) {
+            resDelete.setException(e);
+        }
+        return resDelete;
     }
 
     public boolean executeDeleteSuccess() throws SQLException {

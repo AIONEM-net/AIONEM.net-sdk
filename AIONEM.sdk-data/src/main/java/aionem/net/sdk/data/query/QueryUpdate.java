@@ -25,44 +25,54 @@ public class QueryUpdate extends QueryCondition {
         set(0, column);
         return this;
     }
+
     public QueryUpdate set(final int tableNo, final String column) {
         set(tableNo, column, params, true);
         return this;
     }
+
     public QueryUpdate set(final String column, final Object value) {
         set(0, column, value);
         return this;
     }
+
     public QueryUpdate set(final int tableNo, final String column, final Object value) {
         set(tableNo, column, value, true);
         return this;
     }
+
     public QueryUpdate set(final JsonObject data) {
         set(0, data);
         return this;
     }
+
     public QueryUpdate set(final int tableNo, final JsonObject data) {
         for(String column : data.keySet()) {
             set(tableNo, column, data.get(column), true);
         }
         return this;
     }
+
     public QueryUpdate set(final String column, final Data data) {
         set(0, column, data);
         return this;
     }
+
     public QueryUpdate set(final int tableNo, final String column, final Data data) {
         set(tableNo, column, data, column);
         return this;
     }
+
     public QueryUpdate set(final String column, final Data data, final String key) {
         set(0, column, data.get(key), data.has(key));
         return this;
     }
+
     public QueryUpdate set(final int tableNo, final String column, final Data data, final String key) {
         set(tableNo, column, data.get(key), data.has(key));
         return this;
     }
+
     public QueryUpdate set(final String column, final Object value, final boolean condition) {
         set(0, column, value, condition);
         return this;
@@ -80,10 +90,12 @@ public class QueryUpdate extends QueryCondition {
         increment(0, column);
         return this;
     }
+
     public QueryUpdate increment(final int tableNo, final String column) {
         increment(tableNo, column, true);
         return this;
     }
+
     public QueryUpdate increment(final int tableNo, final String column, final boolean condition) {
         adjust(tableNo, column, column, 1, condition);
         return this;
@@ -157,22 +169,27 @@ public class QueryUpdate extends QueryCondition {
         super.where(column);
         return this;
     }
+
     public QueryUpdate where(final String column, final Object value) {
         super.where(column, value);
         return this;
     }
+
     public QueryUpdate where(final int tableNo, final String column) {
         super.where(tableNo, column);
         return this;
     }
+
     public QueryUpdate where(final int tableNo, final String column, final Object value) {
         super.where(tableNo, column, value);
         return this;
     }
+
     public QueryUpdate where(final String column, final String logic, final Object value) {
         super.where(0, column, logic, value);
         return this;
     }
+
     public QueryUpdate where(final int tableNo, final String column, final String logic, final Object value) {
         super.where(tableNo, column, logic, value);
         return this;
@@ -182,18 +199,22 @@ public class QueryUpdate extends QueryCondition {
         super.and(column);
         return this;
     }
+
     public QueryUpdate and(final String column, final Object value) {
         super.and(column, value);
         return this;
     }
+
     public QueryUpdate and(final String column, final String logic, final Object value) {
         super.and(0, column, logic, value);
         return this;
     }
+
     public QueryUpdate and(final int tableNo, final String column, final Object value) {
         super.and(tableNo, column, value);
         return this;
     }
+
     public QueryUpdate and(final int tableNo, final String column, final String logic, final Object value) {
         super.and(tableNo, column, logic, value);
         return this;
@@ -203,18 +224,22 @@ public class QueryUpdate extends QueryCondition {
         super.or(column);
         return this;
     }
+
     public QueryUpdate or(final String column, final Object value) {
         super.or(column, value);
         return this;
     }
+
     public QueryUpdate or(final int tableNo, final String column, final Object value) {
         super.or(tableNo, column, value);
         return this;
     }
+
     public QueryUpdate or(final int tableNo, final String column, final Object value, final boolean condition) {
         super.or(tableNo, column, value, condition);
         return this;
     }
+
     public QueryUpdate or(final int tableNo, final String column, final String logic, final Object value) {
         super.or(tableNo, column, logic, value);
         return this;
@@ -224,6 +249,7 @@ public class QueryUpdate extends QueryCondition {
         super.like(columns, value);
         return this;
     }
+
     public QueryUpdate like(final String[] columns, final Object value, final boolean condition) {
         super.like(columns, value, condition);
         return this;
@@ -233,10 +259,12 @@ public class QueryUpdate extends QueryCondition {
         super.andLike(column, value);
         return this;
     }
+
     public QueryUpdate andLike(final String column, final Object value, final boolean condition) {
         super.andLike(column, value, condition);
         return this;
     }
+
     public QueryUpdate andLike(final int tableNo, final String column, final Object value) {
         super.andLike(tableNo, column, value);
         return this;
@@ -250,14 +278,17 @@ public class QueryUpdate extends QueryCondition {
         super.orLike(column, value);
         return this;
     }
+
     public QueryUpdate orLike(final String column, final Object value, boolean condition) {
         super.orLike(column, value, condition);
         return this;
     }
+
     public QueryUpdate orLike(final int tableNo, final String column, final Object value) {
         super.orLike(tableNo, column, value);
         return this;
     }
+
     public QueryUpdate orLike(final int tableNo, final String column, final Object value, final boolean condition) {
         super.orLike(tableNo, column, value, condition);
         return this;
@@ -267,14 +298,17 @@ public class QueryUpdate extends QueryCondition {
         super.andGreater(column, value);
         return this;
     }
+
     public QueryUpdate andGreater(final String column, final Object value, final boolean condition) {
         super.andGreater(column, value, condition);
         return this;
     }
+
     public QueryUpdate andGreater(final int tableNo, final String column, final Object value) {
         super.andGreater(tableNo, column, value);
         return this;
     }
+
     public QueryUpdate andGreater(final int tableNo, final String column, final Object value, boolean condition) {
         super.andGreater(tableNo, column, value, condition);
         return this;
@@ -284,14 +318,17 @@ public class QueryUpdate extends QueryCondition {
         super.orGreater(column, value);
         return this;
     }
+
     public QueryUpdate orGreater(final String column, final Object value, boolean condition) {
         super.orGreater(column, value, condition);
         return this;
     }
+
     public QueryUpdate orGreater(final int tableNo, final String column, final Object value) {
         super.orGreater(tableNo, column, value);
         return this;
     }
+
     public QueryUpdate orGreater(final int tableNo, final String column, final Object value, final boolean condition) {
         super.orGreater(tableNo, column, value, condition);
         return this;
@@ -301,14 +338,17 @@ public class QueryUpdate extends QueryCondition {
         super.andLess(column, value);
         return this;
     }
+
     public QueryUpdate andLess(final String column, final Object value, final boolean condition) {
         super.andLess(column, value, condition);
         return this;
     }
+
     public QueryUpdate andLess(final int tableNo, final String column, final Object value) {
         super.andLess(tableNo, column, value);
         return this;
     }
+
     public QueryUpdate andLess(final int tableNo, final String column, final Object value, boolean condition) {
         super.andLess(tableNo, column, value, condition);
         return this;
@@ -318,14 +358,17 @@ public class QueryUpdate extends QueryCondition {
         super.orLess(column, value);
         return this;
     }
+
     public QueryUpdate orLess(final String column, final Object value, boolean condition) {
         super.orLess(column, value, condition);
         return this;
     }
+
     public QueryUpdate orLess(final int tableNo, final String column, final Object value) {
         super.orLess(tableNo, column, value);
         return this;
     }
+
     public QueryUpdate orLess(final int tableNo, final String column, final Object value, final boolean condition) {
         super.orLess(tableNo, column, value, condition);
         return this;
@@ -335,22 +378,27 @@ public class QueryUpdate extends QueryCondition {
         super.andStartWith(column, value);
         return this;
     }
+
     public QueryUpdate andStartWith(final int tableNo, final String column, final Object value) {
         super.andStartWith(tableNo, column, value);
         return this;
     }
+
     public QueryUpdate orStartWith(final String column, final Object value) {
         super.orStartWith(column, value);
         return this;
     }
+
     public QueryUpdate orStartWith(final int tableNo, final String column, final Object value) {
         super.orStartWith(tableNo, column, value);
         return this;
     }
+
     public QueryUpdate orEndWith(final String column, final Object value) {
         super.orEndWith(column, value);
         return this;
     }
+
     public QueryUpdate orEndWith(final int tableNo, final String column, final Object value) {
         super.orEndWith(tableNo, column, value);
         return this;
@@ -360,6 +408,7 @@ public class QueryUpdate extends QueryCondition {
         super.andEndWith(column, value);
         return this;
     }
+
     public QueryUpdate andEndWith(final int tableNo, final String column, final Object value) {
         super.andEndWith(tableNo, column, value);
         return this;
@@ -369,10 +418,12 @@ public class QueryUpdate extends QueryCondition {
         super.order(column, direction);
         return this;
     }
+
     public QueryUpdate orderByASC(final String column) {
         super.orderByASC(column);
         return this;
     }
+
     public QueryUpdate orderByDESC(final String column) {
         super.orderByDESC(column);
         return this;
@@ -382,10 +433,12 @@ public class QueryUpdate extends QueryCondition {
         super.limit(limit);
         return this;
     }
+
     public QueryUpdate offset(final int offset) {
         super.offset(offset);
         return this;
     }
+
     public QueryUpdate pageMax(final int page, final int max) {
         super.pageMax(page, max);
         return this;

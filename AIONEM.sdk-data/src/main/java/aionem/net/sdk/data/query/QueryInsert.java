@@ -31,14 +31,17 @@ public class QueryInsert extends Query {
         this.oElse = oElse && !only;
         return this;
     }
+
     public QueryInsert onlyElse() {
         this.only = oElse;
         return this;
     }
+
     public QueryInsert forAll() {
         this.only = true;
         return this;
     }
+
     public QueryInsert then() {
         return this;
     }
@@ -47,30 +50,36 @@ public class QueryInsert extends Query {
         put(column, params);
         return this;
     }
+
     public QueryInsert put(final String column, final Object value) {
         put(column, value, true);
         return this;
     }
+
     public QueryInsert put(final String column, final Data data) {
         put(column, data, column);
         return this;
     }
+
     public QueryInsert put(final String column, final Data data, final String key) {
         put(column, data.get(key), data.has(key));
         return this;
     }
+
     public QueryInsert put(final Data data) {
         for(final String column : data.keySet()) {
             put(column, data.get(column), true);
         }
         return this;
     }
+
     public QueryInsert put(final JsonObject data) {
         for(final String column : data.keySet()) {
             put(column, data.get(column), true);
         }
         return this;
     }
+
     public QueryInsert put(final String column, Object value, final boolean condition) {
         value = getNullable(column, value);
         if(column != null && value != null && condition && only) {

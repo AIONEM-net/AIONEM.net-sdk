@@ -43,6 +43,18 @@ public class Data {
         init(null, UtilsJson.toJsonObject(data));
     }
 
+    public Data(final Object instance, final JsonObject values) {
+        init(instance, values);
+    }
+
+    public Data(final Object instance, final HashMap<String, Object> values) {
+        init(instance, values);
+    }
+
+    public Data(final Object instance, final Object data) {
+        init(instance, UtilsJson.toJsonObject(data));
+    }
+
     public <T> T init(T dbInstance) {
         instance = dbInstance;
 
@@ -250,6 +262,10 @@ public class Data {
             }
         }
         return isOrLast && keys.length > 0 ? keys[keys.length-1] : "";
+    }
+
+    public int getId(final String key) {
+        return (int) UtilsParse.toNumber(get(key), -1);
     }
 
     public ArrayList<String> getArray(final String key) {

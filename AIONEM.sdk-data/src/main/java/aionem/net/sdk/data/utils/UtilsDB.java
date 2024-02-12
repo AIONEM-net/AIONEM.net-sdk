@@ -25,6 +25,10 @@ public class UtilsDB {
     public static String DB_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 
+    public static boolean isValidId(final int id) {
+        return id > 0;
+    }
+
     public static String formatDate(final String format) {
         return formatDate(Calendar.getInstance(), format);
     }

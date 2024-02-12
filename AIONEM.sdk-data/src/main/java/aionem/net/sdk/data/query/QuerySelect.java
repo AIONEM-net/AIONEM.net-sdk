@@ -1,5 +1,6 @@
 package aionem.net.sdk.data.query;
 
+import aionem.net.sdk.data.beans.DaoRes;
 import aionem.net.sdk.data.beans.Data;
 import aionem.net.sdk.data.beans.Datas;
 import aionem.net.sdk.data.utils.UtilsDB;
@@ -108,18 +109,22 @@ public class QuerySelect extends QueryCondition {
         count("", "", false);
         return this;
     }
+
     public QuerySelect count(final String column, final String alias) {
         count(0, column, alias, false);
         return this;
     }
+
     public QuerySelect count(final String column, final String alias, boolean distinct) {
         count(0, column, alias, distinct);
         return this;
     }
+
     public QuerySelect count(final int tableNo, final String column, final String alias) {
         count(tableNo, column, alias, false);
         return this;
     }
+
     public QuerySelect count(final int tableNo, String column, final String alias, final boolean distinct) {
         if(only) {
             column = !UtilsText.isEmpty(column) ? (distinct ? "DISTINCT " : "") + getTableColumn(tableNo, column) : "*";
@@ -136,18 +141,22 @@ public class QuerySelect extends QueryCondition {
         sum(0, column, "SUM(#)", false);
         return this;
     }
+
     public QuerySelect sum(final String column, final String alias) {
         sum(0, column, alias, false);
         return this;
     }
+
     public QuerySelect sum(final String column, final String alias, final boolean distinct) {
         sum(0, column, alias, distinct);
         return this;
     }
+
     public QuerySelect sum(final int tableNo, final String column, final String alias) {
         sum(tableNo, column, alias, false);
         return this;
     }
+
     public QuerySelect sum(final int tableNo, String column, final String alias, final boolean distinct) {
         if(column != null && only) {
             column = (distinct ? "DISTINCT " : "") + getTableColumn(tableNo, column);
@@ -163,10 +172,12 @@ public class QuerySelect extends QueryCondition {
         super.join(table);
         return this;
     }
+
     public QuerySelect on(final String column1, final String column2) {
         super.on(column1, column2);
         return this;
     }
+
     public QuerySelect on(final int tableNo, final String column1, final String column2) {
         super.on(tableNo, column1, column2);
         return this;
@@ -176,14 +187,17 @@ public class QuerySelect extends QueryCondition {
         super.only(only);
         return this;
     }
+
     public QuerySelect onlyElse() {
         super.onlyElse();
         return this;
     }
+
     public QuerySelect forAll() {
         super.forAll();
         return this;
     }
+
     public QuerySelect then() {
         super.then();
         return this;
@@ -193,10 +207,12 @@ public class QuerySelect extends QueryCondition {
         super.where(column);
         return this;
     }
+
     public QuerySelect where(final String column, final Object value) {
         super.where(column, value);
         return this;
     }
+
     public QuerySelect where(final String column, final Object value, final boolean condition) {
         super.where(column, value, condition);
         return this;
@@ -206,26 +222,32 @@ public class QuerySelect extends QueryCondition {
         super.where(tableNo, column);
         return this;
     }
+
     public QuerySelect where(final int tableNo, final String column, final Object value) {
         super.where(tableNo, column, value);
         return this;
     }
+
     public QuerySelect where(final int tableNo, final String column, final Object value, final boolean condition) {
         super.where(tableNo, column, value, condition);
         return this;
     }
+
     public QuerySelect where(final String column, final String logic, final Object value) {
         super.where(0, column, logic, value);
         return this;
     }
+
     public QuerySelect where(final String column, final String logic, final Object value, final boolean condition) {
         super.where(0, column, logic, value, condition);
         return this;
     }
+
     public QuerySelect where(final int tableNo, final String column, final String logic, final Object value) {
         super.where(tableNo, column, logic, value);
         return this;
     }
+
     public QuerySelect where(final int tableNo, final String column, final String logic, final Object value, final boolean condition) {
         super.where(tableNo, column, logic, value, condition);
         return this;
@@ -235,30 +257,37 @@ public class QuerySelect extends QueryCondition {
         super.and(column);
         return this;
     }
+
     public QuerySelect andNotEmpty(final String column) {
         super.andNotEmpty(column);
         return this;
     }
+
     public QuerySelect and(final String column, final Object value) {
         super.and(column, value);
         return this;
     }
+
     public QuerySelect and(final String column, final Object value, final boolean condition) {
         super.and(0, column, value, condition);
         return this;
     }
+
     public QuerySelect and(final String column, final String logic, final Object value) {
         super.and(0, column, logic, value);
         return this;
     }
+
     public QuerySelect and(final int tableNo, final String column, final Object value) {
         super.and(tableNo, column, value);
         return this;
     }
+
     public QuerySelect and(final int tableNo, final String column, final String logic, final Object value) {
         super.and(tableNo, column, logic, value);
         return this;
     }
+
     public QuerySelect and(final int tableNo, final String column, final Object value, final boolean condition) {
         super.and(tableNo, column, value, condition);
         return this;
@@ -268,26 +297,32 @@ public class QuerySelect extends QueryCondition {
         super.or(column);
         return this;
     }
+
     public QuerySelect or(final String column, final Object value) {
         super.or(column, value);
         return this;
     }
+
     public QuerySelect or(final int tableNo, final String column, final Object value) {
         super.or(tableNo, column, value);
         return this;
     }
+
     public QuerySelect or(final String column, final List<String> values) {
         super.or(column, values);
         return this;
     }
+
     public QuerySelect or(final int tableNo, final String column, final List<String> values) {
         super.or(tableNo, column, values);
         return this;
     }
+
     public QuerySelect or(final int tableNo, final String column, final String logic, final Object value) {
         super.or(tableNo, column, logic, value);
         return this;
     }
+
     public QuerySelect or(final int tableNo, final String column, final Object value, final boolean condition) {
         super.or(tableNo, column, value, condition);
         return this;
@@ -297,6 +332,7 @@ public class QuerySelect extends QueryCondition {
         super.like(columns, value);
         return this;
     }
+
     public QuerySelect like(final String[] columns, final Object value, final boolean condition) {
         super.like(columns, value, condition);
         return this;
@@ -306,14 +342,17 @@ public class QuerySelect extends QueryCondition {
         super.andLike(column, value);
         return this;
     }
+
     public QuerySelect andLike(final String column, final Object value, final boolean condition) {
         super.andLike(column, value, condition);
         return this;
     }
+
     public QuerySelect andLike(final int tableNo, final String column, final Object value) {
         super.andLike(tableNo, column, value);
         return this;
     }
+
     public QuerySelect andLike(final int tableNo, final String column, final Object value, final boolean condition) {
         super.andLike(tableNo, column, value, condition);
         return this;
@@ -323,14 +362,17 @@ public class QuerySelect extends QueryCondition {
         super.orLike(column, value);
         return this;
     }
+
     public QuerySelect orLike(final String column, final Object value, final boolean condition) {
         super.orLike(column, value, condition);
         return this;
     }
+
     public QuerySelect orLike(final int tableNo, final String column, final Object value) {
         super.orLike(tableNo, column, value);
         return this;
     }
+
     public QuerySelect orLike(final int tableNo, final String column, final Object value, final boolean condition) {
         super.orLike(tableNo, column, value, condition);
         return this;
@@ -340,14 +382,17 @@ public class QuerySelect extends QueryCondition {
         super.andGreater(column, value);
         return this;
     }
+
     public QuerySelect andGreater(final String column, final Object value, final boolean condition) {
         super.andGreater(column, value, condition);
         return this;
     }
+
     public QuerySelect andGreater(final int tableNo, final String column, final Object value) {
         super.andGreater(tableNo, column, value);
         return this;
     }
+
     public QuerySelect andGreater(final int tableNo, final String column, final Object value, final boolean condition) {
         super.andGreater(tableNo, column, value, condition);
         return this;
@@ -357,14 +402,17 @@ public class QuerySelect extends QueryCondition {
         super.orGreater(column, value);
         return this;
     }
+
     public QuerySelect orGreater(final String column, final Object value, final boolean condition) {
         super.orGreater(column, value, condition);
         return this;
     }
+
     public QuerySelect orGreater(final int tableNo, final String column, final Object value) {
         super.orGreater(tableNo, column, value);
         return this;
     }
+
     public QuerySelect orGreater(final int tableNo, final String column, final Object value, final boolean condition) {
         super.orGreater(tableNo, column, value, condition);
         return this;
@@ -374,14 +422,17 @@ public class QuerySelect extends QueryCondition {
         super.andLess(column, value);
         return this;
     }
+
     public QuerySelect andLess(final String column, final Object value, final boolean condition) {
         super.andLess(column, value, condition);
         return this;
     }
+
     public QuerySelect andLess(final int tableNo, final String column, final Object value) {
         super.andLess(tableNo, column, value);
         return this;
     }
+
     public QuerySelect andLess(final int tableNo, final String column, final Object value, final boolean condition) {
         super.andLess(tableNo, column, value, condition);
         return this;
@@ -391,14 +442,17 @@ public class QuerySelect extends QueryCondition {
         super.orLess(column, value);
         return this;
     }
+
     public QuerySelect orLess(final String column, final Object value, final boolean condition) {
         super.orLess(column, value, condition);
         return this;
     }
+
     public QuerySelect orLess(final int tableNo, final String column, final Object value) {
         super.orLess(tableNo, column, value);
         return this;
     }
+
     public QuerySelect orLess(final int tableNo, final String column, final Object value, final boolean condition) {
         super.orLess(tableNo, column, value, condition);
         return this;
@@ -408,14 +462,17 @@ public class QuerySelect extends QueryCondition {
         super.andStartWith(column, value);
         return this;
     }
+
     public QuerySelect andStartWith(final int tableNo, final String column, final Object value) {
         super.andStartWith(tableNo, column, value);
         return this;
     }
+
     public QuerySelect orStartWith(final String column, final Object value) {
         super.orStartWith(column, value);
         return this;
     }
+
     public QuerySelect orStartWith(final int tableNo, final String column, final Object value) {
         super.orStartWith(tableNo, column, value);
         return this;
@@ -425,6 +482,7 @@ public class QuerySelect extends QueryCondition {
         super.andEndWith(column, value);
         return this;
     }
+
     public QuerySelect andEndWith(final int tableNo, final String column, final Object value) {
         super.andEndWith(tableNo, column, value);
         return this;
@@ -434,6 +492,7 @@ public class QuerySelect extends QueryCondition {
         super.orEndWith(column, value);
         return this;
     }
+
     public QuerySelect orEndWith(final int tableNo, final String column, final Object value) {
         super.orEndWith(tableNo, column, value);
         return this;
@@ -443,6 +502,7 @@ public class QuerySelect extends QueryCondition {
         super.groupBy(columns);
         return this;
     }
+
     public QuerySelect groupBy(final int tableNo, final String... column) {
         super.groupBy(tableNo, column);
         return this;
@@ -452,6 +512,7 @@ public class QuerySelect extends QueryCondition {
         super.order(column, direction);
         return this;
     }
+
     public QuerySelect order(final int tableNo, final String column, final String direction) {
         super.order(tableNo, column, direction);
         return this;
@@ -461,14 +522,17 @@ public class QuerySelect extends QueryCondition {
         super.orderByASC(column);
         return this;
     }
+
     public QuerySelect orderByASC(final int tableNo, final String column) {
         super.orderByASC(tableNo, column);
         return this;
     }
+
     public QuerySelect orderByDESC(final String column) {
         super.orderByDESC(column);
         return this;
     }
+
     public QuerySelect orderByDESC(final int tableNo, final String column) {
         super.orderByDESC(tableNo, column);
         return this;
@@ -478,10 +542,12 @@ public class QuerySelect extends QueryCondition {
         super.limit(limit);
         return this;
     }
+
     public QuerySelect offset(final int offset) {
         super.offset(offset);
         return this;
     }
+
     public QuerySelect pageMax(final int page, final int max) {
         super.pageMax(page, max);
         return this;
@@ -571,6 +637,22 @@ public class QuerySelect extends QueryCondition {
             setException(e);
             return null;
         }
+    }
+
+    public DaoRes executeSelectRes() {
+        final DaoRes resSelect = new DaoRes();
+        try {
+            final Datas datas = executeDatas();
+            if(!datas.isEmpty()) {
+                resSelect.setData(datas.get(0));
+                resSelect.setDatas(datas);
+            }
+            resSelect.setSuccess(true);
+        }catch(final Exception e) {
+            resSelect.setError(getError());
+            resSelect.setException(e);
+        }
+        return resSelect;
     }
 
     public JsonObject executeJson() throws SQLException {

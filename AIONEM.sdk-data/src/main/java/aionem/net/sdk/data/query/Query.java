@@ -125,6 +125,7 @@ public class Query {
         if(tableNo < 0) return "";
         return tables.get(tableNo);
     }
+
     public String getTableColumn(final int tableNo, final String column) {
         if(tableNo < 0) return column;
         return tables.get(tableNo) + "." + "`" + column + "`";

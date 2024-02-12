@@ -18,22 +18,27 @@ public class QueryColumn {
         this.column = column;
         this.value = "";
     }
+
     protected QueryColumn(final String column, final Object value) {
         this.column = column;
         this.value = getValue(value);
     }
+
     protected QueryColumn(final String column, final String logic, final Object value) {
         this.column = column;
         this.value = " "+ logic +" " + getValue(value);
     }
+
     protected QueryColumn(final String table, final String column, final String logic, final Object value) {
         this.column = table + "." + "`" + column + "`";
         this.value = " "+ logic +" " + getValue(value);
     }
+
     protected QueryColumn(final String operator, final String table, final String column, final String logic, final Object value) {
         this.column = " "+ operator +" " + table + "." + "`" + column + "`";
         this.value = " "+ logic +" " + getValue(value);
     }
+
     protected QueryColumn(final String column, final String logic, final String column1, final String value) {
         this.column = column;
         this.value = " "+ logic +" " + "`"+ column1 +"`" +" "+ UtilsText.toString(value);

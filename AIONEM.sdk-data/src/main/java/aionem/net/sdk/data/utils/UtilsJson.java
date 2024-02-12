@@ -140,7 +140,6 @@ public class UtilsJson {
     }
 
     public static JsonObject add(final JsonObject data, final String key, final Object value) {
-        log.info(key, value);
         if(value instanceof JsonObject) {
             data.add(key, (JsonObject) value);
         }else if(value instanceof JsonArray) {

@@ -2,60 +2,48 @@ package aionem.net.sdk.data.beans;
 
 import aionem.net.sdk.core.Env;
 import aionem.net.sdk.core.utils.UtilsText;
-import com.google.gson.JsonArray;
+import aionem.net.sdk.data.utils.UtilsData;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import lombok.EqualsAndHashCode;
 import lombok.extern.log4j.Log4j2;
 
+import java.net.HttpURLConnection;
 import java.sql.SQLException;
 
 
 @Log4j2
 @EqualsAndHashCode(callSuper=false)
-public @lombok.Data class DaoRes extends Data {
+public @lombok.Data class DaoRes {
 
     private long id = -1;
     private int status = -1;
     private boolean success = false;
     private String response = "";
+    private Data data = new Data();
     private Datas datas = new Datas();
     private String error = "";
     private Exception exception;
 
-
-    public void setData(final JsonObject jsonObject) {
-        setData(new Data(jsonObject));
+    public void put(final String key, final Object value) {
+        data.put(key, value);
     }
 
     public void setData(final Data data) {
-        setValues(data);
-    }
-
-    public void setDataArray(final JsonArray jsonArray) {
-        setDataArray(new Datas(jsonArray));
+        data.setValues(data);
     }
 
     public void setDataArray(final Datas datas) {
         this.datas = datas;
     }
 
-    public boolean hasResponse() {
-        return !UtilsText.isEmpty(response);
-    }
-
-    public boolean hasData() {
-        return !datas.isEmpty();
-    }
-
     public void setSuccess(boolean success) {
         this.success = success;
-        this.status = this.status == -1 ? 200 : this.status;
+        this.status = this.status == -1 ? HttpURLConnection.HTTP_OK : this.status;
     }
 
     public void setResponse(final String response) {
         this.response = response;
-        setValues(response);
+        data.setValues(response);
     }
 
     public void setError(final String error) {
@@ -68,6 +56,7 @@ public @lombok.Data class DaoRes extends Data {
             setException(new Exception(error));
         }
     }
+
     public void setException(final Exception e) {
         this.exception = e;
         if(e != null && UtilsText.isEmpty(error)) {
@@ -82,6 +71,25 @@ public @lombok.Data class DaoRes extends Data {
         }
     }
 
+    public <T> T getData(final Class<T> type, final T defaultValue) throws Exception {
+        try {
+            return getData(type);
+        }catch(final Exception e) {
+            return defaultValue;
+        }
+    }
+
+    public <T> T getData(final Class<T> type) throws Exception {
+        return UtilsData.adaptTo(type, this.data);
+    }
+
+    public int getStatus() {
+        if(status == -1) {
+            status = success ? HttpURLConnection.HTTP_OK : HttpURLConnection.HTTP_INTERNAL_ERROR;
+        }
+        return status;
+    }
+
     public Exception getException() {
         if(exception == null) {
             if(!UtilsText.isEmpty(error)) {
@@ -91,8 +99,16 @@ public @lombok.Data class DaoRes extends Data {
         return exception;
     }
 
-    public JsonElement getData() {
-        return !datas.isEmpty() ? datas.toJson() : toJson();
+    public boolean hasResponse() {
+        return !UtilsText.isEmpty(response);
+    }
+
+    public boolean hasData() {
+        return !data.isEmpty() || !datas.isEmpty();
+    }
+
+    public JsonElement toJson() {
+        return !datas.isEmpty() ? datas.toJson() : data.toJson();
     }
 
 }

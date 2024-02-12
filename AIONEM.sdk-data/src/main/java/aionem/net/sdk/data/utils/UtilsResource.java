@@ -5,7 +5,6 @@ import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Locale;
@@ -113,14 +112,16 @@ public class UtilsResource {
     }
 
     public static ResourceBundle getResourceBundle(final String name, final Locale locale, String... folders) {
+        ResourceBundle resourceBundle;
         if(folders == null || folders.length == 0) folders = new String[]{""};
         for(final String folder : folders) {
             try {
                 if(locale != null) {
-                    return ResourceBundle.getBundle(path(folder, name), locale);
+                    resourceBundle = ResourceBundle.getBundle(path(folder, name), locale);
                 }else {
-                    return ResourceBundle.getBundle(path(folder, name));
+                    resourceBundle = ResourceBundle.getBundle(path(folder, name));
                 }
+                if(resourceBundle != null) return resourceBundle;
             }catch(final Exception ignore) {
             }
         }
