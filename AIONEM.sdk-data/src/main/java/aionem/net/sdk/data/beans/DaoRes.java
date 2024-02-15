@@ -17,6 +17,7 @@ public @lombok.Data class DaoRes {
 
     private long id = -1;
     private int status = -1;
+    private double progress = 0;
     private boolean success = false;
     private String response = "";
     private Data data = new Data();
@@ -29,7 +30,7 @@ public @lombok.Data class DaoRes {
     }
 
     public void setData(final Data data) {
-        data.setValues(data);
+        this.data.setValues(data.getValues());
     }
 
     public void setDataArray(final Datas datas) {

@@ -61,6 +61,7 @@ public @Getter class Datas implements Iterable<Data> {
     public Data remove(int index) {
         return listDatas.remove(index);
     }
+
     public boolean remove(Data data) {
         return listDatas.remove(data);
     }
@@ -73,6 +74,66 @@ public @Getter class Datas implements Iterable<Data> {
         return listDatas.isEmpty();
     }
 
+    public boolean contains(Data data) {
+        return listDatas.contains(data);
+    }
+
+    public boolean contains(final String key, final Object value) {
+        return contains(key, value, false);
+    }
+
+    public boolean contains(final String key, final Object value, final boolean ignoreCase) {
+        return filter(key, value, ignoreCase).size() > 0;
+    }
+
+    public Datas filter(final String key) {
+        final Datas datas = new Datas();
+        for(final Data data : listDatas) {
+            if(data.has(key)) {
+                datas.add(data);
+            }
+        }
+        return datas;
+    }
+
+    public Datas filter(final String key, final Object value) {
+        return filter(key, value, false);
+    }
+
+    public Datas filter(final String key, final Object value, final boolean ignoreCase) {
+        final Datas datas = new Datas();
+        for(final Data data : listDatas) {
+            if(ignoreCase ? data.equalsIgnoreCase(key, value) : data.equals(key, value)) {
+                datas.add(data);
+            }
+        }
+        return datas;
+    }
+
+    public int remove(final String key) {
+        int n = 0;
+        for(final Data data : filter(key)) {
+            if(remove(data)) {
+                n++;
+            }
+        }
+        return n;
+    }
+
+    public int remove(final String key, final Object value) {
+        return remove(key, value, false);
+    }
+
+    public int remove(final String key, final Object value, final boolean ignoreCase) {
+        int n = 0;
+        for(final Data data : filter(key, value, ignoreCase)) {
+            if(remove(data)) {
+                n++;
+            }
+        }
+        return n;
+    }
+
     public void sort(final Comparator<? super Data> comparator) {
         listDatas.sort(comparator);
     }
@@ -81,7 +142,7 @@ public @Getter class Datas implements Iterable<Data> {
         sortByKeyASC(key, null);
     }
 
-    public void sortByKeyASC(final String key, final String value) {
+    public void sortByKeyASC(final String key, final Object value) {
         if(UtilsText.isEmpty(key)) return;
 
         final Comparator<Data> comparator = new Comparator<Data>() {
@@ -103,7 +164,7 @@ public @Getter class Datas implements Iterable<Data> {
         sortByKeyDESC(key, null);
     }
 
-    public void sortByKeyDESC(final String key, final String value) {
+    public void sortByKeyDESC(final String key, final Object value) {
         if(UtilsText.isEmpty(key)) return;
 
         final Comparator<Data> comparator = new Comparator<Data>() {

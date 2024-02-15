@@ -7,6 +7,8 @@ import lombok.extern.log4j.Log4j2;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
@@ -55,6 +57,10 @@ public class UtilsApi {
         return data;
     }
 
+    public static Data getPostData(final InputStream inputStream) {
+        return new Data(getPostBody(inputStream));
+    }
+
     public static Data getDataHeaders(final HttpServletRequest request) {
         final Data data = new Data();
         final Enumeration<String> params = request.getHeaderNames();
@@ -66,9 +72,18 @@ public class UtilsApi {
     }
 
     public static String getPostBody(final HttpServletRequest request) {
+        try {
+            return getPostBody(request.getInputStream());
+        } catch (Exception e) {
+            log.info("\nERROR: API - POST-BODY ::" + e +"\n");
+        }
+        return "";
+    }
+
+    public static String getPostBody(final InputStream inputStream) {
         final StringBuilder stringBuilder = new StringBuilder();
         try {
-            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(request.getInputStream()));
+            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             final char[] charBuffer = new char[1024];
             int bytesRead;
             while((bytesRead = bufferedReader.read(charBuffer)) > 0) {

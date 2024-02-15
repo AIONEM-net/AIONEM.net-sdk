@@ -553,7 +553,7 @@ public class QuerySelect extends QueryCondition {
         return this;
     }
 
-    public QuerySelect list(final Data data) {
+    public QuerySelect filter(final Data data) {
 
         final int start = data.get(UtilsDB.PAR_START, 0);
         final int end = data.get(UtilsDB.PAR_END, 0);

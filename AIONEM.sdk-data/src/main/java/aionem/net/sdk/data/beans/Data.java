@@ -264,8 +264,8 @@ public class Data {
         return isOrLast && keys.length > 0 ? keys[keys.length-1] : "";
     }
 
-    public int getId(final String key) {
-        return (int) UtilsParse.toNumber(get(key), -1);
+    public long getId(final String key) {
+        return (long) UtilsParse.toNumber(get(key), -1);
     }
 
     public ArrayList<String> getArray(final String key) {

@@ -25,7 +25,7 @@ public class UtilsDB {
     public static String DB_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 
-    public static boolean isValidId(final int id) {
+    public static boolean isValidId(final long id) {
         return id > 0;
     }
 

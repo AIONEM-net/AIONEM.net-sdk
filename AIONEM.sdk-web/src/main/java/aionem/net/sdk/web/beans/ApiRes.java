@@ -425,8 +425,13 @@ public class ApiRes {
         response.setContentType(contentType);
 
         if("application/json".equalsIgnoreCase(contentType)) {
+
+            final JsonObject jsonResponse = toJsonResponse();
+            UtilsJson.add(jsonResponse, "language", response.getLocale().getLanguage());
+
             final Gson gson = UtilsJson.getGsonPretty();
             response.getWriter().write(gson.toJson(toJsonResponse()));
+
         }else {
             response.getWriter().write(getMessage());
         }
@@ -446,8 +451,13 @@ public class ApiRes {
         response.setContentType(contentType);
 
         if("application/json".equalsIgnoreCase(contentType)) {
+
+            final JsonObject jsonResponse = toJsonResponse();
+            UtilsJson.add(jsonResponse, "language", response.getLocale().getLanguage());
+
             final Gson gson = UtilsJson.getGsonPretty();
             response.getWriter().write(gson.toJson(toJsonResponse()));
+
         }else {
             response.getWriter().write(getMessage());
         }
