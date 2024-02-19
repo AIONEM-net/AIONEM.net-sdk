@@ -557,7 +557,7 @@ public class QuerySelect extends QueryCondition {
 
         final int start = data.get(UtilsDB.PAR_START, 0);
         final int end = data.get(UtilsDB.PAR_END, 0);
-        final int length = data.get(UtilsDB.PAR_LENGTH, 10);
+        final int length = data.get(UtilsDB.PAR_LENGTH, -1);
         final int max = (end > 0 && end > start) ? end - start : data.get(UtilsDB.PAR_MAX, length);
         final int page = data.get(UtilsDB.PAR_PAGE, max > 0 ? Math.round((float) start / max) + 1 : 1);
 
