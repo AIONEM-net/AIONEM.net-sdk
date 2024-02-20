@@ -408,6 +408,10 @@ public class ApiRes {
 
     public void setResponse(final HttpServletResponse response, final Data dataHeaders, final String contentType) throws IOException {
 
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
+
         if(dataHeaders != null) {
             for(final Map.Entry<String, String> header : dataHeaders.getValuesString().entrySet()) {
                 response.setHeader(header.getKey(), header.getValue());

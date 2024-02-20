@@ -240,10 +240,11 @@ public class PageManager {
 
     public void cache(final WebContext webContext, final boolean enabled) {
         if(enabled) {
+
             final long twoDaysInSeconds = 2*24*60*60;
             final long expiresTimeInSeconds = twoDaysInSeconds + (System.currentTimeMillis() / 1000);
-            webContext.getResponse().setHeader("Cache-Control", "max-age=" + twoDaysInSeconds);
-            webContext.getResponse().setDateHeader("Expires", expiresTimeInSeconds * 1000);
+            // webContext.getResponse().setHeader("Cache-Control", "max-age=" + twoDaysInSeconds);
+            // webContext.getResponse().setDateHeader("Expires", expiresTimeInSeconds * 1000);
 
             cache(webContext);
 

@@ -36,7 +36,7 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
             final boolean isUiPage = !requestPath.contains(".");
             final boolean isSystemPath = ResourceResolver.isSystemPath(requestPath);
 
-            if(!webContext.isHostMatch() && !webContext.isRemoteLocal()) {
+            if(false && !(webContext.isHostMatch()) && !webContext.isRemoteLocal()) {
 
                 final String urlQuery = webContext.getRequestUrlQuery();
 
@@ -45,9 +45,6 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
             }else if (isUiPage && !isSystemPath) {
 
                 try {
-
-                    webContext.getResponse().setCharacterEncoding("UTF-8");
-                    webContext.getResponse().setContentType("text/html; charset=UTF-8");
 
                     if (webContext.isRoot()) {
                         responsePage(webContext, webContext.getCurrentPage());
@@ -188,14 +185,13 @@ public class FilterUrlRewrite extends UrlRewriteFilter {
 
     private void responsePage(final WebContext webContext, Page currentPage) throws ServletException, IOException {
 
-        if(currentPage.toResource().child( "index.html").exists()) {
+        webContext.getResponse().setCharacterEncoding("UTF-8");
+        webContext.getResponse().setContentType("text/html; charset=UTF-8");
 
-            final String urlIndexQuery = currentPage.getPath()
-                    + (!currentPage.getPath().endsWith("/") ? "/" : "")
-                    + "index.html"
-                    +"?"+ webContext.getRequestQuery();
+        final Resource resourceHtml = currentPage.toResource().child( "index.html");
 
-            webContext.include("/ui.page" + urlIndexQuery);
+        if(resourceHtml.exists()) {
+            webContext.print(resourceHtml.readContent(false));
 
         }else {
 

@@ -344,6 +344,10 @@ public @Getter class WebContext {
         return request.getRemoteAddr();
     }
 
+    public String getLocalAddr() {
+        return request.getLocalAddr();
+    }
+
     public int getRemotePort() {
         return request.getRemotePort();
     }
