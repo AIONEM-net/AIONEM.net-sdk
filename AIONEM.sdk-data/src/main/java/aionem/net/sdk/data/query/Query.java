@@ -99,8 +99,11 @@ public class Query {
     }
 
     public static boolean isConnectionValid() {
-        try (Statement statement = connection.createStatement()) {
-            statement.executeQuery("SELECT 1");
+        try {
+            if(connection != null) {
+                final Statement statement = connection.createStatement();
+                statement.executeQuery("SELECT 1");
+            }
             return true;
         } catch (SQLException e) {
             return false;
