@@ -12,6 +12,7 @@ import oracle.ucp.jdbc.PoolDataSourceFactory;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 
@@ -82,6 +83,10 @@ public class Query {
                 connection = poolDataSource.getConnection();
             }
 
+            if(!isConnectionValid()) {
+                closeConnection();
+            }
+
             if(connection == null || connection.isClosed()) {
                 Class.forName(ConfApp.getDBDriver());
                 connection = DriverManager.getConnection(ConfApp.getDBConnectionUrl(), ConfApp.getDBUser(), ConfApp.getDBPassword());
@@ -93,8 +98,16 @@ public class Query {
         return connection;
     }
 
-    public static boolean closeConnection() {
-        boolean isClosed = true;
+    public static boolean isConnectionValid() {
+        try (Statement statement = connection.createStatement()) {
+            statement.executeQuery("SELECT 1");
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    public static void closeConnection() {
         if(connection != null) {
             try {
                 if(!connection.isClosed()) {
@@ -102,10 +115,8 @@ public class Query {
                 }
             }catch(final Exception e) {
                 log.error("\nERROR: DB CONNECTION - Close ::" + e +"\n");
-                isClosed = false;
             }
         }
-        return isClosed;
     }
 
     public void setError(final String error) {
