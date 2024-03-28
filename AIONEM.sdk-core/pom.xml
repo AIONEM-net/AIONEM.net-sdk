@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.aionem</groupId>
-    <artifactId>aionem.net-sdk-core</artifactId>
+    <artifactId>net-sdk-core</artifactId>
     <version>1.0.0</version>
     <name>AIONEM.sdk-core</name>
     <packaging>jar</packaging>
