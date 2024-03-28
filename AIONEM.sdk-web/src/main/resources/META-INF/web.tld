@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+        version="2.1">
+
+    <tlib-version>1.0</tlib-version>
+    <short-name>web</short-name>
+    <uri>https://aionem.net/sdk/web</uri>
+
+    <tag>
+        <name>webContext</name>
+        <tag-class>aionem.net.sdk.web.tag.WebContextTag</tag-class>
+        <body-content>empty</body-content>
+    </tag>
+
+    <tag>
+        <name>properties</name>
+        <tag-class>aionem.net.sdk.web.tag.PropertiesTag</tag-class>
+        <body-content>empty</body-content>
+    </tag>
+
+    <tag>
+        <name>template</name>
+        <tag-class>aionem.net.sdk.web.tag.TemplateTag</tag-class>
+        <body-content>empty</body-content>
+    </tag>
+    
+</taglib>
