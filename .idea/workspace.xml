@@ -27,18 +27,18 @@
     <option name="ROOT_SYNC" value="SYNC" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "AIONEM-net"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;AIONEM-net&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/AIONEM-net/AIONEM.net-sdk.git",
-    "accountId": "a8d1b5f6-dd96-403e-8f03-0b9b28035acf"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/AIONEM-net/AIONEM.net-sdk.git&quot;,
+    &quot;accountId&quot;: &quot;a8d1b5f6-dd96-403e-8f03-0b9b28035acf&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -123,6 +123,7 @@
       <workItem from="1700118701464" duration="325000" />
       <workItem from="1713005588236" duration="1207000" />
       <workItem from="1716481795948" duration="27000" />
+      <workItem from="1719633907584" duration="6000" />
     </task>
     <task id="LOCAL-00001" summary="AIONEM.NET - SDK - ver1.0.0">
       <option name="closed" value="true" />
